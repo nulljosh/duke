@@ -20604,3 +20604,42 @@ window.__duo.solveMatchPairs = async function () {
   };
 })();
 ;'__duo ready';
+
+// Plotted points that aren't draggable live in the static-points group, so
+// gridPoints() never sees them.
+window.__duo.staticPoints = function () {
+  const g = this.grid2D(); if (!g) return null;
+  const d = g.f.contentDocument, fr = g.f.getBoundingClientRect();
+  const out = [];
+  for (const grp of d.querySelectorAll('.static-points > *')) {
+    const r = grp.getBoundingClientRect();
+    if (!r.width && !r.height) continue;
+    out.push(g.toXY(fr.left + r.left + r.width / 2, fr.top + r.top + r.height / 2)
+      .map(v => Math.abs(v - Math.round(v)) < 0.2 ? Math.round(v) : v));
+  }
+  return out.length ? out : null;
+};
+
+// "Find the run/rise from the left point to the right point": read both plotted
+// points and subtract, always left-to-right so the run stays positive.
+(function () {
+  const base = window.__duo.solveOutputAt;
+  window.__duo.solveOutputAt = function () {
+    const ins = String(this.curInstruction() || '');
+    if (/\b(run|rise|slope)\b/i.test(ins) && /point/i.test(ins)) {
+      const raw = (this.gridPoints() || []).length ? this.gridPoints() : (this.staticPoints() || []);
+      const pts = raw.map(p => Array.isArray(p) ? p : [p.x, p.y])
+        .filter(p => isFinite(p[0]) && isFinite(p[1]))
+        .sort((a, b) => a[0] - b[0]);
+      if (pts.length >= 2) {
+        const A = pts[0], B = pts[pts.length - 1];
+        const run = B[0] - A[0], rise = B[1] - A[1];
+        if (/\brun\b/i.test(ins)) return run;
+        if (/\brise\b/i.test(ins)) return rise;
+        if (run) return rise / run;
+      }
+    }
+    return base.call(this);
+  };
+})();
+;'__duo ready';
