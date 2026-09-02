@@ -1,11 +1,22 @@
 # Roadmap
 
 ## Where the run stopped
-Unit 202 level 3, "construct a piecewise graph" (piecewise drag). One draggable
-point at (1, -2) belongs at (1, 1) per the definition `f(x) = 2x-1 for x<1, 1
-for x>=1`. No solver yet for building a piecewise graph — `curvePieces()` reads
-branches but nothing places the open/closed endpoint. Skipped on 2026-09-02 after
-3 failed tries.
+Loop restarted 2026-09-02 at unit 209 level 4 after the previous tab died. Units
+202-209 are mostly SKIPPED (23 of 32 levels): see `skipped` in scripts/state.json.
+
+Diagnosed 2026-09-02 (scripts/diag.js records per-question prompt / grader /
+pick / verdict; load it after duo.js and read `__duo.DIAG`):
+- Grader answers with a comma inside brackets (`[-3,4]`) were split into two
+  strings and a distractor got picked. FIXED: interval-safe `answer()` plus a
+  grader-first `solveChoices` wrapper at the end of duo.js.
+- "Create the piecewise function" (u202l3) is a `shirtPantsInteractive` blob.
+  The widget's HTML is IN the blob (`blob.pants.html`) with `INPUT_VARIABLES`
+  and `getOutputVariables()` (here `final_c` = a plain global `currentC` in the
+  iframe window). Next step: set that global from the definition instead of
+  dragging, then CHECK. `mathDiagram.components` was EMPTY on the frame
+  `frameEl()` chose, so pick the iframe whose window has `getOutputVariables`.
+- The rest of the 2wrong halts were not yet sampled; run diag.js on each
+  skipped level and fix by class.
 
 ## Open
 - [ ] Piecewise construction: place the endpoint from the stated definition

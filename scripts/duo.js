@@ -20906,3 +20906,32 @@ window.__duo.curvePieces = function () {
   };
 })();
 ;'__duo ready';
+
+// 2026-09-02: the grader said \mathbf{[-3,4]} and answer() split it on the
+// comma into "[-3" and "4]" — nothing matched, a distractor got picked. Do not
+// split inside brackets/parens (intervals, ordered pairs). And run the grader
+// match FIRST: the wrapper chain above had grown to where a heuristic solver
+// pre-empted an exact grader hit.
+(function () {
+  const D = window.__duo, base = D.answer;
+  D.answer = function () {
+    const b = this.blob(); if (!b || !b.grading_function) return null;
+    let r; try { r = new Function('return (' + b.grading_function + ')')()(b); } catch (e) { return null; }
+    const v = (r && r[1] && r[1].value) || (r && r.displayAnswer && r.displayAnswer.value) || '';
+    const m = v.match(/mathbf\{([^}]*)\}/);
+    if (!m) return base.call(this);
+    return /[\[\]()]/.test(m[1]) ? [m[1].trim()] : m[1].split(',').map(x => x.trim());
+  };
+  const sc = D.solveChoices;
+  D.solveChoices = function () {
+    try {
+      const want = (this.answer() || []).map(x => this.norm(x));
+      const c = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+      const norm = e => { const a = e.querySelector('annotation'); return this.norm(a ? a.textContent : e.innerText); };
+      const idx = c.map((e, i) => [i, norm(e)]).filter(([, t]) => want.includes(t)).map(([i]) => i);
+      if (want.length && idx.length === want.length) return { want, idx, ok: true, via: 'graderFirst' };
+    } catch (e) {}
+    return sc.call(this);
+  };
+})();
+;'__duo ready';
