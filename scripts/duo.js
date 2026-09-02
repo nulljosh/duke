@@ -19804,7 +19804,8 @@ window.__duo.solveTargetSlider = async function () {
   for (const t of parts) {
     const f = String(t).replace(/\s/g, '');
     // the number may live in its own emphasised part, away from "Create a ..."
-    const m = f.match(/(?:make|create|build)[a-z]*?(-?\d+(?:\.\d+)?)(pi)?$/i)
+    // "Create f(1) = 2" puts punctuation between the verb and the target
+    const m = f.match(/(?:make|create|build)[^=]*?=?\s*(-?\d+(?:\.\d+)?)(pi)?$/i)
            || (asks ? f.match(/^(-?\d+(?:\.\d+)?)(pi)?$/i) : null);
     if (m) { target = parseFloat(m[1]); byPi = !!m[2]; break; }
   }
