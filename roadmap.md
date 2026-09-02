@@ -1,10 +1,11 @@
 # Roadmap
 
 ## Where the run stopped
-Unit 202 level 2, "create the piecewise function". One draggable point sits at
-(1, -2); the definition is `f(x) = 2x-1 for x<1, 1 for x>=1`, so it belongs at
-(1, 1). There is no solver for building a piecewise graph yet — `curvePieces()`
-reads branches but nothing places the open/closed endpoint.
+Unit 202 level 3, "construct a piecewise graph" (piecewise drag). One draggable
+point at (1, -2) belongs at (1, 1) per the definition `f(x) = 2x-1 for x<1, 1
+for x>=1`. No solver yet for building a piecewise graph — `curvePieces()` reads
+branches but nothing places the open/closed endpoint. Skipped on 2026-09-02 after
+3 failed tries.
 
 ## Open
 - [ ] Piecewise construction: place the endpoint from the stated definition
