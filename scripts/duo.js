@@ -20766,3 +20766,34 @@ window.__duo.tableFamily = function () {
   };
 })();
 ;'__duo ready';
+
+// "x-intercepts: 2 and 4" -> pick the factored form that vanishes at both.
+// Runs ahead of the generic expression solvers, which otherwise grab this.
+(function () {
+  const base = window.__duo.solveChoices;
+  window.__duo.solveChoices = function () {
+    const ins = String(this.curInstruction() || '').replace(/[−–—]/g, '-');
+    const m = ins.match(/intercepts?\s*:?\s*(-?[\d.]+)\s*(?:and|,)\s*(-?[\d.]+)/i);
+    const ch = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+    if (m && ch.length) {
+      const roots = [parseFloat(m[1]), parseFloat(m[2])];
+      const prep = t => String(t)
+        .replace(/\\(mathbf|textbf|text|emphasis|displaystyle)\b/g, '')
+        .replace(/\\(cdot|times)/g, '*').replace(/\\left|\\right/g, '')
+        .replace(/[{}]/g, '').replace(/\s/g, '').replace(/[−–—]/g, '-')
+        .replace(/^[a-z]\(x\)=|^y=/i, '')
+        .replace(/\ba\b/g, '1')                       // the leading coefficient
+        .replace(/(\d|\))(\()/g, '$1*$2');
+      const i = ch.findIndex(e => {
+        const a = e.querySelector('annotation');
+        const g = this.compile(prep(a ? a.textContent : e.innerText));
+        if (!g) return false;
+        try { return roots.every(r => Math.abs(g(r)) < 1e-9) && Math.abs(g(roots[0] + 1)) > 1e-9; }
+        catch (x) { return false; }
+      });
+      if (i >= 0) return { want: [String(i)], idx: [i], ok: true, via: 'factoredFromRoots' };
+    }
+    return base.call(this);
+  };
+})();
+;'__duo ready';
