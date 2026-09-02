@@ -20524,3 +20524,36 @@ window.__duo.solveMatchPairs = async function () {
   };
 })();
 ;'__duo ready';
+
+// "Select the input when f(x) = 2" — the inverse read: find x on the drawn
+// curve where y hits the stated output. (And the forward read, f(a) = ?)
+(function () {
+  const bt = window.__duo.solveTransformedValue;
+  window.__duo.solveTransformedValue = function () {
+    const ins = String(this.curInstruction() || '').replace(/[−–—]/g, '-');
+    const ch = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+    const m = ins.match(/input.*f\s*\(\s*x\s*\)\s*=\s*(-?[\d.]+)/i);
+    if (m && ch.length) {
+      const want = parseFloat(m[1]);
+      const pts = this.curveXY();
+      if (pts && pts.length > 2) {
+        const hits = [];
+        for (let i = 1; i < pts.length; i++) {
+          const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
+          if (!isFinite(y0) || !isFinite(y1)) continue;
+          if ((y0 - want) * (y1 - want) <= 0 && y0 !== y1)
+            hits.push(x0 + (x1 - x0) * (want - y0) / (y1 - y0));
+        }
+        if (hits.length) {
+          const i = ch.findIndex(e => {
+            const v = parseFloat(this.half(e.innerText).replace(/[−–—]/g, '-'));
+            return isFinite(v) && hits.some(h => Math.abs(h - v) < 0.35);
+          });
+          if (i >= 0) return { i };
+        }
+      }
+    }
+    return bt.call(this);
+  };
+})();
+;'__duo ready';
