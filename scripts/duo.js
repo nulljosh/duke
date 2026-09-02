@@ -103,7 +103,11 @@ Object.assign(window.__duo, {
   // Calling grade() with no user selection returns [false, {value:"...Correct Answer: \mathbf{X}"}]
   answer() {
     const b = this.blob(); if (!b || !b.grading_function) return null;
-    const r = new Function('return (' + b.grading_function + ')')()(b);
+    // ponytail: some challenge types' grading_function assumes a live input
+    // widget and throws when called with no user selection — bail like any
+    // other "grader can't help" case instead of crashing the whole run().
+    let r; try { r = new Function('return (' + b.grading_function + ')')()(b); }
+    catch (e) { return null; }
     const v = (r && r[1] && r[1].value) || '';
     const m = v.match(/mathbf\{([^}]*)\}/);
     return m ? m[1].split(',').map(x => x.trim()) : null;
@@ -137,6 +141,10 @@ Object.assign(window.__duo, {
   async solve() {
     const r = this.read();
     if (r.hearts === 0) return { stop: 'no hearts', r };
+    // ponytail: a halted run() can leave a CHECKed question sitting on CONTINUE.
+    // Re-reading it looks answerable (still has choices/input), but calling the
+    // grader a second time on an already-answered blob throws. Clear it first.
+    if (r.blame && /CONTINUE/i.test(r.next || '')) { await this.go(); return { ok: true, was: r.type, next: this.read() }; }
     if (!this.auto(r)) return { stop: 'manual', type: r.type, r };
 
     if (r.input) {
@@ -158,10 +166,15 @@ Object.assign(window.__duo, {
   },
 
   // Run until something needs a human/mouse. Returns the trail for one report.
+  // ponytail: solve() had no try/catch, so a thrown error (e.g. grading_function
+  // eval, or player-next going null mid-transition) silently killed the promise
+  // chain and looked like a stuck loop with no signal at all. Surface it instead.
   async run(n = 15) {
     const trail = [];
     for (let i = 0; i < n; i++) {
-      const s = await this.solve();
+      let s;
+      try { s = await this.solve(); }
+      catch (e) { s = { stop: 'error', error: String(e && e.message || e), r: this.read() }; }
       trail.push(s.ok ? s.was : s.stop);
       if (!s.ok) return { trail, halted: s };
     }
