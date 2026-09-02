@@ -20680,3 +20680,45 @@ window.__duo.staticPoints = function () {
   };
 })();
 ;'__duo ready';
+
+// Classify a function given only a value table: constant first differences are
+// linear, constant second differences quadratic, constant ratios exponential.
+window.__duo.tablePairs = function () {
+  const labs = (this.diagramLabels() || []).map(l => String(l.t).replace(/[−–—]/g, '-'));
+  const head = labs.findIndex(t => /^f\(x\)$|^y$/i.test(t));
+  if (head < 1) return null;
+  const nums = labs.slice(head + 1).map(parseFloat);
+  if (nums.length < 4 || nums.some(n => !isFinite(n))) return null;
+  const pts = [];
+  for (let i = 0; i + 1 < nums.length; i += 2) pts.push([nums[i], nums[i + 1]]);
+  return pts.length >= 3 ? pts : null;
+};
+window.__duo.tableFamily = function () {
+  const P = this.tablePairs(); if (!P) return null;
+  const y = P.map(p => p[1]);
+  const d1 = y.slice(1).map((v, i) => v - y[i]);
+  const near = a => a.every(v => Math.abs(v - a[0]) < 1e-6 * Math.max(1, Math.abs(a[0])));
+  if (near(d1)) return 'linear';
+  const d2 = d1.slice(1).map((v, i) => v - d1[i]);
+  if (d2.length && near(d2)) return 'quadratic';
+  if (y.every(v => v !== 0)) {
+    const r = y.slice(1).map((v, i) => v / y[i]);
+    if (near(r)) return 'exponential';
+  }
+  return null;
+};
+(function () {
+  const bt = window.__duo.solveTransformedValue;
+  window.__duo.solveTransformedValue = function () {
+    const ch = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+    if (ch.length && /select the match|which (function|type)/i.test(this.curInstruction() || '')) {
+      const fam = this.tableFamily();
+      if (fam) {
+        const i = ch.findIndex(e => this.half(e.innerText).toLowerCase().startsWith(fam));
+        if (i >= 0) return { i };
+      }
+    }
+    return bt.call(this);
+  };
+})();
+;'__duo ready';
