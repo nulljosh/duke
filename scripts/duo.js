@@ -20474,3 +20474,53 @@ window.__duo.curveRoots = function () {
   };
 })();
 ;'__duo ready';
+
+// "Match the pairs": eight tap tokens, four expressions and their four values.
+// These are timed, so pair everything by value in one pass and click straight
+// through instead of round-tripping per tile.
+window.__duo.solveMatchPairs = async function () {
+  const tiles = [...document.querySelectorAll('[data-test$="-token"]')]
+    .filter(b => b.querySelector('annotation'));
+  if (tiles.length < 4) return false;
+  const prep = t => String(t)
+    .replace(/\\(mathbf|textbf|text|emphasis|displaystyle)\b/g, '')
+    .replace(/\\(cdot|times)/g, '*').replace(/\\left|\\right/g, '')
+    .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '(($1)/($2))')
+    .replace(/\\pi/g, '*1').replace(/[{}]/g, '').replace(/\s/g, '')
+    .replace(/(^|[=(*+\-/])\*+/g, '$1');
+  const vals = tiles.map(b => {
+    const g = this.compile(prep(b.querySelector('annotation').textContent));
+    try { return g ? g(0) : null; } catch (e) { return null; }
+  });
+  const used = new Array(tiles.length).fill(false);
+  let clicked = 0;
+  for (let i = 0; i < tiles.length; i++) {
+    if (used[i] || vals[i] === null) continue;
+    const j = vals.findIndex((v, k) => k > i && !used[k] && v !== null && Math.abs(v - vals[i]) < 1e-9);
+    if (j < 0) continue;
+    used[i] = used[j] = true;
+    // React ignores el.click() on these; it needs the pointer sequence
+    for (const el of [tiles[i], tiles[j]]) {
+      const r = el.getBoundingClientRect();
+      const o = { bubbles: true, cancelable: true, composed: true, view: window,
+        clientX: r.left + r.width / 2, clientY: r.top + r.height / 2, button: 0 };
+      el.dispatchEvent(new PointerEvent('pointerdown', Object.assign({ pointerId: 1, pointerType: 'mouse', isPrimary: true, buttons: 1 }, o)));
+      el.dispatchEvent(new MouseEvent('mousedown', Object.assign({ buttons: 1 }, o)));
+      el.dispatchEvent(new PointerEvent('pointerup', Object.assign({ pointerId: 1, pointerType: 'mouse', isPrimary: true, buttons: 0 }, o)));
+      el.dispatchEvent(new MouseEvent('mouseup', Object.assign({ buttons: 0 }, o)));
+      el.dispatchEvent(new MouseEvent('click', Object.assign({ buttons: 0 }, o)));
+      await new Promise(r2 => setTimeout(r2, 60));
+    }
+    clicked++;
+    await new Promise(r => setTimeout(r, 120));
+  }
+  return clicked > 0;
+};
+(function () {
+  const base = window.__duo.autoDrag;
+  window.__duo.autoDrag = async function () {
+    if (/match the pairs/i.test(this.curInstruction() || '') && await this.solveMatchPairs()) return true;
+    return await base.call(this);
+  };
+})();
+;'__duo ready';
