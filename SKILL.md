@@ -26,21 +26,26 @@ user against real people in their league. Say that once, then respect the answer
 5. End of lesson is 3-4 CONTINUE clicks (`__duo.go()`), then `/lesson` again.
 6. `duo.py <username>` to confirm the XP landed.
 
-Long runs: launch detached and poll. A lesson often exceeds the 45s CDP call
-limit and awaiting it looks like a frozen renderer.
+Long runs (days): do NOT poll from a Claude session. `scripts/` is an unpacked
+Chrome extension (`manifest.json` + `ext.js`) that re-injects `duo.js` and
+`boot.js` on every full load of `/lesson/unit/N/level/M`. `boot.js` runs the
+lesson loop, moves to the next level, skips a level after 3 failed attempts
+(`duoAuto.skipped`), reloads a page wedged for 12 min, and POSTs `duoAuto` + the
+ledger to `serve.py`, which writes `scripts/state.json`.
 
-```js
-window.__auto = {running:true, out:[]};
-(async () => { for (let k = 0; k < 40; k++) {
-  if (!__auto.running) break;
-  const r = await __duo.autoLesson(); __auto.out.push(r);
-  if (r.ok) { const st = JSON.parse(localStorage.getItem('duoAuto'));
-    location.href = '/lesson/unit/' + st.unit + '/level/' + st.level; return; }
-  if (!r.done) break;
-} __auto.running = false; })();
-```
+Start:
+1. `python3 scripts/serve.py &` and `caffeinate -dims &` (the Mac must not sleep).
+2. Once: chrome://extensions -> Developer mode -> Load unpacked -> `scripts/`.
+   After any edit to `duo.js`, click Reload there (Chrome caches the files).
+3. In the lesson tab, one `javascript_tool` call:
+   `localStorage.duoAuto = JSON.stringify({running:true, unit:U, level:L, log:[], skipped:[]}); location.reload()`
+4. Keep that tab in its own window, visible. Hidden tabs get their timers
+   throttled to once a minute after 5 min and the loop crawls.
 
-`duoAuto` in localStorage carries unit/level across the navigation.
+Status: `cat scripts/state.json` (unit/level, skipped list, ledger). Zero browser.
+Stop: `localStorage.duoAuto = JSON.stringify({running:false})` in the tab.
+`duoAuto.skipped` is the work list for the next solver session.
+
 
 ## Dead ends — do not re-litigate mid-lesson
 
