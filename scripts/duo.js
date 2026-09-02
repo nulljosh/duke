@@ -20586,11 +20586,14 @@ window.__duo.solveMatchPairs = async function () {
     if (/select the match|degree/i.test(ins) && ch.length) {
       const texts = ch.map(e => this.half(e.innerText).toLowerCase());
       const tex = this.promptLatex().filter(l => !/textbf\{Select/i.test(l)).pop();
-      if (tex && texts.every(t => /^degree-?\d+$/.test(t) || t in NAMED)) {
+      // "Select the degree" offers bare numbers; "select the match" spells
+      // out "degree 3" or names the family.
+      const bare = /\bdegree\b/i.test(ins) && texts.every(t => /^-?\d+$/.test(t));
+      if (tex && (bare || texts.every(t => /^degree-?\d+$/.test(t) || t in NAMED))) {
         const d = degreeOf(tex);
         if (d !== null) {
           const i = texts.findIndex(t => {
-            const m = t.match(/^degree(-?\d+)$/);
+            const m = t.match(/^degree(-?\d+)$/) || t.match(/^(-?\d+)$/);
             return m ? parseInt(m[1]) === d : NAMED[t] === d;
           });
           if (i >= 0) return { i };
