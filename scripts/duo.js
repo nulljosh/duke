@@ -20350,7 +20350,9 @@ window.__duo.half = function (s) {
         try { return g ? g(0) : null; } catch (x) { return null; }
       };
       // a sphere has one labelled radius and no height to separate out
-      if (/sphere/.test(hay0) && E.length) {
+      // The solid is often never named: one labelled edge (a radius) and no
+      // second dimension means a sphere.
+      if ((/sphere/.test(hay0) || E.length === 1) && E.length) {
         const vals = ch.map(val);
         for (const rr of [E[0].v, E[0].v / 2]) {
           const w = 4 / 3 * rr * rr * rr;
