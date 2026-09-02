@@ -156,8 +156,9 @@ Object.assign(window.__duo, {
     } else {
       const s = this.solveChoices();
       // ponytail: bail rather than guess — a wrong CHECK costs a heart, a
-      // handback costs nothing.
-      if (!s.ok) return { stop: 'choice match failed', s, r };
+      // handback costs nothing. solveChoices can return null (no match found),
+      // not just {ok:false}.
+      if (!s || !s.ok) return { stop: 'choice match failed', s, r };
       this.choose(...s.idx);
     }
     const after = await this.go();
