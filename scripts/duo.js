@@ -20557,3 +20557,38 @@ window.__duo.solveMatchPairs = async function () {
   };
 })();
 ;'__duo ready';
+
+// "Select the match" against a polynomial: the choices name its degree, or its
+// family (linear / quadratic / cubic / rational).
+(function () {
+  const NAMED = { constant: 0, linear: 1, quadratic: 2, cubic: 3, quartic: 4 };
+  const degreeOf = function (tex) {
+    const s = String(tex).replace(/\\(mathbf|textbf|text|displaystyle)\b/g, '')
+      .replace(/[{}\s]/g, '');
+    if (/\\frac\{?[^}]*[a-z]/.test(String(tex)) || /\/[a-z]/.test(s)) return null; // rational
+    let d = 0;
+    for (const m of s.matchAll(/[a-z](\^(-?\d+))?/g)) d = Math.max(d, m[2] ? parseInt(m[2]) : 1);
+    return d;
+  };
+  const bt = window.__duo.solveTransformedValue;
+  window.__duo.solveTransformedValue = function () {
+    const ins = String(this.curInstruction() || '');
+    const ch = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+    if (/select the match|degree/i.test(ins) && ch.length) {
+      const texts = ch.map(e => this.half(e.innerText).toLowerCase());
+      const tex = this.promptLatex().filter(l => !/textbf\{Select/i.test(l)).pop();
+      if (tex && texts.every(t => /^degree-?\d+$/.test(t) || t in NAMED)) {
+        const d = degreeOf(tex);
+        if (d !== null) {
+          const i = texts.findIndex(t => {
+            const m = t.match(/^degree(-?\d+)$/);
+            return m ? parseInt(m[1]) === d : NAMED[t] === d;
+          });
+          if (i >= 0) return { i };
+        }
+      }
+    }
+    return bt.call(this);
+  };
+})();
+;'__duo ready';
