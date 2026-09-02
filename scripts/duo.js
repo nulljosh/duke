@@ -20748,3 +20748,21 @@ window.__duo.tableFamily = function () {
   };
 })();
 ;'__duo ready';
+
+// \duoblank{n} carries the expected value as its argument. The equation solver
+// is preferred, but two-unknown steps ("4 = \duoblank{-4} a") can't be solved
+// numerically, and this reads straight off the prompt.
+(function () {
+  const base = window.__duo.solveOutputAt;
+  window.__duo.solveOutputAt = function () {
+    const r = base.call(this);
+    if (r !== null && r !== undefined) return r;
+    const line = this.promptLatex().filter(l => /duoblank/.test(l)).pop();
+    if (line) {
+      const m = line.match(/\\duoblank\{(-?\d+(?:\.\d+)?)\}/);
+      if (m) return parseFloat(m[1]);
+    }
+    return r;
+  };
+})();
+;'__duo ready';
