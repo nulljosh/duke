@@ -20722,3 +20722,29 @@ window.__duo.tableFamily = function () {
   };
 })();
 ;'__duo ready';
+
+// "Select the x-values of the x-intercepts" is MULTI-select, and on guided
+// table lessons the intercepts come from the table's zero rows, not a graph.
+(function () {
+  const base = window.__duo.solveChoices;
+  window.__duo.solveChoices = function () {
+    const ins = this.promptLatex().map(l => this.ascii(l)).join(' ') + ' ' + (this.curInstruction() || '');
+    if (/x\s*-?\s*values of the.*x\s*-?\s*intercepts/i.test(ins)) {
+      const ch = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+      let xs = null;
+      const P = this.tablePairs();
+      if (P) xs = P.filter(p => Math.abs(p[1]) < 1e-9).map(p => p[0]);
+      if ((!xs || !xs.length)) { const R = this.curveRoots(); if (R && R.length) xs = R; }
+      if (xs && xs.length && ch.length) {
+        const idx = [];
+        ch.forEach((e, i) => {
+          const v = parseFloat(this.half(e.innerText).replace(/[−–—]/g, '-'));
+          if (isFinite(v) && xs.some(x => Math.abs(x - v) < 0.35)) idx.push(i);
+        });
+        if (idx.length) return { want: idx.map(i => this.half(ch[i].innerText)), idx, ok: true, via: 'xIntercepts' };
+      }
+    }
+    return base.call(this);
+  };
+})();
+;'__duo ready';
