@@ -20378,3 +20378,99 @@ window.__duo.half = function (s) {
   };
 })();
 ;'__duo ready';
+
+// "Select the y-intercept" / "x-intercept" offered as coordinate pairs: the
+// intercept must sit on the right axis AND inside the drawn axis range, which
+// is usually enough to leave exactly one choice.
+(function () {
+  const axisRange = function () {
+    const n = (this.diagramLabels() || [])
+      .map(l => parseFloat(String(l.t).replace(/[−–—]/g, '-')))
+      .filter(v => isFinite(v));
+    return n.length ? Math.max(...n.map(Math.abs)) : null;
+  };
+  const bt = window.__duo.solveTransformedValue;
+  window.__duo.solveTransformedValue = function () {
+    const ins = String(this.curInstruction() || '');
+    const m = ins.match(/\b([xy])\s*-?\s*intercept/i);
+    if (m) {
+      const ch = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+      const pairs = ch.map(e => {
+        const t = this.half(e.innerText).replace(/[−–—]/g, '-').match(/\((-?[\d.]+),(-?[\d.]+)\)/);
+        return t ? [parseFloat(t[1]), parseFloat(t[2])] : null;
+      });
+      if (pairs.some(Boolean)) {
+        const zeroAt = m[1].toLowerCase() === 'y' ? 0 : 1;   // y-intercept has x=0
+        const R = axisRange.call(this);
+        const ok = pairs.map(p => p && Math.abs(p[zeroAt]) < 1e-9 &&
+          (R === null || Math.abs(p[1 - zeroAt]) <= R + 1e-9));
+        if (ok.filter(Boolean).length === 1) return { i: ok.indexOf(true) };
+      }
+    }
+    return bt.call(this);
+  };
+})();
+;'__duo ready';
+
+// Sample the drawn curve in grid coordinates: the basis for reading roots,
+// intercepts and turning points off a graph.
+window.__duo.curveXY = function () {
+  const g = this.grid2D(); if (!g) return null;
+  const d = g.f.contentDocument, fr = g.f.getBoundingClientRect();
+  let best = null, bl = 0;
+  for (const p of d.querySelectorAll('svg path')) {
+    if (!p.getTotalLength) continue;
+    const L = p.getTotalLength();
+    const b = p.getBBox ? p.getBBox() : null;
+    if (!b || b.width < 40) continue;          // skip ticks, arrows, gridlines
+    if (L > bl) { bl = L; best = p; }
+  }
+  if (!best) return null;
+  const m = best.ownerSVGElement.getScreenCTM(); if (!m) return null;
+  const out = [];
+  const n = Math.min(400, Math.max(60, Math.round(bl / 3)));
+  for (let i = 0; i <= n; i++) {
+    const q = best.getPointAtLength(bl * i / n);
+    const X = m.a * q.x + m.c * q.y + m.e + fr.left, Y = m.b * q.x + m.d * q.y + m.f + fr.top;
+    out.push(g.toXY(X, Y));
+  }
+  return out;
+};
+
+// x-values where the drawn curve crosses y = 0.
+window.__duo.curveRoots = function () {
+  const pts = this.curveXY(); if (!pts || pts.length < 3) return null;
+  const roots = [];
+  for (let i = 1; i < pts.length; i++) {
+    const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
+    if (!isFinite(y0) || !isFinite(y1)) continue;
+    if (y0 === 0) roots.push(x0);
+    else if (y0 * y1 < 0) roots.push(x0 + (x1 - x0) * (-y0) / (y1 - y0));
+  }
+  // the sampled path may double back, so collapse near-duplicates
+  roots.sort((a, b) => a - b);
+  return roots.filter((r, i) => i === 0 || Math.abs(r - roots[i - 1]) > 0.25);
+};
+
+(function () {
+  const bt = window.__duo.solveTransformedValue;
+  window.__duo.solveTransformedValue = function () {
+    const ins = String(this.curInstruction() || '');
+    if (/x\s*-?\s*intercepts?\b/i.test(ins)) {
+      const R = this.curveRoots();
+      if (R && R.length) {
+        const ch = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+        const i = ch.findIndex(e => {
+          const nums = [...this.half(e.innerText).replace(/[−–—]/g, '-')
+            .matchAll(/\((-?[\d.]+),(-?[\d.]+)\)/g)];
+          if (nums.length !== R.length) return false;
+          return nums.every((mm, k) => Math.abs(parseFloat(mm[2])) < 1e-9 &&
+            Math.abs(parseFloat(mm[1]) - R[k]) < 0.35);
+        });
+        if (i >= 0) return { i };
+      }
+    }
+    return bt.call(this);
+  };
+})();
+;'__duo ready';
