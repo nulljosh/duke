@@ -108,7 +108,9 @@ Object.assign(window.__duo, {
     // other "grader can't help" case instead of crashing the whole run().
     let r; try { r = new Function('return (' + b.grading_function + ')')()(b); }
     catch (e) { return null; }
-    const v = (r && r[1] && r[1].value) || '';
+    // ponytail: array-shaped [false, {value}] on some types, object-shaped
+    // {displayAnswer:{value}} on others (e.g. triangle angle-sum problems).
+    const v = (r && r[1] && r[1].value) || (r && r.displayAnswer && r.displayAnswer.value) || '';
     const m = v.match(/mathbf\{([^}]*)\}/);
     return m ? m[1].split(',').map(x => x.trim()) : null;
   },
