@@ -25,7 +25,7 @@
   };
   window.__auto = { running: true, out: [], started: Date.now() };
   save();
-  if (!challenge()) await open(st.unit, st.level);
+  if (!challenge() || (m && (+m[1] !== st.unit || +m[2] !== st.level))) await open(st.unit, st.level);
   while (__auto.running && st.running) {
     const t0 = Date.now(); let r = null;
     for (let k = 0; k < 40 && __auto.running; k++) {
