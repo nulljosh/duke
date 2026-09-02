@@ -20643,3 +20643,40 @@ window.__duo.staticPoints = function () {
   };
 })();
 ;'__duo ready';
+
+// "Select the equation using the slope and y-intercept": fit the line through
+// the two plotted points, then keep the choice that agrees at sample x values.
+(function () {
+  const prep = t => String(t)
+    .replace(/\\(mathbf|textbf|text|emphasis|displaystyle)\b/g, '')
+    .replace(/\\(cdot|times)/g, '*').replace(/\\left|\\right/g, '')
+    .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '(($1)/($2))')
+    .replace(/[{}]/g, '').replace(/\s/g, '').replace(/[−–—]/g, '-')
+    .replace(/^[a-z]\(x\)=|^y=/i, '');
+  const bt = window.__duo.solveTransformedValue;
+  window.__duo.solveTransformedValue = function () {
+    const ins = String(this.curInstruction() || '');
+    const ch = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+    if (/equation/i.test(ins) && ch.length) {
+      let pts = (this.gridPoints() || []).map(p => Array.isArray(p) ? p : [p.x, p.y]);
+      if (pts.length < 2) pts = this.staticPoints() || [];
+      pts = pts.filter(p => isFinite(p[0]) && isFinite(p[1])).sort((a, b) => a[0] - b[0]);
+      if (pts.length >= 2) {
+        const A = pts[0], B = pts[pts.length - 1];
+        if (B[0] !== A[0]) {
+          const m = (B[1] - A[1]) / (B[0] - A[0]), b = A[1] - m * A[0];
+          const XS = [-1.7, 0.6, 2.3];
+          const i = ch.findIndex(e => {
+            const a = e.querySelector('annotation');
+            const g = this.compile(prep(a ? a.textContent : e.innerText));
+            if (!g) return false;
+            try { return XS.every(x => Math.abs(g(x) - (m * x + b)) < 1e-6); } catch (x) { return false; }
+          });
+          if (i >= 0) return { i };
+        }
+      }
+    }
+    return bt.call(this);
+  };
+})();
+;'__duo ready';
