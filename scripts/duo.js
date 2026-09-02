@@ -4346,7 +4346,7 @@ Object.assign(window.__duo, {
     let t = this.ascii(s)
       .replace(/\\cdot|\\times/g, '*')
       // "16\pi" vs "\pi r^2": pi cancels on both sides, so drop it.
-      .replace(/\\pi/g, byPi ? '' : '(3.141592653589793)')
+      .replace(/\\pi/g, '(3.141592653589793)')
       .replace(/\\left|\\right/g, '')
       .replace(/mathbf|textbf|text|\\|\{|\}/g, '')
       .replace(/\s+/g, '')
@@ -8145,7 +8145,7 @@ Object.assign(window.__duo, {
       .replace(/\\(mathbf|textbf|text)\s*/g, '')
       .replace(/\\cdot|\\times/g, '*')
       // "16\pi" vs "\pi r^2": pi cancels on both sides, so drop it.
-      .replace(/\\pi/g, byPi ? '' : '(3.141592653589793)')
+      .replace(/\\pi/g, '(3.141592653589793)')
       .replace(/\\left|\\right/g, '')
       .replace(/[~\s]/g, '');
     for (let i = 0; i < 4; i++) {
@@ -13374,7 +13374,7 @@ window.__duo.solveSumSlider = async function () {
       .replace(/\\(mathbf|textbf|text)\b/g, '')
       .replace(/\\cdot|\\times/g, '*')
       // "16\pi" vs "\pi r^2": pi cancels on both sides, so drop it.
-      .replace(/\\pi/g, byPi ? '' : '(3.141592653589793)')
+      .replace(/\\pi/g, '(3.141592653589793)')
       .replace(/[{}\s\\]/g, '')
       .split('=').pop();
     const g = this.compile(expr); if (!g) continue;
