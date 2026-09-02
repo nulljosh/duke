@@ -20488,15 +20488,24 @@ window.__duo.solveMatchPairs = async function () {
     .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '(($1)/($2))')
     .replace(/\\pi/g, '*1').replace(/[{}]/g, '').replace(/\s/g, '')
     .replace(/(^|[=(*+\-/])\*+/g, '$1');
+  // Pairs are often symbolic (factored vs expanded), which is identical at
+  // x=0, so fingerprint each tile over several sample points.
+  const XS = [0.7314, 1.3121, -2.1137, 3.4271];
   const vals = tiles.map(b => {
     const g = this.compile(prep(b.querySelector('annotation').textContent));
-    try { return g ? g(0) : null; } catch (e) { return null; }
+    if (!g) return null;
+    try {
+      const v = XS.map(x => g(x));
+      return v.every(n => isFinite(n)) ? v : null;
+    } catch (e) { return null; }
   });
+  const same = (a, b) => a && b && a.every((n, k) =>
+    Math.abs(n - b[k]) <= 1e-7 * Math.max(1, Math.abs(n), Math.abs(b[k])));
   const used = new Array(tiles.length).fill(false);
   let clicked = 0;
   for (let i = 0; i < tiles.length; i++) {
     if (used[i] || vals[i] === null) continue;
-    const j = vals.findIndex((v, k) => k > i && !used[k] && v !== null && Math.abs(v - vals[i]) < 1e-9);
+    const j = vals.findIndex((v, k) => k > i && !used[k] && same(v, vals[i]));
     if (j < 0) continue;
     used[i] = used[j] = true;
     // React ignores el.click() on these; it needs the pointer sequence
