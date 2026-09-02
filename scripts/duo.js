@@ -20797,3 +20797,95 @@ window.__duo.tableFamily = function () {
   };
 })();
 ;'__duo ready';
+
+// Duolingo has lost completed progress before, so keep an independent local
+// record of every level this run finishes. Survives page reloads.
+window.__duo.ledgerKey = 'duoLedger';
+window.__duo.ledgerNote = function (unit, level, xp) {
+  try {
+    const L = JSON.parse(localStorage.getItem(this.ledgerKey) || '{}');
+    const k = 'u' + unit + 'l' + level;
+    L[k] = { at: new Date().toISOString(), xp: xp || 0 };
+    localStorage.setItem(this.ledgerKey, JSON.stringify(L));
+    return Object.keys(L).length;
+  } catch (e) { return null; }
+};
+window.__duo.ledgerDump = function () {
+  try { return localStorage.getItem(this.ledgerKey) || '{}'; } catch (e) { return '{}'; }
+};
+(function () {
+  const base = window.__duo.autoLesson;
+  window.__duo.autoLesson = async function () {
+    const r = await base.call(this);
+    if (r && r.ok) {
+      const m = location.pathname.match(/unit\/(\d+)\/level\/(\d+)/);
+      if (m) this.ledgerNote(m[1], m[2], this.S && this.S.xp);
+    }
+    return r;
+  };
+})();
+;'__duo ready';
+
+// Piecewise graphs draw each branch as its own path, so sample them all and
+// let the caller pick the slanted or the flat one.
+window.__duo.curvePieces = function () {
+  const g = this.grid2D(); if (!g) return null;
+  const d = g.f.contentDocument, fr = g.f.getBoundingClientRect();
+  const out = [];
+  for (const p of d.querySelectorAll('svg path')) {
+    if (!p.getTotalLength || !p.getBBox) continue;
+    const b = p.getBBox(), L = p.getTotalLength();
+    if (b.width < 30 && b.height < 30) continue;
+    const m = p.ownerSVGElement.getScreenCTM(); if (!m) continue;
+    const pts = [];
+    const n = Math.min(120, Math.max(12, Math.round(L / 6)));
+    for (let i = 0; i <= n; i++) {
+      const q = p.getPointAtLength(L * i / n);
+      pts.push(g.toXY(m.a * q.x + m.c * q.y + m.e + fr.left, m.b * q.x + m.d * q.y + m.f + fr.top));
+    }
+    const ys = pts.map(q => q[1]), xs = pts.map(q => q[0]);
+    out.push({ pts, flat: Math.max(...ys) - Math.min(...ys) < 0.2,
+      vertical: Math.max(...xs) - Math.min(...xs) < 0.2,
+      x0: Math.min(...xs), x1: Math.max(...xs) });
+  }
+  return out.length ? out : null;
+};
+
+// "Select the domain for the slanted line": keep the inequality that every
+// sampled point of that branch satisfies.
+(function () {
+  const base = window.__duo.solveChoices;
+  window.__duo.solveChoices = function () {
+    const ins = String(this.curInstruction() || '');
+    const ch = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+    if (/domain|range/i.test(ins) && ch.length) {
+      const pieces = this.curvePieces();
+      if (pieces) {
+        let pick = null;
+        if (/slanted|diagonal/i.test(ins)) pick = pieces.find(p => !p.flat && !p.vertical);
+        else if (/horizontal|flat|constant/i.test(ins)) pick = pieces.find(p => p.flat);
+        if (pick) {
+          const useY = /range/i.test(ins);
+          const vals = pick.pts.map(p => useY ? p[1] : p[0]);
+          const ok = [];
+          ch.forEach((e, i) => {
+            const a = e.querySelector('annotation');
+            const t = (a ? a.textContent : e.innerText).replace(/[−–—]/g, '-')
+              .replace(/\\(mathbf|textbf|text|geq|leq|le|ge)\b/g, m => /geq|ge/.test(m) ? '>=' : /leq|le/.test(m) ? '<=' : '')
+              .replace(/[{}\s]/g, '');
+            const m2 = t.match(/^[a-z](>=|<=|<|>)(-?[\d.]+)$/i);
+            if (!m2) return;
+            const n = parseFloat(m2[2]), op = m2[1];
+            const holds = vals.every(v =>
+              op === '>=' ? v >= n - 0.15 : op === '<=' ? v <= n + 0.15 :
+              op === '>' ? v > n - 0.15 : v < n + 0.15);
+            if (holds) ok.push(i);
+          });
+          if (ok.length === 1) return { want: [String(ok[0])], idx: ok, ok: true, via: 'branchDomain' };
+        }
+      }
+    }
+    return base.call(this);
+  };
+})();
+;'__duo ready';
