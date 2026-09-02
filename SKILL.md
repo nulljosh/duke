@@ -26,25 +26,28 @@ user against real people in their league. Say that once, then respect the answer
 5. End of lesson is 3-4 CONTINUE clicks (`__duo.go()`), then `/lesson` again.
 6. `duo.py <username>` to confirm the XP landed.
 
-Long runs (days): do NOT poll from a Claude session. `scripts/` is an unpacked
-Chrome extension (`manifest.json` + `ext.js`) that re-injects `duo.js` and
-`boot.js` on every full load of `/lesson/unit/N/level/M`. `boot.js` runs the
-lesson loop, moves to the next level, skips a level after 3 failed attempts
-(`duoAuto.skipped`), reloads a page wedged for 12 min, and POSTs `duoAuto` + the
-ledger to `serve.py`, which writes `scripts/state.json`.
+Long runs (days): one injection, no polling. `boot.js` loops in the page and
+changes levels by SPA navigation (bounce through `/learn`, then pushState to the
+lesson URL, which remounts it) so the document and `__duo` never reload. It
+skips a level after 3 failed attempts (`duoAuto.skipped`), gives a lesson 12
+min before moving on, and POSTs `duoAuto` + the ledger after every lesson to
+`serve.py`, which writes `scripts/state.json`.
 
-Start:
-1. `python3 scripts/serve.py &` and `caffeinate -dims &` (the Mac must not sleep).
-2. Once: chrome://extensions -> Developer mode -> Load unpacked -> `scripts/`.
-   After any edit to `duo.js`, click Reload there (Chrome caches the files).
-3. In the lesson tab, one `javascript_tool` call:
-   `localStorage.duoAuto = JSON.stringify({running:true, unit:U, level:L, log:[], skipped:[]}); location.reload()`
-4. Keep that tab in its own window, visible. Hidden tabs get their timers
+Start (from a Claude session, once):
+1. `python3 scripts/serve.py &` and `caffeinate -dims &`.
+2. `navigate` to `/lesson/unit/U/level/L`, then one `javascript_tool` call:
+   ```js
+   localStorage.duoAuto = JSON.stringify({running:true, unit:U, level:L, log:[], skipped:[]});
+   try { delete window.__duo } catch (e) {}
+   for (const f of ['duo.js','boot.js']) (0, eval)(await (await fetch('http://127.0.0.1:8777/'+f, {cache:'no-store'})).text());
+   ```
+3. Keep that tab in its own window, visible. Hidden tabs get their timers
    throttled to once a minute after 5 min and the loop crawls.
 
-Status: `cat scripts/state.json` (unit/level, skipped list, ledger). Zero browser.
-Stop: `localStorage.duoAuto = JSON.stringify({running:false})` in the tab.
-`duoAuto.skipped` is the work list for the next solver session.
+Status: `cat scripts/state.json`. Zero browser. Stop: `__auto.running = false`.
+`duoAuto.skipped` is the work list for the next solver session. A hard reload
+kills the loop: re-run step 2 (or load `scripts/` as an unpacked extension once
+at chrome://extensions and it re-injects itself; that page cannot be automated).
 
 
 ## Dead ends — do not re-litigate mid-lesson

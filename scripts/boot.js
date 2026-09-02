@@ -1,39 +1,49 @@
-// The unattended loop. Runs only while localStorage.duoAuto.running is true.
-// Per page: solve until the lesson is done, then navigate to the next level.
-// Stuck 3x on one level -> skip it (recorded), move on. Wedged page -> reload.
-// After every lesson, POST state to serve.py so progress lives on disk.
+// The unattended loop. One injection lasts for days: levels change by SPA
+// navigation (bounce through /learn, which remounts the lesson) so the document,
+// and __duo, never reload. Stuck 3x on a level -> skip it (duoAuto.skipped).
+// After every lesson, POST state to serve.py -> scripts/state.json.
+// A hard reload kills the loop; the optional scripts/ extension re-injects then.
 (async () => {
-  if (window.__auto) return;                       // already booted on this page
-  const KEY = 'duoAuto';
+  if (window.__auto && __auto.running) return;
+  const KEY = 'duoAuto', sleep = ms => new Promise(r => setTimeout(r, ms));
+  const load = () => JSON.parse(localStorage.getItem(KEY) || 'null');
+  let st = load();
   const m = location.pathname.match(/unit\/(\d+)\/level\/(\d+)/);
-  let st = JSON.parse(localStorage.getItem(KEY) || 'null');
-  if (!st) st = { running: false, unit: +m[1], level: +m[2], log: [], skipped: [] };
+  if (!st) st = { running: true, unit: m ? +m[1] : 1, level: m ? +m[2] : 1, log: [], skipped: [] };
   if (!st.running) return;
-  // A stray tab or a manual URL: trust the address bar, not stale state.
-  if (m && (+m[1] !== st.unit || +m[2] !== st.level)) { st.unit = +m[1]; st.level = +m[2]; st.stuck = 0; }
   const save = () => localStorage.setItem(KEY, JSON.stringify(st));
-  const post = () => fetch('http://127.0.0.1:8777/state', { method: 'POST', mode: 'cors',
-    body: JSON.stringify({ at: new Date().toISOString(), href: location.href, auto: st,
-      ledger: __duo.ledgerDump ? JSON.parse(__duo.ledgerDump()) : {} }) }).catch(() => {});
-  const goto = (u, l) => { st.unit = u; st.level = l; st.stuck = 0; save(); post();
-    location.href = '/lesson/unit/' + u + '/level/' + l; };
-  const next = () => st.level < 4 ? goto(st.unit, st.level + 1) : goto(st.unit + 1, 1);
-  save();
+  const post = () => fetch('http://127.0.0.1:8777/state', { method: 'POST', body: JSON.stringify({
+    at: new Date().toISOString(), href: location.href, auto: st,
+    ledger: __duo.ledgerDump ? JSON.parse(__duo.ledgerDump()) : {} }) }).catch(() => {});
+  const nav = u => { history.pushState({}, '', u); dispatchEvent(new PopStateEvent('popstate')); };
+  const challenge = () => document.querySelector('[data-test^="challenge "]');
+  const open = async (u, l) => {                       // remount the lesson route
+    nav('/learn'); await sleep(3000);
+    nav('/lesson/unit/' + u + '/level/' + l);
+    for (let i = 0; i < 20 && !challenge(); i++) await sleep(1000);
+    return !!challenge();
+  };
   window.__auto = { running: true, out: [], started: Date.now() };
-  const wd = setTimeout(() => { st.log.push('watchdog reload'); save(); location.reload(); }, 12 * 60e3);
-  for (let k = 0; k < 40 && __auto.running; k++) {
-    let r;
-    try { r = await __duo.autoLesson(); } catch (e) { r = { ok: false, done: 0, err: String(e) }; }
-    __auto.out.push(r);
-    st = JSON.parse(localStorage.getItem(KEY));          // autoLesson advanced unit/level
-    if (r.ok) { clearTimeout(wd); post(); location.href = '/lesson/unit/' + st.unit + '/level/' + st.level; return; }
-    if (!r.done) break;                                  // nothing solvable on this page
+  save();
+  if (!challenge()) await open(st.unit, st.level);
+  while (__auto.running && st.running) {
+    const t0 = Date.now(); let r = null;
+    for (let k = 0; k < 40 && __auto.running; k++) {
+      if (Date.now() - t0 > 12 * 60e3) { r = { ok: false, done: 0, err: 'watchdog' }; break; }
+      try { r = await __duo.autoLesson(); } catch (e) { r = { ok: false, done: 0, err: String(e) }; }
+      __auto.out.push(r); if (__auto.out.length > 50) __auto.out.shift();
+      if (r.ok || !r.done) break;
+    }
+    st = load();                                        // autoLesson advanced unit/level or bumped stuck
+    if (!r.ok && (st.stuck || 0) >= 3) {                // ponytail: 3 strikes then skip, revisit by hand
+      const id = 'u' + st.unit + 'l' + st.level;
+      st.skipped = st.skipped || []; if (!st.skipped.includes(id)) st.skipped.push(id);
+      st.log.push('skip ' + id); st.stuck = 0;
+      if (st.level < 4) st.level++; else { st.level = 1; st.unit++; }
+    }
+    if (st.log.length > 200) st.log = st.log.slice(-200);
+    save(); post();
+    if (!(await open(st.unit, st.level))) { st.log.push('open failed'); save(); await sleep(30000); }
   }
-  clearTimeout(wd);
-  if ((st.stuck || 0) >= 3) {                            // ponytail: 3 strikes then skip, revisit by hand
-    const id = 'u' + st.unit + 'l' + st.level;
-    st.skipped = st.skipped || []; if (!st.skipped.includes(id)) st.skipped.push(id);
-    st.log.push('skip ' + id); next(); return;
-  }
-  save(); post(); location.reload();                     // retry the level from the top
+  __auto.running = false;
 })();
