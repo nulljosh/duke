@@ -5145,12 +5145,14 @@ Object.assign(window.__duo, {
 
   async solveMakeLine() {
     const m = this.targetSlope(); if (m === null) return false;
+    // gridPoints() may hand back widget components rather than [x,y] pairs
+    const XY = list => (list || []).map(p => Array.isArray(p) ? p : [p.x, p.y]);
     const want = this.linePair(m); if (!want) return false;
     const g = this.grid2D(); if (!g) return false;
     const px = (x, y) => [Math.round(g.x0 + x * g.ux), Math.round(g.y0 + y * g.uy)];
 
     for (let pass = 0; pass < 5; pass++) {
-      const cur = this.gridPoints(); if (!cur || cur.length < 2) return false;
+      const cur = XY(this.gridPoints()); if (cur.length < 2) return false;
       const dxNow = cur[cur.length - 1][0] - cur[0][0];
       const dyNow = cur[cur.length - 1][1] - cur[0][1];
       if (dxNow && Math.abs(dyNow / dxNow - m) < 1e-9) return true;
@@ -5175,8 +5177,8 @@ Object.assign(window.__duo, {
       }
       if (!moved) break;
     }
-    const cur = this.gridPoints();
-    if (!cur || cur.length < 2) return false;
+    const cur = XY(this.gridPoints());
+    if (cur.length < 2) return false;
     const dx = cur[cur.length - 1][0] - cur[0][0], dy = cur[cur.length - 1][1] - cur[0][1];
     return !!dx && Math.abs(dy / dx - m) < 1e-9;
   },
