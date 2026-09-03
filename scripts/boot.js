@@ -33,6 +33,15 @@
     running: __auto.running, callAge: __auto.call ? Math.round((Date.now() - __auto.call) / 1000) : null,
     last: __auto.out[__auto.out.length - 1] || null, unit: st.unit, level: st.level }) }).catch(() => {});
   setInterval(hb, 60e3); hb();
+  // ponytail: Chrome exempts audible tabs from background timer throttling, so a
+  // near-silent tone keeps the loop at full speed when the window is covered.
+  // If hb.json still shows stalls, relaunch Chrome with --disable-background-timer-throttling.
+  try {
+    const ac = new AudioContext(), o = ac.createOscillator(), g = ac.createGain();
+    g.gain.value = 0.001; o.frequency.value = 40; o.connect(g); g.connect(ac.destination); o.start();
+    const kick = () => ac.state !== 'running' && ac.resume().catch(() => {});
+    kick(); setInterval(kick, 60e3); document.addEventListener('pointerdown', kick, true);
+  } catch (e) {}
   // ponytail: preemptive watchdog. The old check ran between autoLesson calls, so a
   // call that never returned hung the loop forever. Now S.running is cut at 12 min.
   const guarded = () => Promise.race([
