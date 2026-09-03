@@ -1,11 +1,13 @@
 # Roadmap
 
 ## Where the run stopped
-2026-09-03 ~07:10 PDT: stopped by Joshua at unit 378 level 4, XP 199,202 (goal
-was 200K). Overnight run 204 -> 378 with the overhauled solver. Recurring skip:
-one "needdrag" level per unit in the 33x range (drag-a-word fill-in) — not yet
-diagnosed. To resume: navigate to /lesson/unit/378/level/4, inject duo.js +
-boot.js with duoAuto {unit:378, level:4, running:true}.
+2026-09-03 16:50 PDT: MATH COURSE COMPLETE. Final XP 200,337 (crossed 200K at
+~08:30). Units past 411 are empty: every level "completes" with 0 questions and
+0 XP, so boot.js walked 411 -> 538 for seven hours doing nothing. TODO: make
+boot.js stop when a lesson opens with no challenge / 0 done three levels in a
+row. 186 levels skipped over the whole run (drag-a-word type, undiagnosed) —
+those are the remaining Math work if we want it. Next course: Chess (2,248
+levels) or a language; switch via the API, not the web UI.
 
 ## Open
 - [ ] Piecewise construction: place the endpoint from the stated definition
