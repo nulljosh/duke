@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "duolingo-solver",
+  "name": "pwnlingo",
   "version": "1.0",
   "description": "Re-injects duo.js + boot.js on every lesson page load so the loop needs no operator.",
   "permissions": ["scripting", "tabs"],
