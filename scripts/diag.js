@@ -19,3 +19,20 @@
   const r2 = D.run2;
   D.run2 = async function (n) { const r = await r2.call(this, n); const last = D.DIAG[D.DIAG.length - 1]; if (last) last.after = this.S.log.slice(-2); return r; };
 })();
+// screens with no choices and no input: snapshot the buttons once per instruction
+(function () {
+  const D = window.__duo, rd = D.read; let lastIns = null;
+  D.read = function () {
+    const r = rd.call(this);
+    if (r.type && !r.choices.length && !r.input) {
+      let ins = ''; try { ins = D.curInstruction(); } catch (e) {}
+      if (ins !== lastIns) {
+        lastIns = ins;
+        const bs = [...document.querySelectorAll('button')].map(b => ({ dt: b.getAttribute('data-test'), aria: b.getAttribute('aria-label'), txt: b.innerText.replace(/\s+/g, ' ').slice(0, 30), ann: b.querySelector('annotation') && b.querySelector('annotation').textContent, ifr: !!b.querySelector('iframe') })).filter(b => b.dt || b.ann || b.ifr);
+        const b = D.blob();
+        D.DIAG.push({ nochoice: true, ins, latex: r.latex.slice(0, 6), bs, layout: b && b.layout, blobKeys: b && Object.keys(b) });
+      }
+    }
+    return r;
+  };
+})();

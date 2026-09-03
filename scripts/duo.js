@@ -20935,3 +20935,145 @@ window.__duo.curvePieces = function () {
   };
 })();
 ;'__duo ready';
+
+// ---- shirtPantsInteractive: answer the widget without touching it ----
+// The widget iframe (same-origin srcdoc) exposes getOutputVariables(); the
+// grader only ever sees that object. Replace the function, fire the widget's
+// own onFirstInteraction hook (which posts the payload and enables CHECK), and
+// verify with the grader before submitting. No drags, no pixels.
+(function () {
+  const D = window.__duo;
+
+  D.widgetFrame = function () {
+    return [...document.querySelectorAll('iframe')].find(f => {
+      try { return f.contentDocument && typeof f.contentWindow.getOutputVariables === 'function' && f.getBoundingClientRect().height > 0; }
+      catch (e) { return false; }
+    }) || null;
+  };
+
+  D.grader = function () {
+    const b = this.blob(); if (!b || !b.grading_function) return null;
+    try { return new Function('return (' + b.grading_function + ')')(); } catch (e) { return null; }
+  };
+
+  // numbers the feedback names: \mathbf{0.1666}, \frac{1}{6}, (2, -3), "3, 4"
+  D.feedbackNums = function (grade, probe) {
+    let r; try { r = grade(probe); } catch (e) { return []; }
+    const v = (r && r[1] && r[1].value) || (r && r.displayAnswer && r.displayAnswer.value) || '';
+    const m = v.match(/mathbf\{(.*)\}\s*$/) || v.match(/mathbf\{([^}]*)\}/);
+    if (!m) return [];
+    let s = m[1].replace(/\\frac\{(-?[\d.]+)\}\{(-?[\d.]+)\}/g, (_, a, b) => String(+a / +b)).replace(/[−–]/g, '-');
+    const nums = (s.match(/-?\d+(?:\.\d+)?/g) || []).map(Number);
+    return { raw: s, nums };
+  };
+
+  D.interactiveCandidates = function (cur, fb) {
+    const keys = Object.keys(cur || {}); const out = []; const nums = fb.nums || [];
+    const put = o => out.push(o);
+    if (keys.length === 1) {
+      const k = keys[0], c = cur[k];
+      for (const n of nums) put({ [k]: n });
+      if (Array.isArray(c)) { put({ [k]: nums }); put({ [k]: nums.slice(0, c.length) }); }
+      if (typeof c === 'string') { put({ [k]: fb.raw }); for (const n of nums) put({ [k]: String(n) }); }
+      if (c && typeof c === 'object' && !Array.isArray(c)) {
+        const ck = Object.keys(c);
+        if (ck.length === nums.length) put({ [k]: Object.fromEntries(ck.map((kk, i) => [kk, nums[i]])) });
+        if (ck.length === 2 && nums.length === 2) put({ [k]: Object.fromEntries([[ck[0], nums[1]], [ck[1], nums[0]]]) });
+      }
+      return out;
+    }
+    if (keys.length === nums.length) {
+      put(Object.fromEntries(keys.map((k, i) => [k, nums[i]])));
+      if (keys.length === 2) put(Object.fromEntries([[keys[0], nums[1]], [keys[1], nums[0]]]));
+    }
+    // one key changed at a time
+    for (const k of keys) for (const n of nums) put(Object.assign({}, cur, { [k]: n }));
+    return out;
+  };
+
+  // returns the winning payload, or null
+  D.solveInteractive = async function () {
+    const f = this.widgetFrame(); if (!f) return null;
+    const w = f.contentWindow, grade = this.grader(); if (!grade) return null;
+    let cur = {}; try { cur = w.getOutputVariables() || {}; } catch (e) {}
+    const ok = o => { try { const r = grade(o); return Array.isArray(r) ? r[0] === true : !!(r && r.isCorrect); } catch (e) { return false; } };
+    let win = null;
+    if (ok(cur)) win = cur;                       // already correct (e.g. default state)
+    else {
+      const fb = this.feedbackNums(grade, cur);
+      for (const c of this.interactiveCandidates(cur, fb)) if (ok(c)) { win = c; break; }
+      // brute force one numeric key over a small integer / half grid
+      if (!win) {
+        const ks = Object.keys(cur).filter(k => typeof cur[k] === 'number');
+        outer: for (const k of ks) for (let v = -30; v <= 30; v += 0.5) { const c = Object.assign({}, cur, { [k]: v }); if (ok(c)) { win = c; break outer; } }
+      }
+    }
+    if (!win) return null;
+    w.getOutputVariables = () => win;
+    try { (w.duo && w.duo.onFirstInteraction || w.AndroidChallenge && w.AndroidChallenge.firstInteraction)(); } catch (e) {}
+    try { w.duoDynamic && w.duoDynamic.onInteraction && w.duoDynamic.onInteraction(); } catch (e) {}
+    try { w.parent.postMessage({ type: 'outputVariables', payload: win, fromInteraction: true }, 'https://www.duolingo.com'); } catch (e) {}
+    await this.sleep(400);
+    const n0 = document.querySelector('[data-test="player-next"]');
+    return n0 && n0.getAttribute('aria-disabled') !== 'true' ? win : null;
+  };
+
+  // wire into run2: right after the lessondone check, before plan()/choices
+  const src = String(D.run2), mark = "this.S.log.push('lessondone'); break; }";
+  if (src.includes(mark)) {
+    const ins = mark + `
+    { const w3 = await this.solveInteractive();
+      if (w3) { this.S.log.push('widget'); await this.sleep(300);
+        this.tap(document.querySelector('[data-test="player-next"]')); await this.sleep(1400);
+        const b3 = await this.blame(); this.S.log.push(b3 || 'noblame');
+        if (b3 === 'correct') { this.S.done++; miss = 0; }
+        else if (b3 === 'incorrect' && ++miss >= 2) { this.S.log.push('halt:2wrong'); break; }
+        const nx3 = document.querySelector('[data-test="player-next"]');
+        if (nx3 && /CONTINUE/i.test(nx3.innerText)) { this.tap(nx3); await this.sleep(1400); }
+        info = 0; continue; } }`;
+    D.run2 = eval('(' + src.replace(mark, ins) + ')');
+  } else console.warn('[duo] interactive: run2 mark not found');
+})();
+;'__duo ready';
+
+// ---- typeFill: the grader wants {keyboardInput:{value}} ----
+// answer() probes grade(blob) and that throws here, so a heuristic typed "1"
+// for 1/6 + 1/6. Probe with the right shape, read the Correct Answer, prefer a
+// small fraction over a long decimal, and verify with the grader before typing.
+(function () {
+  const D = window.__duo, base = D.typeAnswer;
+  D.asFraction = function (x) {
+    if (Number.isInteger(x)) return String(x);
+    for (let d = 2; d <= 200; d++) { const n = Math.round(x * d); if (Math.abs(n / d - x) < 1e-9) return n + '/' + d; }
+    return String(x);
+  };
+  D.solveTypeFill = function () {
+    const b = this.blob(); if (!b || b.layout !== 'typeFill' || !b.grading_function) return null;
+    const grade = this.grader(); if (!grade) return null;
+    const probe = v => { try { return grade({ keyboardInput: { value: v } }); } catch (e) { return null; } };
+    const r0 = probe(''); const v = (r0 && r0[1] && r0[1].value) || '';
+    const m = v.match(/mathbf\{([^}]*)\}/); if (!m) return null;
+    let s = m[1].replace(/\\frac\{(-?[\d.]+)\}\{(-?[\d.]+)\}/g, (_, a, c) => String(+a / +c)).replace(/[−–]/g, '-').replace(/\s/g, '');
+    const cands = [];
+    const n = parseFloat(s); if (isFinite(n)) { cands.push(this.asFraction(n), String(n), s); } else cands.push(s);
+    for (const c of cands) { const r = probe(c); if (r && r[0] === true) return c; }
+    return null;
+  };
+  D.typeAnswer = function () {
+    const v = this.solveTypeFill();
+    if (v !== null) { this.type(v); return v; }
+    return base.call(this);
+  };
+})();
+;'__duo ready';
+
+// grading_function is sometimes SEVERAL declarations (parseTypeFillInput,
+// parseNumber, grade) — not one expression. Load either shape.
+window.__duo.grader = function () {
+  const b = this.blob(); if (!b || !b.grading_function) return null;
+  const s = b.grading_function;
+  try { const f = new Function('return (' + s + ')')(); if (typeof f === 'function') return f; } catch (e) {}
+  try { const f = new Function(s + '\n;return typeof grade === "function" ? grade : null;')(); if (typeof f === 'function') return f; } catch (e) {}
+  return null;
+};
+;'__duo ready';
