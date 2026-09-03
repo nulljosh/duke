@@ -1,10 +1,11 @@
 # Roadmap
 
 ## Where the run stopped
-2026-09-02 night: solver overhaul, loop restarted from unit 204.2 with
-skipped=[] and 10/10 lessons passing. Left running unattended for 1-2 weeks.
-Check scripts/state.json. Solvers are all grader-verified now; if a new class
-fails, load scripts/diag.js after duo.js and read `__duo.DIAG`.
+2026-09-03 ~07:10 PDT: stopped by Joshua at unit 378 level 4, XP 199,202 (goal
+was 200K). Overnight run 204 -> 378 with the overhauled solver. Recurring skip:
+one "needdrag" level per unit in the 33x range (drag-a-word fill-in) — not yet
+diagnosed. To resume: navigate to /lesson/unit/378/level/4, inject duo.js +
+boot.js with duoAuto {unit:378, level:4, running:true}.
 
 ## Open
 - [ ] Piecewise construction: place the endpoint from the stated definition
