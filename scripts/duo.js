@@ -21115,3 +21115,84 @@ window.__duo.grader = function () {
   };
 })();
 ;'__duo ready';
+
+// ---- multiStep (guided) lessons ----
+// The top blob is layout:"multiStep"; each step carries its own grading_function
+// and challengeState.guess.currentStepIndex says which one is live. Every
+// grader probe must use the STEP blob. selectAll/selectOne graders take
+// {button_N:{selected}} — enumerate subsets, keep the one grade() accepts.
+(function () {
+  const D = window.__duo;
+  D.challengeState = function () {
+    const el = document.querySelector('[data-test^="challenge "]'); if (!el) return null;
+    let f = el[Object.keys(el).find(k => k.startsWith('__reactFiber$'))], d = 0;
+    while (f && d++ < 12) { if (f.memoizedProps && f.memoizedProps.challengeState) return f.memoizedProps.challengeState; f = f.return; }
+    return null;
+  };
+  D.curBlob = function () {
+    const b = this.blob(); if (!b) return null;
+    if (b.layout !== 'multiStep' || !Array.isArray(b.steps)) return b;
+    const cs = this.challengeState(); const i = cs && cs.guess ? cs.guess.currentStepIndex : null;
+    if (i === null || i === undefined || !b.steps[i]) return b;
+    return b.steps[i].blob || b;
+  };
+  const loadGrader = s => {
+    try { const f = new Function('return (' + s + ')')(); if (typeof f === 'function') return f; } catch (e) {}
+    try { const f = new Function(s + '\n;return typeof grade === "function" ? grade : null;')(); if (typeof f === 'function') return f; } catch (e) {}
+    return null;
+  };
+  D.grader = function () { const b = this.curBlob(); return b && b.grading_function ? loadGrader(b.grading_function) : null; };
+
+  D.solveTypeFill = function () {
+    const b = this.curBlob(); if (!b || b.layout !== 'typeFill' || !b.grading_function) return null;
+    const grade = this.grader(); if (!grade) return null;
+    const probe = v => { try { return grade({ keyboardInput: { value: v } }); } catch (e) { return null; } };
+    const r0 = probe(''); const v = (r0 && r0[1] && r0[1].value) || '';
+    const m = v.match(/mathbf\{([^}]*)\}/); const cands = [];
+    if (m) { const s = m[1].replace(/\\frac\{(-?[\d.]+)\}\{(-?[\d.]+)\}/g, (_, a, c) => String(+a / +c)).replace(/[−–]/g, '-').replace(/\s/g, '');
+      const n = parseFloat(s); if (isFinite(n)) cands.push(this.asFraction(n), String(n)); cands.push(s); }
+    const sh = b.shirt && b.shirt.value && b.shirt.value.match(/duoblank\{([^}]*)\}/); if (sh) cands.push(sh[1].trim());
+    for (const c of cands) { const r = probe(c); if (r && r[0] === true) return c; }
+    return null;
+  };
+
+  D.solveSelect = function () {
+    const b = this.curBlob(); if (!b || !/^select(All|One)$/.test(b.layout || '') || !Array.isArray(b.pants)) return null;
+    const grade = this.grader(); if (!grade) return null;
+    const btns = b.pants.filter(p => p && p.type === 'button' && p.id); if (!btns.length || btns.length > 8) return null;
+    const ok = sel => { try { const r = grade(Object.fromEntries(btns.map(p => [p.id, { selected: sel.includes(p.id) }]))); return Array.isArray(r) ? r[0] === true : !!(r && r.isCorrect); } catch (e) { return false; } };
+    let win = null;
+    for (let mask = 1; mask < (1 << btns.length) && !win; mask++) {
+      const sel = btns.filter((_, i) => mask & (1 << i)).map(p => p.id);
+      if (b.layout === 'selectOne' && sel.length !== 1) continue;
+      if (ok(sel)) win = sel;
+    }
+    if (!win) return null;
+    const c = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+    const keys = c.map(e => { const a = e.querySelector('annotation'); return this.texKey(a ? a.textContent : e.innerText); });
+    const idx = [];
+    for (const id of win) { const p = btns.find(p => p.id === id); const k = this.texKey((p.child && (p.child.value || p.child.text)) || '');
+      const i = keys.indexOf(k); if (i < 0) return null; idx.push(i); }
+    return { want: win, idx, ok: true, via: 'gradeSubset' };
+  };
+
+  const sc = D.solveChoices;
+  D.solveChoices = function () { let r = null; try { r = this.solveSelect(); } catch (e) {} return r || sc.call(this); };
+})();
+;'__duo ready';
+
+// choices are toggles: after a wrong try some are still aria-checked, and a
+// tap on one of those UNselects it. Return the set to flip, not the set wanted.
+(function () {
+  const D = window.__duo, sc = D.solveChoices;
+  D.solveChoices = function () {
+    const r = sc.call(this); if (!r || !r.ok || !Array.isArray(r.idx)) return r;
+    const c = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+    const on = c.map((e, i) => e.getAttribute('aria-checked') === 'true' ? i : -1).filter(i => i >= 0);
+    if (!on.length) return r;
+    const want = new Set(r.idx);
+    r.idx = c.map((_, i) => i).filter(i => want.has(i) !== on.includes(i));
+    return r;
+  };
+})();
+;'__duo ready';
