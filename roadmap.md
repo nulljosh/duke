@@ -1,37 +1,10 @@
 # Roadmap
 
 ## Where the run stopped
-Loop restarted 2026-09-02 at unit 209 level 4 after the previous tab died. Units
-202-209 are mostly SKIPPED (23 of 32 levels): see `skipped` in scripts/state.json.
-
-Diagnosed 2026-09-02 (scripts/diag.js records per-question prompt / grader /
-pick / verdict; load it after duo.js and read `__duo.DIAG`):
-- Grader answers with a comma inside brackets (`[-3,4]`) were split into two
-  strings and a distractor got picked. FIXED: interval-safe `answer()` plus a
-  grader-first `solveChoices` wrapper at the end of duo.js.
-- "Create the piecewise function" (u202l3) is a `shirtPantsInteractive` blob.
-  The widget's HTML is IN the blob (`blob.pants.html`) with `INPUT_VARIABLES`
-  and `getOutputVariables()` (here `final_c` = a plain global `currentC` in the
-  iframe window). Next step: set that global from the definition instead of
-  dragging, then CHECK. `mathDiagram.components` was EMPTY on the frame
-  `frameEl()` chose, so pick the iframe whose window has `getOutputVariables`.
-- The rest of the 2wrong halts were not yet sampled; run diag.js on each
-  skipped level and fix by class.
-
-## Stalls (2026-09-02)
-Run goes 30-45 min, dies for 20-30 min, resumes with no one touching it. Two
-candidates, neither visible from state.json because it only posted per lesson:
-- Chrome throttles a hidden/occluded tab's timers to once a minute after 5 min.
-  A window covered by other windows counts as hidden on macOS. Day one nobody
-  was at the Mac, so the tab stayed visible for 10 h.
-- The 12-min watchdog was only checked between autoLesson calls; a call that
-  never returned hung the loop until something else nudged the page.
-boot.js now posts a heartbeat every minute to scripts/hb.json (visibility,
-seconds inside the current autoLesson call, last result) and cuts S.running at
-12 min. Takes effect on the next reload/re-inject. Read hb.json after the next
-stall: `visible: hidden` = throttling, `callAge` climbing = a hung solver.
-Throttling fix that needs no code: chrome://flags/#intensive-wake-up-throttling
--> Disabled, relaunch.
+2026-09-02 night: solver overhaul, loop restarted from unit 204.2 with
+skipped=[] and 10/10 lessons passing. Left running unattended for 1-2 weeks.
+Check scripts/state.json. Solvers are all grader-verified now; if a new class
+fails, load scripts/diag.js after duo.js and read `__duo.DIAG`.
 
 ## Open
 - [ ] Piecewise construction: place the endpoint from the stated definition
