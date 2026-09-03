@@ -21196,3 +21196,75 @@ window.__duo.grader = function () {
   };
 })();
 ;'__duo ready';
+
+// Graders return EITHER [ok, {value}] OR {isCorrect, feedback:{value}, displayAnswer:{value}}.
+// One reader for both, and the typed/choice probes use it.
+(function () {
+  const D = window.__duo;
+  D.gOk = r => Array.isArray(r) ? r[0] === true : !!(r && r.isCorrect === true);
+  D.gText = r => {
+    if (!r) return '';
+    if (Array.isArray(r)) return (r[1] && (r[1].value || r[1])) ? String(r[1].value || r[1]) : '';
+    return String((r.displayAnswer && r.displayAnswer.value) || (r.feedback && r.feedback.value) || '');
+  };
+  D.gAnswer = function (r) {
+    const v = this.gText(r); if (!v) return null;
+    const i = v.indexOf('mathbf{');
+    if (i >= 0) { let d = 0, j = i + 6; for (; j < v.length; j++) { if (v[j] === '{') d++; else if (v[j] === '}' && --d === 0) break; } return v.slice(i + 7, j); }
+    const m = v.match(/Correct Answer:\s*\}?\s*(.+)$/); return m ? m[1].trim() : v.trim();
+  };
+  D.graderText = function () {
+    const grade = this.grader(); if (!grade) return null;
+    let r = null; for (const p of [this.curBlob(), { keyboardInput: { value: '' } }, {}]) { try { r = grade(p); if (r) break; } catch (e) {} }
+    return r ? this.gAnswer(r) : null;
+  };
+  D.solveTypeFill = function () {
+    const b = this.curBlob(); if (!b || !b.grading_function) return null;
+    if (!(b.layout === 'typeFill' || (b.pants && b.pants.type === 'keyboard'))) return null;
+    const grade = this.grader(); if (!grade) return null;
+    const probe = v => { try { return grade({ keyboardInput: { value: v } }); } catch (e) { return null; } };
+    const a = this.gAnswer(probe('')); const cands = [];
+    if (a !== null) { const s = a.replace(/\\frac\{(-?[\d.]+)\}\{(-?[\d.]+)\}/g, (_, x, y) => String(+x / +y)).replace(/[−–]/g, '-').replace(/\\[a-zA-Z]+|[{}\s]/g, '');
+      const n = parseFloat(s); if (isFinite(n)) cands.push(this.asFraction(n), String(n)); cands.push(s); }
+    const sh = b.shirt && b.shirt.value && b.shirt.value.match(/duoblank\{([^}]*)\}/); if (sh) cands.push(sh[1].trim());
+    for (const c of cands) if (this.gOk(probe(c))) return c;
+    return null;
+  };
+})();
+;'__duo ready';
+
+// ---- interactive widgets whose output has null slots (table fills) ----
+// {updated_rows:[[2,null],[4,null]]}: fill the nulls, in order, from the numbers
+// after "=" in the display answer, then from all its numbers, then from
+// permutations of the widget's token bank. The grader verifies every candidate.
+(function () {
+  const D = window.__duo;
+  D.feedbackNums = function (grade, probe) {
+    let r; try { r = grade(probe); } catch (e) { return { raw: '', nums: [], eq: [] }; }
+    const v = this.gText(r);
+    const s = v.replace(/\\frac\{(-?[\d.]+)\}\{(-?[\d.]+)\}/g, (_, a, b) => String(+a / +b)).replace(/[−–]/g, '-').replace(/\\[a-zA-Z]+/g, ' ');
+    return { raw: s, nums: (s.match(/-?\d+(?:\.\d+)?/g) || []).map(Number),
+      eq: [...s.matchAll(/=\s*(-?\d+(?:\.\d+)?)/g)].map(m => +m[1]) };
+  };
+  D.inputVars = function () {
+    const b = this.curBlob(); const h = b && b.pants && b.pants.html; if (!h) return null;
+    const m = h.match(/INPUT_VARIABLES\s*=\s*(\{[\s\S]*?\});/); if (!m) return null;
+    try { return JSON.parse(m[1]); } catch (e) { return null; }
+  };
+  const nullPaths = (o, p, out) => { if (Array.isArray(o)) o.forEach((v, i) => v === null ? out.push(p.concat(i)) : nullPaths(v, p.concat(i), out));
+    else if (o && typeof o === 'object') for (const k in o) o[k] === null ? out.push(p.concat(k)) : nullPaths(o[k], p.concat(k), out); return out; };
+  const fill = (cur, paths, vals) => { const c = JSON.parse(JSON.stringify(cur)); paths.forEach((p, i) => { let o = c; for (let j = 0; j < p.length - 1; j++) o = o[p[j]]; o[p[p.length - 1]] = vals[i]; }); return c; };
+  const perms = (arr, k) => { const out = []; const go = (pre, rest) => { if (pre.length === k) { out.push(pre); return; } rest.forEach((v, i) => go(pre.concat(v), rest.slice(0, i).concat(rest.slice(i + 1)))); }; go([], arr); return out; };
+  const base = D.interactiveCandidates;
+  D.interactiveCandidates = function (cur, fb) {
+    const out = base.call(this, cur, fb) || [];
+    const paths = nullPaths(cur, [], []); if (!paths.length) return out;
+    const n = paths.length;
+    if (fb.eq && fb.eq.length >= n) out.push(fill(cur, paths, fb.eq.slice(0, n)));
+    if (fb.nums && fb.nums.length >= n) { out.push(fill(cur, paths, fb.nums.slice(0, n))); out.push(fill(cur, paths, fb.nums.slice(-n))); }
+    const iv = this.inputVars(); const toks = iv && Array.isArray(iv.tokens) ? iv.tokens.filter(t => typeof t === 'number') : [];
+    if (toks.length && toks.length <= 8 && n <= toks.length) for (const p of perms(toks, n)) out.push(fill(cur, paths, p));
+    return out;
+  };
+})();
+;'__duo ready';
