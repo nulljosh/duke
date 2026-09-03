@@ -18,6 +18,21 @@ pick / verdict; load it after duo.js and read `__duo.DIAG`):
 - The rest of the 2wrong halts were not yet sampled; run diag.js on each
   skipped level and fix by class.
 
+## Stalls (2026-09-02)
+Run goes 30-45 min, dies for 20-30 min, resumes with no one touching it. Two
+candidates, neither visible from state.json because it only posted per lesson:
+- Chrome throttles a hidden/occluded tab's timers to once a minute after 5 min.
+  A window covered by other windows counts as hidden on macOS. Day one nobody
+  was at the Mac, so the tab stayed visible for 10 h.
+- The 12-min watchdog was only checked between autoLesson calls; a call that
+  never returned hung the loop until something else nudged the page.
+boot.js now posts a heartbeat every minute to scripts/hb.json (visibility,
+seconds inside the current autoLesson call, last result) and cuts S.running at
+12 min. Takes effect on the next reload/re-inject. Read hb.json after the next
+stall: `visible: hidden` = throttling, `callAge` climbing = a hung solver.
+Throttling fix that needs no code: chrome://flags/#intensive-wake-up-throttling
+-> Disabled, relaunch.
+
 ## Open
 - [ ] Piecewise construction: place the endpoint from the stated definition
 - [ ] Revisit known-bad levels: 150 L4, 153 L4, 160 L3, 148 L3
