@@ -21077,3 +21077,41 @@ window.__duo.grader = function () {
   return null;
 };
 ;'__duo ready';
+
+// graderFirst v2: brace-balanced \mathbf{...} (the old regex died on \{1,\,2\}),
+// strip every LaTeX command on BOTH sides, compare whole before splitting.
+(function () {
+  const D = window.__duo, sc = D.solveChoices;
+  D.graderText = function () {
+    const grade = this.grader(); if (!grade) return null;
+    let r; try { r = grade(this.blob()); } catch (e) { try { r = grade({ keyboardInput: { value: '' } }); } catch (e2) { return null; } }
+    const v = (r && r[1] && r[1].value) || (r && r.displayAnswer && r.displayAnswer.value) || '';
+    const i = v.indexOf('mathbf{'); if (i < 0) return null;
+    let d = 0, j = i + 6;
+    for (; j < v.length; j++) { if (v[j] === '{') d++; else if (v[j] === '}' && --d === 0) break; }
+    return v.slice(i + 7, j);
+  };
+  D.texKey = function (s) {
+    return this.norm(this.ascii(String(s)).replace(/\\[,;!: ]/g, '').replace(/\\(mathbf|textbf|text|mathrm|left|right)\b/g, '')
+      .replace(/\\([{}])/g, '$1').replace(/\\[a-zA-Z]+/g, m => m.slice(1)).replace(/[{}\s]/g, '').replace(/[−–]/g, '-'));
+  };
+  D.solveChoices = function () {
+    try {
+      const a = this.graderText();
+      if (a !== null) {
+        const c = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+        const keys = c.map(e => { const an = e.querySelector('annotation'); return this.texKey(an ? an.textContent : e.innerText); });
+        const whole = this.texKey(a);
+        let idx = keys.map((k, i) => k === whole ? i : -1).filter(i => i >= 0);
+        if (idx.length === 1) return { want: [whole], idx, ok: true, via: 'graderFirst' };
+        if (!/[\[\]{}()]/.test(a)) {
+          const parts = a.split(',').map(x => this.texKey(x)).filter(Boolean);
+          idx = keys.map((k, i) => parts.includes(k) ? i : -1).filter(i => i >= 0);
+          if (parts.length && idx.length === parts.length) return { want: parts, idx, ok: true, via: 'graderFirst' };
+        }
+      }
+    } catch (e) {}
+    return sc.call(this);
+  };
+})();
+;'__duo ready';
