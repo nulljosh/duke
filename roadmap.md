@@ -10,7 +10,6 @@ fails, load scripts/diag.js after duo.js and read `__duo.DIAG`.
 - [ ] Piecewise construction: place the endpoint from the stated definition
 - [ ] Revisit known-bad levels: 150 L4, 153 L4, 160 L3, 148 L3
 - [ ] Dot plots and spinner wedges still need real OS mouse input
-- [x] Ledger exported: boot.js POSTs it to serve.py -> scripts/state.json (2026-09-02)
 - [ ] Math runs to unit 411; ~200 units remain
 
 ## How to run it cheaply
