@@ -1,13 +1,11 @@
 # Roadmap
 
 ## Where the run stopped
-2026-09-03 16:50 PDT: MATH COURSE COMPLETE. Final XP 200,337 (crossed 200K at
-~08:30). Units past 411 are empty: every level "completes" with 0 questions and
-0 XP, so boot.js walked 411 -> 538 for seven hours doing nothing. TODO: make
-boot.js stop when a lesson opens with no challenge / 0 done three levels in a
-row. 186 levels skipped over the whole run (drag-a-word type, undiagnosed) —
-those are the remaining Math work if we want it. Next course: Chess (2,248
-levels) or a language; switch via the API, not the web UI.
+2026-09-03 17:10 PDT: stopped for the day at unit 228 level 4, XP 200,462, in
+queue mode with 175 of the 186 skipped Math levels still queued (see
+scripts/queue.json and `duoAuto.queue` in state.json). Math course itself is
+COMPLETE (units past 411 are empty). Resume: load the remaining queue into
+duoAuto with running:true and inject duo.js + boot.js.
 
 ## Open
 - [ ] Piecewise construction: place the endpoint from the stated definition
