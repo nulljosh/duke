@@ -13,6 +13,8 @@
   </g>
   <!-- beak, drooping -->
   <path d="M28 38 L36 38 L32 44 Z" fill="#F49000"/>
+  <!-- tongue out -->
+  <path d="M31 44 q1 5 4 5.5 q-2.5 2 -5.5 0.5 Z" fill="#FF5C7A"/>
   <!-- stars circling -->
   <g fill="#FFC800">
     <path d="M12 14l1.4 3 3.2.4-2.4 2.2.7 3.2L12 21.2 9.1 22.8l.7-3.2-2.4-2.2 3.2-.4z"/>

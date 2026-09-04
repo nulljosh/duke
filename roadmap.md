@@ -31,6 +31,9 @@ duoAuto with running:true and inject duo.js + boot.js.
 - [ ] No wrong-move/failure recovery beyond counting errors in chess-state.json.
 - [ ] Broaden language-learning support generally (more Duolingo courses beyond
   Math) — keep the existing Math autopilot as-is.
+- [ ] duo.js is 21,270 lines — audit for dead solver paths / consolidation, does it need to be this big
+- [ ] Refresh app icon — custom, tongue-out mascot
+- [ ] Keep the stars/x-eyes touch on the current icon, it's good
 
 ## How to run it cheaply
 Unattended now: the scripts/ extension re-injects on every page load, so no
