@@ -13,6 +13,14 @@ duoAuto with running:true and inject duo.js + boot.js.
 - [ ] Dot plots and spinner wedges still need real OS mouse input
 - [ ] Math runs to unit 411; ~200 units remain
 
+## Braindump 2026-09-04
+- [ ] Add chess as a second autopilot target (chess.com/lichess puzzles), reusing an
+  open-source chess engine (e.g. stockfish.js/wasm) as the solver instead of a
+  hand-written one like duo.js — same inject-script-into-page architecture, new
+  site + new solver swapped in. Needs a scope decision: separate repo (chesslingo?)
+  vs. a second solver family inside this one. Also broaden language-learning support
+  generally (more Duolingo courses beyond Math) — keep the existing autopilot as-is.
+
 ## How to run it cheaply
 Unattended now: the scripts/ extension re-injects on every page load, so no
 session polls at all (2026-09-02). Check scripts/state.json instead.
