@@ -11,28 +11,27 @@
 // before (page-init-data / a bare <script type="application/json"> next to
 // #training). findSolution() below scans every script tag for a `solution`
 // array instead of hardcoding one id, so a markup tweak doesn't break this.
-// Untested against a live tab — first run may need a selector fix in
-// findSolution() or squareCenter()'s DOM assumptions about cg-board/chessground.
-(function () {
-  function findSolution() {
-    for (const s of document.querySelectorAll('script')) {
-      const t = s.textContent;
-      if (!t || !t.includes('"solution"')) continue;
-      try {
-        const m = t.match(/\{[\s\S]*\}/);
-        const data = JSON.parse(m[0]);
-        const p = data.puzzle || (data.game && data) || data;
-        if (p && p.puzzle && Array.isArray(p.puzzle.solution)) return { fen: p.puzzle.fen || (p.game && p.game.fen), sol: p.puzzle.solution };
-        if (p && Array.isArray(p.solution)) return { fen: p.fen, sol: p.solution };
-      } catch (e) { /* not the right script tag */ }
-    }
+// Untested against a live tab — first run may need a selector fix here or in
+// squareCenter()'s DOM assumptions about cg-board/chessground.
+(function (root) {
+  function extractSolution(text) {
+    if (!text || !text.includes('"solution"')) return null;
+    const m = text.match(/\{[\s\S]*\}/);
+    if (!m) return null;
+    let data;
+    try { data = JSON.parse(m[0]); } catch (e) { return null; }
+    const p = data.puzzle || (data.game && data) || data;
+    if (p && p.puzzle && Array.isArray(p.puzzle.solution)) return { fen: p.puzzle.fen || (p.game && p.game.fen), sol: p.puzzle.solution };
+    if (p && Array.isArray(p.solution)) return { fen: p.fen, sol: p.solution };
     return null;
   }
 
-  function board() { return document.querySelector('cg-board'); }
-  function orientationWhite() {
-    const wrap = document.querySelector('.cg-wrap');
-    return !wrap || wrap.classList.contains('orientation-white');
+  function findSolution(doc) {
+    for (const s of doc.querySelectorAll('script')) {
+      const found = extractSolution(s.textContent);
+      if (found) return found;
+    }
+    return null;
   }
 
   function squareCenter(square, rect, white) {
@@ -44,17 +43,31 @@
     return { x: rect.left + size * (col + 0.5), y: rect.top + size * (row + 0.5) };
   }
 
+  // Node test hook only — nothing below this line touches document/window at load time.
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { extractSolution, squareCenter };
+    return;
+  }
+
+  function board() { return document.querySelector('cg-board'); }
+  // ponytail: no wrap = we can't trust which side we're playing, so fail loudly
+  // instead of silently guessing white (that gap misplayed every black puzzle).
+  function orientationWhite() {
+    const wrap = document.querySelector('.cg-wrap');
+    if (!wrap) return null;
+    return wrap.classList.contains('orientation-white');
+  }
+
   function fire(type, x, y, target) {
     (target || document).dispatchEvent(new MouseEvent(type, {
       bubbles: true, cancelable: true, view: window, clientX: x, clientY: y, button: 0,
     }));
   }
 
-  async function playMove(uci) {
+  async function playMove(uci, white) {
     const b = board();
     if (!b) return false;
     const rect = b.getBoundingClientRect();
-    const white = orientationWhite();
     const from = squareCenter(uci.slice(0, 2), rect, white);
     const to = squareCenter(uci.slice(2, 4), rect, white);
     fire('mousedown', from.x, from.y, b);
@@ -75,13 +88,15 @@
   // The board only shows OUR side to move; the opponent's reply in the solution
   // list plays itself out via the site's own animation. So we only click every
   // other entry, waiting between our moves for that reply to land.
-  window.__chessSolve = async function () {
-    const found = findSolution();
+  root.__chessSolve = async function () {
+    const found = findSolution(document);
     if (!found) return { ok: false, err: 'no solution JSON found on page' };
+    const white = orientationWhite();
+    if (white === null) return { ok: false, err: 'no .cg-wrap — cannot tell board orientation' };
     for (let i = 0; i < found.sol.length; i += 2) {
-      await playMove(found.sol[i]);
+      await playMove(found.sol[i], white);
       await new Promise(r => setTimeout(r, 900)); // let the opponent reply animate
     }
     return { ok: true, moves: found.sol.length };
   };
-})();
+})(typeof window !== 'undefined' ? window : this);
