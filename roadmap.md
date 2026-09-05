@@ -14,12 +14,15 @@ duoAuto with running:true and inject duo.js + boot.js.
 - [ ] Math runs to unit 411; ~200 units remain
 
 ## Braindump 2026-09-04
-- [ ] Add chess as a second autopilot target (chess.com/lichess puzzles), reusing an
-  open-source chess engine (e.g. stockfish.js/wasm) as the solver instead of a
-  hand-written one like duo.js — same inject-script-into-page architecture, new
-  site + new solver swapped in. Needs a scope decision: separate repo (chesslingo?)
-  vs. a second solver family inside this one. Also broaden language-learning support
-  generally (more Duolingo courses beyond Math) — keep the existing autopilot as-is.
+- [x] Chess autopilot v0 shipped: scripts/chess.js + chessBoot.js solve
+  lichess.org/training puzzles. No engine needed — lichess ships the puzzle
+  solution to the client up front, so the solver just replays it via chessground
+  mouse events. **Untested against a live tab** — first run will likely need a
+  selector fix in findSolution() (the JSON script-tag shape) or squareCenter()
+  (chessground DOM). Verify live, then wire chessBoot.js into scripts/ext.js the
+  same way duo.js is auto-injected.
+- [ ] Broaden language-learning support generally (more Duolingo courses beyond
+  Math) — keep the existing Math autopilot as-is.
 
 ## How to run it cheaply
 Unattended now: the scripts/ extension re-injects on every page load, so no
