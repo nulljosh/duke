@@ -8,7 +8,6 @@ COMPLETE (units past 411 are empty). Resume: load the remaining queue into
 duoAuto with running:true and inject duo.js + boot.js.
 
 ## Open
-- [ ] Language solver live verification (written 2026-09-08, not yet tested on real courses)
 - [ ] Broader language course support beyond Math (Spanish/French/German autopilot)
 - [ ] Piecewise construction: place the endpoint from the stated definition
 - [ ] Revisit known-bad levels: 150 L4, 153 L4, 160 L3, 148 L3
@@ -16,15 +15,10 @@ duoAuto with running:true and inject duo.js + boot.js.
 - [ ] Math runs to unit 411; ~200 units remain
 
 ## Braindump 2026-09-04
-- [ ] **Still untested against a live tab.** First run will likely need a
-  selector fix in findSolution() (the JSON script-tag shape lichess embeds the
-  solution in) — that part can only be confirmed by opening a real puzzle.
 - [ ] No wrong-move/failure recovery beyond counting errors in chess-state.json.
 - [ ] Broaden language-learning support generally (more Duolingo courses beyond
   Math) — keep the existing Math autopilot as-is.
 - [ ] duo.js is 21,270 lines — audit for dead solver paths / consolidation, does it need to be this big
-- [ ] Refresh app icon — custom, tongue-out mascot
-- [ ] Keep the stars/x-eyes touch on the current icon, it's good
 
 ## How to run it cheaply
 Unattended now: the scripts/ extension re-injects on every page load, so no
