@@ -21521,6 +21521,16 @@ window.__duo.grader = function () {
     if (e && typeof e.correctAnswerIndex === 'number' && choices[e.correctAnswerIndex]) {
       const el = choices[e.correctAnswerIndex]; if (el.getAttribute('aria-disabled') !== 'true') { el.click(); await this.sleep(700); return 'story:' + e.type; }
     }
+    if (e && e.type === 'ARRANGE' && Array.isArray(e.phraseOrder)) {   // tap tiles in phraseOrder
+      const txt = b => ((b.querySelector('[data-test="challenge-tap-token-text"]') || b).innerText || '').trim().toLowerCase();
+      for (const i of e.phraseOrder) {
+        const w = String(e.selectablePhrases[i] || '').toLowerCase();
+        const b = choices.find(b => txt(b) === w && b.getAttribute('aria-disabled') !== 'true' && !b.disabled);
+        if (!b) return null;
+        b.click(); await this.sleep(350);
+      }
+      return 'story:ARRANGE';
+    }
     if (e && e.type === 'MATCH' && Array.isArray(e.matches)) {     // pairs: click phrase then translation
       const txt = b => ((b.querySelector('[data-test="challenge-tap-token-text"]') || b).innerText || '').trim().toLowerCase();
       const live = () => choices.filter(b => b.getAttribute('aria-disabled') !== 'true' && !b.disabled);
