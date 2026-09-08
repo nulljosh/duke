@@ -22,7 +22,7 @@ window.__duo = {
       prompt: (document.querySelector('[data-test="challenge-header"]') || {}).innerText,
       choices: [...document.querySelectorAll('[data-test="challenge-choice"]')]
         .map((e, i) => [i, e.innerText.replace(/\n/g, ''), e.getAttribute('aria-checked')]),
-      pairs: [...document.querySelectorAll('[data-test$="challenge-tap-token"]')]
+      pairs: [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')]
         .map((e, i) => [i, e.innerText.replace(/\n/g, ' ')]),
       tokens: [...d.querySelectorAll('.token-bank .token')].map((e, i) => [i, e.textContent.trim()]),
       slots: [...d.querySelectorAll('.token-slot')].map(e => e.textContent.trim()),
@@ -40,7 +40,7 @@ window.__duo = {
   },
 
   async pair(...idx) {  // match-the-pairs: click left, then its right partner
-    const t = [...document.querySelectorAll('[data-test$="challenge-tap-token"]')];
+    const t = [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')];
     for (const i of idx) { t[i].click(); await this.sleep(250); }
   },
 
@@ -3125,7 +3125,7 @@ Object.assign(window.__duo, {
   },
 
   async solvePairs() {
-    const tok = [...document.querySelectorAll('[data-test$="challenge-tap-token"]')];
+    const tok = [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')];
     if (tok.length < 4) return null;
     const vals = tok.map(e => this.tokenExp(e));
     const used = new Set(); let n = 0;
@@ -3170,7 +3170,7 @@ Object.assign(window.__duo, {
   },
 
   async solvePairs() {
-    const tok = [...document.querySelectorAll('[data-test$="challenge-tap-token"]')];
+    const tok = [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')];
     if (tok.length < 4) return null;
     const vals = tok.map(e => this.tokenExp(e));
     const used = new Set(); let n = 0;
@@ -3188,7 +3188,7 @@ Object.assign(window.__duo, {
   async runPairs(n) {
     this.S = { running: true, log: [], done: 0 };
     for (let i = 0; i < n && this.S.running; i++) {
-      const tok = [...document.querySelectorAll('[data-test$="challenge-tap-token"]')];
+      const tok = [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')];
       if (tok.length >= 4) { const p = await this.solvePairs();
         this.S.log.push('p' + (p ? p.pairs : 0)); this.S.done++; await this.sleep(650); continue; }
       const r = this.read();
@@ -3406,7 +3406,7 @@ window.__duo.run2 = async function (n) {
     if (!r.choices.length && !r.input) { await this.sleep(900); r = this.read(); }
 
     let acted = false;
-    if (document.querySelectorAll('[data-test$="challenge-tap-token"]').length >= 4 && !r.choices.length) {
+    if (document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])').length >= 4 && !r.choices.length) {
       const p = await this.solvePairs();
       if (p && p.pairs) {
         this.S.log.push('p' + p.pairs); this.S.done++; await this.sleep(1200);
@@ -3987,7 +3987,7 @@ Object.assign(window.__duo, {
   // pairs of "ax OP b" against their solved forms — the stock pairs solver matches
   // identical text and never fires on these
   async ineqPairs() {
-    const tk = [...document.querySelectorAll('[data-test$="challenge-tap-token"]')];
+    const tk = [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')];
     if (tk.length < 4) return null;
     const txt = tk.map(e => { const a = e.querySelector('annotation'); return a ? a.textContent : this.ascii(e.innerText); });
     const norm = txt.map(s => this.ineqNorm(s)), sol = txt.map(s => this.solveOne(s));
@@ -4508,7 +4508,7 @@ window.__duo.RULES.splice(2, 0, ['solveFnPattern', /complete the pattern/i]);
 // token it evaluates to. Try the output first, then the input, since either can be
 // the intended half.
 window.__duo.fnPairs = async function () {
-  const tk = [...document.querySelectorAll('[data-test$="challenge-tap-token"]')];
+  const tk = [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')];
   if (tk.length < 4) return null;
   const txt = tk.map(e => { const a = e.querySelector('annotation'); return a ? a.textContent : this.ascii(e.innerText); });
   const norm = txt.map(s => this.ascii(s).replace(/mathbf|textbf|text|\\|\{|\}/g, '').replace(/\s+/g, ''));
@@ -5329,7 +5329,7 @@ window.__duo.numTok = function (s) {
   return isNaN(v) ? null : v;
 };
 window.__duo.slopePairs = async function () {
-  const tk = [...document.querySelectorAll('[data-test$="challenge-tap-token"]')];
+  const tk = [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')];
   if (tk.length < 4) return null;
   const txt = tk.map(e => { const a = e.querySelector('annotation'); return a ? a.textContent : this.ascii(e.innerText); });
   const slope = txt.map(s => /\(x\)\s*=/.test(this.ascii(s)) ? this.slopeOfFormula(s) : null);
@@ -6125,7 +6125,7 @@ window.__duo.RULES.splice(2, 0, ['solveInverseResult', /divide every term|multip
 
 // pairs of an equation and its variable-swapped inverse: y = -2x  <->  x = -2y
 window.__duo.swapPairs = async function () {
-  const tk = [...document.querySelectorAll('[data-test$="challenge-tap-token"]')];
+  const tk = [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')];
   if (tk.length < 4) return null;
   const norm = tk.map(e => {
     const a = e.querySelector('annotation');
@@ -6151,7 +6151,7 @@ window.__duo.swapPairs = async function () {
 (function () {
   const chain = window.__duo.ineqPairs;
   window.__duo.ineqPairs = async function () {
-    const solved = () => [...document.querySelectorAll('[data-test$="challenge-tap-token"]')]
+    const solved = () => [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')]
       .filter(e => /_2wryV/.test(String(e.className))).length;
     const before = solved();
     const r = (await chain.call(this)) || (await this.swapPairs());
@@ -7352,7 +7352,7 @@ Object.assign(window.__duo, {
   },
 
   async linePairs() {
-    const tk = [...document.querySelectorAll('[data-test$="challenge-tap-token"]')];
+    const tk = [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')];
     if (tk.length < 4) return null;
     const mb = tk.map(e => { const a = e.querySelector('annotation'); return this.lineMB(a ? a.textContent : e.innerText); });
     const done = e => /_2wryV/.test(String(e.className));
@@ -7371,7 +7371,7 @@ Object.assign(window.__duo, {
 (function () {
   const base = window.__duo.ineqPairs;
   window.__duo.ineqPairs = async function () {
-    const solved = () => [...document.querySelectorAll('[data-test$="challenge-tap-token"]')]
+    const solved = () => [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')]
       .filter(e => /_2wryV/.test(String(e.className))).length;
     const before = solved();
     const r = (await base.call(this)) || (await this.linePairs());
@@ -8181,7 +8181,7 @@ Object.assign(window.__duo, {
   },
 
   async powPairs() {
-    const tk = [...document.querySelectorAll('[data-test$="challenge-tap-token"]')];
+    const tk = [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')];
     if (tk.length < 4) return null;
     const val = tk.map(e => { const a = e.querySelector('annotation'); return this.powVal(a ? a.textContent : e.innerText); });
     const done = e => /_2wryV/.test(String(e.className));
@@ -8199,7 +8199,7 @@ Object.assign(window.__duo, {
 (function () {
   const base = window.__duo.ineqPairs;
   window.__duo.ineqPairs = async function () {
-    const solved = () => [...document.querySelectorAll('[data-test$="challenge-tap-token"]')]
+    const solved = () => [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')]
       .filter(e => /_2wryV/.test(String(e.className))).length;
     const before = solved();
     const r = (await base.call(this)) || (await this.powPairs());
@@ -8215,7 +8215,7 @@ Object.assign(window.__duo, {
 // the tokens simply do not stick — so just try combinations until they all latch.
 // This removes the whole class of pairs stalls.
 window.__duo.bruteForcePairs = async function () {
-  const all = () => [...document.querySelectorAll('[data-test$="challenge-tap-token"]')];
+  const all = () => [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')];
   const done = e => /_2wryV/.test(String(e.className));
   if (all().length < 4) return null;
   let matched = 0;
@@ -8246,7 +8246,7 @@ window.__duo.bruteForcePairs = async function () {
 (function () {
   const base = window.__duo.ineqPairs;
   window.__duo.ineqPairs = async function () {
-    const solved = () => [...document.querySelectorAll('[data-test$="challenge-tap-token"]')]
+    const solved = () => [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')]
       .filter(e => /_2wryV/.test(String(e.className))).length;
     const before = solved();
     let r = await base.call(this);
@@ -21286,7 +21286,10 @@ window.__duo.grader = function () {
   const txt = e => (e.innerText || e.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
   const tokText = e => { const s = e.querySelector('[data-test="challenge-tap-token-text"]'); return txt(s || e); };
   const choiceText = c => txt({ innerText: typeof c === 'string' ? c : (c.text || c.phrase || c.character || c.transliteration || '') });
-  const bank = () => [...document.querySelectorAll('[data-test$="challenge-tap-token"]')]
+  // ponytail: placed tokens live outside [data-test="word-bank"] and match the same
+  // selector; clicking one un-places it. Scope to the bank when there is one
+  // (translate/tapComplete); match-pairs has no bank, so fall back to the page.
+  const bank = () => [...((document.querySelector('[data-test="word-bank"]') || document).querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])'))]
     .filter(b => b.getAttribute('aria-disabled') !== 'true' && !b.disabled);
 
   D.solveLang = async function () {
@@ -21294,14 +21297,16 @@ window.__duo.grader = function () {
     const dom = [...document.querySelectorAll('[data-test="challenge-choice"]')];
     const skip = document.querySelector('[data-test="player-skip"]');
     // listen / speak: never guess audio, take the skip Duolingo offers
-    if (/^(listen|speak|selectPronunciation|listenComplete|listenSpeak)$/.test(c.type) && skip && !c.correctTokens && !c.correctIndex) { skip.click(); return 'skip:' + c.type; }
+    if (/^(listen|speak|selectPronunciation|listenComplete|listenSpeak)$/.test(c.type) && skip && !(c.correctTokens || []).length && typeof c.correctIndex !== 'number') { skip.click(); return 'skip:' + c.type; }  // ponytail: speak ships correctTokens:[] (truthy)
     if (Array.isArray(c.pairs) && c.pairs.length) {              // match the pairs
+      const live = () => bank().filter(b => b.getAttribute('aria-disabled') !== 'true');
       for (const p of c.pairs) {
         const a = [p.learningToken, p.translation, p.fromToken, p.transliteration].filter(Boolean).map(s => s.toLowerCase());
-        const hit = bank().filter(b => a.includes(tokText(b))).slice(0, 2);
-        for (const b of hit) { b.click(); await this.sleep(120); }
+        const hit = live().filter(b => a.includes(tokText(b))).slice(0, 2);
+        if (hit.length < 2) continue;                              // ponytail: never click a lone tile, it offsets every later pair
+        for (const b of hit) { b.click(); await this.sleep(350); }
       }
-      return 'pairs';
+      return live().length ? null : 'pairs';
     }
     const input = document.querySelector('[data-test="challenge-text-input"], textarea[data-test="challenge-translate-input"]');
     const sol = (c.correctSolutions && c.correctSolutions[0]) || (c.correctTokens && c.correctTokens.join(' '));
@@ -21310,12 +21315,29 @@ window.__duo.grader = function () {
       input.dispatchEvent(new Event('input', { bubbles: true })); return 'type';
     }
     if (Array.isArray(c.correctTokens) && bank().length) {        // word bank, in order
-      for (const t of c.correctTokens) {
-        const b = bank().find(b => tokText(b) === t.toLowerCase().trim());
+      const words = c.correctTokens.map(t => t.trim()).filter(t => /[\p{L}\p{N}]/u.test(t));   // ponytail: "¿" "," "?" are tokens but never tiles
+      const have = words.every(t => bank().some(b => tokText(b) === t.toLowerCase()));
+      const kb = document.querySelector('[data-test="player-toggle-keyboard"]') || [...document.querySelectorAll('button')].find(b => /USE KEYBOARD/i.test(b.innerText));
+      if (!have && kb && sol) {                                    // a tile is missing: type the sentence instead
+        kb.click(); await this.sleep(400);
+        const ta = document.querySelector('textarea, [data-test="challenge-text-input"]'); if (!ta) return null;
+        Object.getOwnPropertyDescriptor(ta.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype, 'value').set.call(ta, sol);
+        ta.dispatchEvent(new Event('input', { bubbles: true })); return 'type:kb';
+      }
+      for (const t of words) {
+        const b = bank().find(b => tokText(b) === t.toLowerCase());
         if (!b) return null;                                       // token missing → hand back, no heart spent
-        b.click(); await this.sleep(150);
+        b.click(); await this.sleep(250);
       }
       return 'tokens';
+    }
+    if (Array.isArray(c.correctIndices) && c.correctIndices.length && !dom.length && bank().length) {   // tapComplete: fill blanks from the bank, in order
+      for (const i of c.correctIndices) {
+        const w = choiceText((c.choices || [])[i]); const b = bank().find(b => tokText(b) === w);
+        if (!b) return null;
+        b.click(); await this.sleep(250);
+      }
+      return 'tapIndices';
     }
     if (Array.isArray(c.correctIndices) && c.correctIndices.length && dom.length) {
       const want = c.correctIndices.map(i => choiceText((c.choices || [])[i]));
@@ -21336,6 +21358,7 @@ window.__duo.grader = function () {
     const r = this.read();
     if (r.hearts === 0) return { stop: 'no hearts', r };
     if (r.blame && /CONTINUE/i.test(r.next || '')) { await this.go(); return { ok: true, was: r.type, next: this.read() }; }
+    if (!r.type && /CONTINUE/i.test(r.next || '')) { await this.go(); await this.sleep(600); return { ok: true, was: 'interstitial', next: this.read() }; }  // ponytail: mid-lesson Duo animation, no challenge
     let via = null; try { via = await this.solveLang(); } catch (e) { via = null; }
     if (!via) return base.call(this);
     await this.sleep(300);
@@ -21461,6 +21484,56 @@ window.__duo.grader = function () {
     const rows = fen.split(' ')[0].split('/'), row = rows[8 - +sq[1]]; let f = 0;
     for (const ch of row) { if (/\d/.test(ch)) f += +ch; else { if (f === sq.charCodeAt(0) - 97) return /p/i.test(ch); f++; } }
     return false;
+  };
+})();
+;'__duo ready';
+
+// ---- 2026-09-08: Stories ----
+// Story nodes are a separate player. Each challenge element carries
+// storyElement.{type, correctAnswerIndex, ...} on the fiber of its choice
+// buttons; continue is [data-test="stories-player-continue"].
+(function () {
+  const D = window.__duo;
+  const fiberUp = (el, pick) => { const k = Object.keys(el).find(k => k.startsWith('__reactFiber')); let f = el && el[k]; for (let i = 0; i < 40 && f; i++, f = f.return) { const r = pick(f.memoizedProps || {}); if (r) return r; } return null; };
+  D.storyEl = function () {
+    const c = document.querySelector('[data-test="stories-choice"], [data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])');
+    return c ? fiberUp(c, p => p.storyElement || p.currentChallenge) : null;
+  };
+  D.storyDump = function () {
+    const e = this.storyEl() || {};
+    return { type: e.type, keys: Object.keys(e), tests: [...new Set([...document.querySelectorAll('[data-test]')].map(x => x.dataset.test))].filter(t => !/quit|progress|audio|backdrop/.test(t)) };
+  };
+  // One step: answer if a key is visible, else CONTINUE. Returns what it did.
+  D.storyStep = async function () {
+    const cont = document.querySelector('[data-test="stories-player-continue"]');
+    // POINT_TO_PHRASE: the boxed words inside the sentence are tap-token buttons
+    const choices = [...document.querySelectorAll('[data-test="stories-choice"]')].length
+      ? [...document.querySelectorAll('[data-test="stories-choice"]')]
+      : [...document.querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])')];
+    // ponytail: CONTINUE is disabled until answered, so an enabled one means "move on"
+    if (cont && !cont.disabled && cont.getAttribute('aria-disabled') !== 'true') { cont.click(); await this.sleep(700); return 'cont'; }
+    const e = choices.length ? this.storyEl() : null;
+    if (e && typeof e.correctAnswerIndex === 'number' && choices[e.correctAnswerIndex]) {
+      const el = choices[e.correctAnswerIndex]; if (el.getAttribute('aria-disabled') !== 'true') { el.click(); await this.sleep(700); return 'story:' + e.type; }
+    }
+    if (e && e.type === 'MATCH' && Array.isArray(e.matches)) {     // pairs: click phrase then translation
+      const txt = b => ((b.querySelector('[data-test="challenge-tap-token-text"]') || b).innerText || '').trim().toLowerCase();
+      const live = () => choices.filter(b => b.getAttribute('aria-disabled') !== 'true' && !b.disabled);
+      let did = 0;
+      for (const m of e.matches) {
+        const want = Object.values(m).filter(v => typeof v === 'string').map(v => v.toLowerCase());
+        const hit = live().filter(b => want.includes(txt(b))).slice(0, 2);
+        if (hit.length < 2) continue;
+        for (const b of hit) { b.click(); await this.sleep(350); } did++;
+      }
+      return did ? 'story:MATCH' : null;
+    }
+    if (e && Array.isArray(e.correctAnswerIndices)) {   // ponytail: shape guess, dumped if wrong
+      for (const i of e.correctAnswerIndices) { if (choices[i]) { choices[i].click(); await this.sleep(400); } }
+      return 'story:' + e.type;
+    }
+    if (cont && !cont.disabled && cont.getAttribute('aria-disabled') !== 'true') { cont.click(); await this.sleep(700); return 'cont'; }
+    return null;
   };
 })();
 ;'__duo ready';
