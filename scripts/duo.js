@@ -21538,3 +21538,22 @@ window.__duo.grader = function () {
   };
 })();
 ;'__duo ready';
+
+// ---- 2026-09-08: course switch ----
+// __duo.course('es') / ('math') / ('chess') / ('music'): PATCH the server-side
+// current course, then remount /learn. Language ids are DUOLINGO_<LANG>_EN
+// (uppercase; 'zh' -> ZH-CN, 'nl' -> NL-NL). Chess has no in-page loop (Rive
+// board needs real clicks); math uses boot.js, languages use langBoot.js.
+(function () {
+  const D = window.__duo;
+  D.courseId = k => ({ math: 'MATH_BT', chess: 'CHESS_CH', music: 'MUSIC_MU', zh: 'DUOLINGO_ZH-CN_EN', nl: 'DUOLINGO_NL-NL_EN' })[k] || ('DUOLINGO_' + k.toUpperCase() + '_EN');
+  D.course = async function (k) {
+    const uid = JSON.parse(atob(document.cookie.split('; ').find(c => c.startsWith('jwt_token=')).split('=')[1].split('.')[1])).sub;
+    const r = await fetch(`/2017-06-30/users/${uid}?fields=currentCourseId`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentCourseId: this.courseId(k) }) });
+    if (r.status !== 200) return { ok: false, status: r.status, id: this.courseId(k) };   // 400 = not enrolled: visit /enroll/<lang>/en first
+    localStorage.duoCourse = k; localStorage.removeItem('langCursor');
+    history.pushState({}, '', '/learn'); dispatchEvent(new PopStateEvent('popstate'));
+    return { ok: true, id: this.courseId(k) };
+  };
+})();
+;'__duo ready';

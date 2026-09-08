@@ -349,6 +349,11 @@ carries the key (`correctIndex`, `correctIndices`, `correctTokens`,
 
 ## Navigation
 
+**Pick a track (2026-09-08).** `await __duo.course('es')` (or `'math'`, `'chess'`,
+`'music'`, any language code) PATCHes the course and remounts `/learn`. Then load
+`langBoot.js` for a language, `boot.js` for math; chess needs a Claude session.
+
+
 **Switching courses (2026-09-01).** The UI is a dead end; one PATCH works:
 
 ```js
