@@ -14,17 +14,6 @@ duoAuto with running:true and inject duo.js + boot.js.
 - [ ] Math runs to unit 411; ~200 units remain
 
 ## Braindump 2026-09-04
-- [x] Chess autopilot v0 shipped: scripts/chess.js + chessBoot.js solve
-  lichess.org/training puzzles. No engine needed — lichess ships the puzzle
-  solution to the client up front, so the solver just replays it via chessground
-  mouse events.
-- [x] Gaps closed same day: orientation guess now fails loudly instead of
-  defaulting to white (was misplaying every black puzzle); chessBoot.js posts
-  state/heartbeat to serve.py (chess-state.json / chess-hb.json) like boot.js
-  does; ext.js + manifest.json auto-inject chess.js/chessBoot.js on
-  lichess.org/training the same way duo.js is injected on Duolingo; pure logic
-  (extractSolution, squareCenter) split out with a node self-check,
-  scripts/test_chess.mjs — run `node scripts/test_chess.mjs`.
 - [ ] **Still untested against a live tab.** First run will likely need a
   selector fix in findSolution() (the JSON script-tag shape lichess embeds the
   solution in) — that part can only be confirmed by opening a real puzzle.
@@ -48,7 +37,6 @@ question type has no solver. A long session re-sends its whole history on every
   node script with a persistent profile (log in once, no stored creds) runs everything
   headless with no tab throttling and no usage burn. ~1 day. macOS menu-bar shell over
   state.json is a second day. iOS is out (no trusted clicks in WKWebView). 2026-09-08.
-- [x] Duolingo chess solved 2026-09-08: 3 lessons, 27 puzzles, 0 misses, one browser_batch per puzzle.
 - [ ] **Chess match node** (`chessMatch`, "beat me 7 times in a row") blocks the path
   after Section 5 Unit 5 lesson 3. Needs an engine: js-chess-engine via serve.py +
   position from the Rive controller + batched clicks. Puzzles/practice are done.
