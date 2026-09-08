@@ -8,7 +8,9 @@
   const L = window.__lang = { running: true, target: 250000, lessons: 0, xp0: null, xp: null, trail: [], miss: [], started: Date.now() };
   const nav = u => { history.pushState({}, '', u); dispatchEvent(new PopStateEvent('popstate')); };
   const challenge = () => document.querySelector('[data-test^="challenge "], [data-test="stories-player-continue"], [data-test="stories-player-done"], [data-test="stories-element"]');
-  const next = () => document.querySelector('[data-test="player-next"]');
+  // ponytail: end-of-lesson upsells (Legendary, streak, quests) have no data-test; go by text
+  const next = () => document.querySelector('[data-test="player-next"]') ||
+    [...document.querySelectorAll('button')].find(b => !b.disabled && /^(CONTINUE|NO THANKS|GOT IT|CLAIM|KEEP LEARNING)$/i.test(b.innerText.trim()));
   const uid = () => JSON.parse(atob(document.cookie.split('; ').find(c => c.startsWith('jwt_token=')).split('=')[1].split('.')[1])).sub;
   const xp = async () => { try { const u = await (await fetch(`/2017-06-30/users/${uid()}?fields=totalXp,streak`)).json(); return u.totalXp; } catch (e) { return null; } };
   const post = async () => fetch('http://127.0.0.1:8777/lang', { method: 'POST', body: JSON.stringify({
