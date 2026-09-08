@@ -21369,7 +21369,9 @@ window.__duo.grader = function () {
       return [Math.round((bx + s * (f + 0.5)) * k), Math.round((by + s * (7 - rk + 0.5)) * k)]; };
     const clicks = c.chessPuzzleInfo.correctMoves.map(m => {
       const a = sq(m.slice(0, 2)), b = sq(m.slice(2, 4)), out = [a, b];
-      if (m[4]) out.push([Math.round(b[0] - 2.2 * s * k), Math.round(b[1] + 2.1 * s * k)]);   // promotion: queen
+      // promotion: picker centred under the square, clamped 2.3 squares inside the
+      // board's right edge; the queen is the leftmost icon, 1.45 squares left of centre
+      if (m[4]) { const cx = Math.min(b[0], Math.round((bx + 8 * s - 2.3 * s) * k)); out.push([Math.round(cx - 1.45 * s * k), Math.round(b[1] + 2.1 * s * k)]); }
       return out;
     });
     return { white, moves: c.chessPuzzleInfo.correctMoves, clicks };
