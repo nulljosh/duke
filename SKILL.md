@@ -307,7 +307,13 @@ Black — confirm which side is at the bottom first.
 - Piece art is small; bishops and pawns confuse at low zoom. Resize the window
   rather than assuming.
 
-**Languages** are the cheapest to automate — mostly text.
+**Languages** are the cheapest to automate — mostly text. Since 2026-09-08
+`__duo.solveLang()` runs first inside `solve()`: the fiber's `challenge` object
+carries the key (`correctIndex`, `correctIndices`, `correctTokens`,
+`correctSolutions`, `pairs`), so it clicks/types straight from it and hands back
+(`null`) on any shape it does not recognise. Listen/speak take `player-skip`.
+`__duo.chal()` returns the object if you need to eyeball it. Untested live on
+2026-09-08 (extension was down); first run will tell.
 
 - **Translate (word bank)** — tiles fill left to right as in Math. Click a placed
   tile to remove it.
@@ -574,3 +580,6 @@ Everything below is generic — it reads the live widget, not a hard-coded answe
 6. **Choice innerText is doubled**; halve before comparing.
 7. **In guided lessons the printed equation is often the PREVIOUS step's** —
    prefer the drawing (`currentCircle` does this).
+
+## Usage awareness
+This runs as a long autopilot loop in Chrome — check `scripts/hb.json` on a slow cadence (minutes, not seconds) rather than tight polling, and only re-invoke a solver family when the widget actually changed type. No subagents; it's one browser session driven directly.
