@@ -56,7 +56,9 @@
   let stalls = 0;
   while (L.running) {
     if (L.xp !== null && L.xp >= L.target) { L.trail.push('target'); L.running = false; break; }
-    if (!challenge() && !next()) { if (!(await open())) { L.trail.push('open-fail'); if (++stalls > 12) { L.running = false; break; } continue; } }
+    if (!challenge() && !next()) { if (!(await open())) { L.trail.push('open-fail');
+      if (++stalls > 8) { L.trail.push('next-course'); await post(); stalls = 0; await __duo.nextCourse(); }   // tree exhausted → least-XP language
+      continue; } }
     stalls = 0;
     const t0 = Date.now(); let ended = false;
     while (L.running && Date.now() - t0 < 10 * 60e3) {              // one lesson

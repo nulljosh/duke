@@ -21572,7 +21572,19 @@ window.__duo.grader = function () {
     if (r.status !== 200) return { ok: false, status: r.status, id: this.courseId(k) };   // 400 = not enrolled: visit /enroll/<lang>/en first
     localStorage.duoCourse = k; localStorage.removeItem('langCursor');
     history.pushState({}, '', '/learn'); dispatchEvent(new PopStateEvent('popstate'));
+    // the SPA may keep the old tree; wait for the title to flip, else hard reload (loop dies, re-inject)
+    const t0 = document.title; for (let i = 0; i < 20 && document.title === t0; i++) await this.sleep(1000);
+    if (document.title === t0 && !/math|chess|music/.test(k)) { localStorage.duoReload = '1'; location.reload(); }
     return { ok: true, id: this.courseId(k) };
+  };
+  // least-XP enrolled language other than the current one → course(); 'least completed first'
+  D.nextCourse = async function () {
+    const uid = JSON.parse(atob(document.cookie.split('; ').find(c => c.startsWith('jwt_token=')).split('=')[1].split('.')[1])).sub;
+    const u = await (await fetch(`/2017-06-30/users/${uid}?fields=courses,currentCourseId`)).json();
+    const langs = u.courses.filter(c => /^DUOLINGO_/.test(c.id) && c.id !== u.currentCourseId).sort((a, b) => a.xp - b.xp);
+    if (!langs.length) return null;
+    const code = langs[0].id.replace(/^DUOLINGO_/, '').replace(/_EN$/, '').split('-')[0].toLowerCase();
+    return this.course(code);
   };
 })();
 ;'__duo ready';
