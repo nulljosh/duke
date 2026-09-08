@@ -21309,7 +21309,8 @@ window.__duo.grader = function () {
       return live().length ? null : 'pairs';
     }
     const input = document.querySelector('[data-test="challenge-text-input"], textarea[data-test="challenge-translate-input"]');
-    const sol = (c.correctSolutions && c.correctSolutions[0]) || (c.correctTokens && c.correctTokens.join(' '));
+    const blank = Array.isArray(c.displayTokens) ? c.displayTokens.filter(t => t && t.isBlank).map(t => t.text).join('') : '';   // cloze: "Type the missing word"
+    const sol = (c.correctSolutions && c.correctSolutions[0]) || (c.correctTokens && c.correctTokens.join(' ')) || blank || null;
     if (input && sol) {
       Object.getOwnPropertyDescriptor(input.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype, 'value').set.call(input, sol);
       input.dispatchEvent(new Event('input', { bubbles: true })); return 'type';

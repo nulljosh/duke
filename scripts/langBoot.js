@@ -78,6 +78,7 @@
       L.trail.push(...(res.trail || []).map(t => typeof t === 'string' ? t : (t.was || t.stop || 'x')));
       if (res.halted && !(res.halted.stop === 'manual' && !res.halted.type)) {
         if (res.halted.stop === 'manual') { const s = document.querySelector('[data-test="player-skip"]'); if (s) { s.click(); await sleep(800); L.trail.push('skip'); continue; } }
+        { const sk = document.querySelector('[data-test="player-skip"]'); if (sk) { sk.click(); await sleep(800); L.trail.push('skip:' + res.halted.stop); continue; } }   // ponytail: unknown shape → skip, never stall
         L.trail.push('halt:' + res.halted.stop); await sleep(3000);
         if (res.halted.stop === 'no hearts') { L.running = false; break; }
         if (++stalls > 4) { ended = true; break; }
