@@ -21505,7 +21505,7 @@ window.__duo.grader = function () {
   };
   // One step: answer if a key is visible, else CONTINUE. Returns what it did.
   D.storyStep = async function () {
-    const cont = document.querySelector('[data-test="stories-player-continue"]');
+    const cont = document.querySelector('[data-test="stories-player-continue"], [data-test="stories-player-done"]');
     // POINT_TO_PHRASE: the boxed words inside the sentence are tap-token buttons
     const choices = [...document.querySelectorAll('[data-test="stories-choice"]')].length
       ? [...document.querySelectorAll('[data-test="stories-choice"]')]
