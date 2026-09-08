@@ -8,6 +8,7 @@ COMPLETE (units past 411 are empty). Resume: load the remaining queue into
 duoAuto with running:true and inject duo.js + boot.js.
 
 ## Open
+- [ ] Playwright runner (replace Chrome + extension) — nothing needs Claude any more
 - [ ] Piecewise construction: place the endpoint from the stated definition
 - [ ] Revisit known-bad levels: 150 L4, 153 L4, 160 L3, 148 L3
 - [ ] Dot plots and spinner wedges still need real OS mouse input
