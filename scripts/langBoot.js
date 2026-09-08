@@ -44,11 +44,12 @@
     let cur = JSON.parse(localStorage.langCursor || 'null');
     let i = cur ? list.findIndex(e => e.unit === cur.unit && e.level === cur.level) : 0;
     if (i < 0) { i = list.findIndex(e => e.unit > (cur ? cur.unit : -1)); if (i < 0) i = 0; cur = null; }
-    if (cur && cur.n >= 6) { i++; cur = null; if (i >= list.length) { nav('/learn'); await sleep(3000); return false; } }
+    if (cur && cur.n >= 6) { i++; cur = null; if (i >= list.length) i = 0; }   // ponytail: list exhausted → wrap, extra runs are practice XP
     const e = list[i]; cur = cur || { unit: e.unit, level: e.level, n: 0 }; cur.n++;
     localStorage.langCursor = JSON.stringify(cur); L.cursor = cur;
     nav('/lesson/unit/' + e.unit + '/level/' + (e.level + 1));   // ponytail: tree index is 0-based, URL level is 1-based
     for (let i = 0; i < 25 && !challenge(); i++) await sleep(1000);
+    if (!challenge()) { cur.n = 99; localStorage.langCursor = JSON.stringify(cur); }   // locked (unit review etc.) → move on
     return !!challenge();
   };
   let stalls = 0;
