@@ -21422,12 +21422,21 @@ window.__duo.grader = function () {
     const st = cs && cs.guess && cs.guess.matchState && cs.guess.matchState.status;
     if (st && st !== 'playing') return { over: true, status: st, hist, next: (document.querySelector('[data-test="player-next"]') || {}).innerText };
     if ((fen.split(' ')[1] === 'w') !== white) return { wait: true, fen, last: m.moveHistory.slice(-1)[0] };
-    const mv = jsChessEngine.aiMove(fen, level), from = Object.keys(mv)[0], to = mv[from];
+    // Lasker: "when you see a good move, look for a better one." Take the quick
+    // move, then ask one ply deeper; if the deeper search disagrees, it wins.
+    const mv = this.lasker(fen, level), from = Object.keys(mv)[0], to = mv[from];
     const g = this.chessSquares(white), a = g.sq(from.toLowerCase()), b = g.sq(to.toLowerCase());
     const clicks = [a, b];
     // promotion: engine returns the plain square; pawn reaching last rank = pick queen
     if (/[18]/.test(to[1]) && this.pawnAt(fen, from.toLowerCase())) clicks.push(g.promo(b));
     return { move: from + to, clicks, fen, ply: hist.length };
+  };
+  D.lasker = function (fen, level = 2) {
+    const good = jsChessEngine.aiMove(fen, level);
+    // ponytail: one extra ply, capped at 4 (level 5 can take >10s in-page)
+    const better = level >= 4 ? good : jsChessEngine.aiMove(fen, level + 1);
+    const key = m => Object.entries(m)[0].join('');
+    return key(better) !== key(good) ? better : good;
   };
   D.liveFen = function () {
     const cv = this.chessBoard(); if (!cv) return null;
