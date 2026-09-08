@@ -21392,3 +21392,66 @@ window.__duo.grader = function () {
   };
 })();
 ;'__duo ready';
+
+// ---- 2026-09-08: chess MATCH (bot game) ----
+// chal().match carries boardFen / playerColor / moveHistory / status. Load
+// js-chess-engine.js (served next to this file) and ask it for a move; clicks go
+// through the same geometry as puzzles. matchStep() is one call per turn.
+(function () {
+  const D = window.__duo;
+  D.chessSquares = function (white, shotW = 1568) {
+    const cv = this.chessBoard(); if (!cv) return null;
+    const r = cv.getBoundingClientRect(), k = shotW / innerWidth;
+    const bx = r.left + r.width * 0.0975, by = r.top + r.height * 0.1, s = r.width * 0.8 / 8;
+    const sq = q => { let f = q.charCodeAt(0) - 97, rk = +q[1] - 1; if (!white) { f = 7 - f; rk = 7 - rk; }
+      return [Math.round((bx + s * (f + 0.5)) * k), Math.round((by + s * (7 - rk + 0.5)) * k)]; };
+    const promo = b => { const cx = Math.min(b[0], Math.round((bx + 8 * s - 2.3 * s) * k)); return [Math.round(cx - 1.45 * s * k), Math.round(b[1] + 2.1 * s * k)]; };
+    return { sq, promo };
+  };
+  D.matchStep = function (level = 2) {
+    const c = this.chal(); if (!c || !c.match) return { noMatch: true, type: c && c.type };
+    const m = c.match, white = m.playerColor === 'white';
+    // match.boardFen is a snapshot from load time; the live move list is on the
+    // challengeState prop two fibers up from the challenge element. Replay it.
+    const cs = this.chessState(), hist = (cs && cs.guess && cs.guess.moveHistory) || m.moveHistory || [];
+    // the live FEN is a useRef 6 fibers above the canvas (bot moves never reach
+    // challengeState.moveHistory until later); fall back to replaying history.
+    let fen = this.liveFen();
+    if (!fen) { fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+      for (const mv of hist) { try { fen = jsChessEngine.getFen(jsChessEngine.move(fen, mv.slice(0, 2).toUpperCase(), mv.slice(2, 4).toUpperCase())); } catch (e) { return { err: 'replay:' + mv + ':' + e, hist }; } } }
+    const st = cs && cs.guess && cs.guess.matchState && cs.guess.matchState.status;
+    if (st && st !== 'playing') return { over: true, status: st, hist, next: (document.querySelector('[data-test="player-next"]') || {}).innerText };
+    if ((fen.split(' ')[1] === 'w') !== white) return { wait: true, fen, last: m.moveHistory.slice(-1)[0] };
+    const mv = jsChessEngine.aiMove(fen, level), from = Object.keys(mv)[0], to = mv[from];
+    const g = this.chessSquares(white), a = g.sq(from.toLowerCase()), b = g.sq(to.toLowerCase());
+    const clicks = [a, b];
+    // promotion: engine returns the plain square; pawn reaching last rank = pick queen
+    if (/[18]/.test(to[1]) && this.pawnAt(fen, from.toLowerCase())) clicks.push(g.promo(b));
+    return { move: from + to, clicks, fen, ply: hist.length };
+  };
+  D.liveFen = function () {
+    const cv = this.chessBoard(); if (!cv) return null;
+    let f = cv[Object.keys(cv).find(k => k.startsWith('__reactFiber$'))], d = 0;
+    const isFen = s => typeof s === 'string' && /^[rnbqkpRNBQKP1-8\/]+ [wb] /.test(s);
+    while (f && d++ < 12) { let h = f.memoizedState; while (h) { const m = h.memoizedState; if (m && typeof m === 'object' && isFen(m.current)) return m.current; h = h.next; } f = f.return; }
+    return null;
+  };
+  // One call per turn: wait until it is our move (bot thinking/animating), then plan.
+  D.matchTurn = async function (level = 2, maxMs = 15000) {
+    const t0 = Date.now(); let r;
+    do { r = this.matchStep(level); if (!r.wait) return r; await this.sleep(400); } while (Date.now() - t0 < maxMs);
+    return r;
+  };
+  D.chessState = function () {
+    const el = document.querySelector('[data-test^="challenge "]'); if (!el) return null;
+    let f = el[Object.keys(el).find(k => k.startsWith('__reactFiber$'))], d = 0;
+    while (f && d++ < 14) { if (f.memoizedProps && f.memoizedProps.challengeState) return f.memoizedProps.challengeState; f = f.return; }
+    return null;
+  };
+  D.pawnAt = function (fen, sq) {
+    const rows = fen.split(' ')[0].split('/'), row = rows[8 - +sq[1]]; let f = 0;
+    for (const ch of row) { if (/\d/.test(ch)) f += +ch; else { if (f === sq.charCodeAt(0) - 97) return /p/i.test(ch); f++; } }
+    return false;
+  };
+})();
+;'__duo ready';
