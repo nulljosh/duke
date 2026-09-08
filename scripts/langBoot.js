@@ -47,7 +47,7 @@
     if (cur && cur.n >= 6) { i++; cur = null; if (i >= list.length) { nav('/learn'); await sleep(3000); return false; } }
     const e = list[i]; cur = cur || { unit: e.unit, level: e.level, n: 0 }; cur.n++;
     localStorage.langCursor = JSON.stringify(cur); L.cursor = cur;
-    nav('/lesson/unit/' + e.unit + '/level/' + e.level);
+    nav('/lesson/unit/' + e.unit + '/level/' + (e.level + 1));   // ponytail: tree index is 0-based, URL level is 1-based
     for (let i = 0; i < 25 && !challenge(); i++) await sleep(1000);
     return !!challenge();
   };
@@ -60,6 +60,13 @@
     while (L.running && Date.now() - t0 < 10 * 60e3) {              // one lesson
       if (!location.pathname.startsWith('/lesson')) { ended = true; break; }
       const r = __duo.read();
+      // DuoRadio: no challenge, no story, just quit-button + canvas for a while → quit and skip the level
+      if (!challenge() && !next() && document.querySelector('[data-test="quit-button"]') && Date.now() - t0 > 20e3) {
+        document.querySelector('[data-test="quit-button"]').click(); await sleep(1200);
+        const y = document.querySelector('[data-test="notification-drawer-no-thanks-button"]') || [...document.querySelectorAll('button')].find(b => /END SESSION|QUIT/i.test(b.innerText)); if (y) y.click();
+        const cur = JSON.parse(localStorage.langCursor || 'null'); if (cur) { cur.n = 99; localStorage.langCursor = JSON.stringify(cur); }
+        L.trail.push('radio-skip'); await sleep(2000); ended = false; break;
+      }
       if (document.querySelector('[data-test="stories-player-continue"], [data-test="stories-player-done"], [data-test="stories-element"]')) {   // story node
         let idle = 0;
         while (L.running && document.querySelector('[data-test="stories-player-continue"], [data-test="stories-player-done"], [data-test="stories-element"]') && Date.now() - t0 < 10 * 60e3) {
