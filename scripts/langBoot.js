@@ -20,7 +20,8 @@
     g.gain.value = 0.001; o.frequency.value = 40; o.connect(g); g.connect(ac.destination); o.start();
     const kick = () => ac.state !== 'running' && ac.resume().catch(() => {}); kick(); setInterval(kick, 60e3); } catch (e) {}
   L.xp0 = L.xp = await xp();
-  setInterval(post, 60e3);
+  if (window.__langTimer) clearInterval(window.__langTimer);   // ponytail: a reloaded loop's old timer kept posting stale state
+  window.__langTimer = setInterval(post, 60e3);
   // Walk the tree by URL (/lesson/unit/U/level/L) instead of taking whatever
   // /lesson serves next: duo_radio nodes need audio, so they are skipped.
   // Cursor in localStorage.langCursor = {unit, level, n}; a level is opened up
