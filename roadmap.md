@@ -42,3 +42,10 @@ The old note: the polling loop needs no reasoning — `duo.js` solves in the pag
 own small session on a cheap model, and only bring a stronger model in when a
 question type has no solver. A long session re-sends its whole history on every
 30-second poll, which is the expensive way to watch a status line.
+- [ ] **Playwright runner (replace Chrome + extension).** Nothing needs Claude any more:
+  math/language are pure duo.js, chess is `chal().chessPuzzleInfo.correctMoves` + clicks.
+  CDP `Input.dispatchMouseEvent` gives the trusted clicks the Rive canvas needs, so a
+  node script with a persistent profile (log in once, no stored creds) runs everything
+  headless with no tab throttling and no usage burn. ~1 day. macOS menu-bar shell over
+  state.json is a second day. iOS is out (no trusted clicks in WKWebView). 2026-09-08.
+- [x] Duolingo chess solved 2026-09-08: 3 lessons, 27 puzzles, 0 misses, one browser_batch per puzzle.
