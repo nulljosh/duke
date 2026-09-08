@@ -88,6 +88,10 @@
       await sleep(400);
     }
     L.lessons += ended ? 1 : 0; L.xp = await xp(); await post();
+    if (__duo.ledgerLang && __duo.ledgerLang.length) {           // append to scripts/lessons.jsonl
+      const rows = __duo.ledgerLang.splice(0).map(r => JSON.stringify(Object.assign({ course: localStorage.duoCourse || null }, r))).join('\n') + '\n';
+      fetch('http://127.0.0.1:8777/log', { method: 'POST', body: rows }).catch(() => {});
+    }
     if (L.trail.length > 400) L.trail = L.trail.slice(-200);
   }
   await post();

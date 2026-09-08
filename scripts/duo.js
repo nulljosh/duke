@@ -21362,6 +21362,10 @@ window.__duo.grader = function () {
     if (!r.type && /CONTINUE/i.test(r.next || '')) { await this.go(); await this.sleep(600); return { ok: true, was: 'interstitial', next: this.read() }; }  // ponytail: mid-lesson Duo animation, no challenge
     let via = null; try { via = await this.solveLang(); } catch (e) { via = null; }
     if (!via) return base.call(this);
+    // study ledger: what was asked and what the answer was (private notebook, langBoot flushes it)
+    try { const c = this.chal() || {}; const ans = (c.correctSolutions && c.correctSolutions[0]) || (c.correctTokens && c.correctTokens.filter(t => /[\p{L}\p{N}]/u.test(t)).join(' ')) ||
+      (typeof c.correctIndex === 'number' && choiceText((c.choices || [])[c.correctIndex])) || (Array.isArray(c.correctIndices) && c.correctIndices.map(i => choiceText((c.choices || [])[i])).join(' ')) || '';
+      (this.ledgerLang = this.ledgerLang || []).push({ at: new Date().toISOString(), type: c.type, prompt: c.prompt || r.prompt || '', answer: ans, via, href: location.pathname }); } catch (e) {}
     await this.sleep(300);
     const after = await this.go();
     if (after.blame === 'blame-incorrect') return { stop: 'wrong', via, r, after };
