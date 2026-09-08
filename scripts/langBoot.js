@@ -48,7 +48,8 @@
     if (cur && cur.n >= 6) { i++; cur = null; if (i >= list.length) i = 0; }   // ponytail: list exhausted → wrap, extra runs are practice XP
     const e = list[i]; cur = cur || { unit: e.unit, level: e.level, n: 0 }; cur.n++;
     localStorage.langCursor = JSON.stringify(cur); L.cursor = cur;
-    nav('/lesson/unit/' + e.unit + '/level/' + (e.level + 1));   // ponytail: tree index is 0-based, URL level is 1-based
+    const uo = list.some(x => x.unit === 0) ? 1 : 0;   // ponytail: some courses index units from 0 in the tree; URLs are 1-based
+    nav('/lesson/unit/' + (e.unit + uo) + '/level/' + (e.level + 1));
     for (let i = 0; i < 25 && !challenge(); i++) await sleep(1000);
     if (!challenge()) { cur.n = 99; localStorage.langCursor = JSON.stringify(cur); }   // locked (unit review etc.) → move on
     return !!challenge();
