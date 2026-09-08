@@ -49,3 +49,6 @@ question type has no solver. A long session re-sends its whole history on every
   headless with no tab throttling and no usage burn. ~1 day. macOS menu-bar shell over
   state.json is a second day. iOS is out (no trusted clicks in WKWebView). 2026-09-08.
 - [x] Duolingo chess solved 2026-09-08: 3 lessons, 27 puzzles, 0 misses, one browser_batch per puzzle.
+- [ ] **Chess match node** (`chessMatch`, "beat me 7 times in a row") blocks the path
+  after Section 5 Unit 5 lesson 3. Needs an engine: js-chess-engine via serve.py +
+  position from the Rive controller + batched clicks. Puzzles/practice are done.

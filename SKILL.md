@@ -311,8 +311,17 @@ Per puzzle, exactly one tool call:
 Board geometry is the canvas rect inset 9.75% left / 10% top, 80% wide — the
 canvas has padding for arrows, so `getBoundingClientRect()` alone is wrong.
 `chessNext()` returning `{noPuzzle:true}` means a non-puzzle screen (a choice
-question → `run()`, or `/learn` → lesson over, open the next). Some nodes are a
-full match against a bot ("Full match with Oscar", +30 XP) — out of scope, skip.
+question → `run()`, or `/learn` → lesson over, open the next).
+
+**The match node is the wall.** Every chess unit is skill → puzzles → practice →
+**match** (`chal().type === 'chessMatch'`, "beat me 7 times in a row", a real
+game against a bot with no `correctMoves`) → skill → puzzles → practice → match
+→ review. The path is linear, so the match blocks the next puzzles; you cannot
+route around it via `/lesson`. Quit it (`quit-button` → QUIT, nothing is lost
+at 0 points) and stop. Beating it needs an engine: fetch a pure-JS one through
+`serve.py` (js-chess-engine is enough for this bot), read the position off the
+Rive controller (`observeGameState`), click. ~280 batched clicks for 7 games;
+roadmap item, not a mid-session build.
 The old "screenshot, find corners, derive square size" recipe was the slow path
 (and the lag/timeout): gone.
 
