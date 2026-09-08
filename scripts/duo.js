@@ -21346,3 +21346,47 @@ window.__duo.grader = function () {
   };
 })();
 ;'__duo ready';
+
+// ---- 2026-09-08: Duolingo chess ----
+// The puzzle key ships on the fiber: chal().chessPuzzleInfo.correctMoves (UCI)
+// and chal().fen (side to move = board orientation). The board is a Rive canvas:
+// synthetic events do nothing, only real `computer` clicks move a piece, and the
+// select→drop pair needs ~0.5s between clicks or the second one is swallowed.
+// Board = canvas rect inset 9.75% left / 10% top, 80% wide. `computer` takes
+// SCREENSHOT pixels (1568 wide), not CSS, so chessPlan() scales by 1568/innerWidth.
+// ponytail: promotion picker is a canvas popup below the square, queen leftmost;
+// offsets measured once at s=62.5px — recheck if the board size changes.
+(function () {
+  const D = window.__duo;
+  D.chessBoard = function () { return [...document.querySelectorAll('[data-test^="challenge "] canvas')].sort((a, b) => b.width - a.width)[0] || null; };
+  D.chessPlan = function (shotW = 1568) {
+    const c = this.chal(); if (!c || !c.chessPuzzleInfo) return null;
+    const cv = this.chessBoard(); if (!cv) return null;
+    const r = cv.getBoundingClientRect(), k = shotW / innerWidth;
+    const bx = r.left + r.width * 0.0975, by = r.top + r.height * 0.1, s = r.width * 0.8 / 8;
+    const white = c.fen.split(' ')[1] === 'w';
+    const sq = q => { let f = q.charCodeAt(0) - 97, rk = +q[1] - 1; if (!white) { f = 7 - f; rk = 7 - rk; }
+      return [Math.round((bx + s * (f + 0.5)) * k), Math.round((by + s * (7 - rk + 0.5)) * k)]; };
+    const clicks = c.chessPuzzleInfo.correctMoves.map(m => {
+      const a = sq(m.slice(0, 2)), b = sq(m.slice(2, 4)), out = [a, b];
+      if (m[4]) out.push([Math.round(b[0] - 2.2 * s * k), Math.round(b[1] + 2.1 * s * k)]);   // promotion: queen
+      return out;
+    });
+    return { white, moves: c.chessPuzzleInfo.correctMoves, clicks };
+  };
+  // CONTINUE through the result screen and return the next puzzle's plan, or a
+  // {noPuzzle} read of whatever else is on screen (choice question, /learn).
+  D.chessNext = async function () {
+    const n = document.querySelector('[data-test="player-next"]'); if (n) n.click();
+    for (let i = 0; i < 30; i++) {
+      await this.sleep(300);
+      const c = this.chal(), nb = document.querySelector('[data-test="player-next"]');
+      if (c && c.chessPuzzleInfo && !document.querySelector('[data-test^="blame"]')) return this.chessPlan();
+      if (nb && /CONTINUE/i.test(nb.innerText) && !c) nb.click();
+    }
+    const r = this.read();
+    return { noPuzzle: true, type: r.type, prompt: r.prompt, choices: r.choices, next: r.next, href: location.href,
+      txt: (document.querySelector('[data-test^="challenge "]') || document.body).innerText.slice(0, 200) };
+  };
+})();
+;'__duo ready';

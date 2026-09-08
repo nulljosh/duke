@@ -288,24 +288,33 @@ version), trapezoid ((b₁+b₂)/2)·h. "Select the area of the whole rectangle"
 around a triangle wants the *rectangle*'s bh. Base-ten blocks: 10x10 flat = 100,
 rod = 10, cube = 1; when two options are ambiguous, take the third by elimination.
 
-**Chess.** A board, not a tile bank, so the layout table above mostly does not
-apply. Recalibrate every lesson: screenshot, find the board's corner pixels,
-derive square size as `(x_h1 - x_a1) / 7`. Board orientation flips when playing
-Black — confirm which side is at the bottom first.
+**Chess (Duolingo course, fixed 2026-09-08).** The puzzle key ships on the
+fiber: `__duo.chal().chessPuzzleInfo.correctMoves` (UCI, e.g. `h5h8`,
+`g7g8q`) and `.fen` (side to move = which colour is at the bottom). No engine,
+no piece recognition, no board reading. The board is a Rive **canvas**:
+synthetic pointer events do nothing and the Kotlin controller
+(`makeMoveOnRiveBoard`) wants opaque internal objects — do not dig, real clicks
+are cheap enough.
 
-- **Make the move** — click the piece, then the destination. Legal destinations
-  get dots after the first click; screenshot to confirm the highlight rather than
-  trusting coordinate math. An illegal click just deselects, costing nothing.
-- **Puzzles are forced lines** — a check, a capture, or a piece that hangs. Look
-  for checks first, then captures. If nothing is forcing you have misread the
-  board; re-read it rather than guessing.
-- **Multi-move puzzles** play the reply automatically; wait one screenshot for
-  the animation or the next click drops.
-- **Not every node is a puzzle.** Some are a full match against a bot ("Full
-  match with Oscar", +30 XP) — a whole game, not a forced line, and out of scope
-  for this skill. Skip to the next node.
-- Piece art is small; bishops and pawns confuse at low zoom. Resize the window
-  rather than assuming.
+Per puzzle, exactly one tool call:
+1. `await __duo.chessNext()` — clicks CONTINUE, waits for the next puzzle,
+   returns `{moves, clicks}` where `clicks` is `[[from,to(,promo)], ...]` in
+   **screenshot pixels** (the `computer` tool takes screenshot coordinates,
+   1568 wide, not CSS — `chessPlan()` scales by `1568/innerWidth`).
+2. One `browser_batch`: for each move `left_click from`, `wait 0.5`,
+   `left_click to`, `wait 2` (the bot's reply animates), and end the batch with
+   `chessNext()` again so the next plan arrives in the same round trip.
+   **The 0.5s between select and drop is required**; back-to-back clicks are
+   swallowed. Promotion pops a canvas picker under the square; `clicks` carries
+   a third point on the queen.
+
+Board geometry is the canvas rect inset 9.75% left / 10% top, 80% wide — the
+canvas has padding for arrows, so `getBoundingClientRect()` alone is wrong.
+`chessNext()` returning `{noPuzzle:true}` means a non-puzzle screen (a choice
+question → `run()`, or `/learn` → lesson over, open the next). Some nodes are a
+full match against a bot ("Full match with Oscar", +30 XP) — out of scope, skip.
+The old "screenshot, find corners, derive square size" recipe was the slow path
+(and the lag/timeout): gone.
 
 **Languages** are the cheapest to automate — mostly text. Since 2026-09-08
 `__duo.solveLang()` runs first inside `solve()`: the fiber's `challenge` object
