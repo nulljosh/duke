@@ -2,67 +2,48 @@
 
 # pwnlingo
 
-Autopilot for Duolingo Math and Chess, driven through an already-signed-in Chrome tab. Language courses are wired but not yet proven live.
+Plays Duolingo Math and Chess for you in a Chrome tab you're already signed into. Language courses are wired up but haven't been tested on a real lesson yet.
 
-The Claude session never answers questions itself. It injects `scripts/duo.js`
-into the page, and that script reads the live widget state, works out the
-answer, and clicks. Claude only steps in when a question type appears that the
-solver has never seen, writes a new solver for it, and restarts the loop.
+Claude doesn't answer the questions. It loads `scripts/duo.js` into the page, and that script reads the question, figures out the answer, and clicks. Claude only gets involved when a new kind of question shows up that the script can't handle. Then it writes a solver for it and restarts.
 
-## Layout
+## What's in here
 
 | Path | What it is |
 |------|------------|
-| `SKILL.md` | The `/duolingo` skill: how to boot the loop and what to check |
-| `scripts/duo.js` | The solver. One file, ~20k lines, families appended over time |
-| `scripts/serve.py` | Serves `duo.js` on :8777 so the page can fetch it |
-| `scripts/js-chess-engine.js` | Bundled engine for the chess match node |
-| `duo.py` | Course/path helpers against the Duolingo API |
-| `web/` | Landing page, pwnlingo.heyitsmejosh.com |
+| `SKILL.md` | The `/duolingo` skill: how to start the loop and what to check on |
+| `scripts/duo.js` | The solver. One big file, new question types get added to the end |
+| `scripts/serve.py` | Serves `duo.js` on port 8777 so the page can load it |
+| `scripts/js-chess-engine.js` | Chess engine for playing the bot |
+| `duo.py` | Helpers for the Duolingo API (courses, path) |
+| `web/` | Landing page at pwnlingo.heyitsmejosh.com |
 
 ## Running it
 
 ```sh
-python3 scripts/serve.py &     # needs Access-Control-Allow-Private-Network
+python3 scripts/serve.py &
 ```
 
-Then, in the lesson tab, evaluate the boot snippet stored in
-`localStorage.duoBoot`. It fetches the solver, runs `autoLesson()` in a loop,
-and navigates on to the next level when one completes.
+Then, in the lesson tab, run the boot snippet saved in `localStorage.duoBoot`. It loads the solver, runs `autoLesson()` over and over, and moves to the next level when one finishes.
 
-## Solver families
+## Math
 
-Exponentials, transformations, statistics, geometry, trigonometry, probability,
-counting, circles and parabolas, and 3D solids (prisms, cylinders, cones,
-spheres).
+Covers exponentials, transformations, statistics, geometry, trig, probability, counting, circles and parabolas, and 3D shapes.
 
-Two widget types ignore synthetic events entirely and need real OS mouse input:
-dot plots and spinner wedges. The solver computes the drags and clicks; a human
-or the Chrome `computer` tool performs them.
+Two question types ignore fake clicks and need a real mouse: dot plots and spinner wedges. The script works out where to click and drag, but a person or the Chrome `computer` tool has to do it.
 
 ## Chess
 
-Puzzles: the answer ships on the React fiber (`chessPuzzleInfo.correctMoves`, UCI).
-The board is a Rive canvas, so only real OS clicks land; `chessNext()` turns the
-moves into screenshot coordinates and one `computer` batch plays them.
+Puzzles are easy: the answer is sitting in the page's React state (`chessPuzzleInfo.correctMoves`). The board is a canvas, so only real clicks work. `chessNext()` turns the moves into screen coordinates and one `computer` call plays them.
 
-Matches against the bot: `liveFen()` reads the position off a ref six fibers
-above the canvas, js-chess-engine picks a move, `matchTurn()` waits for our turn.
-Move choice follows Lasker's rule, "when you see a good move, look for a better
-one": the engine answers at the base depth, then again one ply deeper, and the
-deeper answer wins when they disagree. First game won in 19 moves.
+Games against the bot: `liveFen()` reads the board position from the page, the chess engine picks a move, and `matchTurn()` waits until it's our turn. To pick a move, the engine looks at the position twice, once at normal depth and once a bit deeper, and goes with the deeper answer if they disagree. First game won in 19 moves.
 
 ## Language
 
-`solveLang()` reads `correctIndex`, `correctTokens`, `correctSolutions` and
-`pairs` off the challenge fiber and clicks or types the answer. Listen and speak
-exercises take the skip Duolingo offers. Written 2026-09-08, not yet run against
-a live lesson; expect selector fixes on first contact.
+`solveLang()` reads the correct answer out of the page state and clicks or types it. Listening and speaking exercises just hit skip. Written on 2026-09-08 and never run on a live lesson, so expect some things to break the first time.
 
-## Gaps
+## What's missing
 
-- Language solver unverified live.
-- Dot plots and spinner wedges still need a human or the `computer` tool.
-- No recovery after a wrong move in a chess match beyond counting it.
-- Everything still routes through Chrome, the extension and a Claude session;
-  a Playwright runner with CDP clicks would remove all three.
+- Language solver hasn't been tested.
+- Dot plots and spinner wedges still need a person or the `computer` tool.
+- If the bot makes a bad chess move, nothing recovers from it. It just gets counted.
+- The whole thing still goes through Chrome, the extension and a Claude session. A Playwright runner could replace all three.
