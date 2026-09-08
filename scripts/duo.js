@@ -21268,3 +21268,81 @@ window.__duo.grader = function () {
   };
 })();
 ;'__duo ready';
+
+// ---- 2026-09-08: language courses ----
+// Language challenges are not "blob" challenges: the fiber's `challenge` object
+// IS the answer key (correctIndex / correctIndices / correctTokens /
+// correctSolutions / pairs). Nothing to grade, just read and click. Word-bank
+// tokens here are real <button>s, so native click works (unlike the Math bank).
+// ponytail: no per-type classes — one field-driven dispatch. Unknown shape → hand back.
+(function () {
+  const D = window.__duo;
+  D.chal = function () {
+    const el = document.querySelector('[data-test^="challenge "]'); if (!el) return null;
+    let f = el[Object.keys(el).find(k => k.startsWith('__reactFiber$'))], d = 0;
+    while (f && d++ < 12) { if (f.memoizedProps && f.memoizedProps.challenge) return f.memoizedProps.challenge; f = f.return; }
+    return null;
+  };
+  const txt = e => (e.innerText || e.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  const tokText = e => { const s = e.querySelector('[data-test="challenge-tap-token-text"]'); return txt(s || e); };
+  const choiceText = c => txt({ innerText: typeof c === 'string' ? c : (c.text || c.phrase || c.character || c.transliteration || '') });
+  const bank = () => [...document.querySelectorAll('[data-test$="challenge-tap-token"]')]
+    .filter(b => b.getAttribute('aria-disabled') !== 'true' && !b.disabled);
+
+  D.solveLang = async function () {
+    const c = this.chal(); if (!c || c.challengeBlob) return null;
+    const dom = [...document.querySelectorAll('[data-test="challenge-choice"]')];
+    const skip = document.querySelector('[data-test="player-skip"]');
+    // listen / speak: never guess audio, take the skip Duolingo offers
+    if (/^(listen|speak|selectPronunciation|listenComplete|listenSpeak)$/.test(c.type) && skip && !c.correctTokens && !c.correctIndex) { skip.click(); return 'skip:' + c.type; }
+    if (Array.isArray(c.pairs) && c.pairs.length) {              // match the pairs
+      for (const p of c.pairs) {
+        const a = [p.learningToken, p.translation, p.fromToken, p.transliteration].filter(Boolean).map(s => s.toLowerCase());
+        const hit = bank().filter(b => a.includes(tokText(b))).slice(0, 2);
+        for (const b of hit) { b.click(); await this.sleep(120); }
+      }
+      return 'pairs';
+    }
+    const input = document.querySelector('[data-test="challenge-text-input"], textarea[data-test="challenge-translate-input"]');
+    const sol = (c.correctSolutions && c.correctSolutions[0]) || (c.correctTokens && c.correctTokens.join(' '));
+    if (input && sol) {
+      Object.getOwnPropertyDescriptor(input.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype, 'value').set.call(input, sol);
+      input.dispatchEvent(new Event('input', { bubbles: true })); return 'type';
+    }
+    if (Array.isArray(c.correctTokens) && bank().length) {        // word bank, in order
+      for (const t of c.correctTokens) {
+        const b = bank().find(b => tokText(b) === t.toLowerCase().trim());
+        if (!b) return null;                                       // token missing → hand back, no heart spent
+        b.click(); await this.sleep(150);
+      }
+      return 'tokens';
+    }
+    if (Array.isArray(c.correctIndices) && c.correctIndices.length && dom.length) {
+      const want = c.correctIndices.map(i => choiceText((c.choices || [])[i]));
+      const idx = dom.map((e, i) => [i, txt(e)]).filter(([, t]) => want.includes(t)).map(([i]) => i);
+      (idx.length === want.length ? idx : c.correctIndices).forEach(i => dom[i] && dom[i].click()); return 'indices';
+    }
+    if (typeof c.correctIndex === 'number' && dom.length) {
+      const w = choiceText((c.choices || [])[c.correctIndex]);
+      const i = dom.findIndex(e => txt(e) === w || (w && txt(e).includes(w)));
+      dom[i >= 0 ? i : c.correctIndex].click(); return 'index';
+    }
+    return null;
+  };
+
+  // Try the language key first; Math (challengeBlob) and unknown shapes fall through.
+  const base = D.solve;
+  D.solve = async function () {
+    const r = this.read();
+    if (r.hearts === 0) return { stop: 'no hearts', r };
+    if (r.blame && /CONTINUE/i.test(r.next || '')) { await this.go(); return { ok: true, was: r.type, next: this.read() }; }
+    let via = null; try { via = await this.solveLang(); } catch (e) { via = null; }
+    if (!via) return base.call(this);
+    await this.sleep(300);
+    const after = await this.go();
+    if (after.blame === 'blame-incorrect') return { stop: 'wrong', via, r, after };
+    if (after.next) await this.go();
+    return { ok: true, was: r.type + ':' + via, next: this.read() };
+  };
+})();
+;'__duo ready';
