@@ -8,7 +8,8 @@ COMPLETE (units past 411 are empty). Resume: load the remaining queue into
 duoAuto with running:true and inject duo.js + boot.js.
 
 ## Open
-- [ ] Playwright runner (replace Chrome + extension) — nothing needs Claude any more
+- [ ] Language solver live verification (written 2026-09-08, not yet tested on real courses)
+- [ ] Broader language course support beyond Math (Spanish/French/German autopilot)
 - [ ] Piecewise construction: place the endpoint from the stated definition
 - [ ] Revisit known-bad levels: 150 L4, 153 L4, 160 L3, 148 L3
 - [ ] Dot plots and spinner wedges still need real OS mouse input
