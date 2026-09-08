@@ -21301,7 +21301,7 @@ window.__duo.grader = function () {
     if (Array.isArray(c.pairs) && c.pairs.length) {              // match the pairs
       const live = () => bank().filter(b => b.getAttribute('aria-disabled') !== 'true');
       for (const p of c.pairs) {
-        const a = [p.learningToken, p.translation, p.fromToken, p.transliteration].filter(Boolean).map(s => s.toLowerCase());
+        const a = Object.values(p).filter(v => typeof v === 'string' && !/^https?:/.test(v)).map(s => s.toLowerCase());   // characterMatch uses character/transliteration
         const hit = live().filter(b => a.includes(tokText(b))).slice(0, 2);
         if (hit.length < 2) continue;                              // ponytail: never click a lone tile, it offsets every later pair
         for (const b of hit) { b.click(); await this.sleep(350); }
