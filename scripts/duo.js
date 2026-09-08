@@ -21308,8 +21308,13 @@ window.__duo.grader = function () {
       }
       return live().length ? null : 'pairs';
     }
-    const input = document.querySelector('[data-test="challenge-text-input"], textarea[data-test="challenge-translate-input"]');
     const blank = Array.isArray(c.displayTokens) ? c.displayTokens.filter(t => t && t.isBlank).map(t => t.text).join('') : '';   // cloze: "Type the missing word"
+    const ce = document.querySelector('[data-test^="challenge "] [contenteditable="true"]');
+    if (ce && blank) {                                            // partialReverseTranslate: blank is a contenteditable span
+      ce.focus(); document.execCommand('selectAll', false, null); document.execCommand('insertText', false, blank);
+      await this.sleep(200); return 'type:ce';
+    }
+    const input = document.querySelector('[data-test="challenge-text-input"], textarea[data-test="challenge-translate-input"]');
     const sol = (c.correctSolutions && c.correctSolutions[0]) || (c.correctTokens && c.correctTokens.join(' ')) || blank || null;
     if (input && sol) {
       Object.getOwnPropertyDescriptor(input.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype, 'value').set.call(input, sol);
