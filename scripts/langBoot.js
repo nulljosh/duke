@@ -28,7 +28,8 @@
   // to 6 times (5 lessons + slack) before moving on. ponytail: no completion
   // detection, extra opens are just practice XP.
   const tree = async () => {
-    if (!location.pathname.startsWith('/learn')) { nav('/learn'); await sleep(3500); }
+    if (!location.pathname.startsWith('/learn')) { nav('/learn'); await sleep(2000); }
+    for (let i = 0; i < 20 && !document.querySelector('[data-test^="skill-path-unit-"]'); i++) await sleep(1000);   // ponytail: tree renders late after a failed lesson URL
     const out = [];
     for (const u of document.querySelectorAll('[data-test^="skill-path-unit-"]')) {
       const unit = +u.dataset.test.replace('skill-path-unit-', '');
@@ -55,7 +56,7 @@
   let stalls = 0;
   while (L.running) {
     if (L.xp !== null && L.xp >= L.target) { L.trail.push('target'); L.running = false; break; }
-    if (!challenge() && !next()) { if (!(await open())) { L.trail.push('open-fail'); if (++stalls > 5) { L.running = false; break; } continue; } }
+    if (!challenge() && !next()) { if (!(await open())) { L.trail.push('open-fail'); if (++stalls > 12) { L.running = false; break; } continue; } }
     stalls = 0;
     const t0 = Date.now(); let ended = false;
     while (L.running && Date.now() - t0 < 10 * 60e3) {              // one lesson
