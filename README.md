@@ -2,7 +2,7 @@
 
 # pwnlingo
 
-Plays Duolingo Math and Chess for you in a Chrome tab you're already signed into. Language courses are wired up but haven't been tested on a real lesson yet.
+Plays Duolingo Math, Chess and language courses for you in a Chrome tab you're already signed into.
 
 Claude doesn't answer the questions. It loads `scripts/duo.js` into the page, and that script reads the question, figures out the answer, and clicks. Claude only gets involved when a new kind of question shows up that the script can't handle. Then it writes a solver for it and restarts.
 
@@ -12,8 +12,12 @@ Claude doesn't answer the questions. It loads `scripts/duo.js` into the page, an
 |------|------------|
 | `SKILL.md` | The `/duolingo` skill: how to start the loop and what to check on |
 | `scripts/duo.js` | The solver. One big file, new question types get added to the end |
-| `scripts/serve.py` | Serves `duo.js` on port 8777 so the page can load it |
+| `scripts/boot.js` | Math loop: walks levels by URL, posts progress to `state.json` |
+| `scripts/langBoot.js` | Language loop: walks the tree by URL, skips radio, posts to `lang.json` |
+| `scripts/chess.js`, `chessBoot.js` | Chess helpers and the puzzle/match loop |
 | `scripts/js-chess-engine.js` | Chess engine for playing the bot |
+| `scripts/serve.py` | Serves `duo.js` on port 8777, stores the progress files and the study ledger |
+| `scripts/ext.js`, `manifest.json` | Chrome extension that re-injects the solver on every page load |
 | `duo.py` | Helpers for the Duolingo API (courses, path) |
 | `web/` | Landing page at pwnlingo.heyitsmejosh.com |
 
@@ -39,11 +43,19 @@ Games against the bot: `liveFen()` reads the board position from the page, the c
 
 ## Language
 
-`solveLang()` reads the correct answer out of the page state and clicks or types it. Listening and speaking exercises just hit skip. Written on 2026-09-08 and never run on a live lesson, so expect some things to break the first time.
+`solveLang()` reads the correct answer out of the page state and clicks or types it: multiple choice, word bank, typed translations, cloze, matching pairs, and stories. Listening and speaking exercises just hit skip. First live lesson passed on 2026-09-08.
+
+`langBoot.js` runs the course. It walks the tree by URL so it can skip DuoRadio nodes, which need audio, opens each level a few times, and stops when XP hits the target. Progress lands in `scripts/lang.json`.
+
+To change course, run `await __duo.course('es')` (or `'math'`, `'chess'`, `'music'`) and do a full reload of `/learn`. The course is server-side state, so two tabs can't run two courses at once.
+
+## Study ledger
+
+Every prompt and answer the solver sees is appended to `scripts/lessons.jsonl`, so the run doubles as a record of what the course actually asked. Local only.
 
 ## What's missing
 
-- Language solver hasn't been tested.
+- Language solver has done one lesson. Question shapes it doesn't know are logged to `lang.json` under `miss` and skipped.
 - Dot plots and spinner wedges still need a person or the `computer` tool.
 - If the bot makes a bad chess move, nothing recovers from it. It just gets counted.
 - The whole thing still goes through Chrome, the extension and a Claude session. A Playwright runner could replace all three.

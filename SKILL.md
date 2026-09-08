@@ -337,8 +337,8 @@ with esbuild, global `jsChessEngine`); load it after `duo.js` from `serve.py`.
 carries the key (`correctIndex`, `correctIndices`, `correctTokens`,
 `correctSolutions`, `pairs`), so it clicks/types straight from it and hands back
 (`null`) on any shape it does not recognise. Listen/speak take `player-skip`.
-`__duo.chal()` returns the object if you need to eyeball it. Untested live on
-2026-09-08 (extension was down); first run will tell.
+`__duo.chal()` returns the object if you need to eyeball it. First live lesson
+passed 2026-09-08 (characterMatch pairs).
 
 - **Translate (word bank)** — tiles fill left to right as in Math. Click a placed
   tile to remove it.
