@@ -313,17 +313,24 @@ canvas has padding for arrows, so `getBoundingClientRect()` alone is wrong.
 `chessNext()` returning `{noPuzzle:true}` means a non-puzzle screen (a choice
 question → `run()`, or `/learn` → lesson over, open the next).
 
-**The match node is the wall.** Every chess unit is skill → puzzles → practice →
-**match** (`chal().type === 'chessMatch'`, "beat me 7 times in a row", a real
-game against a bot with no `correctMoves`) → skill → puzzles → practice → match
-→ review. The path is linear, so the match blocks the next puzzles; you cannot
-route around it via `/lesson`. Quit it (`quit-button` → QUIT, nothing is lost
-at 0 points) and stop. Beating it needs an engine: fetch a pure-JS one through
-`serve.py` (js-chess-engine is enough for this bot), read the position off the
-Rive controller (`observeGameState`), click. ~280 batched clicks for 7 games;
-roadmap item, not a mid-session build.
-The old "screenshot, find corners, derive square size" recipe was the slow path
-(and the lag/timeout): gone.
+**Match node (`chal().type === 'chessMatch'`, "beat me 7 times in a row") —
+solved 2026-09-08.** A real game against a bot, no `correctMoves`. The engine
+is `scripts/js-chess-engine.js` (js-chess-engine 2.4.6 bundled to one IIFE
+with esbuild, global `jsChessEngine`); load it after `duo.js` from `serve.py`.
+
+- Position: `__duo.liveFen()` — a `useRef` holding the current FEN, 6 fibers
+  above the board canvas. **`chal().match.boardFen` is a load-time snapshot and
+  `challengeState.guess.moveHistory` lags the bot's reply**; neither is live.
+- One call per turn: `await __duo.matchTurn(3)` waits until it is our move and
+  returns `{move, clicks}` in screenshot px (same geometry as puzzles, board
+  flips when `match.playerColor` is black). Then one `browser_batch`: click
+  from, wait 0.5, click to, wait 1, `matchTurn(3)` again. Level 3 answers in
+  under 10 ms; level 2 shuffles pieces aimlessly. `{over:true}` = game done;
+  CONTINUE through "Match complete" lands on `/learn`.
+- The first click after a bot move can be swallowed while its animation runs;
+  `matchTurn` re-plans from the live FEN, so a swallowed click just repeats.
+- Cost: ~20 of our moves per game, one round trip each. Game 1 was 19 moves,
+  bot hung its queen on move 8. One game finished the node (+10 XP), not 7.
 
 **Languages** are the cheapest to automate — mostly text. Since 2026-09-08
 `__duo.solveLang()` runs first inside `solve()`: the fiber's `challenge` object
