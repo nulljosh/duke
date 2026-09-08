@@ -350,7 +350,8 @@ carries the key (`correctIndex`, `correctIndices`, `correctTokens`,
 ## Navigation
 
 **Pick a track (2026-09-08).** `await __duo.course('es')` (or `'math'`, `'chess'`,
-`'music'`, any language code) PATCHes the course and remounts `/learn`. Then load
+`'music'`, any language code) PATCHes the course. Then do a FULL reload of `/learn` (SPA remount reads the old
+tree), re-inject, and load
 `langBoot.js` for a language, `boot.js` for math; chess needs a Claude session.
 
 
