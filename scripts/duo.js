@@ -21352,7 +21352,8 @@ window.__duo.grader = function () {
     }
     if (typeof c.correctIndex === 'number' && dom.length) {
       const w = choiceText((c.choices || [])[c.correctIndex]);
-      const i = dom.findIndex(e => txt(e) === w || (w && txt(e).includes(w)));
+      const strip = e => txt(e).replace(/^\d+\s+/, '');                 // tiles read "1 ești"
+      const i = dom.findIndex(e => strip(e) === w);                      // ponytail: no includes(): "e" matched "ești"
       dom[i >= 0 ? i : c.correctIndex].click(); return 'index';
     }
     return null;
