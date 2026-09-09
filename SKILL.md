@@ -43,10 +43,12 @@ answer per question): `scripts/lessons.jsonl`.
   answered the same way from `storyElement` on the fiber. DuoRadio nodes have
   no challenge at all — quit and move on. When the tree stalls (nothing new
   to open), it PATCHes to the least-XP enrolled language and continues.
-- **Math** — loads `scripts/math-legacy.js` (the former `duo.js`, kept
-  whole — see CLAUDE.md) and drives it through `__duo.run(15)`. The grader
-  extraction + geometry pipeline this needs is genuinely thousands of lines;
-  not re-derived.
+- **Math** — loads `scripts/mathjs.min.js` then `scripts/math.js` (former
+  `duo.js`, pruned 2026-09-09 by hit-trace — see CLAUDE.md) and drives it
+  through `__duo.autoLesson()`. Drag widgets (`needdrag`) get a real
+  Playwright mouse via `__duo.pendingDrag()`; a `tokenslots`-kind plan is a
+  multi-drag sequence the solver can't hand off to a single external drag
+  (documented dead end, see CLAUDE.md) and gets skipped.
 - **Chess** — `solver.js` + `js-chess-engine.js`. Puzzles: the key ships on
   `chal().chessPuzzleInfo` (`correctMoves`, `moveEvaluationsForPositions`
   keyed by live FEN — `puzzleBest()` prefers this). Bot matches
@@ -68,13 +70,18 @@ not used by the solver itself.
 
 ## Dead ends — do not re-litigate
 
-- **Synthetic `.click()` on tile-bank tokens** (Math's token bank). Reports
-  success and even enables CHECK; slots stay empty. Language word-bank tiles
-  are real `<button>`s and DO take a native click — different DOM, don't
-  conflate them.
-- **Synthetic `PointerEvent`s and arrow keys on any slider, draggable point,
-  or the chess board.** Only real mouse input works. Chess needs a *held*
-  click (down, wait, up) — instant down/up is ignored by the Rive canvas.
+- **Synthetic `.click()`/`PointerEvent`s on tile-bank tokens, sliders,
+  draggable points, or the chess board.** `math.js`'s own `dragSynth()`/
+  `dragXY()` never work on these — that's still true, don't re-fix it
+  in-page. What works: `run.mjs` driving a *real* Playwright mouse from
+  outside (`__duo.pendingDrag()` for math's single-point plans, held
+  down/move/up for chess). One shape even a real mouse can't answer from
+  the runner: `pendingDrag()`'s `kind:'tokenslots'` is a sentinel for a
+  multi-token sequence `autoDrag()` drives internally via the same broken
+  `dragXY()` — skip it, don't try to single-drag it. Language word-bank
+  tiles are real `<button>`s and DO take a native click — different DOM,
+  don't conflate them. Chess needs a *held* click (down, wait, up) —
+  instant down/up is ignored by the Rive canvas.
 - **The web UI's course switcher** (`/settings/courses`). Use the API:
   `__duo.course(code)` PATCHes `currentCourseId` server-side. IDs are
   `DUOLINGO_<LANG>_EN`, `MATH_BT`, `CHESS_CH`, `MUSIC_MU`. The active course

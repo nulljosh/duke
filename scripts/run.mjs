@@ -9,10 +9,8 @@
 // language tree is exhausted.
 //
 // Language / chess / music load scripts/solver.js. Math loads
-// scripts/math-legacy.js (the untouched former duo.js — its grader-
-// extraction + geometry pipeline is genuinely too large to re-derive; see
-// CLAUDE.md) and drives it through the same __duo.run(15)/run2(15) surface
-// boot.js used to call in-page.
+// scripts/math.js (former duo.js, pruned 2026-09-09 by hit-trace — see
+// CLAUDE.md) plus scripts/mathjs.min.js, and drives it through autoLesson().
 //
 // Logs: scripts/log.jsonl (one line per event), scripts/state.json (summary),
 // scripts/lessons.jsonl (language study ledger: prompt + answer per question).
@@ -41,7 +39,10 @@ await ctx.addCookies([{ name: 'jwt_token', value: jwt, domain: '.duolingo.com', 
 const page = ctx.pages()[0] || await ctx.newPage();
 
 const inject = async () => {
-  const files = isMath ? ['math-legacy.js'] : isChessTrack ? ['solver.js', 'js-chess-engine.js'] : ['solver.js'];
+  // mathjs (local bundle, no network dependency) replaces the hand-rolled
+  // LaTeX-expression evaluator in compile() — load it first so `math` is
+  // defined before the solver's top-level script runs.
+  const files = isMath ? ['mathjs.min.js', 'math.js'] : isChessTrack ? ['solver.js', 'js-chess-engine.js'] : ['solver.js'];
   for (const f of files) await page.addScriptTag({ content: fs.readFileSync(path.join(D, f), 'utf8') });
 };
 const xp = () => page.evaluate(async u => { try { return (await (await fetch(`/2017-06-30/users/${u}?fields=totalXp`)).json()).totalXp; } catch (e) { return null; } }, uid);
@@ -72,12 +73,32 @@ const courseId = { math: 'MATH_BT', chess: 'CHESS_CH', music: 'MUSIC_MU', zh: 'D
 await page.evaluate(async ({ u, id }) => fetch(`/2017-06-30/users/${u}?fields=currentCourseId`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentCourseId: id }) }), { u: uid, id: courseId });
 S.xp0 = S.xp = await xp(); saveState();
 
+const hasChallenge = () => page.evaluate(() => !!document.querySelector('[data-test^="challenge "], [data-test="stories-element"]'));
+// walk the tree and pick the next non-radio level by URL (0-based tree, 1-based URL),
+// advancing localStorage.treeCursor each call so repeated calls rotate through levels
+const pickTreeTarget = () => page.evaluate(() => {
+  const units = [...document.querySelectorAll('[data-test^="skill-path-unit-"]')]; if (!units.length) return null;
+  const uo = units.some(u => u.dataset.test.endsWith('-0')) ? 1 : 0;
+  const cur = JSON.parse(localStorage.treeCursor || '0');
+  const list = [];
+  for (const u of units) for (const l of u.querySelectorAll('[data-test^="skill-path-level-"]')) {
+    const m = l.dataset.test.match(/skill-path-level-(\d+) skill-path-level-(\w+)/);
+    if (m && m[2] !== 'duo_radio') list.push([+u.dataset.test.replace('skill-path-unit-', '') + uo, +m[1] + 1]);
+  }
+  if (!list.length) return null;
+  const i = cur % list.length; localStorage.treeCursor = String(cur + 1);
+  return list[i];
+});
+const gotoTreeTarget = async (tgt) => {
+  await page.goto(`https://www.duolingo.com/lesson/unit/${tgt[0]}/level/${tgt[1]}`, { waitUntil: 'domcontentloaded' });
+  await sleep(6000); await inject();
+  return hasChallenge();
+};
 // Open /lesson, falling back to clicking the START node by text on /learn.
 const openLesson = async () => {
   await page.goto('https://www.duolingo.com/lesson', { waitUntil: 'domcontentloaded' });
   await sleep(5000); await inject();
-  const has = () => page.evaluate(() => !!document.querySelector('[data-test^="challenge "], [data-test="stories-element"]'));
-  if (await has()) return true;
+  if (await hasChallenge()) return true;
   const node = await page.evaluate(() => {
     const tip = [...document.querySelectorAll('*')].find(e => e.childElementCount === 0 && /^(START|JUMP HERE\?|OPEN)$/i.test(e.textContent.trim()));
     const btn = tip && (tip.closest('[data-test^="skill-path-level"]') || tip.parentElement.querySelector('button') || tip.closest('button'));
@@ -88,7 +109,10 @@ const openLesson = async () => {
     const start = await page.evaluate(() => { const b = [...document.querySelectorAll('button, a')].find(e => /START/i.test(e.innerText.trim()) && e.getBoundingClientRect().width > 80); if (!b) return null; const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; });
     if (start) { await page.mouse.click(start[0], start[1]); await sleep(6000); await inject(); }
   }
-  if (await has()) return true;
+  if (await hasChallenge()) return true;
+  // last resort: walk the tree by URL instead of the (still-stuck) served lesson
+  const tgt = await pickTreeTarget();
+  if (tgt && await gotoTreeTarget(tgt)) return true;
   await page.screenshot({ path: path.join(D, 'open-fail.png') }).catch(() => {});
   return false;
 };
@@ -120,14 +144,80 @@ while (true) {
 
   while (Date.now() - t0 < 20 * 60e3) {                     // one lesson, 20 min ceiling
     if (isMath) {
-      const r = await page.evaluate(async () => {
-        try { const res = await __duo.run(15); return { ok: true, res }; } catch (e) { return { ok: false, err: String(e) }; }
+      // autoLesson() is the real driver (run(15) only hits the generic
+      // fallback loop and halts 'manual' on the first widget it can't
+      // click). Mirror boot.js's 12-min watchdog race.
+      const runAutoLesson = () => page.evaluate(async () => {
+        const sleep = ms => new Promise(res => setTimeout(res, ms));
+        // autoLesson() reads/writes localStorage.duoAuto for unit/level
+        // bookkeeping (boot.js used to seed this before its first call).
+        // run.mjs drives navigation itself, so this is just enough state
+        // for autoLesson not to crash on a missing/null value.
+        if (!localStorage.getItem('duoAuto')) {
+          const m = location.pathname.match(/unit\/(\d+)\/level\/(\d+)/);
+          localStorage.setItem('duoAuto', JSON.stringify({ running: true, unit: m ? +m[1] : 1, level: m ? +m[2] : 1, log: [], skipped: [] }));
+        }
+        try {
+          const res = await Promise.race([
+            __duo.autoLesson(),
+            sleep(12 * 60e3).then(() => ({ ok: false, done: 0, err: 'watchdog' })),
+          ]);
+          return { ok: true, res };
+        } catch (e) { return { ok: false, err: String(e) }; }
       }).catch(e => ({ ok: false, err: String(e) }));
+
+      let r = await runAutoLesson();
+      // dragSynth() (synthetic pointer events) never works on these widgets —
+      // that's why run2 bails to 'needdrag' instead of trying. run.mjs has a
+      // real Playwright mouse, so do the drag here and let autoLesson retry.
+      let drags = 0;
+      while (r.ok && r.res && String(r.res.tail || '').includes('needdrag') && drags < 3) {
+        const plan = await page.evaluate(() => (window.__duo.pendingDrag ? __duo.pendingDrag() : null)).catch(() => null);
+        // 'tokenslots' is a sentinel (from/to both [0,0]) for a *multi*-token
+        // drag sequence autoDrag drives internally via dragXY() — a single
+        // external drag can't answer it, and dragXY is itself the same
+        // synthetic-event path that never works on this widget (documented
+        // dead end). Nothing to click here; go straight to skip/advance.
+        if (!plan || (plan.from[0] === 0 && plan.from[1] === 0 && plan.to[0] === 0 && plan.to[1] === 0)) break;
+        drags++;
+        await page.mouse.move(plan.from[0], plan.from[1]); await page.mouse.down(); await sleep(120);
+        await page.mouse.move(plan.to[0], plan.to[1], { steps: 15 }); await sleep(120); await page.mouse.up();
+        await sleep(800);
+        log({ ev: 'math-drag', plan, attempt: drags });
+        r = await runAutoLesson();
+      }
       if (!r.ok) { log({ ev: 'math-err', err: r.err }); break; }
-      log({ ev: 'math', res: r.res });
-      S.lessons++; saveState();
-      if (r.res && r.res.halted && r.res.halted.stop === 'no hearts') { log({ ev: 'no-hearts' }); process.exit(0); }
-      break;   // one run() call is roughly one lesson; reopen and re-inject after every one
+      log({ ev: 'math', res: r.res, drags });
+      if (r.res && r.res.ok) { S.lessons++; saveState(); }   // only a real 'lessondone' counts
+      if (r.res && r.res.err === 'no hearts') { log({ ev: 'no-hearts' }); process.exit(0); }
+      // Still stuck after 3 drags (or no drag plan at all, or 3 strikes on a
+      // non-drag widget): skip the question, and if the level is still stuck,
+      // quit so /lesson's tree-walker fallback advances treeCursor to a new level.
+      if (r.res && !r.res.ok && (drags >= 3 || r.res.stuck >= 3)) {
+        log({ ev: 'math-skip', next: r.res.next, drags, stuck: r.res.stuck });
+        await page.evaluate(() => { const s = document.querySelector('[data-test="player-skip"]'); s && s.click(); }).catch(() => {});
+        await sleep(1000);
+        if (r.res.stuck >= 3) {
+          await page.evaluate(() => { const q = document.querySelector('[data-test="quit-button"]'); q && q.click(); }).catch(() => {});
+          await sleep(1000);
+          await page.evaluate(() => { const y = document.querySelector('[data-test="notification-drawer-no-thanks-button"]') || [...document.querySelectorAll('button')].find(b => /END SESSION|QUIT/i.test(b.innerText)); y && y.click(); }).catch(() => {});
+          await sleep(1500);
+          // /lesson would just re-serve the same stuck level — jump by URL instead,
+          // and reset duoAuto's unit/level so autoLesson's own bookkeeping matches.
+          await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded' }); await sleep(3000);
+          const tgt = await pickTreeTarget();
+          if (tgt) {
+            await gotoTreeTarget(tgt);
+            await page.evaluate((t) => {
+              const st = JSON.parse(localStorage.getItem('duoAuto') || 'null') || { running: true, log: [], skipped: [] };
+              st.unit = t[0]; st.level = t[1]; st.stuck = 0;
+              localStorage.setItem('duoAuto', JSON.stringify(st));
+            }, tgt).catch(() => {});
+            log({ ev: 'math-advance', tgt });
+          }
+        }
+      }
+      break;   // one autoLesson() call is roughly one lesson; reopen and re-inject after every one
     }
 
     const st = await page.evaluate(async () => {
