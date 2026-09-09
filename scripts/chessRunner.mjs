@@ -21,11 +21,23 @@ const inject = async () => { for (const f of ['duo.js', 'js-chess-engine.js']) a
 const xp = async () => page.evaluate(async u => (await (await fetch(`/2017-06-30/users/${u}?fields=totalXp`)).json()).totalXp, uid).catch(() => null);
 const click = async ([x, y]) => { await page.mouse.move(x, y); await page.mouse.down(); await sleep(90); await page.mouse.up(); await sleep(550); };   // held click: instant down/up is ignored by the Rive board
 // a move as a drag: down on from, glide, up on to. Promotion square (3rd point) gets a held click.
+const fen = () => page.evaluate(() => { try { return __duo.liveFen(); } catch (e) { return null; } });
 const move = async (pts) => {
   const [a, b, promo] = pts;
-  await page.mouse.move(a[0], a[1]); await page.mouse.down(); await sleep(120);
-  await page.mouse.move(b[0], b[1], { steps: 12 }); await sleep(120); await page.mouse.up(); await sleep(700);
-  if (promo) await click(promo);
+  const before = await fen();
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt % 2 === 0) {   // drag
+      await page.mouse.move(a[0], a[1]); await page.mouse.down(); await sleep(120);
+      await page.mouse.move(b[0], b[1], { steps: 12 }); await sleep(120); await page.mouse.up();
+    } else { await click(a); await click(b); }   // select + drop
+    await sleep(700);
+    if (promo) await click(promo);
+    // verify: the live FEN must change (null FEN = can't verify, trust the first attempt)
+    let changed = before === null; for (let i = 0; i < 6 && !changed; i++) { await sleep(300); changed = (await fen()) !== before; }
+    if (changed) return true;
+    log({ ev: 'move-retry', attempt, from: a, to: b });
+  }
+  return false;
 };
 
 await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded' });
