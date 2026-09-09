@@ -19,7 +19,14 @@ await ctx.addCookies([{ name: 'jwt_token', value: jwt, domain: '.duolingo.com', 
 const page = ctx.pages()[0] || await ctx.newPage();
 const inject = async () => { for (const f of ['duo.js', 'js-chess-engine.js']) await page.addScriptTag({ content: fs.readFileSync(path.join(D, f), 'utf8') }); };
 const xp = async () => page.evaluate(async u => (await (await fetch(`/2017-06-30/users/${u}?fields=totalXp`)).json()).totalXp, uid).catch(() => null);
-const click = async ([x, y]) => { await page.mouse.click(x, y); await sleep(550); };   // 0.5s: the board swallows a faster second click
+const click = async ([x, y]) => { await page.mouse.move(x, y); await page.mouse.down(); await sleep(90); await page.mouse.up(); await sleep(550); };   // held click: instant down/up is ignored by the Rive board
+// a move as a drag: down on from, glide, up on to. Promotion square (3rd point) gets a held click.
+const move = async (pts) => {
+  const [a, b, promo] = pts;
+  await page.mouse.move(a[0], a[1]); await page.mouse.down(); await sleep(120);
+  await page.mouse.move(b[0], b[1], { steps: 12 }); await sleep(120); await page.mouse.up(); await sleep(700);
+  if (promo) await click(promo);
+};
 
 await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded' });
 await sleep(4000);
@@ -72,11 +79,11 @@ while (true) {
           if (!b) return null; return [b[1].left + b[1].width / 2, b[1].top + b[1].height / 2]; });
         if (undo) { await click(undo); await click(undo); log({ ev: 'undo', moves: st.plan.moves }); await sleep(800); }
       }
-      // the last move is always ours; a leading opponent move is pre-played on the board
-      const n = st.plan.clicks.length;
-      for (let i = (n - 1) % 2; i < n; i += 2) { for (const pt of st.plan.clicks[i]) await click(pt); if (i + 2 < n) await sleep(1500); }
-      // wait for the grader before reading the result, else the same plan replays on a stale board
-      await page.waitForFunction(() => document.querySelector('[data-test^="blame"]') || /CONTINUE/i.test((document.querySelector('[data-test="player-next"]') || {}).innerText || ''), null, { timeout: 8000 }).catch(() => {});
+      // correctMoves can be alternatives (Rxd3 or Kxd3) or a sequence; play the first,
+      // and only continue down the list while the grader stays silent
+      const graded = () => page.waitForFunction(() => document.querySelector('[data-test^="blame"]') || /CONTINUE/i.test((document.querySelector('[data-test="player-next"]') || {}).innerText || ''), null, { timeout: 4000 }).then(() => true).catch(() => false);
+      let done = false;
+      for (let i = 0; i < st.plan.clicks.length && !done; i++) { await move(st.plan.clicks[i]); done = await graded(); if (!done) await sleep(1200); }
       await sleep(400);
       const ok = await page.evaluate(() => !document.querySelector('[data-test="blame-incorrect"]'));
       S.puzzles++; if (!ok) S.misses++; S.last = 'puzzle'; log({ ev: 'puzzle', moves: st.plan.moves, ok });
@@ -84,7 +91,7 @@ while (true) {
     } else if (st.kind === 'match') {
       const r = st.r;
       if (r.over) { S.matches++; if (/win|won/i.test(r.status)) S.wins++; else S.losses++; log({ ev: 'match-over', status: r.status, ply: r.hist && r.hist.length }); await page.evaluate(() => { const n = document.querySelector('[data-test="player-next"]'); n && n.click(); }); await sleep(2000); }
-      else if (r.clicks) { for (const pt of r.clicks) await click(pt); log({ ev: 'move', move: r.move, ply: r.ply }); }
+      else if (r.clicks) { await move(r.clicks); log({ ev: 'move', move: r.move, ply: r.ply }); }
       else if (r.err) { log({ ev: 'match-err', err: r.err }); await sleep(3000); }
       else await sleep(1500);
     } else if (st.kind === 'other') {
