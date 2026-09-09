@@ -10,6 +10,7 @@
   const challenge = () => document.querySelector('[data-test^="challenge "], [data-test="stories-player-continue"], [data-test="stories-player-done"], [data-test="stories-element"]');
   // ponytail: end-of-lesson upsells (Legendary, streak, quests) have no data-test; go by text
   const next = () => document.querySelector('[data-test="player-next"]') ||
+    [...document.querySelectorAll('button')].find(b => !b.disabled && /^START \+\d+ XP$/i.test(b.innerText.trim())) ||   // Legendary: same solver, 3x the XP
     [...document.querySelectorAll('button')].find(b => !b.disabled && /^(CONTINUE|NO THANKS|GOT IT|CLAIM|KEEP LEARNING)$/i.test(b.innerText.trim()));
   const uid = () => JSON.parse(atob(document.cookie.split('; ').find(c => c.startsWith('jwt_token=')).split('=')[1].split('.')[1])).sub;
   const xp = async () => { try { const u = await (await fetch(`/2017-06-30/users/${uid()}?fields=totalXp,streak`)).json(); return u.totalXp; } catch (e) { return null; } };

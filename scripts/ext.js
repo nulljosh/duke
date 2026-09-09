@@ -5,8 +5,8 @@
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
   if (info.status !== 'complete') return;
   const url = tab.url || '';
-  if (/^https:\/\/www\.duolingo\.com\/lesson\/unit\/\d+\/level\/\d+/.test(url)) {
-    chrome.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['duo.js', 'boot.js'] })
+  if (/^https:\/\/www\.duolingo\.com\//.test(url)) {   // every page: autostart.js picks the loop from localStorage.duoCourse
+    chrome.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['duo.js', 'autostart.js'] })
       .catch(e => console.warn('inject failed', e));
   } else if (/^https:\/\/lichess\.org\/training(\/|$)/.test(url)) {
     chrome.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['chess.js', 'chessBoot.js'] })
