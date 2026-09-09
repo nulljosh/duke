@@ -26,7 +26,7 @@ const move = async (pts) => {
   const [a, b, promo] = pts;
   const before = await fen();
   for (let attempt = 0; attempt < 3; attempt++) {
-    if (attempt % 2 === 0) {   // drag
+    if (attempt % 2 === 1) {   // drag (fallback; select+drop is what the board actually takes)
       await page.mouse.move(a[0], a[1]); await page.mouse.down(); await sleep(120);
       await page.mouse.move(b[0], b[1], { steps: 12 }); await sleep(120); await page.mouse.up();
     } else { await click(a); await click(b); }   // select + drop
