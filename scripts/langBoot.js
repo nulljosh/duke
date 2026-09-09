@@ -38,7 +38,8 @@
         if (m[2] !== 'duo_radio') out.push({ unit, level: +m[1], type: m[2] });
       }
     }
-    return out;
+    const seen = new Set();   // ponytail: the tree DOM renders some units twice
+    return out.filter(e => { const k = e.unit + ':' + e.level; if (seen.has(k)) return false; seen.add(k); return true; });
   };
   const open = async () => {
     const list = await tree(); if (!list.length) return false;
