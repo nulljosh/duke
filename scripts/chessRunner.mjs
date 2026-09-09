@@ -85,17 +85,24 @@ while (true) {
       const key = st.plan.moves.join(',');
       if (key === lastKey && ++repeats >= 2) { log({ ev: 'stuck', moves: st.plan.moves, clicks: st.plan.clicks, canvas: await page.evaluate(() => { const c = __duo.chessBoard(); const r = c && c.getBoundingClientRect(); return r && [r.left, r.top, r.width, r.height, c.width, c.height, innerWidth]; }) }); await page.screenshot({ path: path.join(D, 'chess-stuck.png') }).catch(() => {}); await page.evaluate(() => { const s = document.querySelector('[data-test="player-skip"]'); s && s.click(); }); repeats = 0; lastKey = null; await sleep(1500); continue; }
       if (key !== lastKey) { lastKey = key; repeats = 0; }
-      else {   // same puzzle again: a stray move is on the board, undo it (arrow button left of the board, bottom)
-        const undo = await page.evaluate(() => { const c = __duo.chessBoard(); if (!c) return null; const cr = c.getBoundingClientRect();
-          const b = [...document.querySelectorAll('button')].map(b => [b, b.getBoundingClientRect()]).filter(([, r]) => r.width > 20 && r.right < cr.left && r.top > cr.top + cr.height * 0.6).sort((x, y) => x[1].left - y[1].left)[0];
-          if (!b) return null; return [b[1].left + b[1].width / 2, b[1].top + b[1].height / 2]; });
-        if (undo) { for (let u = 0; u < 2 * st.plan.moves.length; u++) await click(undo); log({ ev: 'undo', moves: st.plan.moves }); await sleep(800); }
-      }
       // correctMoves can be alternatives (Rxd3 or Kxd3) or a sequence; play the first,
       // and only continue down the list while the grader stays silent
       const graded = () => page.waitForFunction(() => document.querySelector('[data-test^="blame"]') || /CONTINUE/i.test((document.querySelector('[data-test="player-next"]') || {}).innerText || ''), null, { timeout: 4000 }).then(() => true).catch(() => false);
-      let done = false;
-      for (let i = 0; i < st.plan.clicks.length && !done; i++) { await move(st.plan.clicks[i]); done = await graded(); if (!done) await sleep(2200); }   // 2s: the opponent's reply animates before our next move
+      // correctMoves mixes alternatives and sequence steps; the live FEN decides:
+      // play the first listed move that is legal right now, wait, repeat until graded
+      let done = false; const played = new Set();
+      for (let step = 0; step < 6 && !done; step++) {
+        const pick = await page.evaluate((moves) => {
+          const fen = __duo.liveFen(); if (!fen) return { idx: 0, nofen: true };
+          let legal; try { legal = jsChessEngine.moves(fen); } catch (e) { return { idx: -1, err: String(e) }; }
+          const i = moves.findIndex(m => (legal[m.slice(0, 2).toUpperCase()] || []).includes(m.slice(2, 4).toUpperCase()));
+          return { idx: i, fen };
+        }, st.plan.moves.filter(m => !played.has(m)));
+        if (pick.idx < 0) { log({ ev: 'no-legal', moves: st.plan.moves, fen: pick.fen, err: pick.err }); await sleep(1500); if (step > 1) break; continue; }
+        const mv = st.plan.moves.filter(m => !played.has(m))[pick.idx]; const ci = st.plan.moves.indexOf(mv); played.add(mv);
+        await move(st.plan.clicks[ci]); done = await graded();
+        if (!done) await sleep(2200);   // opponent's reply animates before our next move
+      }
       await sleep(400);
       const ok = await page.evaluate(() => !document.querySelector('[data-test="blame-incorrect"]'));
       S.puzzles++; if (!ok) S.misses++; S.last = 'puzzle'; log({ ev: 'puzzle', moves: st.plan.moves, ok });
