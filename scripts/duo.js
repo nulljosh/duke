@@ -21405,7 +21405,9 @@ window.__duo.grader = function () {
       const a = sq(m.slice(0, 2)), b = sq(m.slice(2, 4)), out = [a, b];
       // promotion: picker centred under the square, clamped 2.3 squares inside the
       // board's right edge; the queen is the leftmost icon, 1.45 squares left of centre
-      if (m[4]) { const cx = Math.min(b[0], Math.round((bx + 8 * s - 2.3 * s) * k)); out.push([Math.round(cx - 1.45 * s * k), Math.round(b[1] + 2.1 * s * k)]); }
+      // promotion picker: 4.5 squares wide, centred under the pawn but clamped inside the
+      // board; the queen sits 0.8 squares in from the picker's left edge, 2.2 squares below
+      if (m[4]) { const left = Math.max(bx, Math.min(b[0] / k - 2.25 * s, bx + 8 * s - 4.5 * s)); out.push([Math.round((left + 0.8 * s) * k), Math.round(b[1] + 2.2 * s * k)]); }
       return out;
     });
     return { white, moves: c.chessPuzzleInfo.correctMoves, clicks };
@@ -21439,7 +21441,7 @@ window.__duo.grader = function () {
     const bx = r.left + r.width * 0.0975, by = r.top + r.height * 0.1, s = r.width * 0.8 / 8;
     const sq = q => { let f = q.charCodeAt(0) - 97, rk = +q[1] - 1; if (!white) { f = 7 - f; rk = 7 - rk; }
       return [Math.round((bx + s * (f + 0.5)) * k), Math.round((by + s * (7 - rk + 0.5)) * k)]; };
-    const promo = b => { const cx = Math.min(b[0], Math.round((bx + 8 * s - 2.3 * s) * k)); return [Math.round(cx - 1.45 * s * k), Math.round(b[1] + 2.1 * s * k)]; };
+    const promo = b => { const left = Math.max(bx, Math.min(b[0] / k - 2.25 * s, bx + 8 * s - 4.5 * s)); return [Math.round((left + 0.8 * s) * k), Math.round(b[1] + 2.2 * s * k)]; };
     return { sq, promo };
   };
   D.matchStep = function (level = 2) {

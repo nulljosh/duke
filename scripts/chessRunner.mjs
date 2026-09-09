@@ -77,13 +77,13 @@ while (true) {
         const undo = await page.evaluate(() => { const c = __duo.chessBoard(); if (!c) return null; const cr = c.getBoundingClientRect();
           const b = [...document.querySelectorAll('button')].map(b => [b, b.getBoundingClientRect()]).filter(([, r]) => r.width > 20 && r.right < cr.left && r.top > cr.top + cr.height * 0.6).sort((x, y) => x[1].left - y[1].left)[0];
           if (!b) return null; return [b[1].left + b[1].width / 2, b[1].top + b[1].height / 2]; });
-        if (undo) { await click(undo); await click(undo); log({ ev: 'undo', moves: st.plan.moves }); await sleep(800); }
+        if (undo) { for (let u = 0; u < 2 * st.plan.moves.length; u++) await click(undo); log({ ev: 'undo', moves: st.plan.moves }); await sleep(800); }
       }
       // correctMoves can be alternatives (Rxd3 or Kxd3) or a sequence; play the first,
       // and only continue down the list while the grader stays silent
       const graded = () => page.waitForFunction(() => document.querySelector('[data-test^="blame"]') || /CONTINUE/i.test((document.querySelector('[data-test="player-next"]') || {}).innerText || ''), null, { timeout: 4000 }).then(() => true).catch(() => false);
       let done = false;
-      for (let i = 0; i < st.plan.clicks.length && !done; i++) { await move(st.plan.clicks[i]); done = await graded(); if (!done) await sleep(1200); }
+      for (let i = 0; i < st.plan.clicks.length && !done; i++) { await move(st.plan.clicks[i]); done = await graded(); if (!done) await sleep(2200); }   // 2s: the opponent's reply animates before our next move
       await sleep(400);
       const ok = await page.evaluate(() => !document.querySelector('[data-test="blame-incorrect"]'));
       S.puzzles++; if (!ok) S.misses++; S.last = 'puzzle'; log({ ev: 'puzzle', moves: st.plan.moves, ok });
