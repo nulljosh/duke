@@ -38,6 +38,12 @@
         if (m[2] !== 'duo_radio') out.push({ unit, level: +m[1], type: m[2] });
       }
     }
+    // treasure chests: an OPEN button on the tree; click it, then CONTINUE the reward
+    for (const b of [...document.querySelectorAll('button')].filter(b => /^OPEN$/i.test(b.innerText.trim()))) {
+      b.click(); await sleep(2500);
+      for (let i = 0; i < 4; i++) { const n = next(); if (!n) break; n.click(); await sleep(1200); }
+      L.trail.push('chest');
+    }
     const seen = new Set();   // ponytail: the tree DOM renders some units twice
     return out.filter(e => { const k = e.unit + ':' + e.level; if (seen.has(k)) return false; seen.add(k); return true; });
   };
