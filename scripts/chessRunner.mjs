@@ -83,11 +83,12 @@ while (true) {
     if (st.kind === 'puzzle' && st.plan) {
       // correctMoves alternates ours / the opponent's reply; only click ours, wait out the reply
       const key = st.plan.moves.join(',');
-      if (key === lastKey && ++repeats >= 2) { log({ ev: 'stuck', moves: st.plan.moves, clicks: st.plan.clicks, canvas: await page.evaluate(() => { const c = __duo.chessBoard(); const r = c && c.getBoundingClientRect(); return r && [r.left, r.top, r.width, r.height, c.width, c.height, innerWidth]; }) }); await page.screenshot({ path: path.join(D, 'chess-stuck.png') }).catch(() => {}); await page.evaluate(() => { const s = document.querySelector('[data-test="player-skip"]'); s && s.click(); }); repeats = 0; lastKey = null; await sleep(1500); continue; }
+      if (key === lastKey && ++repeats >= 2) { log({ ev: 'stuck', moves: st.plan.moves, probe: await page.evaluate(() => { const cs = __duo.chessState(); const c = __duo.chal(); return { fen: __duo.liveFen(), cfen: c && c.fen, info: c && Object.keys(c.chessPuzzleInfo || {}), cs: cs && JSON.stringify(cs).slice(0, 600) }; }) }); await page.screenshot({ path: path.join(D, 'chess-stuck.png') }).catch(() => {}); await page.evaluate(() => { const s = document.querySelector('[data-test="player-skip"]'); s && s.click(); }); repeats = 0; lastKey = null; await sleep(1500); continue; }
       if (key !== lastKey) { lastKey = key; repeats = 0; }
       // correctMoves can be alternatives (Rxd3 or Kxd3) or a sequence; play the first,
       // and only continue down the list while the grader stays silent
-      const graded = () => page.waitForFunction(() => document.querySelector('[data-test^="blame"]') || /CONTINUE/i.test((document.querySelector('[data-test="player-next"]') || {}).innerText || ''), null, { timeout: 4000 }).then(() => true).catch(() => false);
+      // graded = the fiber says so (a stale blame element from an earlier mistake stays in the DOM)
+      const graded = () => page.waitForFunction(() => { const cs = __duo.chessState(); const g = cs && cs.guess && cs.guess.gradingState; return (g && g.type && g.type !== 'ungraded') || /CONTINUE/i.test((document.querySelector('[data-test="player-next"]') || {}).innerText || ''); }, null, { timeout: 4000 }).then(() => true).catch(() => false);
       // correctMoves mixes alternatives and sequence steps; the live FEN decides:
       // play the first listed move that is legal right now, wait, repeat until graded
       let done = false; const played = new Set();
@@ -100,11 +101,11 @@ while (true) {
         }, st.plan.moves.filter(m => !played.has(m)));
         if (pick.idx < 0) { log({ ev: 'no-legal', moves: st.plan.moves, fen: pick.fen, err: pick.err }); await sleep(1500); if (step > 1) break; continue; }
         const mv = st.plan.moves.filter(m => !played.has(m))[pick.idx]; const ci = st.plan.moves.indexOf(mv); played.add(mv);
-        await move(st.plan.clicks[ci]); done = await graded();
+        const moved = await move(st.plan.clicks[ci]); done = await graded(); log({ ev: 'pick', mv, moved, done, fen: pick.fen });
         if (!done) await sleep(2200);   // opponent's reply animates before our next move
       }
       await sleep(400);
-      const ok = await page.evaluate(() => !document.querySelector('[data-test="blame-incorrect"]'));
+      const ok = await page.evaluate(() => { const cs = __duo.chessState(); const g = cs && cs.guess && cs.guess.gradingState; return !(g && /incorrect|wrong/i.test(g.type || '')); });
       S.puzzles++; if (!ok) S.misses++; S.last = 'puzzle'; log({ ev: 'puzzle', moves: st.plan.moves, ok });
       await page.evaluate(() => __duo.chessNext()).catch(() => {});
     } else if (st.kind === 'match') {
