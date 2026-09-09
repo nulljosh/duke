@@ -21401,7 +21401,8 @@ window.__duo.grader = function () {
     const white = c.fen.split(' ')[1] === 'w';
     const sq = q => { let f = q.charCodeAt(0) - 97, rk = +q[1] - 1; if (!white) { f = 7 - f; rk = 7 - rk; }
       return [Math.round((bx + s * (f + 0.5)) * k), Math.round((by + s * (7 - rk + 0.5)) * k)]; };
-    const clicks = c.chessPuzzleInfo.correctMoves.map(m => {
+    const moves = c.chessPuzzleInfo.correctMoves.flatMap(m => String(m).split(/\s+/)).filter(Boolean);   // "f1d3 f1e2" = two alternatives in one entry
+    const clicks = moves.map(m => {
       const a = sq(m.slice(0, 2)), b = sq(m.slice(2, 4)), out = [a, b];
       // promotion: picker centred under the square, clamped 2.3 squares inside the
       // board's right edge; the queen is the leftmost icon, 1.45 squares left of centre
@@ -21410,7 +21411,7 @@ window.__duo.grader = function () {
       if (m[4]) { const left = Math.max(bx, Math.min(b[0] / k - 2.25 * s, bx + 8 * s - 4.5 * s)); out.push([Math.round((left + 0.8 * s) * k), Math.round(b[1] + 2.2 * s * k)]); }
       return out;
     });
-    return { white, moves: c.chessPuzzleInfo.correctMoves, clicks };
+    return { white, moves, clicks };
   };
   // CONTINUE through the result screen and return the next puzzle's plan, or a
   // {noPuzzle} read of whatever else is on screen (choice question, /learn).
