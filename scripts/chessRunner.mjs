@@ -64,8 +64,14 @@ while (true) {
     if (st.kind === 'puzzle' && st.plan) {
       // correctMoves alternates ours / the opponent's reply; only click ours, wait out the reply
       const key = st.plan.moves.join(',');
-      if (key === lastKey && ++repeats >= 2) { log({ ev: 'stuck', moves: st.plan.moves }); await page.screenshot({ path: path.join(D, 'chess-stuck.png') }).catch(() => {}); await page.evaluate(() => { const s = document.querySelector('[data-test="player-skip"]'); s && s.click(); }); repeats = 0; lastKey = null; await sleep(1500); continue; }
+      if (key === lastKey && ++repeats >= 2) { log({ ev: 'stuck', moves: st.plan.moves, clicks: st.plan.clicks, canvas: await page.evaluate(() => { const c = __duo.chessBoard(); const r = c && c.getBoundingClientRect(); return r && [r.left, r.top, r.width, r.height, c.width, c.height, innerWidth]; }) }); await page.screenshot({ path: path.join(D, 'chess-stuck.png') }).catch(() => {}); await page.evaluate(() => { const s = document.querySelector('[data-test="player-skip"]'); s && s.click(); }); repeats = 0; lastKey = null; await sleep(1500); continue; }
       if (key !== lastKey) { lastKey = key; repeats = 0; }
+      else {   // same puzzle again: a stray move is on the board, undo it (arrow button left of the board, bottom)
+        const undo = await page.evaluate(() => { const c = __duo.chessBoard(); if (!c) return null; const cr = c.getBoundingClientRect();
+          const b = [...document.querySelectorAll('button')].map(b => [b, b.getBoundingClientRect()]).filter(([, r]) => r.width > 20 && r.right < cr.left && r.top > cr.top + cr.height * 0.6).sort((x, y) => x[1].left - y[1].left)[0];
+          if (!b) return null; return [b[1].left + b[1].width / 2, b[1].top + b[1].height / 2]; });
+        if (undo) { await click(undo); await click(undo); log({ ev: 'undo', moves: st.plan.moves }); await sleep(800); }
+      }
       for (let i = 0; i < st.plan.clicks.length; i += 2) { for (const pt of st.plan.clicks[i]) await click(pt); if (i + 2 < st.plan.clicks.length) await sleep(1500); }
       // wait for the grader before reading the result, else the same plan replays on a stale board
       await page.waitForFunction(() => document.querySelector('[data-test^="blame"]') || /CONTINUE/i.test((document.querySelector('[data-test="player-next"]') || {}).innerText || ''), null, { timeout: 8000 }).catch(() => {});
