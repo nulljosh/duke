@@ -21592,3 +21592,20 @@ window.__duo.grader = function () {
   };
 })();
 ;'__duo ready';
+
+// ---- 2026-09-09: puzzle key by position ----
+// chessPuzzleInfo.moveEvaluationsForPositions: { "<board> <side>": [{move, moveCorrectness, enemyResponse}] }.
+// Look the live FEN up and play the 'correct' entry; correctMoves alone mixes steps and alternatives.
+(function () {
+  const D = window.__duo;
+  D.puzzleBest = function () {
+    const c = this.chal(); if (!c || !c.chessPuzzleInfo) return null;
+    const fen = this.liveFen() || c.fen; if (!fen) return null;
+    const key = fen.split(' ').slice(0, 2).join(' ');
+    const ev = c.chessPuzzleInfo.moveEvaluationsForPositions || {};
+    const list = ev[key] || ev[Object.keys(ev).find(k => k.split(' ')[0] === key.split(' ')[0])] || [];
+    const best = list.find(e => e.moveCorrectness === 'correct') || list.find(e => e.moveCorrectness === 'suboptimal');
+    return best ? { move: best.move, fen, known: true } : null;
+  };
+})();
+;'__duo ready';

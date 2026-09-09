@@ -83,7 +83,7 @@ while (true) {
     if (st.kind === 'puzzle' && st.plan) {
       // correctMoves alternates ours / the opponent's reply; only click ours, wait out the reply
       const key = st.plan.moves.join(',');
-      if (key === lastKey && ++repeats >= 2) { log({ ev: 'stuck', moves: st.plan.moves, probe: await page.evaluate(() => { const cs = __duo.chessState(); const c = __duo.chal(); return { fen: __duo.liveFen(), cfen: c && c.fen, info: c && Object.keys(c.chessPuzzleInfo || {}), cs: cs && JSON.stringify(cs).slice(0, 600) }; }) }); await page.screenshot({ path: path.join(D, 'chess-stuck.png') }).catch(() => {}); await page.evaluate(() => { const s = document.querySelector('[data-test="player-skip"]'); s && s.click(); }); repeats = 0; lastKey = null; await sleep(1500); continue; }
+      if (key === lastKey && ++repeats >= 2) { log({ ev: 'stuck', moves: st.plan.moves, probe: await page.evaluate(() => { const cs = __duo.chessState(); const c = __duo.chal(); return { fen: __duo.liveFen(), cfen: c && c.fen, info: c && Object.keys(c.chessPuzzleInfo || {}), cs: cs && JSON.stringify(cs).slice(0, 300), evals: c && JSON.stringify(c.chessPuzzleInfo.moveEvaluationsForPositions).slice(0, 1500), enemy: c && JSON.stringify(c.chessPuzzleInfo.enemyMoves).slice(0, 300) }; }) }); await page.screenshot({ path: path.join(D, 'chess-stuck.png') }).catch(() => {}); await page.evaluate(() => { const s = document.querySelector('[data-test="player-skip"]'); s && s.click(); }); repeats = 0; lastKey = null; await sleep(1500); continue; }
       if (key !== lastKey) { lastKey = key; repeats = 0; }
       // correctMoves can be alternatives (Rxd3 or Kxd3) or a sequence; play the first,
       // and only continue down the list while the grader stays silent
@@ -93,15 +93,19 @@ while (true) {
       // play the first listed move that is legal right now, wait, repeat until graded
       let done = false; const played = new Set();
       for (let step = 0; step < 6 && !done; step++) {
+        // the per-position key first; fall back to the first listed move legal in the live FEN
         const pick = await page.evaluate((moves) => {
-          const fen = __duo.liveFen(); if (!fen) return { idx: 0, nofen: true };
-          let legal; try { legal = jsChessEngine.moves(fen); } catch (e) { return { idx: -1, err: String(e) }; }
-          const i = moves.findIndex(m => (legal[m.slice(0, 2).toUpperCase()] || []).includes(m.slice(2, 4).toUpperCase()));
-          return { idx: i, fen };
+          const b = __duo.puzzleBest(); if (b) return { mv: b.move, fen: b.fen, via: 'key' };
+          const fen = __duo.liveFen(); if (!fen) return { mv: moves[0], via: 'nofen' };
+          let legal; try { legal = jsChessEngine.moves(fen); } catch (e) { return { mv: null, err: String(e) }; }
+          return { mv: moves.find(m => (legal[m.slice(0, 2).toUpperCase()] || []).includes(m.slice(2, 4).toUpperCase())) || null, fen, via: 'legal' };
         }, st.plan.moves.filter(m => !played.has(m)));
-        if (pick.idx < 0) { log({ ev: 'no-legal', moves: st.plan.moves, fen: pick.fen, err: pick.err }); await sleep(1500); if (step > 1) break; continue; }
-        const mv = st.plan.moves.filter(m => !played.has(m))[pick.idx]; const ci = st.plan.moves.indexOf(mv); played.add(mv);
-        const moved = await move(st.plan.clicks[ci]); done = await graded(); log({ ev: 'pick', mv, moved, done, fen: pick.fen });
+        if (!pick.mv) { log({ ev: 'no-move', moves: st.plan.moves, fen: pick.fen, err: pick.err }); await sleep(1500); if (step > 1) break; continue; }
+        const mv = pick.mv; played.add(mv);
+        let ci = st.plan.moves.indexOf(mv), pts;
+        if (ci >= 0) pts = st.plan.clicks[ci];
+        else pts = await page.evaluate((m) => { const c = __duo.chal(); const g = __duo.chessSquares(c.fen.split(' ')[1] === 'w', innerWidth); const a = g.sq(m.slice(0, 2)), b = g.sq(m.slice(2, 4)); const o = [a, b]; if (m[4]) o.push(g.promo(b)); return o; }, mv);
+        const moved = await move(pts); done = await graded(); log({ ev: 'pick', mv, via: pick.via, moved, done });
         if (!done) await sleep(2200);   // opponent's reply animates before our next move
       }
       await sleep(400);
