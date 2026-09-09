@@ -1,10 +1,10 @@
 {
   "name": "scripts",
-  "version": "1.0.0",
-  "description": "",
-  "main": "autostart.js",
+  "version": "2.0.0",
+  "description": "pwnlingo: one Playwright runner for every Duolingo track",
+  "main": "run.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test solver.test.mjs"
   },
   "keywords": [],
   "type": "commonjs",
