@@ -69,7 +69,7 @@ const chessMove = async (pts) => {
 await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded' });
 await sleep(4000);
 const courseId = { math: 'MATH_BT', chess: 'CHESS_CH', music: 'MUSIC_MU', zh: 'DUOLINGO_ZH-CN_EN', nl: 'DUOLINGO_NL-NL_EN' }[track] || ('DUOLINGO_' + track.toUpperCase() + '_EN');
-await page.evaluate(async (u, id) => fetch(`/2017-06-30/users/${u}?fields=currentCourseId`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentCourseId: id }) }), uid, courseId);
+await page.evaluate(async ({ u, id }) => fetch(`/2017-06-30/users/${u}?fields=currentCourseId`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentCourseId: id }) }), { u: uid, id: courseId });
 S.xp0 = S.xp = await xp(); saveState();
 
 // Open /lesson, falling back to clicking the START node by text on /learn.
