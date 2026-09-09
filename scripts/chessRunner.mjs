@@ -46,7 +46,7 @@ const openLesson = async () => {
   return false;
 };
 
-let idle = 0;
+let idle = 0, lastKey = null, repeats = 0;
 while (true) {
   if (!(await openLesson())) { S.screens++; log({ ev: 'open-fail', url: page.url() }); if (++idle > 6) { await sleep(60e3); idle = 0; } continue; }
   idle = 0;
@@ -62,7 +62,11 @@ while (true) {
       return { kind: 'idle', href: location.href, txt: document.body.innerText.slice(0, 80) };
     }).catch(e => ({ kind: 'err', e: String(e) }));
     if (st.kind === 'puzzle' && st.plan) {
-      for (const mv of st.plan.clicks) for (const pt of mv) await click(pt);
+      // correctMoves alternates ours / the opponent's reply; only click ours, wait out the reply
+      const key = st.plan.moves.join(',');
+      if (key === lastKey && ++repeats >= 2) { log({ ev: 'stuck', moves: st.plan.moves }); await page.screenshot({ path: path.join(D, 'chess-stuck.png') }).catch(() => {}); await page.evaluate(() => { const s = document.querySelector('[data-test="player-skip"]'); s && s.click(); }); repeats = 0; lastKey = null; await sleep(1500); continue; }
+      if (key !== lastKey) { lastKey = key; repeats = 0; }
+      for (let i = 0; i < st.plan.clicks.length; i += 2) { for (const pt of st.plan.clicks[i]) await click(pt); if (i + 2 < st.plan.clicks.length) await sleep(1500); }
       // wait for the grader before reading the result, else the same plan replays on a stale board
       await page.waitForFunction(() => document.querySelector('[data-test^="blame"]') || /CONTINUE/i.test((document.querySelector('[data-test="player-next"]') || {}).innerText || ''), null, { timeout: 8000 }).catch(() => {});
       await sleep(400);
