@@ -72,7 +72,9 @@ while (true) {
           if (!b) return null; return [b[1].left + b[1].width / 2, b[1].top + b[1].height / 2]; });
         if (undo) { await click(undo); await click(undo); log({ ev: 'undo', moves: st.plan.moves }); await sleep(800); }
       }
-      for (let i = 0; i < st.plan.clicks.length; i += 2) { for (const pt of st.plan.clicks[i]) await click(pt); if (i + 2 < st.plan.clicks.length) await sleep(1500); }
+      // the last move is always ours; a leading opponent move is pre-played on the board
+      const n = st.plan.clicks.length;
+      for (let i = (n - 1) % 2; i < n; i += 2) { for (const pt of st.plan.clicks[i]) await click(pt); if (i + 2 < n) await sleep(1500); }
       // wait for the grader before reading the result, else the same plan replays on a stale board
       await page.waitForFunction(() => document.querySelector('[data-test^="blame"]') || /CONTINUE/i.test((document.querySelector('[data-test="player-next"]') || {}).innerText || ''), null, { timeout: 8000 }).catch(() => {});
       await sleep(400);
