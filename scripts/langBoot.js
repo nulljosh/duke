@@ -48,6 +48,16 @@
     return out.filter(e => { const k = e.unit + ':' + e.level; if (seen.has(k)) return false; seen.add(k); return true; });
   };
   const open = async () => {
+    // ponytail: /lesson serves the next unlocked node, which is all a fresh course
+    // allows anyway; the tree walk is only for stepping past a DuoRadio node.
+    if (!L.forceTree) {
+      if (!location.pathname.startsWith('/learn')) { nav('/learn'); await sleep(2500); }
+      await tree();                                                // opens chests while here
+      nav('/lesson');
+      for (let i = 0; i < 25 && !challenge(); i++) await sleep(1000);
+      if (challenge()) return true;
+    }
+    L.forceTree = false;
     const list = await tree(); if (!list.length) return false;
     let cur = JSON.parse(localStorage.langCursor || 'null');
     let i = cur ? list.findIndex(e => e.unit === cur.unit && e.level === cur.level) : 0;
@@ -77,7 +87,7 @@
         document.querySelector('[data-test="quit-button"]').click(); await sleep(1200);
         const y = document.querySelector('[data-test="notification-drawer-no-thanks-button"]') || [...document.querySelectorAll('button')].find(b => /END SESSION|QUIT/i.test(b.innerText)); if (y) y.click();
         const cur = JSON.parse(localStorage.langCursor || 'null'); if (cur) { cur.n = 99; localStorage.langCursor = JSON.stringify(cur); }
-        L.trail.push('radio-skip'); await sleep(2000); ended = false; break;
+        L.trail.push('radio-skip'); L.forceTree = true; await sleep(2000); ended = false; break;
       }
       if (document.querySelector('[data-test="stories-player-continue"], [data-test="stories-player-done"], [data-test="stories-element"]')) {   // story node
         let idle = 0;
