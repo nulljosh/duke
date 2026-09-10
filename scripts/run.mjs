@@ -20,6 +20,7 @@ import path from 'node:path';
 import http from 'node:http';
 import crypto from 'node:crypto';
 import { courseIdFor } from './courseId.mjs';
+import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -55,12 +56,8 @@ const authed = req => (req.headers['x-pwnlingo-token'] || '') === apiToken;
 // caps a stranger at ~12 req/sec.
 const RATE_WINDOW_MS = 10_000;
 const RATE_MAX = 120;
-let rateCount = 0, rateWindowStart = Date.now();
-const rateLimited = () => {
-  const now = Date.now();
-  if (now - rateWindowStart > RATE_WINDOW_MS) { rateWindowStart = now; rateCount = 0; }
-  return ++rateCount > RATE_MAX;
-};
+const rateWindow = { start: Date.now(), count: 0 };
+const rateLimited = () => rateLimitedGuard(rateWindow, Date.now(), RATE_WINDOW_MS, RATE_MAX);
 
 http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -86,7 +83,7 @@ http.createServer((req, res) => {
     // Token-gated already, so this is just a sanity check: a track is a short
     // alphanumeric code (a language code, or math/chess/music), nothing else.
     const t = new URL(req.url, 'http://x').searchParams.get('track');
-    if (t && /^[a-z]{2,6}$/i.test(t)) { pendingTrack = t; res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }
+    if (isValidTrack(t)) { pendingTrack = t; res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }
   } else if (req.method === 'POST' && req.url.startsWith('/pause')) {
     paused = true; S.paused = true; saveState(); res.end('{"ok":true}');
   } else if (req.method === 'POST' && req.url.startsWith('/resume')) {
@@ -127,7 +124,7 @@ const LOG_PATH = path.join(D, 'log.jsonl');
 // is lost, and this needs no cron/launchd entry, just a check on each write.
 const rotateLogIfNeeded = () => {
   try {
-    if ((fs.statSync(LOG_PATH).size) < 5 * 1024 * 1024) return;
+    if (!shouldRotateLog(fs.statSync(LOG_PATH).size, 5 * 1024 * 1024)) return;
     const lines = fs.readFileSync(LOG_PATH, 'utf8').trim().split('\n').slice(-5000);
     fs.writeFileSync(LOG_PATH, lines.join('\n') + '\n');
   } catch (e) { /* file may not exist yet — nothing to rotate */ }
