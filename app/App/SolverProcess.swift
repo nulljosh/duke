@@ -17,17 +17,20 @@ enum SolverProcess {
     private static let tunnelConfigURL = URL(fileURLWithPath: NSString(string: "~/.cloudflared/pwnlingo-config.yml").expandingTildeInPath)
     private static let tunnelLogURL = URL(fileURLWithPath: NSString(string: "~/Documents/Code/pwnlingo/scripts/tunnel.log").expandingTildeInPath)
 
-    // ponytail: "Start" only ever relaunched run.mjs — the status site and the
-    // Windows/Linux/iOS clients all depend on the cloudflared tunnel too, and
-    // it dies with the Mac the same way run.mjs does. One button, both back.
-    private static func startTunnelIfNeeded() {
-        let check = Process()
-        check.executableURL = URL(fileURLWithPath: "/usr/bin/pgrep")
-        check.arguments = ["-f", "cloudflared tunnel --config \(tunnelConfigURL.path)"]
-        check.standardOutput = Pipe()
-        try? check.run()
-        check.waitUntilExit()
-        guard check.terminationStatus != 0 else { return } // already running
+    // ponytail: a pgrep on the launch command line breaks silently the moment
+    // the flags/path change (moved config, renamed binary). Checking whether
+    // the tunnel's own public hostname actually answers tests the thing that
+    // matters — reachability — not how the process happens to be invoked.
+    private static func tunnelReachable() async -> Bool {
+        guard let url = URL(string: "https://pwnlingo-status.heyitsmejosh.com/state") else { return false }
+        var req = URLRequest(url: url)
+        req.timeoutInterval = 4
+        return (try? await URLSession.shared.data(for: req)) != nil
+    }
+
+    private static func startTunnelIfNeeded() async {
+        let reachable = await tunnelReachable()
+        guard !reachable else { return }
 
         let t = Process()
         t.executableURL = URL(fileURLWithPath: "/opt/homebrew/bin/cloudflared")
@@ -41,7 +44,7 @@ enum SolverProcess {
     }
 
     static func start(track: String) {
-        startTunnelIfNeeded()
+        Task { await startTunnelIfNeeded() }
         let p = Process()
         p.executableURL = URL(fileURLWithPath: "/usr/bin/env")
         p.arguments = ["node", scriptURL.path, track]
