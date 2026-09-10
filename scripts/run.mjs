@@ -73,7 +73,19 @@ http.createServer((req, res) => {
 const jwt = fs.readFileSync(path.join(D, 'jwt.txt'), 'utf8').trim();
 const uid = JSON.parse(Buffer.from(jwt.split('.')[1], 'base64').toString()).sub;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const log = o => fs.appendFileSync(path.join(D, 'log.jsonl'), JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n');
+const LOG_PATH = path.join(D, 'log.jsonl');
+// ponytail: unattended runs (hours/days over the public tunnel) would let this
+// grow forever otherwise. Keep only the most recent ~5000 lines once the file
+// crosses 5MB — /log only ever serves the last 50 anyway, so nothing useful
+// is lost, and this needs no cron/launchd entry, just a check on each write.
+const rotateLogIfNeeded = () => {
+  try {
+    if ((fs.statSync(LOG_PATH).size) < 5 * 1024 * 1024) return;
+    const lines = fs.readFileSync(LOG_PATH, 'utf8').trim().split('\n').slice(-5000);
+    fs.writeFileSync(LOG_PATH, lines.join('\n') + '\n');
+  } catch (e) { /* file may not exist yet — nothing to rotate */ }
+};
+const log = o => { fs.appendFileSync(LOG_PATH, JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n'); rotateLogIfNeeded(); };
 const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null, puzzleStep: null, puzzleTotal: null };
 const saveState = () => fs.writeFileSync(path.join(D, 'state.json'), JSON.stringify({ at: new Date().toISOString(), ...S }, null, 1));
 const ledger = rows => rows.length && fs.appendFileSync(path.join(D, 'lessons.jsonl'), rows.map(r => JSON.stringify(r)).join('\n') + '\n');
