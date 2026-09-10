@@ -1,16 +1,41 @@
 import SwiftUI
 
+// A hand-drawn horse-head-in-profile silhouette. Every unicode/SF-Symbol option for
+// the knight looked bad or broke on this OS — a hand-drawn vector shape can't hit
+// either problem: no font, no OS-dependent glyph substitution, ever.
+struct KnightShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        let w = rect.width, h = rect.height
+        var p = Path()
+        p.move(to: CGPoint(x: w * 0.18, y: h * 0.97))
+        p.addLine(to: CGPoint(x: w * 0.22, y: h * 0.55))
+        p.addCurve(to: CGPoint(x: w * 0.10, y: h * 0.34),
+                    control1: CGPoint(x: w * 0.16, y: h * 0.46), control2: CGPoint(x: w * 0.06, y: h * 0.43))
+        p.addCurve(to: CGPoint(x: w * 0.32, y: h * 0.14),
+                    control1: CGPoint(x: w * 0.16, y: h * 0.24), control2: CGPoint(x: w * 0.24, y: h * 0.18))
+        p.addLine(to: CGPoint(x: w * 0.40, y: h * 0.03))
+        p.addLine(to: CGPoint(x: w * 0.47, y: h * 0.19))
+        p.addCurve(to: CGPoint(x: w * 0.76, y: h * 0.29),
+                    control1: CGPoint(x: w * 0.57, y: h * 0.17), control2: CGPoint(x: w * 0.68, y: h * 0.21))
+        p.addLine(to: CGPoint(x: w * 0.95, y: h * 0.37))
+        p.addLine(to: CGPoint(x: w * 0.81, y: h * 0.49))
+        p.addCurve(to: CGPoint(x: w * 0.55, y: h * 0.56),
+                    control1: CGPoint(x: w * 0.71, y: h * 0.53), control2: CGPoint(x: w * 0.62, y: h * 0.55))
+        p.addLine(to: CGPoint(x: w * 0.60, y: h * 0.76))
+        p.addLine(to: CGPoint(x: w * 0.86, y: h * 0.97))
+        p.closeSubpath()
+        return p
+    }
+}
+
 // ponytail: FEN → grid is a solved, bounded problem (8x8, one glyph per square).
 // Recreating Duolingo's own lesson widgets natively is not — screenshot stays for those.
-// Only ♚/♔ and ♞/♘ render as an unrelated emoji substitute on this macOS (confirmed
-// via screenshot) — queen/rook/bishop/pawn render correctly as real unicode chess
-// glyphs. So only those two get a non-unicode treatment (king: SF Symbol crown,
-// knight: SF Symbol horse silhouette); everything else keeps its real glyph.
+// ♚/♔, ♛/♕, ♞/♘, and ♝/♗ all render as an unrelated emoji substitute on this macOS
+// (confirmed via paused, FEN-bracketed screenshots — only rook/pawn are real,
+// working unicode glyphs). Those four get a real SF Symbol icon each instead.
 func glyphFor(_ piece: Character) -> String {
     switch Character(piece.lowercased()) {
-    case "q": return "♛"
     case "r": return "♜"
-    case "b": return "♝"
     case "p": return "♟"
     default: return "?"
     }
@@ -96,22 +121,22 @@ private struct PieceGlyph: View {
     let piece: Character
     let size: CGFloat
     private var isWhite: Bool { piece.isUppercase }
-    private var isKing: Bool { piece.lowercased() == "k" }
-    private var isKnight: Bool { piece.lowercased() == "n" }
-    private var isBishop: Bool { piece.lowercased() == "b" }
+    private var lower: Character { Character(piece.lowercased()) }
     private let outlineOffsets: [(CGFloat, CGFloat)] = [(-1, -1), (1, -1), (-1, 1), (1, 1)]
 
-    // King, knight, and bishop are the unicode chess glyphs that mis-render on this
-    // macOS (confirmed via screenshot for all three — queen/rook/pawn are real
-    // glyphs and look right). King gets a real crown icon; knight/bishop get a
-    // plain letter badge — an SF Symbol "horse" substitute (figure.equestrian.sports)
-    // was tried and looks worse (a tiny running-person glyph) than a clean letter.
+    // King/queen/knight/bishop all mis-render as an emoji substitute on this macOS
+    // (confirmed via paused, FEN-bracketed screenshots) — each gets a real SF Symbol
+    // instead of a bare letter. Knight tried an SF Symbol horse
+    // (figure.equestrian.sports) rendered as a tiny glitchy running figure, so
+    // knight is a hand-drawn KnightShape instead — a real icon, not a letter.
+    // Rook/pawn are real, working unicode glyphs — untouched.
     @ViewBuilder private func glyphView() -> some View {
-        if isKing {
-            Image(systemName: "crown.fill").font(.system(size: size * 0.8))
-        } else if isKnight || isBishop {
-            Text(letterFor(piece)).font(.system(size: size * 0.68, weight: .heavy, design: .rounded))
-        } else {
+        switch lower {
+        case "k": Image(systemName: "crown.fill").font(.system(size: size * 0.8))
+        case "q": Image(systemName: "star.fill").font(.system(size: size * 0.7))
+        case "b": Image(systemName: "diamond.fill").font(.system(size: size * 0.62))
+        case "n": KnightShape().aspectRatio(contentMode: .fit).frame(width: size * 0.62, height: size * 0.62)
+        default:
             Text(glyphFor(piece)).font(.system(size: size))
         }
     }
