@@ -395,21 +395,38 @@ while (true) {
       break;   // one autoLesson() call is roughly one lesson; reopen and re-inject after every one
     }
 
-    const st = await page.evaluate(async () => {
-      const D = window.__duo, c = D.chal();
-      if (c && c.chessPuzzleInfo && !document.querySelector('[data-test^="blame"]')) return { kind: 'puzzle', plan: D.chessPlan(innerWidth) };
-      if (c && c.match) { const r = await D.matchTurn(3); return { kind: 'match', r: { ...r, clicks: r.clicks && r.clicks.map(([x, y]) => [x * innerWidth / 1568, y * innerWidth / 1568]) } }; }
-      if (document.querySelector('[data-test="stories-player-continue"], [data-test="stories-player-done"], [data-test="stories-element"]')) return { kind: 'story' };
-      if (!c && !document.querySelector('[data-test^="challenge "]') && document.querySelector('[data-test="quit-button"]')) return { kind: 'radio-maybe' };
-      const n = document.querySelector('[data-test="player-next"]') || [...document.querySelectorAll('button')].find(b => !b.disabled && /^(CONTINUE|NO THANKS|GOT IT|START \+\d+ XP|CLAIM|KEEP LEARNING)$/i.test(b.innerText.trim()));
-      if (n && !n.disabled) { n.click(); return { kind: 'next', txt: n.innerText.trim() }; }
-      if (c) {
-        const via = await D.solveLang().catch(() => null);
-        const row = via ? D.ledgerRow(via) : null;
-        return { kind: 'challenge', type: c.type, via, row, unknown: via ? null : D.logUnknown() };
-      }
-      return { kind: 'idle', href: location.href, txt: document.body.innerText.slice(0, 80) };
-    }).catch(e => ({ kind: 'err', e: String(e) }));
+    // ponytail: math's autoLesson() has an explicit 12-min watchdog race
+    // because a hang was expected there. This detection block turned out to
+    // have the same failure mode with none: solveLang() hanging on an
+    // unrecognised widget shape (seen live on a Klingon word-bank exercise)
+    // froze the whole runner with no error, no log line, just a dead screenshot
+    // forever. Same fix, same pattern: race against a timeout, not just try/catch.
+    const st = await Promise.race([
+      page.evaluate(async () => {
+        const D = window.__duo, c = D.chal();
+        if (c && c.chessPuzzleInfo && !document.querySelector('[data-test^="blame"]')) return { kind: 'puzzle', plan: D.chessPlan(innerWidth) };
+        if (c && c.match) { const r = await D.matchTurn(3); return { kind: 'match', r: { ...r, clicks: r.clicks && r.clicks.map(([x, y]) => [x * innerWidth / 1568, y * innerWidth / 1568]) } }; }
+        if (document.querySelector('[data-test="stories-player-continue"], [data-test="stories-player-done"], [data-test="stories-element"]')) return { kind: 'story' };
+        if (!c && !document.querySelector('[data-test^="challenge "]') && document.querySelector('[data-test="quit-button"]')) return { kind: 'radio-maybe' };
+        const n = document.querySelector('[data-test="player-next"]') || [...document.querySelectorAll('button')].find(b => !b.disabled && /^(CONTINUE|NO THANKS|GOT IT|START \+\d+ XP|CLAIM|KEEP LEARNING)$/i.test(b.innerText.trim()));
+        if (n && !n.disabled) { n.click(); return { kind: 'next', txt: n.innerText.trim() }; }
+        if (c) {
+          const via = await D.solveLang().catch(() => null);
+          const row = via ? D.ledgerRow(via) : null;
+          return { kind: 'challenge', type: c.type, via, row, unknown: via ? null : D.logUnknown() };
+        }
+        return { kind: 'idle', href: location.href, txt: document.body.innerText.slice(0, 80) };
+      }).catch(e => ({ kind: 'err', e: String(e) })),
+      sleep(15000).then(() => ({ kind: 'err', e: 'detect-timeout' })),
+    ]);
+    if (st.kind === 'err' && st.e === 'detect-timeout') {
+      log({ ev: 'detect-timeout' });
+      await page.evaluate(() => { const q = document.querySelector('[data-test="quit-button"]'); q && q.click(); }).catch(() => {});
+      await sleep(1000);
+      await page.evaluate(() => { const y = document.querySelector('[data-test="notification-drawer-no-thanks-button"]') || [...document.querySelectorAll('button')].find(b => /END SESSION|QUIT/i.test(b.innerText)); y && y.click(); }).catch(() => {});
+      await sleep(1500);
+      break;
+    }
 
     if (st.kind === 'puzzle' && st.plan) {
       const key = st.plan.moves.join(',');
