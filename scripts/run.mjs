@@ -67,7 +67,7 @@ const jwt = fs.readFileSync(path.join(D, 'jwt.txt'), 'utf8').trim();
 const uid = JSON.parse(Buffer.from(jwt.split('.')[1], 'base64').toString()).sub;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const log = o => fs.appendFileSync(path.join(D, 'log.jsonl'), JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n');
-const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null };
+const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null, puzzleStep: null, puzzleTotal: null };
 const saveState = () => fs.writeFileSync(path.join(D, 'state.json'), JSON.stringify({ at: new Date().toISOString(), ...S }, null, 1));
 const ledger = rows => rows.length && fs.appendFileSync(path.join(D, 'lessons.jsonl'), rows.map(r => JSON.stringify(r)).join('\n') + '\n');
 
@@ -331,6 +331,7 @@ while (true) {
         return (g && g.type && g.type !== 'ungraded') || /CONTINUE/i.test((document.querySelector('[data-test="player-next"]') || {}).innerText || '');
       }, null, { timeout: 4000 }).then(() => true).catch(() => false);
       let done = false; const played = new Set();
+      S.puzzleStep = 0; S.puzzleTotal = st.plan.moves.length; saveState();
       for (let step = 0; step < 6 && !done; step++) {
         const pick = await page.evaluate((moves) => {
           const b = __duo.puzzleBest(); if (b) return { mv: b.move, via: 'key' };
@@ -344,6 +345,7 @@ while (true) {
         if (ci >= 0) pts = st.plan.clicks[ci];
         else pts = await page.evaluate((m) => { const c = __duo.chal(); const g = __duo.chessSquares(c.fen.split(' ')[1] === 'w', innerWidth); const a = g.sq(m.slice(0, 2)), b = g.sq(m.slice(2, 4)); const o = [a, b]; if (m[4]) o.push(g.promo(b, m[4])); return o; }, mv);
         const moved = await chessMove(pts); done = await graded(); log({ ev: 'pick', mv, via: pick.via, moved, done });
+        S.puzzleStep = played.size; saveState();
         if (!done) await sleep(2200);
       }
       await sleep(400);
@@ -356,7 +358,7 @@ while (true) {
         lastCountedKey = key;
         const ok = !/incorrect|wrong/i.test(graded_ || '');
         S.puzzles++; if (!ok) S.misses++; S.last = 'puzzle'; log({ ev: 'puzzle', moves: st.plan.moves, ok }); saveState();
-        S.xp = await xp(); saveState(); // ponytail: puzzles never funneled through the lesson-complete xp refresh — was silently stale
+        S.xp = await xp(); S.puzzleStep = null; S.puzzleTotal = null; saveState(); // ponytail: puzzles never funneled through the lesson-complete xp refresh — was silently stale
         // self-calibration: a promotion move that graded wrong means the guessed picker
         // slot ('qrbn' order) is off for this piece — cycle to the next slot (0-3) and
         // persist it, so the next puzzle needing that piece (and a retry of this one,

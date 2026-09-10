@@ -34,19 +34,19 @@ struct ContentView: View {
                 overlayPanel(s)
                     .padding(14)
             }
-            if let s = poller.state, let goalProgress = goalProgress(s) {
-                // ponytail: Duolingo's own lesson progress bar (top-of-screen, no
-                // number) is the reference — but the API only exposes a daily
-                // xpGoal + a met-today bool, no per-lesson step count. This session's
-                // XP toward that daily goal is the closest real, continuously-moving
-                // substitute; it isn't "steps in this lesson" but it's not invented.
+            if let s = poller.state, let progress = puzzleProgress(s) {
+                // ponytail: Duolingo's own lesson progress bar (top-of-screen) is
+                // the reference — this is progress through the CURRENT puzzle's
+                // move plan (run.mjs knows the full solution upfront, so step/total
+                // is real, not guessed), not a daily/session metric. Resets empty
+                // between puzzles.
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         Color.black.opacity(0.15)
-                        Color.green.frame(width: geo.size.width * goalProgress)
+                        Color.green.frame(width: geo.size.width * progress)
                     }
                 }
-                .frame(height: 5)
+                .frame(height: 3)
                 .frame(maxHeight: .infinity, alignment: .top)
             }
             if poller.state == nil {
@@ -217,10 +217,9 @@ struct ContentView: View {
         return Double(gained) / mins
     }
 
-    private func goalProgress(_ s: RunState) -> CGFloat? {
-        guard let goal = s.xpGoal, goal > 0, let xp0 = s.xp0, let xp = s.xp else { return nil }
-        if s.xpGoalMetToday == true { return 1 }
-        return min(1, max(0, CGFloat(xp - xp0) / CGFloat(goal)))
+    private func puzzleProgress(_ s: RunState) -> CGFloat? {
+        guard s.track == "chess", let step = s.puzzleStep, let total = s.puzzleTotal, total > 0 else { return nil }
+        return min(1, max(0, CGFloat(step) / CGFloat(total)))
     }
 
     private func missRate(_ s: RunState) -> Double? {
