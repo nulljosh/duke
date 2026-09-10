@@ -13,6 +13,15 @@
   (`solver.test.mjs`).
 
 ## Done
+- 2026-09-10: chess underpromotion puzzle infinite loop fixed. Root cause:
+  promo() was hardcoding a click on the queen's slot (x=370) regardless of
+  which piece a puzzle required, so rook/bishop/knight finales always graded
+  wrong and got re-served forever. Fixed by extracting piece selection into
+  a self-calibrating picker that learns the correct slot index per piece
+  from real grades (bump on wrong, lock on correct, persist in
+  promo-calib.json). Verified live on restart; solver cleared the
+  previously-stuck d7d8n puzzle plus several more underpromotion puzzles.
+  Commit: 60cf224.
 - 2026-09-09: full engine rewrite — one Playwright runner (`scripts/run.mjs
   <track>`) replaces the Chrome-extension + boot.js/langBoot.js/serve.py
   stack (all deleted). See CLAUDE.md for the current architecture.
