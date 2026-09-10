@@ -2,11 +2,21 @@ import SwiftUI
 
 // ponytail: FEN → grid is a solved, bounded problem (8x8, one glyph per square).
 // Recreating Duolingo's own lesson widgets natively is not — screenshot stays for those.
-// Several unicode chess glyphs (♚/♔, ♞/♘, confirmed live — see ChessBoardView.md
-// note below) render as unrelated emoji substitutes on this macOS regardless of
-// the VS15 text-presentation selector, which does nothing here. Plain ASCII
-// letters (standard algebraic notation) never hit that substitution, so every
-// piece uses one instead of a unicode glyph — deterministic across OS/font state.
+// Only ♚/♔ and ♞/♘ render as an unrelated emoji substitute on this macOS (confirmed
+// via screenshot) — queen/rook/bishop/pawn render correctly as real unicode chess
+// glyphs. So only those two get a non-unicode treatment (king: SF Symbol crown,
+// knight: SF Symbol horse silhouette); everything else keeps its real glyph.
+func glyphFor(_ piece: Character) -> String {
+    switch Character(piece.lowercased()) {
+    case "q": return "♛"
+    case "r": return "♜"
+    case "b": return "♝"
+    case "p": return "♟"
+    default: return "?"
+    }
+}
+// Kept for the DEBUG self-check (letter fallback is still used if an SF Symbol
+// name below ever fails to resolve on some future OS).
 func letterFor(_ piece: Character) -> String {
     switch Character(piece.lowercased()) {
     case "k": return "K"
@@ -87,15 +97,22 @@ private struct PieceGlyph: View {
     let size: CGFloat
     private var isWhite: Bool { piece.isUppercase }
     private var isKing: Bool { piece.lowercased() == "k" }
+    private var isKnight: Bool { piece.lowercased() == "n" }
+    private var isBishop: Bool { piece.lowercased() == "b" }
     private let outlineOffsets: [(CGFloat, CGFloat)] = [(-1, -1), (1, -1), (-1, 1), (1, 1)]
 
-    // King keeps a real vector icon (reads better than a bare "K"); every other
-    // piece is a plain-ASCII letter badge — see letterFor()'s note on why.
+    // King, knight, and bishop are the unicode chess glyphs that mis-render on this
+    // macOS (confirmed via screenshot for all three — queen/rook/pawn are real
+    // glyphs and look right). King gets a real crown icon; knight/bishop get a
+    // plain letter badge — an SF Symbol "horse" substitute (figure.equestrian.sports)
+    // was tried and looks worse (a tiny running-person glyph) than a clean letter.
     @ViewBuilder private func glyphView() -> some View {
         if isKing {
             Image(systemName: "crown.fill").font(.system(size: size * 0.8))
+        } else if isKnight || isBishop {
+            Text(letterFor(piece)).font(.system(size: size * 0.68, weight: .heavy, design: .rounded))
         } else {
-            Text(letterFor(piece)).font(.system(size: size * 0.72, weight: .heavy, design: .rounded))
+            Text(glyphFor(piece)).font(.system(size: size))
         }
     }
 
