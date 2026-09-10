@@ -43,6 +43,12 @@ http.createServer((req, res) => {
   } else if (req.method === 'POST' && req.url.startsWith('/switch')) {
     const t = new URL(req.url, 'http://x').searchParams.get('track');
     if (t) { pendingTrack = t; res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }
+  } else if (req.url.startsWith('/fen')) {
+    // ponytail: reuses the same liveFen() the chess-move planner already calls
+    fen().then(f => {
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ fen: f }));
+    }).catch(() => { res.writeHead(503); res.end(); });
   } else if (req.url.startsWith('/screenshot')) {
     // ponytail: reuses the live page, no separate headful/video pipeline
     page.screenshot({ type: 'jpeg', quality: 60 }).then(buf => {

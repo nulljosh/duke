@@ -14,6 +14,8 @@ struct RunState: Decodable {
     let last: String?
 }
 
+struct FenResponse: Decodable { let fen: String? }
+
 struct LogEvent: Decodable, Identifiable {
     var id: String { at + (ev ?? "") + (String(describing: ok) ) }
     let at: String
@@ -43,6 +45,7 @@ final class Poller: ObservableObject {
     static let shared = Poller()
     @Published var state: RunState?
     @Published var events: [LogEvent] = []
+    @Published var fen: String?
     @Published var stale = false
     @Published var unreachable = false
     @AppStorage("pwnlingoHost") var host = "localhost:8737"
@@ -79,9 +82,15 @@ final class Poller: ObservableObject {
                         self.lastEventId = newest.id
                         self.playSound(for: newest)
                     }
+                    if s.track != "chess" { self.fen = nil }
                     if let at = ISO8601DateFormatter().date(from: s.at) {
                         self.stale = Date().timeIntervalSince(at) > 90
                     }
+                }
+                if s.track == "chess", let fenURL = URL(string: "http://\(host)/fen"),
+                   let (fData, _) = try? await URLSession.shared.data(from: fenURL),
+                   let f = try? JSONDecoder().decode(FenResponse.self, from: fData).fen {
+                    await MainActor.run { self.fen = f }
                 }
             } catch {
                 await MainActor.run { self.unreachable = true }

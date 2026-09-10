@@ -13,17 +13,22 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 14) {
             if let s = poller.state {
-                // ponytail: cache-bust with s.at (already ticks every poll) instead of a second timer
-                Button { showFullScreenshot = true } label: {
-                    AsyncImage(url: screenshotURL(s)) { img in
-                        img.resizable().aspectRatio(contentMode: .fit)
-                    } placeholder: { Color.black.opacity(0.05) }
-                        .aspectRatio(1400.0 / 900.0, contentMode: .fit)
-                        .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                if s.track == "chess", let fen = poller.fen {
+                    // live-rendered from FEN, no screenshot needed for chess
+                    ChessBoardView(fen: fen).frame(maxWidth: .infinity)
+                } else {
+                    // ponytail: cache-bust with s.at (already ticks every poll) instead of a second timer
+                    Button { showFullScreenshot = true } label: {
+                        AsyncImage(url: screenshotURL(s)) { img in
+                            img.resizable().aspectRatio(contentMode: .fit)
+                        } placeholder: { Color.black.opacity(0.05) }
+                            .aspectRatio(1400.0 / 900.0, contentMode: .fit)
+                            .frame(maxWidth: .infinity)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                    .buttonStyle(.plain)
+                    .help("Click to enlarge")
                 }
-                .buttonStyle(.plain)
-                .help("Click to enlarge")
 
                 if let u = s.username {
                     Text(u).font(.caption).foregroundStyle(.secondary)
@@ -74,7 +79,7 @@ struct ContentView: View {
         }
         #endif
         .task { poller.start() }
-        .frame(minWidth: 320, idealWidth: 360, minHeight: 420, idealHeight: 480)
+        .frame(minWidth: 320, idealWidth: 420, minHeight: 420, idealHeight: 640)
         #if !os(macOS)
         .sheet(isPresented: $editingHost) {
             VStack(spacing: 12) {
