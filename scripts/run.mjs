@@ -18,6 +18,7 @@ import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
+import { courseIdFor } from './courseId.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -32,6 +33,11 @@ let paused = false; // set by POST /pause and /resume, checked at the top of the
 // fine for a personal box on a trusted network, not meant to be exposed further.
 http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  // ponytail: a request landing during the startup window (before page/fen/etc
+  // below finish initializing) threw a TDZ ReferenceError synchronously inside
+  // this handler, which crashed the whole process — not just that one request.
+  // One try/catch around the whole router turns "process dies" into "503".
+  try {
   if (req.url === '/state') {
     res.setHeader('Content-Type', 'application/json');
     if (!fs.existsSync(path.join(D, 'state.json'))) { res.writeHead(503); res.end(); return; }
@@ -61,6 +67,7 @@ http.createServer((req, res) => {
       res.end(buf);
     }).catch(() => { res.writeHead(503); res.end(); });
   } else { res.writeHead(404); res.end(); }
+  } catch (e) { if (!res.headersSent) { res.writeHead(503); res.end(); } }
 }).listen(8737, '0.0.0.0');
 
 const jwt = fs.readFileSync(path.join(D, 'jwt.txt'), 'utf8').trim();
@@ -131,7 +138,6 @@ const chessMove = async (pts) => {
   return false;
 };
 
-const courseIdFor = t => ({ math: 'MATH_BT', chess: 'CHESS_CH', music: 'MUSIC_MU', zh: 'DUOLINGO_ZH-CN_EN', nl: 'DUOLINGO_NL-NL_EN' }[t] || ('DUOLINGO_' + t.toUpperCase() + '_EN'));
 const setCourse = t => page.evaluate(async ({ u, id }) => fetch(`/2017-06-30/users/${u}?fields=currentCourseId`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentCourseId: id }) }), { u: uid, id: courseIdFor(t) });
 
 await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded' });
