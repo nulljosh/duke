@@ -52,6 +52,10 @@ final class Poller: ObservableObject {
     @Published var stale = false
     @Published var unreachable = false
     @AppStorage("pwnlingoHost") var host = "localhost:8737"
+    // The runner's reads are open; pause/resume/switch need this, since the
+    // tunnel puts those routes on the public internet. Printed by run.mjs on
+    // first start and stored in scripts/api-token.txt.
+    @AppStorage("pwnlingoToken") var token = ""
     private var timer: Timer?
     private var lastEventId: String?
 
@@ -62,17 +66,20 @@ final class Poller: ObservableObject {
         reload()
     }
 
-    func togglePause() {
-        let endpoint = (state?.paused ?? false) ? "resume" : "pause"
-        guard let url = URL(string: "http://\(host)/\(endpoint)") else { return }
-        var req = URLRequest(url: url); req.httpMethod = "POST"
+    private func mutate(_ pathAndQuery: String) {
+        guard let url = URL(string: "http://\(host)/\(pathAndQuery)") else { return }
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue(token, forHTTPHeaderField: "X-Pwnlingo-Token")
         Task { _ = try? await URLSession.shared.data(for: req); reload() }
     }
 
+    func togglePause() {
+        mutate((state?.paused ?? false) ? "resume" : "pause")
+    }
+
     func switchTrack(_ t: String) {
-        guard let url = URL(string: "http://\(host)/switch?track=\(t)") else { return }
-        var req = URLRequest(url: url); req.httpMethod = "POST"
-        Task { _ = try? await URLSession.shared.data(for: req); reload() }
+        mutate("switch?track=\(t)")
     }
 
     func reload() {

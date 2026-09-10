@@ -18,6 +18,7 @@ import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
+import crypto from 'node:crypto';
 import { courseIdFor } from './courseId.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
@@ -28,11 +29,25 @@ let isChessTrack = track === 'chess';
 let pendingTrack = null; // set by POST /switch, picked up at the top of the outer loop
 let paused = false; // set by POST /pause and /resume, checked at the top of the outer loop
 
-// ponytail: stdlib http, no deps — lets the iOS/macOS status app poll over
-// LAN instead of only reading state.json locally. /switch has no auth either:
-// fine for a personal box on a trusted network, not meant to be exposed further.
+// ponytail: stdlib http, no deps — lets the status apps poll over LAN or the
+// Cloudflare Tunnel. Reads are open (worst case someone sees a chess score);
+// the mutating routes are not, because this hostname is on the public internet
+// and pause/resume/switch are things a stranger could actually mess with.
+// Token lives in scripts/api-token.txt (gitignored), generated on first run.
+const TOKEN_PATH = path.join(D, 'api-token.txt');
+let apiToken;
+try {
+  apiToken = fs.readFileSync(TOKEN_PATH, 'utf8').trim();
+} catch {
+  apiToken = crypto.randomBytes(24).toString('base64url');
+  fs.writeFileSync(TOKEN_PATH, apiToken + '\n', { mode: 0o600 });
+  console.log(`Generated API token for the mutating routes -> ${TOKEN_PATH}\n  ${apiToken}\n  Paste this into the status app's settings.`);
+}
+const authed = req => (req.headers['x-pwnlingo-token'] || '') === apiToken;
+
 http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Pwnlingo-Token');
   // ponytail: a request landing during the startup window (before page/fen/etc
   // below finish initializing) threw a TDZ ReferenceError synchronously inside
   // this handler, which crashed the whole process — not just that one request.
@@ -47,6 +62,8 @@ http.createServer((req, res) => {
       ? fs.readFileSync(path.join(D, 'log.jsonl'), 'utf8').trim().split('\n').slice(-50) : [];
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean)));
+  } else if (req.method === 'POST' && /^\/(switch|pause|resume)/.test(req.url) && !authed(req)) {
+    res.writeHead(401); res.end('{"ok":false,"err":"bad or missing X-Pwnlingo-Token"}');
   } else if (req.method === 'POST' && req.url.startsWith('/switch')) {
     const t = new URL(req.url, 'http://x').searchParams.get('track');
     if (t) { pendingTrack = t; res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }

@@ -5,6 +5,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.statement.bodyAsBytes
 import io.ktor.serialization.kotlinx.json.json
@@ -64,7 +65,13 @@ val trackNames: Map<String, String> =
     mapOf("math" to "Math", "chess" to "Chess", "music" to "Music") + languages.toMap()
 
 /** Talks to run.mjs's HTTP API — the same endpoints the SwiftUI app polls. */
-class StatusClient(private val host: String, private val http: HttpClient = defaultClient()) {
+class StatusClient(
+    private val host: String,
+    // Reads are open; pause/resume/switch need this because the tunnel puts
+    // those routes on the public internet. run.mjs prints it on first start.
+    private val token: String = "",
+    private val http: HttpClient = defaultClient(),
+) {
 
     companion object {
         private val lenientJson = Json { ignoreUnknownKeys = true; isLenient = true }
@@ -85,14 +92,16 @@ class StatusClient(private val host: String, private val http: HttpClient = defa
     suspend fun screenshotBytes(cacheBust: String): ByteArray? =
         runCatchingNull { http.get("http://$host/screenshot?t=$cacheBust").bodyAsBytes() }
 
-    suspend fun switchTrack(track: String) {
-        runCatchingNull { http.post("http://$host/switch?track=$track") }
+    private suspend fun mutate(pathAndQuery: String) {
+        runCatchingNull {
+            http.post("http://$host/$pathAndQuery") { header("X-Pwnlingo-Token", token) }
+        }
     }
 
-    suspend fun togglePause(currentlyPaused: Boolean) {
-        val endpoint = if (currentlyPaused) "resume" else "pause"
-        runCatchingNull { http.post("http://$host/$endpoint") }
-    }
+    suspend fun switchTrack(track: String) = mutate("switch?track=$track")
+
+    suspend fun togglePause(currentlyPaused: Boolean) =
+        mutate(if (currentlyPaused) "resume" else "pause")
 }
 
 private inline fun <T> runCatchingNull(block: () -> T?): T? =

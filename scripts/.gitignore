@@ -4,6 +4,7 @@ log.jsonl
 lessons.jsonl
 state.json
 promo-calib.json
+api-token.txt
 open-fail.png
 node_modules/
 package-lock.json

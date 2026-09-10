@@ -25,7 +25,8 @@ private fun glyphFor(piece: Char): String = when (piece.lowercaseChar()) {
 @Composable
 fun StatusScreen(defaultHost: String = "localhost:8737") {
     var host by remember { mutableStateOf(defaultHost) }
-    val client = remember(host) { StatusClient(host) }
+    var token by remember { mutableStateOf("") }
+    val client = remember(host, token) { StatusClient(host, token) }
     var state by remember { mutableStateOf<RunState?>(null) }
     var fen by remember { mutableStateOf<String?>(null) }
     var unreachable by remember { mutableStateOf(false) }
@@ -82,9 +83,22 @@ fun StatusScreen(defaultHost: String = "localhost:8737") {
     if (showHostEditor) {
         AlertDialog(
             onDismissRequest = { showHostEditor = false },
-            title = { Text("Mac address") },
+            title = { Text("Connection") },
             text = {
-                OutlinedTextField(value = host, onValueChange = { host = it }, singleLine = true)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = host,
+                        onValueChange = { host = it },
+                        singleLine = true,
+                        label = { Text("Mac address") },
+                    )
+                    OutlinedTextField(
+                        value = token,
+                        onValueChange = { token = it },
+                        singleLine = true,
+                        label = { Text("API token (for pause / switch)") },
+                    )
+                }
             },
             confirmButton = { TextButton(onClick = { showHostEditor = false }) { Text("Done") } },
         )
