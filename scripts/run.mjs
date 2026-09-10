@@ -222,6 +222,7 @@ const inject = async () => {
   // defined before the solver's top-level script runs.
   const files = isMath ? ['mathjs.min.js', 'math.js'] : isChessTrack ? ['solver.js', 'js-chess-engine.js'] : ['solver.js'];
   for (const f of files) await page.addScriptTag({ content: fs.readFileSync(path.join(D, f), 'utf8') });
+  await page.evaluate(v => { window.__isChessTrack = v; }, isChessTrack);
   if (isChessTrack) await page.evaluate(c => { window.__duo.promoCalib = c; }, promoCalib);
 };
 const xp = () => page.evaluate(async u => { try { return (await (await fetch(`/2017-06-30/users/${u}?fields=totalXp`)).json()).totalXp; } catch (e) { return null; } }, uid);
@@ -272,6 +273,7 @@ await setCourse(track);
 S.xp0 = S.xp = await xp(); S.username = await username(); Object.assign(S, (await stats()) || {}); saveState();
 
 const hasChallenge = () => page.evaluate(() => !!document.querySelector('[data-test^="challenge "], [data-test="stories-element"]'));
+let forceQuitOnOpen = true;   // true on cold start too — see openLesson()
 // walk the tree and pick the next non-radio level by URL (0-based tree, 1-based URL),
 // advancing localStorage.treeCursor each call so repeated calls rotate through levels
 const pickTreeTarget = () => page.evaluate(() => {
@@ -296,6 +298,27 @@ const gotoTreeTarget = async (tgt) => {
 const openLesson = async () => {
   await page.goto('https://www.duolingo.com/lesson', { waitUntil: 'domcontentloaded' });
   await sleep(5000); await inject();
+  // ponytail: /lesson resumes whatever session is ALREADY open server-side,
+  // regardless of the course just PATCHed — including on a cold process start,
+  // not just a live /switch (that path already had its own quit sequence, this
+  // one didn't). hasChallenge() here would happily return true for that stale
+  // session (verified live: a fresh start on 'music' and 'chess' both kept
+  // resuming an abandoned Klingon exercise from hours earlier) — openLesson()
+  // has no way to tell "this challenge belongs to the wrong course", so the
+  // only fix is to unconditionally dismiss once right after a course change,
+  // never on every ordinary lesson-to-lesson call (that would quit real
+  // lessons before they even start).
+  if (forceQuitOnOpen) {
+    forceQuitOnOpen = false;
+    if (await hasChallenge()) {
+      await page.evaluate(() => { const q = document.querySelector('[data-test="quit-button"]'); q && q.click(); }).catch(() => {});
+      await sleep(1000);
+      await page.evaluate(() => { const y = document.querySelector('[data-test="notification-drawer-no-thanks-button"]') || [...document.querySelectorAll('button')].find(b => /END SESSION|QUIT/i.test(b.innerText)); y && y.click(); }).catch(() => {});
+      await sleep(1500);
+      await page.goto('https://www.duolingo.com/lesson', { waitUntil: 'domcontentloaded' });
+      await sleep(3000); await inject();
+    }
+  }
   if (await hasChallenge()) return true;
   const node = await page.evaluate(() => {
     const tip = [...document.querySelectorAll('*')].find(e => e.childElementCount === 0 && /^(START|JUMP HERE\?|OPEN)$/i.test(e.textContent.trim()));
@@ -341,7 +364,7 @@ while (true) {
   if (pendingTrack && pendingTrack !== track) {
     track = pendingTrack; pendingTrack = null;
     isMath = track === 'math'; isChessTrack = track === 'chess';
-    S.track = track; idleOpens = 0;
+    S.track = track; idleOpens = 0; forceQuitOnOpen = true;
     // the old track's prompt/choices/grid otherwise linger on screen until the
     // new track's first question loads — a switch looked like it did nothing.
     S.prompt = S.answer = S.choices = S.grid = null; saveState();
@@ -476,7 +499,21 @@ while (true) {
       page.evaluate(async () => {
         const D = window.__duo, c = D.chal();
         if (c && c.chessPuzzleInfo && !document.querySelector('[data-test^="blame"]')) return { kind: 'puzzle', plan: D.chessPlan(innerWidth) };
-        if (c && c.match) { const r = await D.matchTurn(3); return { kind: 'match', r: { ...r, clicks: r.clicks && r.clicks.map(([x, y]) => [x * innerWidth / 1568, y * innerWidth / 1568]) } }; }
+        // ponytail: was matchTurn(3) — bot matches lost at that level. lasker()'s
+        // "better" ply already computes level 4 as a matter of course whenever it's
+        // called below the level>=4 cap, so calling with 4 here (base=4, better=5
+        // skipped by the existing cap) is a proven-safe strength bump: the level-4
+        // search already runs today inside every level-3 call with no timing issues,
+        // this just makes it the primary move instead of a tiebreak check. Level 5
+        // itself stays capped — jsChessEngine.aiMove is synchronous and can block
+        // the page for >10s, which risks blowing matchTurn's 15s window; doing that
+        // safely needs a Worker (separate thread, real cancellable timeout), not
+        // attempted here without a live match to verify it against.
+        // ponytail: c.match isn't chess-specific — a music "matching" challenge
+        // carries the same field, hit this branch, and crashed every single
+        // lesson forever (jsChessEngine is only loaded for the chess track) —
+        // that's why music never got past this line to reach solveLang() at all.
+        if (window.__isChessTrack && c && c.match) { const r = await D.matchTurn(4); return { kind: 'match', r: { ...r, clicks: r.clicks && r.clicks.map(([x, y]) => [x * innerWidth / 1568, y * innerWidth / 1568]) } }; }
         if (document.querySelector('[data-test="stories-player-continue"], [data-test="stories-player-done"], [data-test="stories-element"]')) return { kind: 'story' };
         if (!c && !document.querySelector('[data-test^="challenge "]') && document.querySelector('[data-test="quit-button"]')) return { kind: 'radio-maybe' };
         const n = document.querySelector('[data-test="player-next"]') || [...document.querySelectorAll('button')].find(b => !b.disabled && /^(CONTINUE|NO THANKS|GOT IT|START \+\d+ XP|CLAIM|KEEP LEARNING)$/i.test(b.innerText.trim()));
