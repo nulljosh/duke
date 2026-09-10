@@ -219,6 +219,7 @@ while (true) {
   let lastKey = null, repeats = 0, lastCountedKey = null;
 
   while (Date.now() - t0 < 20 * 60e3) {                     // one lesson, 20 min ceiling
+    if (paused) break;   // was only checked at the top of the outer loop — a match/puzzle session kept playing through a pause
     saveState();   // heartbeat: an `at` that stops advancing means the loop is stuck, not just between puzzles
     if (isMath) {
       // autoLesson() is the real driver (run(15) only hits the generic
