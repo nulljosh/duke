@@ -17,12 +17,29 @@
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
+import http from 'node:http';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 const track = process.argv[2];
 if (!track) { console.error('usage: node run.mjs <track>   (a language code, math, chess, or music)'); process.exit(1); }
 const isMath = track === 'math';
 const isChessTrack = track === 'chess';
+
+// ponytail: stdlib http, no deps — lets the iOS/macOS status app poll over
+// LAN instead of only reading state.json locally. Read-only, no auth: fine
+// for a personal box on a trusted network, not meant to be exposed further.
+http.createServer((req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  if (req.url === '/state') {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(fs.readFileSync(path.join(D, 'state.json'), 'utf8').toString());
+  } else if (req.url === '/log') {
+    const lines = fs.existsSync(path.join(D, 'log.jsonl'))
+      ? fs.readFileSync(path.join(D, 'log.jsonl'), 'utf8').trim().split('\n').slice(-50) : [];
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean)));
+  } else { res.writeHead(404); res.end(); }
+}).listen(8737, '0.0.0.0');
 
 const jwt = fs.readFileSync(path.join(D, 'jwt.txt'), 'utf8').trim();
 const uid = JSON.parse(Buffer.from(jwt.split('.')[1], 'base64').toString()).sub;
@@ -128,6 +145,7 @@ const clickByText = () => page.evaluate(() => {
 
 let idleOpens = 0;
 while (true) {
+  saveState();   // heartbeat before a potentially-hanging navigation, so a stuck run still shows a moving `at`
   if (!(await openLesson())) {
     log({ ev: 'open-fail', url: page.url() });
     idleOpens++;
@@ -143,6 +161,7 @@ while (true) {
   let lastKey = null, repeats = 0;
 
   while (Date.now() - t0 < 20 * 60e3) {                     // one lesson, 20 min ceiling
+    saveState();   // heartbeat: an `at` that stops advancing means the loop is stuck, not just between puzzles
     if (isMath) {
       // autoLesson() is the real driver (run(15) only hits the generic
       // fallback loop and halts 'manual' on the first widget it can't
