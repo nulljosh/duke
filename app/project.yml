@@ -6,7 +6,9 @@ targets:
     type: application
     platform: macOS
     deploymentTarget: "14.0"
-    sources: [App]
+    sources:
+      - path: App
+        excludes: ["Info-iOS.plist"]
     info:
       path: App/Info-macOS.plist
       properties:
@@ -24,13 +26,16 @@ targets:
     type: application
     platform: iOS
     deploymentTarget: "17.0"
-    sources: [App]
+    sources:
+      - path: App
+        excludes: ["Info-macOS.plist"]
     info:
       path: App/Info-iOS.plist
       properties:
         NSLocalNetworkUsageDescription: Reads live puzzle progress from the pwnlingo autopilot running on your Mac.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
+        UILaunchScreen: {}
     settings:
       base:
         PRODUCT_NAME: Pwnlingo
