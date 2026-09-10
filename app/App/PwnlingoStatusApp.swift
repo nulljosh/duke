@@ -2,9 +2,16 @@ import SwiftUI
 
 @main
 struct PwnlingoStatusApp: App {
+    #if os(macOS)
+    @AppStorage("openAtLogin") private var openAtLogin = true
+    #endif
+
     init() {
         #if DEBUG
         chessBoardSelfCheck()
+        #endif
+        #if os(macOS)
+        LoginItem.sync(enabled: UserDefaults.standard.object(forKey: "openAtLogin") as? Bool ?? true)
         #endif
     }
 

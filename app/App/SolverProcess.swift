@@ -14,8 +14,34 @@ enum SolverProcess {
     // bundle — the repo path is hardcoded on purpose.
     private static let scriptURL = URL(fileURLWithPath: NSString(string: "~/Documents/Code/pwnlingo/scripts/run.mjs").expandingTildeInPath)
     private static let logURL = URL(fileURLWithPath: NSString(string: "~/Documents/Code/pwnlingo/scripts/run.log").expandingTildeInPath)
+    private static let tunnelConfigURL = URL(fileURLWithPath: NSString(string: "~/.cloudflared/pwnlingo-config.yml").expandingTildeInPath)
+    private static let tunnelLogURL = URL(fileURLWithPath: NSString(string: "~/Documents/Code/pwnlingo/scripts/tunnel.log").expandingTildeInPath)
+
+    // ponytail: "Start" only ever relaunched run.mjs — the status site and the
+    // Windows/Linux/iOS clients all depend on the cloudflared tunnel too, and
+    // it dies with the Mac the same way run.mjs does. One button, both back.
+    private static func startTunnelIfNeeded() {
+        let check = Process()
+        check.executableURL = URL(fileURLWithPath: "/usr/bin/pgrep")
+        check.arguments = ["-f", "cloudflared tunnel --config \(tunnelConfigURL.path)"]
+        check.standardOutput = Pipe()
+        try? check.run()
+        check.waitUntilExit()
+        guard check.terminationStatus != 0 else { return } // already running
+
+        let t = Process()
+        t.executableURL = URL(fileURLWithPath: "/opt/homebrew/bin/cloudflared")
+        t.arguments = ["tunnel", "--config", tunnelConfigURL.path, "run"]
+        FileManager.default.createFile(atPath: tunnelLogURL.path, contents: nil)
+        if let handle = try? FileHandle(forWritingTo: tunnelLogURL) {
+            t.standardOutput = handle
+            t.standardError = handle
+        }
+        try? t.run()
+    }
 
     static func start(track: String) {
+        startTunnelIfNeeded()
         let p = Process()
         p.executableURL = URL(fileURLWithPath: "/usr/bin/env")
         p.arguments = ["node", scriptURL.path, track]

@@ -8,6 +8,7 @@ struct SettingsView: View {
     #if os(macOS)
     @AppStorage("backgroundRun") private var backgroundRun = true
     @AppStorage("startTrack") private var startTrack = "chess"
+    @AppStorage("openAtLogin") private var openAtLogin = true
     #endif
 
     var body: some View {
@@ -18,6 +19,8 @@ struct SettingsView: View {
             Toggle("Sound effects", isOn: $soundEnabled)
             #if os(macOS)
             Toggle("Works in the background (even when closed)", isOn: $backgroundRun)
+            Toggle("Open at login", isOn: $openAtLogin)
+                .onChange(of: openAtLogin) { LoginItem.sync(enabled: $1) }
             Picker("Start track", selection: $startTrack) {
                 ForEach(tracks, id: \.self) { t in Text(trackNames[t] ?? t.capitalized).tag(t) }
             }

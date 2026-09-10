@@ -8,6 +8,9 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 
 fun main() = application {
+    // ponytail: no per-app toggle UI here (Settings lives on the macOS app only)
+    // — desktop just registers itself on login every launch, enabled by default.
+    LoginItem.sync(enabled = true)
     Window(
         onCloseRequest = ::exitApplication,
         title = "Pwnlingo",
