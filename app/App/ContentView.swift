@@ -15,7 +15,9 @@ struct ContentView: View {
             if let s = poller.state {
                 if s.track == "chess", let fen = poller.fen {
                     // live-rendered from FEN, no screenshot needed for chess
-                    ChessBoardView(fen: fen).frame(maxWidth: .infinity)
+                    ChessBoardView(fen: fen)
+                        .frame(maxWidth: .infinity)
+                        .opacity(s.paused == true ? 0.5 : 1)
                 } else {
                     // ponytail: cache-bust with s.at (already ticks every poll) instead of a second timer
                     Button { showFullScreenshot = true } label: {
@@ -53,6 +55,11 @@ struct ContentView: View {
                     Text("\(missRate, specifier: "%.0f")% miss rate").font(.caption2).foregroundStyle(.secondary)
                 }
                 Text(elapsed(since: s.started)).font(.caption2).foregroundStyle(.secondary)
+                Button { poller.togglePause() } label: {
+                    Label(s.paused == true ? "Resume" : "Pause", systemImage: s.paused == true ? "play.fill" : "pause.fill")
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
                 Group {
                     if poller.stale {
                         Label("Stuck — no update in 90s+", systemImage: "exclamationmark.triangle.fill")

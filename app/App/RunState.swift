@@ -9,6 +9,7 @@ import AudioToolbox
 struct RunState: Decodable {
     let at, started, track: String
     let username: String?
+    let paused: Bool?
     let lessons, puzzles, matches, misses: Int
     let xp0, xp: Int?
     let last: String?
@@ -57,6 +58,13 @@ final class Poller: ObservableObject {
             Task { @MainActor in self?.reload() }
         }
         reload()
+    }
+
+    func togglePause() {
+        let endpoint = (state?.paused ?? false) ? "resume" : "pause"
+        guard let url = URL(string: "http://\(host)/\(endpoint)") else { return }
+        var req = URLRequest(url: url); req.httpMethod = "POST"
+        Task { _ = try? await URLSession.shared.data(for: req); reload() }
     }
 
     func switchTrack(_ t: String) {

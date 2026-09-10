@@ -25,6 +25,7 @@ if (!track) { console.error('usage: node run.mjs <track>   (a language code, mat
 let isMath = track === 'math';
 let isChessTrack = track === 'chess';
 let pendingTrack = null; // set by POST /switch, picked up at the top of the outer loop
+let paused = false; // set by POST /pause and /resume, checked at the top of the outer loop
 
 // ponytail: stdlib http, no deps — lets the iOS/macOS status app poll over
 // LAN instead of only reading state.json locally. /switch has no auth either:
@@ -43,6 +44,10 @@ http.createServer((req, res) => {
   } else if (req.method === 'POST' && req.url.startsWith('/switch')) {
     const t = new URL(req.url, 'http://x').searchParams.get('track');
     if (t) { pendingTrack = t; res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }
+  } else if (req.method === 'POST' && req.url.startsWith('/pause')) {
+    paused = true; S.paused = true; saveState(); res.end('{"ok":true}');
+  } else if (req.method === 'POST' && req.url.startsWith('/resume')) {
+    paused = false; S.paused = false; saveState(); res.end('{"ok":true}');
   } else if (req.url.startsWith('/fen')) {
     // ponytail: reuses the same liveFen() the chess-move planner already calls
     fen().then(f => {
@@ -62,7 +67,7 @@ const jwt = fs.readFileSync(path.join(D, 'jwt.txt'), 'utf8').trim();
 const uid = JSON.parse(Buffer.from(jwt.split('.')[1], 'base64').toString()).sub;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const log = o => fs.appendFileSync(path.join(D, 'log.jsonl'), JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n');
-const S = { started: new Date().toISOString(), track, username: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null };
+const S = { started: new Date().toISOString(), track, username: null, paused: false, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null };
 const saveState = () => fs.writeFileSync(path.join(D, 'state.json'), JSON.stringify({ at: new Date().toISOString(), ...S }, null, 1));
 const ledger = rows => rows.length && fs.appendFileSync(path.join(D, 'lessons.jsonl'), rows.map(r => JSON.stringify(r)).join('\n') + '\n');
 
@@ -179,6 +184,7 @@ const clickByText = () => page.evaluate(() => {
 
 let idleOpens = 0;
 while (true) {
+  if (paused) { saveState(); await sleep(500); continue; }
   if (pendingTrack && pendingTrack !== track) {
     track = pendingTrack; pendingTrack = null;
     isMath = track === 'math'; isChessTrack = track === 'chess';
