@@ -284,6 +284,18 @@ while (true) {
     track = pendingTrack; pendingTrack = null;
     isMath = track === 'math'; isChessTrack = track === 'chess';
     S.track = track; S.xp0 = S.xp = null; idleOpens = 0;
+    // ponytail: /lesson just resumes whatever session is already in flight
+    // server-side, regardless of the PATCHed currentCourseId — a switch mid
+    // puzzle/match/lesson silently kept solving the OLD track's content under
+    // the NEW track's label until that session ended on its own. Quitting
+    // whatever's open first (same buttons the stuck-puzzle path already
+    // clicks) makes the switch actually take effect immediately.
+    if (await hasChallenge()) {
+      await page.evaluate(() => { const q = document.querySelector('[data-test="quit-button"]'); q && q.click(); }).catch(() => {});
+      await sleep(1000);
+      await page.evaluate(() => { const y = document.querySelector('[data-test="notification-drawer-no-thanks-button"]') || [...document.querySelectorAll('button')].find(b => /END SESSION|QUIT/i.test(b.innerText)); y && y.click(); }).catch(() => {});
+      await sleep(1500);
+    }
     await setCourse(track);
     log({ ev: 'switch', track });
     await sleep(2000);
