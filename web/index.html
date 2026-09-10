@@ -17,13 +17,19 @@
   --accent: #3f9a00; --link: #2f7500; --accent-soft: #eef8e3; --on-accent: #fff;
   --bg: #fff; --bg2: #f7f7f8; --text: #1c1d22; --text2: #5c5f6a; --border: #e6e7ea;
   --font-body: -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --demo-bg: #fff; --demo-tile: #eef0f3; --demo-square: #d7dae0; --demo-tile2: rgba(28,29,34,.06);
+  --demo-text: #1c1d22; --demo-text2: rgba(28,29,34,.55);
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #121316; --bg2: #1a1b1f; --text: #ececf0; --text2: rgba(236,236,240,.62);
-  --border: rgba(236,236,240,.12); --accent-soft: #14200a; --link: #8be04a; } }
+  --border: rgba(236,236,240,.12); --accent-soft: #14200a; --link: #8be04a;
+  --demo-bg: #16171b; --demo-tile: #26282e; --demo-square: #3a3d44; --demo-tile2: rgba(236,236,240,.08);
+  --demo-text: #ececf0; --demo-text2: rgba(236,236,240,.55); } }
 :root[data-theme="dark"] {
   --bg: #121316; --bg2: #1a1b1f; --text: #ececf0; --text2: rgba(236,236,240,.62);
-  --border: rgba(236,236,240,.12); --accent-soft: #14200a; --link: #8be04a; }
+  --border: rgba(236,236,240,.12); --accent-soft: #14200a; --link: #8be04a;
+  --demo-bg: #16171b; --demo-tile: #26282e; --demo-square: #3a3d44; --demo-tile2: rgba(236,236,240,.08);
+  --demo-text: #ececf0; --demo-text2: rgba(236,236,240,.55); }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
 a { color: var(--link); text-decoration: none; }
@@ -80,16 +86,17 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
    Positions are illustrative (the real solver reads live puzzles from
    Duolingo's fiber tree), the moves themselves are real mate-in-1 / fork
    patterns. Nothing leaves the page. */
-.app-demo { background: #16171b; color: #ececf0; border-radius: 0 0 10px 10px; padding: 1.1rem 1rem 1.3rem; text-align: center; }
-.app-demo h4 { font-size: .95rem; font-weight: 700; margin-bottom: .8rem; }
+.app-demo { background: var(--demo-bg); color: var(--demo-text); border-radius: 0 0 10px 10px; padding: 1.1rem 1rem 1.3rem; text-align: center; }
+.app-demo h4 { font-size: .95rem; font-weight: 700; margin-bottom: .3rem; }
+.app-meta { font-size: .7rem; color: var(--demo-text2); margin-bottom: .8rem; }
 .demo-board { position: relative; width: 200px; aspect-ratio: 1; margin: 0 auto .8rem; border-radius: 6px; overflow: hidden;
-  background-image: linear-gradient(45deg,#3a3d44 25%,transparent 25%),linear-gradient(-45deg,#3a3d44 25%,transparent 25%),
-    linear-gradient(45deg,transparent 75%,#3a3d44 75%),linear-gradient(-45deg,transparent 75%,#3a3d44 75%);
-  background-size: 50px 50px; background-position: 0 0,0 25px,25px -25px,-25px 0; background-color: #26282e; }
+  background-image: linear-gradient(45deg,var(--demo-square) 25%,transparent 25%),linear-gradient(-45deg,var(--demo-square) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,var(--demo-square) 75%),linear-gradient(-45deg,transparent 75%,var(--demo-square) 75%);
+  background-size: 50px 50px; background-position: 0 0,0 25px,25px -25px,-25px 0; background-color: var(--demo-tile); }
 .demo-piece { position: absolute; width: 12.5%; height: 12.5%; display: flex; align-items: center; justify-content: center;
   font-size: 1.4rem; line-height: 1; transition: left .6s cubic-bezier(.4,0,.2,1), top .6s cubic-bezier(.4,0,.2,1), opacity .3s; }
-.demo-piece.w { color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.5); }
-.demo-piece.b { color: #1c1d22; }
+.demo-piece.w { color: #fff; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+.demo-piece.b { color: #1c1d22; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; }
 .demo-flash { position: absolute; width: 12.5%; height: 12.5%; border-radius: 50%; background: #58cc02;
   opacity: 0; transform: scale(.4); pointer-events: none; transition: opacity .25s, transform .25s; }
 .demo-flash.on { opacity: .55; transform: scale(1.5); }
@@ -98,15 +105,15 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
 .app-xp { font-size: 1.5rem; font-weight: 700; color: #58cc02; font-variant-numeric: tabular-nums; margin-top: .3rem; }
 .app-stats { display: flex; justify-content: center; gap: 1.6rem; margin-top: .6rem; }
 .app-stats div b { display: block; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
-.app-stats div span { font-size: .7rem; color: rgba(255,255,255,.55); }
-.demo-math { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem; width: 200px; height: 200px; margin: 0 auto .8rem; border-radius: 6px; background: #26282e; }
+.app-stats div span { font-size: .7rem; color: var(--demo-text2); }
+.demo-math { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem; width: 200px; height: 200px; margin: 0 auto .8rem; border-radius: 6px; background: var(--demo-tile); }
 .demo-math .problem { font-size: 1.15rem; font-weight: 600; }
 .demo-math .answer { font-size: 1.3rem; font-weight: 700; color: #58cc02; opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s; padding: .3rem .8rem; border-radius: 8px; }
 .demo-math .answer.on { opacity: 1; transform: translateY(0); background: rgba(88,204,2,.15); }
-.demo-lang { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .9rem; width: 200px; height: 200px; margin: 0 auto .8rem; border-radius: 6px; background: #26282e; padding: 0 .8rem; }
-.demo-lang .prompt { font-size: .95rem; color: rgba(255,255,255,.7); text-align: center; }
+.demo-lang { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .9rem; width: 200px; height: 200px; margin: 0 auto .8rem; border-radius: 6px; background: var(--demo-tile); padding: 0 .8rem; }
+.demo-lang .prompt { font-size: .95rem; color: var(--demo-text2); text-align: center; }
 .demo-lang .tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; }
-.demo-lang .tile { font-size: .85rem; padding: .35rem .65rem; border-radius: 6px; background: rgba(255,255,255,.08); color: rgba(255,255,255,.5); transition: background .25s, color .25s, transform .25s; }
+.demo-lang .tile { font-size: .85rem; padding: .35rem .65rem; border-radius: 6px; background: var(--demo-tile2); color: var(--demo-text2); transition: background .25s, color .25s, transform .25s; }
 .demo-lang .tile.on { background: #58cc02; color: #fff; transform: scale(1.05); }
 </style>
 </head>
@@ -128,6 +135,7 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   <div class="device device-mac has-chrome" aria-hidden="true"><div class="device-screen">
     <div class="app-demo">
       <h4 id="appTrackName">pwnlingo — solving Chess</h4>
+      <div class="app-meta">155 day streak · 5/5 hearts · Diamond League</div>
       <div id="demoStage"></div>
       <div class="app-label" id="appLabel">Checkmate!</div>
       <div class="app-xp" id="appXp">+0 XP</div>

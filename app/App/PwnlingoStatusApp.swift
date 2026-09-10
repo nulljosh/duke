@@ -2,6 +2,12 @@ import SwiftUI
 
 @main
 struct PwnlingoStatusApp: App {
+    init() {
+        #if DEBUG
+        chessBoardSelfCheck()
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
