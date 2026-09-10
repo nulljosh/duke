@@ -1,28 +1,75 @@
 import SwiftUI
 
-// A hand-drawn horse-head-in-profile silhouette. Every unicode/SF-Symbol option for
-// the knight looked bad or broke on this OS — a hand-drawn vector shape can't hit
-// either problem: no font, no OS-dependent glyph substitution, ever.
+extension View {
+    @ViewBuilder func `if`<T: View>(_ condition: Bool, transform: (Self) -> T) -> some View {
+        if condition { transform(self) } else { self }
+    }
+}
+
+// A horse-head-in-profile silhouette, kept deliberately simple (few, gentle
+// curves) — the first version had too many small wiggles and read as noise at
+// board-square size. Every unicode/SF-Symbol option for the knight looked bad
+// or broke on this OS; a hand-drawn shape can't hit either problem.
 struct KnightShape: Shape {
     func path(in rect: CGRect) -> Path {
         let w = rect.width, h = rect.height
         var p = Path()
-        p.move(to: CGPoint(x: w * 0.18, y: h * 0.97))
-        p.addLine(to: CGPoint(x: w * 0.22, y: h * 0.55))
-        p.addCurve(to: CGPoint(x: w * 0.10, y: h * 0.34),
-                    control1: CGPoint(x: w * 0.16, y: h * 0.46), control2: CGPoint(x: w * 0.06, y: h * 0.43))
-        p.addCurve(to: CGPoint(x: w * 0.32, y: h * 0.14),
-                    control1: CGPoint(x: w * 0.16, y: h * 0.24), control2: CGPoint(x: w * 0.24, y: h * 0.18))
-        p.addLine(to: CGPoint(x: w * 0.40, y: h * 0.03))
-        p.addLine(to: CGPoint(x: w * 0.47, y: h * 0.19))
-        p.addCurve(to: CGPoint(x: w * 0.76, y: h * 0.29),
-                    control1: CGPoint(x: w * 0.57, y: h * 0.17), control2: CGPoint(x: w * 0.68, y: h * 0.21))
-        p.addLine(to: CGPoint(x: w * 0.95, y: h * 0.37))
-        p.addLine(to: CGPoint(x: w * 0.81, y: h * 0.49))
-        p.addCurve(to: CGPoint(x: w * 0.55, y: h * 0.56),
-                    control1: CGPoint(x: w * 0.71, y: h * 0.53), control2: CGPoint(x: w * 0.62, y: h * 0.55))
-        p.addLine(to: CGPoint(x: w * 0.60, y: h * 0.76))
-        p.addLine(to: CGPoint(x: w * 0.86, y: h * 0.97))
+        p.move(to: CGPoint(x: w * 0.16, y: h * 0.95))
+        p.addLine(to: CGPoint(x: w * 0.16, y: h * 0.50))
+        p.addCurve(to: CGPoint(x: w * 0.36, y: h * 0.08),
+                    control1: CGPoint(x: w * 0.16, y: h * 0.28), control2: CGPoint(x: w * 0.22, y: h * 0.14))
+        p.addLine(to: CGPoint(x: w * 0.50, y: h * 0.02))
+        p.addLine(to: CGPoint(x: w * 0.60, y: h * 0.18))
+        p.addCurve(to: CGPoint(x: w * 0.94, y: h * 0.42),
+                    control1: CGPoint(x: w * 0.75, y: h * 0.20), control2: CGPoint(x: w * 0.88, y: h * 0.30))
+        p.addLine(to: CGPoint(x: w * 0.76, y: h * 0.54))
+        p.addCurve(to: CGPoint(x: w * 0.55, y: h * 0.58),
+                    control1: CGPoint(x: w * 0.68, y: h * 0.58), control2: CGPoint(x: w * 0.61, y: h * 0.59))
+        p.addLine(to: CGPoint(x: w * 0.60, y: h * 0.95))
+        p.closeSubpath()
+        return p
+    }
+}
+
+// A stylized "three balls on a crown" — the classic flat-icon shorthand for a
+// queen piece. Composited from plain circles/capsule instead of a hand-drawn
+// path: the first attempt (a five-point zigzag path) read as jagged static at
+// board-square size. Primitives stay smooth and legible at any size.
+struct QueenCrownIcon: View {
+    var body: some View {
+        GeometryReader { geo in
+            let w = geo.size.width, h = geo.size.height
+            ZStack(alignment: .bottom) {
+                Capsule().frame(width: w * 0.66, height: h * 0.30)
+                HStack(spacing: -w * 0.06) {
+                    Circle().frame(width: w * 0.34, height: w * 0.34)
+                    Circle().frame(width: w * 0.42, height: w * 0.42).offset(y: -h * 0.06)
+                    Circle().frame(width: w * 0.34, height: w * 0.34)
+                }
+                .offset(y: -h * 0.28)
+            }
+            .frame(width: w, height: h, alignment: .bottom)
+        }
+    }
+}
+
+// A mitre silhouette (the classic bishop-piece profile) — a rounded body
+// narrowing to a point, on a flared base.
+struct BishopMitreShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        let w = rect.width, h = rect.height
+        var p = Path()
+        p.move(to: CGPoint(x: w * 0.20, y: h * 0.95))
+        p.addLine(to: CGPoint(x: w * 0.80, y: h * 0.95))
+        p.addLine(to: CGPoint(x: w * 0.65, y: h * 0.70))
+        p.addCurve(to: CGPoint(x: w * 0.62, y: h * 0.35),
+                    control1: CGPoint(x: w * 0.72, y: h * 0.60), control2: CGPoint(x: w * 0.68, y: h * 0.45))
+        p.addCurve(to: CGPoint(x: w * 0.50, y: h * 0.03),
+                    control1: CGPoint(x: w * 0.58, y: h * 0.20), control2: CGPoint(x: w * 0.55, y: h * 0.08))
+        p.addCurve(to: CGPoint(x: w * 0.38, y: h * 0.35),
+                    control1: CGPoint(x: w * 0.45, y: h * 0.08), control2: CGPoint(x: w * 0.42, y: h * 0.20))
+        p.addCurve(to: CGPoint(x: w * 0.35, y: h * 0.70),
+                    control1: CGPoint(x: w * 0.32, y: h * 0.45), control2: CGPoint(x: w * 0.28, y: h * 0.60))
         p.closeSubpath()
         return p
     }
@@ -125,16 +172,16 @@ private struct PieceGlyph: View {
     private let outlineOffsets: [(CGFloat, CGFloat)] = [(-1, -1), (1, -1), (-1, 1), (1, 1)]
 
     // King/queen/knight/bishop all mis-render as an emoji substitute on this macOS
-    // (confirmed via paused, FEN-bracketed screenshots) — each gets a real SF Symbol
-    // instead of a bare letter. Knight tried an SF Symbol horse
-    // (figure.equestrian.sports) rendered as a tiny glitchy running figure, so
-    // knight is a hand-drawn KnightShape instead — a real icon, not a letter.
-    // Rook/pawn are real, working unicode glyphs — untouched.
+    // (confirmed via paused, FEN-bracketed screenshots). King is a real SF Symbol
+    // crown. Queen/knight/bishop are hand-drawn shapes matching their real chess
+    // silhouette (a generic star/diamond SF Symbol doesn't read as "queen"/
+    // "bishop" — an SF Symbol horse for knight rendered as a glitchy tiny running
+    // figure). Rook/pawn are real, working unicode glyphs — untouched.
     @ViewBuilder private func glyphView() -> some View {
         switch lower {
         case "k": Image(systemName: "crown.fill").font(.system(size: size * 0.8))
-        case "q": Image(systemName: "star.fill").font(.system(size: size * 0.7))
-        case "b": Image(systemName: "diamond.fill").font(.system(size: size * 0.62))
+        case "q": QueenCrownIcon().frame(width: size * 0.7, height: size * 0.7)
+        case "b": BishopMitreShape().aspectRatio(contentMode: .fit).frame(width: size * 0.58, height: size * 0.58)
         case "n": KnightShape().aspectRatio(contentMode: .fit).frame(width: size * 0.62, height: size * 0.62)
         default:
             Text(glyphFor(piece)).font(.system(size: size))
@@ -157,11 +204,15 @@ private struct PieceGlyph: View {
 
 struct ChessBoardView: View {
     let fen: String
+    // false (default): square, letterboxed to fit — used in the small card view.
+    // true: scales up to fully cover its container (may overflow one axis) —
+    // used as full-bleed background art; caller applies .clipped().
+    var cover: Bool = false
     @State private var pieces: [PlacedPiece] = []
 
     var body: some View {
         GeometryReader { geo in
-            let size = min(geo.size.width, geo.size.height)
+            let size = cover ? max(geo.size.width, geo.size.height) : min(geo.size.width, geo.size.height)
             let cell = size / 8
             ZStack(alignment: .topLeading) {
                 VStack(spacing: 0) {
@@ -185,8 +236,7 @@ struct ChessBoardView: View {
             .frame(width: size, height: size)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .aspectRatio(1, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .if(!cover) { $0.aspectRatio(1, contentMode: .fit).clipShape(RoundedRectangle(cornerRadius: 8)) }
         .onAppear { pieces = diffPieces([], toFEN: fen) }
         .onChange(of: fen) { _, newFEN in
             withAnimation(.easeInOut(duration: 0.35)) {
