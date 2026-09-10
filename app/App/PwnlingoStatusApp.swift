@@ -10,7 +10,7 @@ struct PwnlingoStatusApp: App {
                 #endif
         }
         #if os(macOS)
-        .windowResizability(.contentSize)
+        .windowResizability(.contentMinSize)
         .commands {
             CommandMenu("Track") {
                 ForEach(tracks, id: \.self) { t in

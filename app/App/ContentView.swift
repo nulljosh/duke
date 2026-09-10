@@ -5,6 +5,7 @@ let trackNames = ["es": "Spanish", "el": "Greek", "math": "Math", "chess": "Ches
 
 struct ContentView: View {
     @ObservedObject private var poller = Poller.shared
+    @State private var showFullScreenshot = false
     #if !os(macOS)
     @State private var editingHost = false
     #endif
@@ -13,17 +14,26 @@ struct ContentView: View {
         VStack(spacing: 14) {
             if let s = poller.state {
                 // ponytail: cache-bust with s.at (already ticks every poll) instead of a second timer
-                AsyncImage(url: URL(string: "http://\(poller.host)/screenshot?t=\(s.at)")) { img in
-                    img.resizable().aspectRatio(contentMode: .fit)
-                } placeholder: { Color.black.opacity(0.05) }
-                    .frame(width: 240, height: 154)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                Button { showFullScreenshot = true } label: {
+                    AsyncImage(url: screenshotURL(s)) { img in
+                        img.resizable().aspectRatio(contentMode: .fit)
+                    } placeholder: { Color.black.opacity(0.05) }
+                        .aspectRatio(1400.0 / 900.0, contentMode: .fit)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .buttonStyle(.plain)
+                .help("Click to enlarge")
+
                 if let u = s.username {
                     Text(u).font(.caption).foregroundStyle(.secondary)
                 }
                 Text(trackNames[s.track] ?? s.track.capitalized).font(.title2.bold())
                 if let xp0 = s.xp0, let xp = s.xp {
                     Text("+\(xp - xp0) XP").font(.largeTitle.monospacedDigit().bold()).foregroundStyle(.green)
+                    if let rate = xpPerMinute(s, gained: xp - xp0) {
+                        Text("\(rate, specifier: "%.1f") XP/min").font(.caption2).foregroundStyle(.secondary)
+                    }
                 }
                 HStack(spacing: 28) {
                     if s.track == "chess" {
@@ -34,6 +44,10 @@ struct ContentView: View {
                         stat("Lessons", s.lessons)
                     }
                 }
+                if let missRate = missRate(s) {
+                    Text("\(missRate, specifier: "%.0f")% miss rate").font(.caption2).foregroundStyle(.secondary)
+                }
+                Text(elapsed(since: s.started)).font(.caption2).foregroundStyle(.secondary)
                 Group {
                     if poller.stale {
                         Label("Stuck — no update in 90s+", systemImage: "exclamationmark.triangle.fill")
@@ -50,6 +64,7 @@ struct ContentView: View {
             }
         }
         .padding(.top, 8)
+        .padding(.horizontal, 14)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         #if !os(macOS)
         .overlay(alignment: .topTrailing) {
@@ -59,7 +74,7 @@ struct ContentView: View {
         }
         #endif
         .task { poller.start() }
-        .frame(width: 320, height: 420)
+        .frame(minWidth: 320, idealWidth: 360, minHeight: 420, idealHeight: 480)
         #if !os(macOS)
         .sheet(isPresented: $editingHost) {
             VStack(spacing: 12) {
@@ -71,6 +86,43 @@ struct ContentView: View {
             .frame(width: 260)
         }
         #endif
+        .sheet(isPresented: $showFullScreenshot) {
+            VStack(spacing: 0) {
+                if let s = poller.state {
+                    AsyncImage(url: screenshotURL(s)) { img in
+                        img.resizable().aspectRatio(contentMode: .fit)
+                    } placeholder: { ProgressView() }
+                }
+                Button("Close") { showFullScreenshot = false }
+                    .padding()
+            }
+            .frame(minWidth: 700, minHeight: 480)
+        }
+    }
+
+    private func screenshotURL(_ s: RunState) -> URL? {
+        URL(string: "http://\(poller.host)/screenshot?t=\(s.at)")
+    }
+
+    private func elapsed(since started: String) -> String {
+        guard let start = ISO8601DateFormatter().date(from: started) else { return "" }
+        let secs = Int(Date().timeIntervalSince(start))
+        let h = secs / 3600, m = (secs % 3600) / 60
+        return h > 0 ? "running \(h)h \(m)m" : "running \(m)m"
+    }
+
+    private func xpPerMinute(_ s: RunState, gained: Int) -> Double? {
+        guard let start = ISO8601DateFormatter().date(from: s.started) else { return nil }
+        let mins = Date().timeIntervalSince(start) / 60
+        guard mins > 1, gained > 0 else { return nil }
+        return Double(gained) / mins
+    }
+
+    private func missRate(_ s: RunState) -> Double? {
+        guard s.track == "chess" else { return nil }
+        let total = s.puzzles + s.misses
+        guard total > 0 else { return nil }
+        return Double(s.misses) / Double(total) * 100
     }
 
     @ViewBuilder private func stat(_ label: String, _ value: Int, tint: Color? = nil) -> some View {
