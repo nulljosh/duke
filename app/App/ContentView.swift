@@ -30,24 +30,10 @@ struct ContentView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             background
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             if let s = poller.state {
                 overlayPanel(s)
                     .padding(14)
-            }
-            if let s = poller.state, let progress = puzzleProgress(s) {
-                // ponytail: Duolingo's own lesson progress bar (top-of-screen) is
-                // the reference — this is progress through the CURRENT puzzle's
-                // move plan (run.mjs knows the full solution upfront, so step/total
-                // is real, not guessed), not a daily/session metric. Resets empty
-                // between puzzles.
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        Color.black.opacity(0.15)
-                        Color.green.frame(width: geo.size.width * progress)
-                    }
-                }
-                .frame(height: 3)
-                .frame(maxHeight: .infinity, alignment: .top)
             }
             if poller.state == nil {
                 if poller.unreachable {
@@ -91,35 +77,16 @@ struct ContentView: View {
     @ViewBuilder private var background: some View {
         if let s = poller.state {
             if s.track == "chess", let fen = poller.fen {
-                // ponytail: same ambient-blur trick as the screenshot below — a
-                // .cover crop of a square board into this portrait window chopped
-                // off the left/right edges, and "see the whole board" trumps
-                // "fill every pixel". Blurred cover copy fills the frame, the
-                // real board renders uncropped (.cover: false) on top.
-                ZStack {
-                    ChessBoardView(fen: fen, cover: true)
-                        .blur(radius: 40)
-                        .overlay(Color.black.opacity(0.25))
-                    ChessBoardView(fen: fen, cover: false)
-                }
-                .clipped()
-                .opacity(s.paused == true ? 0.5 : 1)
+                // ponytail: no blur layer — a .cover crop chopped off board edges,
+                // and the blurred-letterbox compromise for that turned out to be
+                // its own eyesore. Plain contained board on a plain background:
+                // shows the whole board, nothing extra to look at.
+                ChessBoardView(fen: fen, cover: false)
+                    .opacity(s.paused == true ? 0.5 : 1)
             } else {
-                // ponytail: the screenshot is landscape (1400x900); a hard .fill crop
-                // into this portrait window chopped off most of the page and looked
-                // broken. Ambient-blur technique instead: a blurred, cropped copy
-                // fills the frame, the real screenshot sits uncropped on top.
-                ZStack {
-                    AsyncImage(url: screenshotURL(s)) { img in
-                        img.resizable().aspectRatio(contentMode: .fill)
-                    } placeholder: { Color.black.opacity(0.05) }
-                        .blur(radius: 40)
-                        .overlay(Color.black.opacity(0.25))
-                    AsyncImage(url: screenshotURL(s)) { img in
-                        img.resizable().aspectRatio(contentMode: .fit)
-                    } placeholder: { Color.clear }
-                }
-                .clipped()
+                AsyncImage(url: screenshotURL(s)) { img in
+                    img.resizable().aspectRatio(contentMode: .fit)
+                } placeholder: { Color.clear }
             }
         } else {
             Color.black.opacity(0.05)
@@ -128,6 +95,18 @@ struct ContentView: View {
 
     @ViewBuilder private func overlayPanel(_ s: RunState) -> some View {
         VStack(spacing: 8) {
+            if let progress = puzzleProgress(s) {
+                // ponytail: real progress through the CURRENT puzzle's move plan
+                // (run.mjs knows the full solution upfront), not a daily/session
+                // metric. Resets empty between puzzles.
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(Color.black.opacity(0.15))
+                        Capsule().fill(Color.green).frame(width: geo.size.width * progress)
+                    }
+                }
+                .frame(height: 4)
+            }
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     if let u = s.username {
@@ -196,7 +175,12 @@ struct ContentView: View {
             }
         }
         .padding(12)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .strokeBorder(.white.opacity(0.35), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.2), radius: 12, y: 4)
     }
 
     private func screenshotURL(_ s: RunState) -> URL? {

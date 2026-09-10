@@ -13,7 +13,11 @@ extension View {
 // working unicode glyphs). Those four get a real SF Symbol icon each instead.
 func glyphFor(_ piece: Character) -> String {
     switch Character(piece.lowercased()) {
+    case "k": return "♚"
+    case "q": return "♛"
     case "r": return "♜"
+    case "b": return "♝"
+    case "n": return "♞"
     case "p": return "♟"
     default: return "?"
     }
@@ -107,15 +111,11 @@ private struct PieceGlyph: View {
     // tried for queen/knight/bishop and rejected as low quality regardless of
     // how many times they were redrawn — real SF Symbols only from here, even
     // though none of them literally look like the named piece.
+    // ponytail: the default system font (SF Pro) substitutes an emoji for ♚/♛/
+    // ♞/♝ specifically. Testing Helvetica — a plain, non-emoji-aware font —
+    // instead of hunting for another SF Symbol standing in for the wrong piece.
     @ViewBuilder private func glyphView() -> some View {
-        switch lower {
-        case "k": Image(systemName: "crown.fill").font(.system(size: size * 0.8))
-        case "q": Image(systemName: "seal.fill").font(.system(size: size * 0.7))
-        case "b": Image(systemName: "triangle.fill").font(.system(size: size * 0.62))
-        case "n": Image(systemName: "hare.fill").font(.system(size: size * 0.6))
-        default:
-            Text(glyphFor(piece)).font(.system(size: size))
-        }
+        Text(glyphFor(piece)).font(.custom("Helvetica", size: size))
     }
 
     var body: some View {
