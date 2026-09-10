@@ -14,8 +14,13 @@ struct PwnlingoStatusApp: App {
         .defaultSize(width: 420, height: 640)
         .commands {
             CommandMenu("Track") {
-                ForEach(tracks, id: \.self) { t in
+                ForEach(otherTracks, id: \.self) { t in
                     Button(trackNames[t] ?? t.capitalized) { Poller.shared.switchTrack(t) }
+                }
+                Menu("Language") {
+                    ForEach(languages, id: \.code) { lang in
+                        Button(lang.name) { Poller.shared.switchTrack(lang.code) }
+                    }
                 }
             }
         }

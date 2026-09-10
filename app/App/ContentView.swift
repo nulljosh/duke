@@ -1,7 +1,24 @@
 import SwiftUI
 
-let tracks = ["es", "el", "math", "chess", "music"]
-let trackNames = ["es": "Spanish", "el": "Greek", "math": "Math", "chess": "Chess", "music": "Music"]
+let otherTracks = ["math", "chess", "music"]
+// ponytail: courseIdFor() in run.mjs already accepts any 2-letter code via its
+// generic 'DUOLINGO_<CODE>_EN' fallback (zh/nl are the only hardcoded overrides) —
+// this list only drives what shows up in the picker, not what the runner can play.
+let languages: [(code: String, name: String)] = [
+    ("es", "Spanish"), ("fr", "French"), ("de", "German"), ("it", "Italian"),
+    ("pt", "Portuguese"), ("ja", "Japanese"), ("zh", "Chinese"), ("ko", "Korean"),
+    ("ru", "Russian"), ("ar", "Arabic"), ("hi", "Hindi"), ("nl", "Dutch"),
+    ("sv", "Swedish"), ("tr", "Turkish"), ("el", "Greek"), ("pl", "Polish"),
+    ("cy", "Welsh"), ("ga", "Irish"), ("hu", "Hungarian"), ("da", "Danish"),
+    ("id", "Indonesian"), ("vi", "Vietnamese"), ("uk", "Ukrainian"), ("ro", "Romanian"),
+    ("cs", "Czech"), ("he", "Hebrew"), ("yi", "Yiddish"), ("sw", "Swahili"),
+    ("hw", "Hawaiian"), ("la", "Latin"), ("eo", "Esperanto"), ("zu", "Zulu"),
+    ("gd", "Scottish Gaelic"), ("fi", "Finnish"), ("tl", "Tagalog"), ("ht", "Haitian Creole"),
+    ("gn", "Guarani"), ("nv", "Navajo"), ("kl", "Klingon"),
+]
+let tracks = otherTracks + languages.map(\.code)
+let trackNames: [String: String] = Dictionary(uniqueKeysWithValues: languages.map { ($0.code, $0.name) })
+    .merging(["math": "Math", "chess": "Chess", "music": "Music"]) { a, _ in a }
 
 struct ContentView: View {
     @ObservedObject private var poller = Poller.shared
