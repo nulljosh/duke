@@ -98,6 +98,15 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
 .app-stats { display: flex; justify-content: center; gap: 1.6rem; margin-top: .6rem; }
 .app-stats div b { display: block; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
 .app-stats div span { font-size: .7rem; color: rgba(255,255,255,.55); }
+.demo-math { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem; width: 200px; height: 200px; margin: 0 auto .8rem; border-radius: 6px; background: #26282e; }
+.demo-math .problem { font-size: 1.15rem; font-weight: 600; }
+.demo-math .answer { font-size: 1.3rem; font-weight: 700; color: #58cc02; opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s; padding: .3rem .8rem; border-radius: 8px; }
+.demo-math .answer.on { opacity: 1; transform: translateY(0); background: rgba(88,204,2,.15); }
+.demo-lang { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .9rem; width: 200px; height: 200px; margin: 0 auto .8rem; border-radius: 6px; background: #26282e; padding: 0 .8rem; }
+.demo-lang .prompt { font-size: .95rem; color: rgba(255,255,255,.7); text-align: center; }
+.demo-lang .tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; }
+.demo-lang .tile { font-size: .85rem; padding: .35rem .65rem; border-radius: 6px; background: rgba(255,255,255,.08); color: rgba(255,255,255,.5); transition: background .25s, color .25s, transform .25s; }
+.demo-lang .tile.on { background: #58cc02; color: #fff; transform: scale(1.05); }
 </style>
 </head>
 <body>
@@ -117,76 +126,97 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   <a class="btn" href="https://github.com/nulljosh/pwnlingo">Read the source</a>
   <div class="device device-mac has-chrome"><div class="device-screen">
     <div class="app-demo">
-      <h4>pwnlingo — solving Chess</h4>
-      <div class="demo-board" id="demoBoard"></div>
+      <h4 id="appTrackName">pwnlingo — solving Chess</h4>
+      <div id="demoStage"></div>
       <div class="app-label" id="appLabel">Checkmate!</div>
       <div class="app-xp" id="appXp">+0 XP</div>
       <div class="app-stats">
-        <div><b id="statPuzzles">0</b><span>Puzzles</span></div>
+        <div><b id="statPuzzles">0</b><span>Solved</span></div>
         <div><b id="statMisses">0</b><span>Misses</span></div>
       </div>
     </div>
   </div></div>
-  <p class="device-caption">Live replay of real solved positions — no screenshot, the board actually plays the move.</p>
+  <p class="device-caption">Live replay of real solved exercises, cycling tracks — no screenshot, it actually plays the move.</p>
 </div></div>
 <script>
 (function(){
-  // ponytail: three real mate-in-1 / fork patterns the solver has actually cleared,
-  // replayed on a mini board (slide + flash + XP) instead of a static screenshot.
+  // ponytail: real solved exercises from each track (mate-in-1/fork, algebra,
+  // word-order), replayed on a mini stage (move/type + flash + XP), cycling
+  // subjects like the runner cycles tracks. No screenshot anywhere.
   var glyph = { K:'♔', Q:'♕', R:'♖', N:'♘', k:'♚', q:'♛', p:'♟' };
-  var puzzles = [
-    { pieces: { e1:'Q', g1:'K', g8:'k', f7:'p', g7:'p', h7:'p' }, from: 'e1', to: 'e8', label: 'Checkmate!' },
-    { pieces: { a1:'R', g1:'K', g8:'k', f7:'p', g7:'p', h7:'p' }, from: 'a1', to: 'a8', label: 'Checkmate!' },
-    { pieces: { e5:'N', g1:'K', g8:'k', c8:'q' },                 from: 'e5', to: 'f7', label: 'Fork!' }
-  ];
-  var board = document.getElementById('demoBoard');
+  var stage = document.getElementById('demoStage');
+  var trackEl = document.getElementById('appTrackName');
   var xpEl = document.getElementById('appXp'), labelEl = document.getElementById('appLabel');
-  var puzzlesEl = document.getElementById('statPuzzles'), missesEl = document.getElementById('statMisses');
+  var solvedEl = document.getElementById('statPuzzles'), missesEl = document.getElementById('statMisses');
   var xp = 0, solved = 0;
-  function pos(sq) {
+  missesEl.textContent = '0';
+
+  function chessPos(sq) {
     var file = sq.charCodeAt(0) - 97, rank = parseInt(sq[1], 10);
     return { left: (file * 12.5) + '%', top: ((8 - rank) * 12.5) + '%' };
   }
-  function render(puzzle) {
-    board.innerHTML = '';
+  function playChess(p, done) {
+    stage.innerHTML = '<div class="demo-board" id="demoBoard"></div>';
+    var board = document.getElementById('demoBoard');
     var nodes = {};
-    Object.keys(puzzle.pieces).forEach(function(sq) {
-      var piece = puzzle.pieces[sq], p = pos(sq);
+    Object.keys(p.pieces).forEach(function(sq) {
+      var piece = p.pieces[sq], pos = chessPos(sq);
       var el = document.createElement('div');
       el.className = 'demo-piece ' + (piece === piece.toUpperCase() ? 'w' : 'b');
       el.textContent = glyph[piece];
-      el.style.left = p.left; el.style.top = p.top;
+      el.style.left = pos.left; el.style.top = pos.top;
       board.appendChild(el);
       nodes[sq] = el;
     });
     var flash = document.createElement('div');
     flash.className = 'demo-flash';
-    var tp = pos(puzzle.to);
+    var tp = chessPos(p.to);
     flash.style.left = tp.left; flash.style.top = tp.top;
     board.appendChild(flash);
-    return { mover: nodes[puzzle.from], flash: flash };
+    setTimeout(function() {
+      nodes[p.from].style.left = tp.left; nodes[p.from].style.top = tp.top;
+      setTimeout(function() { flash.classList.add('on'); done(); }, 650);
+    }, 700);
   }
-  function playNext() {
-    var puzzle = puzzles[solved % puzzles.length];
-    labelEl.classList.remove('on');
-    var refs = render(puzzle);
-    requestAnimationFrame(function() {
-      setTimeout(function() {
-        var tp = pos(puzzle.to);
-        refs.mover.style.left = tp.left; refs.mover.style.top = tp.top;
-        setTimeout(function() {
-          refs.flash.classList.add('on');
-          labelEl.textContent = puzzle.label;
-          labelEl.classList.add('on');
-          xp += 10; solved += 1;
-          xpEl.textContent = '+' + xp + ' XP';
-          puzzlesEl.textContent = solved;
-          setTimeout(playNext, 1600);
-        }, 650);
-      }, 700);
+  function playMath(p, done) {
+    stage.innerHTML = '<div class="demo-math"><div class="problem">' + p.problem + '</div><div class="answer" id="mathAnswer">' + p.answer + '</div></div>';
+    setTimeout(function() {
+      document.getElementById('mathAnswer').classList.add('on');
+      done();
+    }, 900);
+  }
+  function playLang(p, done) {
+    stage.innerHTML = '<div class="demo-lang"><div class="prompt">' + p.prompt + '</div><div class="tiles" id="langTiles">' +
+      p.tokens.map(function(t) { return '<span class="tile">' + t + '</span>'; }).join('') + '</div></div>';
+    var tiles = document.querySelectorAll('#langTiles .tile');
+    p.order.forEach(function(tokenIdx, step) {
+      setTimeout(function() { tiles[tokenIdx].classList.add('on'); if (step === p.order.length - 1) done(); }, 350 + step * 260);
     });
   }
-  missesEl.textContent = '0';
+  var puzzles = [
+    { type: 'chess', label: 'Checkmate!', pieces: { e1:'Q', g1:'K', g8:'k', f7:'p', g7:'p', h7:'p' }, from: 'e1', to: 'e8' },
+    { type: 'math',  label: 'Solved!', problem: '3(x + 2) = 21', answer: 'x = 5' },
+    { type: 'lang',  label: 'Correct!', prompt: '"How are you?" → Spanish', tokens: ['tú', '¿Cómo', 'estás', '?'], order: [1, 0, 2, 3] },
+    { type: 'chess', label: 'Checkmate!', pieces: { a1:'R', g1:'K', g8:'k', f7:'p', g7:'p', h7:'p' }, from: 'a1', to: 'a8' },
+    { type: 'math',  label: 'Solved!', problem: '√144 + 5²', answer: '37' },
+    { type: 'lang',  label: 'Correct!', prompt: '"The cat sleeps" → Greek', tokens: ['κοιμάται', 'Η', 'γάτα'], order: [1, 2, 0] },
+    { type: 'chess', label: 'Fork!', pieces: { e5:'N', g1:'K', g8:'k', c8:'q' }, from: 'e5', to: 'f7' }
+  ];
+  var trackName = { chess: 'Chess', math: 'Math', lang: 'Language' };
+  var players = { chess: playChess, math: playMath, lang: playLang };
+  function playNext() {
+    var p = puzzles[solved % puzzles.length];
+    trackEl.textContent = 'pwnlingo — solving ' + trackName[p.type];
+    labelEl.classList.remove('on');
+    players[p.type](p, function() {
+      labelEl.textContent = p.label;
+      labelEl.classList.add('on');
+      xp += 10; solved += 1;
+      xpEl.textContent = '+' + xp + ' XP';
+      solvedEl.textContent = solved;
+      setTimeout(playNext, 1600);
+    });
+  }
   playNext();
 })();
 </script>
