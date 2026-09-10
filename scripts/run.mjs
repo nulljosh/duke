@@ -54,7 +54,7 @@ const saveState = () => fs.writeFileSync(path.join(D, 'state.json'), JSON.string
 const ledger = rows => rows.length && fs.appendFileSync(path.join(D, 'lessons.jsonl'), rows.map(r => JSON.stringify(r)).join('\n') + '\n');
 
 const ctx = await chromium.launchPersistentContext(path.join(D, '.pw-profile'), {
-  headless: false, viewport: { width: 1400, height: 900 }, args: ['--disable-background-timer-throttling'],
+  headless: true, viewport: { width: 1400, height: 900 }, args: ['--disable-background-timer-throttling'],
 });
 await ctx.addCookies([{ name: 'jwt_token', value: jwt, domain: '.duolingo.com', path: '/', secure: true, sameSite: 'Lax' }]);
 const page = ctx.pages()[0] || await ctx.newPage();
@@ -80,10 +80,17 @@ const chessMove = async (pts) => {
       await page.mouse.move(b[0], b[1], { steps: 12 }); await sleep(120); await page.mouse.up();
     } else { await click(a); await click(b); }
     await sleep(700);
-    if (promo) await click(promo);
-    let changed = before === null; for (let i = 0; i < 6 && !changed; i++) { await sleep(300); changed = (await fen()) !== before; }
+    // ponytail: the drop alone may already auto-promote to queen (no picker shown) —
+    // check before firing the extra promo click, which otherwise lands as a bogus
+    // third click and gets read as an illegal follow-up move on the dropped piece.
+    let changed = before === null; for (let i = 0; i < 4 && !changed; i++) { await sleep(250); changed = (await fen()) !== before; }
     if (changed) return true;
-    log({ ev: 'move-retry', attempt, from: a, to: b });
+    if (promo) {
+      await click(promo);
+      for (let i = 0; i < 4 && !changed; i++) { await sleep(300); changed = (await fen()) !== before; }
+    }
+    if (changed) return true;
+    log({ ev: 'move-retry', attempt, from: a, to: b, promo });
   }
   return false;
 };
@@ -172,7 +179,7 @@ while (true) {
   }
   idleOpens = 0;
   const t0 = Date.now();
-  let lastKey = null, repeats = 0;
+  let lastKey = null, repeats = 0, lastCountedKey = null;
 
   while (Date.now() - t0 < 20 * 60e3) {                     // one lesson, 20 min ceiling
     saveState();   // heartbeat: an `at` that stops advancing means the loop is stuck, not just between puzzles
@@ -272,9 +279,13 @@ while (true) {
     if (st.kind === 'puzzle' && st.plan) {
       const key = st.plan.moves.join(',');
       if (key === lastKey && ++repeats >= 2) {
+        // player-skip doesn't exist mid chess-puzzle (Duolingo just re-serves the
+        // same puzzle) — quit the lesson outright so openLesson() lands somewhere new.
         log({ ev: 'stuck', moves: st.plan.moves });
-        await page.evaluate(() => { const s = document.querySelector('[data-test="player-skip"]'); s && s.click(); });
-        repeats = 0; lastKey = null; await sleep(1500); continue;
+        await page.evaluate(() => { const q = document.querySelector('[data-test="quit-button"]'); q && q.click(); });
+        await sleep(1000);
+        await page.evaluate(() => { const y = document.querySelector('[data-test="notification-drawer-no-thanks-button"]') || [...document.querySelectorAll('button')].find(b => /END SESSION|QUIT/i.test(b.innerText)); y && y.click(); });
+        repeats = 0; lastKey = null; await sleep(1500); break;
       }
       if (key !== lastKey) { lastKey = key; repeats = 0; }
       const graded = () => page.waitForFunction(() => {
@@ -298,9 +309,19 @@ while (true) {
         if (!done) await sleep(2200);
       }
       await sleep(400);
-      const ok = await page.evaluate(() => { const cs = __duo.chessState(); const g = cs && cs.guess && cs.guess.gradingState; return !(g && /incorrect|wrong/i.test(g.type || '')); });
-      S.puzzles++; if (!ok) S.misses++; S.last = 'puzzle'; log({ ev: 'puzzle', moves: st.plan.moves, ok }); saveState();
-      await page.evaluate(() => __duo.chessNext()).catch(() => {});
+      const graded_ = await page.evaluate(() => { const cs = __duo.chessState(); const g = cs && cs.guess && cs.guess.gradingState; return g && g.type && g.type !== 'ungraded' ? g.type : null; });
+      // ponytail: an unresolved puzzle (stuck move, never graded) must not count as one —
+      // it's the SAME puzzle Duolingo will re-serve, not a new one. Only count real grades,
+      // and only once per distinct move-set key — a transient "correct" gradingState that
+      // reverts (the click-retry bug) must not re-count the same stuck puzzle every retry.
+      if ((graded_ || done) && key !== lastCountedKey) {
+        lastCountedKey = key;
+        const ok = !/incorrect|wrong/i.test(graded_ || '');
+        S.puzzles++; if (!ok) S.misses++; S.last = 'puzzle'; log({ ev: 'puzzle', moves: st.plan.moves, ok }); saveState();
+        await page.evaluate(() => __duo.chessNext()).catch(() => {});
+      } else {
+        log({ ev: 'puzzle-unresolved', moves: st.plan.moves });
+      }
     } else if (st.kind === 'match') {
       const r = st.r;
       if (r.over) { S.matches++; log({ ev: 'match-over', status: r.status, ply: r.hist && r.hist.length }); saveState();

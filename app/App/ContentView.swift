@@ -6,7 +6,11 @@ private let trackIcons = ["es": "quote.bubble.fill", "el": "character.book.close
 
 struct ContentView: View {
     @StateObject private var poller = Poller()
+    #if os(macOS)
+    @Environment(\.openSettings) private var openSettings
+    #else
     @State private var editingHost = false
+    #endif
 
     var body: some View {
         VStack(spacing: 14) {
@@ -55,12 +59,21 @@ struct ContentView: View {
         .padding(.top, 8)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay(alignment: .topTrailing) {
+            #if os(macOS)
+            // ponytail: real Settings window (Cmd+, / menu bar) is the primary path now;
+            // this stays as a quiet in-window shortcut to the same place.
+            Button { openSettings() } label: { Image(systemName: "gearshape") }
+                .buttonStyle(.plain)
+                .padding(14)
+            #else
             Button { editingHost = true } label: { Image(systemName: "gearshape") }
                 .buttonStyle(.plain)
                 .padding(14)
+            #endif
         }
         .task { poller.start() }
         .frame(width: 320, height: 260)
+        #if !os(macOS)
         .sheet(isPresented: $editingHost) {
             VStack(spacing: 12) {
                 Text("Mac address").font(.headline)
@@ -70,6 +83,7 @@ struct ContentView: View {
             .padding()
             .frame(width: 260)
         }
+        #endif
     }
 
     @ViewBuilder private func stat(_ label: String, _ value: Int, tint: Color? = nil) -> some View {

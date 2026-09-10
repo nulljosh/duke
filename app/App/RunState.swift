@@ -38,7 +38,7 @@ final class Poller: ObservableObject {
     @Published var events: [LogEvent] = []
     @Published var stale = false
     @Published var unreachable = false
-    @AppStorage("pwnlingoHost") var host = "192.168.100.129:8737"
+    @AppStorage("pwnlingoHost") var host = "localhost:8737"
     private var timer: Timer?
 
     func start() {
