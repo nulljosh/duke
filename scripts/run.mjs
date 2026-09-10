@@ -65,8 +65,10 @@ http.createServer((req, res) => {
   } else if (req.method === 'POST' && /^\/(switch|pause|resume)/.test(req.url) && !authed(req)) {
     res.writeHead(401); res.end('{"ok":false,"err":"bad or missing X-Pwnlingo-Token"}');
   } else if (req.method === 'POST' && req.url.startsWith('/switch')) {
+    // Token-gated already, so this is just a sanity check: a track is a short
+    // alphanumeric code (a language code, or math/chess/music), nothing else.
     const t = new URL(req.url, 'http://x').searchParams.get('track');
-    if (t) { pendingTrack = t; res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }
+    if (t && /^[a-z]{2,6}$/i.test(t)) { pendingTrack = t; res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }
   } else if (req.method === 'POST' && req.url.startsWith('/pause')) {
     paused = true; S.paused = true; saveState(); res.end('{"ok":true}');
   } else if (req.method === 'POST' && req.url.startsWith('/resume')) {
