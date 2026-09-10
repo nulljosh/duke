@@ -20,14 +20,15 @@ import path from 'node:path';
 import http from 'node:http';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
-const track = process.argv[2];
+let track = process.argv[2];
 if (!track) { console.error('usage: node run.mjs <track>   (a language code, math, chess, or music)'); process.exit(1); }
-const isMath = track === 'math';
-const isChessTrack = track === 'chess';
+let isMath = track === 'math';
+let isChessTrack = track === 'chess';
+let pendingTrack = null; // set by POST /switch, picked up at the top of the outer loop
 
 // ponytail: stdlib http, no deps — lets the iOS/macOS status app poll over
-// LAN instead of only reading state.json locally. Read-only, no auth: fine
-// for a personal box on a trusted network, not meant to be exposed further.
+// LAN instead of only reading state.json locally. /switch has no auth either:
+// fine for a personal box on a trusted network, not meant to be exposed further.
 http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   if (req.url === '/state') {
@@ -38,6 +39,9 @@ http.createServer((req, res) => {
       ? fs.readFileSync(path.join(D, 'log.jsonl'), 'utf8').trim().split('\n').slice(-50) : [];
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean)));
+  } else if (req.method === 'POST' && req.url.startsWith('/switch')) {
+    const t = new URL(req.url, 'http://x').searchParams.get('track');
+    if (t) { pendingTrack = t; res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }
   } else { res.writeHead(404); res.end(); }
 }).listen(8737, '0.0.0.0');
 
@@ -84,10 +88,12 @@ const chessMove = async (pts) => {
   return false;
 };
 
+const courseIdFor = t => ({ math: 'MATH_BT', chess: 'CHESS_CH', music: 'MUSIC_MU', zh: 'DUOLINGO_ZH-CN_EN', nl: 'DUOLINGO_NL-NL_EN' }[t] || ('DUOLINGO_' + t.toUpperCase() + '_EN'));
+const setCourse = t => page.evaluate(async ({ u, id }) => fetch(`/2017-06-30/users/${u}?fields=currentCourseId`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentCourseId: id }) }), { u: uid, id: courseIdFor(t) });
+
 await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded' });
 await sleep(4000);
-const courseId = { math: 'MATH_BT', chess: 'CHESS_CH', music: 'MUSIC_MU', zh: 'DUOLINGO_ZH-CN_EN', nl: 'DUOLINGO_NL-NL_EN' }[track] || ('DUOLINGO_' + track.toUpperCase() + '_EN');
-await page.evaluate(async ({ u, id }) => fetch(`/2017-06-30/users/${u}?fields=currentCourseId`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentCourseId: id }) }), { u: uid, id: courseId });
+await setCourse(track);
 S.xp0 = S.xp = await xp(); saveState();
 
 const hasChallenge = () => page.evaluate(() => !!document.querySelector('[data-test^="challenge "], [data-test="stories-element"]'));
@@ -145,6 +151,14 @@ const clickByText = () => page.evaluate(() => {
 
 let idleOpens = 0;
 while (true) {
+  if (pendingTrack && pendingTrack !== track) {
+    track = pendingTrack; pendingTrack = null;
+    isMath = track === 'math'; isChessTrack = track === 'chess';
+    S.track = track; S.xp0 = S.xp = null; idleOpens = 0;
+    await setCourse(track);
+    log({ ev: 'switch', track });
+    await sleep(2000);
+  }
   saveState();   // heartbeat before a potentially-hanging navigation, so a stuck run still shows a moving `at`
   if (!(await openLesson())) {
     log({ ev: 'open-fail', url: page.url() });

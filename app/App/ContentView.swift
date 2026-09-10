@@ -1,5 +1,8 @@
 import SwiftUI
 
+private let tracks = ["es", "el", "math", "chess", "music"]
+private let trackNames = ["es": "Spanish", "el": "Greek", "math": "Math", "chess": "Chess", "music": "Music"]
+
 struct ContentView: View {
     @StateObject private var poller = Poller()
     @State private var editingHost = false
@@ -7,7 +10,6 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("Pwnlingo").font(.headline)
                 Spacer()
                 Button { editingHost = true } label: { Image(systemName: "gearshape") }
                     .buttonStyle(.plain)
@@ -17,19 +19,34 @@ struct ContentView: View {
             Spacer()
 
             if let s = poller.state {
-                Text(s.track.capitalized).font(.title2.bold())
+                Menu {
+                    ForEach(tracks, id: \.self) { t in
+                        Button(trackNames[t] ?? t.capitalized) { poller.switchTrack(t) }
+                    }
+                } label: {
+                    Label(trackNames[s.track] ?? s.track.capitalized, systemImage: "chevron.up.chevron.down")
+                        .font(.title2.bold())
+                }
                 if let xp0 = s.xp0, let xp = s.xp {
                     Text("+\(xp - xp0) XP").font(.largeTitle.monospacedDigit().bold()).foregroundStyle(.green)
                 }
                 HStack(spacing: 28) {
-                    stat("Puzzles", s.puzzles)
-                    stat("Misses", s.misses)
-                    stat("Matches", s.matches)
+                    if s.track == "chess" {
+                        stat("Puzzles", s.puzzles)
+                        stat("Misses", s.misses, tint: s.misses > 0 ? .red : nil)
+                        stat("Matches", s.matches)
+                    } else {
+                        stat("Lessons", s.lessons)
+                    }
                 }
                 .padding(.top, 12)
                 if poller.stale {
                     Label("Stuck — no update in 90s+", systemImage: "exclamationmark.triangle.fill")
                         .font(.caption).foregroundStyle(.red).padding(.top, 8)
+                } else if let last = poller.events.first {
+                    Text(last.summary)
+                        .font(.caption).foregroundStyle(.secondary)
+                        .lineLimit(1).padding(.top, 8)
                 }
             } else if poller.unreachable {
                 Label("Can't reach \(poller.host)", systemImage: "wifi.slash").foregroundStyle(.red)
@@ -52,9 +69,9 @@ struct ContentView: View {
         }
     }
 
-    @ViewBuilder private func stat(_ label: String, _ value: Int) -> some View {
+    @ViewBuilder private func stat(_ label: String, _ value: Int, tint: Color? = nil) -> some View {
         VStack {
-            Text("\(value)").font(.title3.monospacedDigit().bold())
+            Text("\(value)").font(.title3.monospacedDigit().bold()).foregroundStyle(tint ?? .primary)
             Text(label).font(.caption).foregroundStyle(.secondary)
         }
     }

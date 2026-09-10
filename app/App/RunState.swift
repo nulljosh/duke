@@ -16,6 +16,18 @@ struct LogEvent: Decodable, Identifiable {
     let moves: [String]?
     let mv: String?
     let track: String?
+
+    var summary: String {
+        switch ev {
+        case "puzzle": return ok == true ? "Solved puzzle" : "Missed puzzle"
+        case "match-over": return "Match finished"
+        case "switch": return "Switched to \(track ?? "?")"
+        case "math": return "Math lesson"
+        case "story-end": return "Finished story"
+        case "rotate": return "Rotated course"
+        default: return ev ?? "Working…"
+        }
+    }
 }
 
 // ponytail: plain polling over the LAN endpoint run.mjs serves (/state, /log)
@@ -34,6 +46,12 @@ final class Poller: ObservableObject {
             Task { @MainActor in self?.reload() }
         }
         reload()
+    }
+
+    func switchTrack(_ t: String) {
+        guard let url = URL(string: "http://\(host)/switch?track=\(t)") else { return }
+        var req = URLRequest(url: url); req.httpMethod = "POST"
+        Task { _ = try? await URLSession.shared.data(for: req); reload() }
     }
 
     func reload() {

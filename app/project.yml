@@ -16,6 +16,7 @@ targets:
           NSAllowsArbitraryLoads: true
     settings:
       base:
+        PRODUCT_NAME: Pwnlingo
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.pwnlingo-status
         MARKETING_VERSION: "1.0"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
@@ -32,6 +33,7 @@ targets:
           NSAllowsArbitraryLoads: true
     settings:
       base:
+        PRODUCT_NAME: Pwnlingo
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.pwnlingo-status
         MARKETING_VERSION: "1.0"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
