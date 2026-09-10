@@ -1,5 +1,17 @@
 # Working on this solver
 
+## Live track switch (2026-09-09)
+
+`run.mjs`'s HTTP server (port 8737) takes `POST /switch?track=<x>` in
+addition to `GET /state`/`GET /log`. It sets a `pendingTrack` module var;
+the outer `while (true)` loop picks it up at the top, PATCHes
+`currentCourseId` via the (now-extracted) `setCourse()` helper, flips the
+mutable `track`/`isMath`/`isChessTrack` bindings, and lets the existing
+`inject()` logic load the right script set on the next `openLesson()`. No
+process restart — the Chromium/profile/cookies stay put. The status app's
+icon row calls this. If you add a track, add it to the app's `tracks`
+array too (`app/App/ContentView.swift`).
+
 ## Layout (2026-09-09 rewrite)
 
 One Playwright runner, `scripts/run.mjs <track>`, replaces the three

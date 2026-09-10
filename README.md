@@ -19,12 +19,19 @@ node run.mjs music
 
 One track at a time; Duolingo keeps one active course per account. Progress lands in `state.json`, every event in `log.jsonl`, and every language question and answer in `lessons.jsonl` so you can review what you practised.
 
+`run.mjs` also serves `state.json`/`log.jsonl` over the LAN on port 8737, and switches track live on `POST /switch?track=<x>` — no restart needed. The status app (below) drives this.
+
+## Status app
+
+A SwiftUI status app (`app/`, iOS + macOS) polls the runner over the LAN: current track, XP gained, puzzles/misses/matches or lesson count, and the latest log line. Tap an icon to switch track without touching the terminal.
+
 ## Files
 
-- `scripts/run.mjs` drives the browser, opens lessons, clicks through, rotates languages.
+- `scripts/run.mjs` drives the browser, opens lessons, clicks through, rotates languages, serves LAN status + track switching.
 - `scripts/solver.js` answers language, chess, and story questions.
 - `scripts/math.js` answers math. It is large because math has no answer key on the page.
 - `scripts/js-chess-engine.js` plays the chess bot.
+- `app/` is the iOS/macOS status app (xcodegen, no checked-in `.xcodeproj`).
 - `SKILL.md` and `CLAUDE.md` hold the gotchas that cost time. Read them before touching the solver.
 - `web/` is the landing page at pwnlingo.heyitsmejosh.com.
 
