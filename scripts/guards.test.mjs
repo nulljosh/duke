@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { rateLimited, isValidTrack, shouldRotateLog } from './guards.mjs';
+import { rateLimited, isValidTrack, shouldRotateLog, cycleDue, nextInRotation } from './guards.mjs';
 
 test('rateLimited allows up to max requests in a window', () => {
   const win = { start: 0, count: 0 };
@@ -28,4 +28,31 @@ test('isValidTrack rejects anything else', () => {
 test('shouldRotateLog triggers at the threshold', () => {
   assert.equal(shouldRotateLog(4_999_999, 5_000_000), false);
   assert.equal(shouldRotateLog(5_000_000, 5_000_000), true);
+});
+
+test('cycleDue is false when cycling is disabled', () => {
+  assert.equal(cycleDue({ enabled: false, mode: 'time', value: 1, lastAt: 0 }, 999_999_999), false);
+});
+
+test('cycleDue: time mode fires once value minutes have elapsed', () => {
+  const cycle = { enabled: true, mode: 'time', value: 20, lastAt: 0 };
+  assert.equal(cycleDue(cycle, 19 * 60_000), false);
+  assert.equal(cycleDue(cycle, 20 * 60_000), true);
+});
+
+test('cycleDue: count mode fires once sinceCount reaches value', () => {
+  const cycle = { enabled: true, mode: 'count', value: 3, sinceCount: 2 };
+  assert.equal(cycleDue(cycle, 0), false);
+  cycle.sinceCount = 3;
+  assert.equal(cycleDue(cycle, 0), true);
+});
+
+test('nextInRotation cycles through the list and wraps around', () => {
+  const rotation = ['chess', 'math', 'es', 'fr'];
+  assert.equal(nextInRotation(rotation, 'chess'), 'math');
+  assert.equal(nextInRotation(rotation, 'fr'), 'chess'); // wraps
+});
+
+test('nextInRotation falls back to the first entry for an unknown track', () => {
+  assert.equal(nextInRotation(['chess', 'math'], 'not-in-list'), 'chess');
 });

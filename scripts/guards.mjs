@@ -16,3 +16,16 @@ export const rateLimited = (win, now, windowMs, max) => {
 export const isValidTrack = t => typeof t === 'string' && /^[a-z]{2,6}$/i.test(t);
 
 export const shouldRotateLog = (sizeBytes, thresholdBytes) => sizeBytes >= thresholdBytes;
+
+// Auto-cycle rotation: is it time to switch tracks? Mirrors run.mjs's inline
+// cycleDue(). Takes `now` instead of reading Date.now() so it's deterministic.
+export const cycleDue = (cycle, now) => {
+  if (!cycle.enabled) return false;
+  return cycle.mode === 'time'
+    ? now - cycle.lastAt >= cycle.value * 60_000
+    : cycle.sinceCount >= cycle.value;
+};
+
+// Next track in the fixed rotation order (chess, math, then every language).
+// Falls back to the first entry for an unknown/off-list current track.
+export const nextInRotation = (rotation, t) => rotation[(rotation.indexOf(t) + 1) % rotation.length] || rotation[0];

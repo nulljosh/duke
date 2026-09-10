@@ -20,7 +20,7 @@ import path from 'node:path';
 import http from 'node:http';
 import crypto from 'node:crypto';
 import { courseIdFor } from './courseId.mjs';
-import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog } from './guards.mjs';
+import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -179,13 +179,8 @@ let cycle = { enabled: false, mode: 'time', value: 20, sinceCount: 0, lastAt: Da
 try { cycle = { ...cycle, ...JSON.parse(fs.readFileSync(CYCLE_PATH, 'utf8')) }; } catch {}
 const saveCycle = () => fs.writeFileSync(CYCLE_PATH, JSON.stringify(cycle));
 const bumpCycleCount = () => { if (cycle.enabled && cycle.mode === 'count') { cycle.sinceCount++; saveCycle(); } };
-const cycleDue = () => {
-  if (!cycle.enabled) return false;
-  return cycle.mode === 'time'
-    ? Date.now() - cycle.lastAt >= cycle.value * 60_000
-    : cycle.sinceCount >= cycle.value;
-};
-const nextInRotation = t => ROTATION[(ROTATION.indexOf(t) + 1) % ROTATION.length] || ROTATION[0];
+const cycleDue = () => cycleDueGuard(cycle, Date.now());
+const nextInRotation = t => nextInRotationGuard(ROTATION, t);
 
 const ctx = await chromium.launchPersistentContext(path.join(D, '.pw-profile'), {
   headless: true, viewport: { width: 1400, height: 900 }, args: ['--disable-background-timer-throttling'],
