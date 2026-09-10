@@ -11,6 +11,13 @@ struct PwnlingoStatusApp: App {
         }
         #if os(macOS)
         .windowResizability(.contentSize)
+        .commands {
+            CommandMenu("Track") {
+                ForEach(tracks, id: \.self) { t in
+                    Button(trackNames[t] ?? t.capitalized) { Poller.shared.switchTrack(t) }
+                }
+            }
+        }
         #endif
         #if os(macOS)
         Settings { SettingsView() }

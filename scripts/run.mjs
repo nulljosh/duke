@@ -33,6 +33,7 @@ http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   if (req.url === '/state') {
     res.setHeader('Content-Type', 'application/json');
+    if (!fs.existsSync(path.join(D, 'state.json'))) { res.writeHead(503); res.end(); return; }
     res.end(fs.readFileSync(path.join(D, 'state.json'), 'utf8').toString());
   } else if (req.url === '/log') {
     const lines = fs.existsSync(path.join(D, 'log.jsonl'))
@@ -42,6 +43,12 @@ http.createServer((req, res) => {
   } else if (req.method === 'POST' && req.url.startsWith('/switch')) {
     const t = new URL(req.url, 'http://x').searchParams.get('track');
     if (t) { pendingTrack = t; res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }
+  } else if (req.url.startsWith('/screenshot')) {
+    // ponytail: reuses the live page, no separate headful/video pipeline
+    page.screenshot({ type: 'jpeg', quality: 60 }).then(buf => {
+      res.setHeader('Content-Type', 'image/jpeg');
+      res.end(buf);
+    }).catch(() => { res.writeHead(503); res.end(); });
   } else { res.writeHead(404); res.end(); }
 }).listen(8737, '0.0.0.0');
 

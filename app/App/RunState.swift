@@ -1,5 +1,10 @@
 import Foundation
 import SwiftUI
+#if os(macOS)
+import AppKit
+#else
+import AudioToolbox
+#endif
 
 struct RunState: Decodable {
     let at, started, track: String
@@ -34,12 +39,14 @@ struct LogEvent: Decodable, Identifiable {
 // — no push, no websocket, a status readout doesn't need either.
 @MainActor
 final class Poller: ObservableObject {
+    static let shared = Poller()
     @Published var state: RunState?
     @Published var events: [LogEvent] = []
     @Published var stale = false
     @Published var unreachable = false
     @AppStorage("pwnlingoHost") var host = "localhost:8737"
     private var timer: Timer?
+    private var lastEventId: String?
 
     func start() {
         timer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] _ in
@@ -67,6 +74,10 @@ final class Poller: ObservableObject {
                     self.state = s
                     self.events = evs.reversed()
                     self.unreachable = false
+                    if let newest = self.events.first, newest.id != self.lastEventId {
+                        self.lastEventId = newest.id
+                        self.playSound(for: newest)
+                    }
                     if let at = ISO8601DateFormatter().date(from: s.at) {
                         self.stale = Date().timeIntervalSince(at) > 90
                     }
@@ -75,5 +86,16 @@ final class Poller: ObservableObject {
                 await MainActor.run { self.unreachable = true }
             }
         }
+    }
+
+    @AppStorage("soundEnabled") private var soundEnabled = true
+
+    private func playSound(for ev: LogEvent) {
+        guard soundEnabled else { return }
+        #if os(macOS)
+        NSSound(named: ev.ok == false ? "Basso" : "Pop")?.play()
+        #else
+        AudioServicesPlaySystemSound(ev.ok == false ? 1053 : 1057)
+        #endif
     }
 }

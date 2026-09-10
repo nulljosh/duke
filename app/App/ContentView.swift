@@ -1,34 +1,24 @@
 import SwiftUI
 
-private let tracks = ["es", "el", "math", "chess", "music"]
-private let trackNames = ["es": "Spanish", "el": "Greek", "math": "Math", "chess": "Chess", "music": "Music"]
-private let trackIcons = ["es": "quote.bubble.fill", "el": "character.book.closed.fill", "math": "function", "chess": "crown.fill", "music": "music.note"]
+let tracks = ["es", "el", "math", "chess", "music"]
+let trackNames = ["es": "Spanish", "el": "Greek", "math": "Math", "chess": "Chess", "music": "Music"]
 
 struct ContentView: View {
-    @StateObject private var poller = Poller()
-    #if os(macOS)
-    @Environment(\.openSettings) private var openSettings
-    #else
+    @ObservedObject private var poller = Poller.shared
+    #if !os(macOS)
     @State private var editingHost = false
     #endif
 
     var body: some View {
         VStack(spacing: 14) {
             if let s = poller.state {
+                // ponytail: cache-bust with s.at (already ticks every poll) instead of a second timer
+                AsyncImage(url: URL(string: "http://\(poller.host)/screenshot?t=\(s.at)")) { img in
+                    img.resizable().aspectRatio(contentMode: .fit)
+                } placeholder: { Color.black.opacity(0.05) }
+                    .frame(width: 240, height: 154)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
                 Text(trackNames[s.track] ?? s.track.capitalized).font(.title2.bold())
-                HStack(spacing: 14) {
-                    ForEach(tracks, id: \.self) { t in
-                        Button { poller.switchTrack(t) } label: {
-                            Image(systemName: trackIcons[t] ?? "questionmark")
-                                .font(.system(size: 16, weight: .semibold))
-                                .frame(width: 34, height: 34)
-                                .foregroundStyle(t == s.track ? .white : .secondary)
-                                .background(t == s.track ? Color.accentColor : Color.clear, in: Circle())
-                        }
-                        .buttonStyle(.plain)
-                        .help(trackNames[t] ?? t)
-                    }
-                }
                 if let xp0 = s.xp0, let xp = s.xp {
                     Text("+\(xp - xp0) XP").font(.largeTitle.monospacedDigit().bold()).foregroundStyle(.green)
                 }
@@ -58,21 +48,15 @@ struct ContentView: View {
         }
         .padding(.top, 8)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        #if !os(macOS)
         .overlay(alignment: .topTrailing) {
-            #if os(macOS)
-            // ponytail: real Settings window (Cmd+, / menu bar) is the primary path now;
-            // this stays as a quiet in-window shortcut to the same place.
-            Button { openSettings() } label: { Image(systemName: "gearshape") }
-                .buttonStyle(.plain)
-                .padding(14)
-            #else
             Button { editingHost = true } label: { Image(systemName: "gearshape") }
                 .buttonStyle(.plain)
                 .padding(14)
-            #endif
         }
+        #endif
         .task { poller.start() }
-        .frame(width: 320, height: 260)
+        .frame(width: 320, height: 420)
         #if !os(macOS)
         .sheet(isPresented: $editingHost) {
             VStack(spacing: 12) {
