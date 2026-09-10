@@ -62,3 +62,34 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.pwnlingo-status
         MARKETING_VERSION: "1.0"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    dependencies:
+      - target: PwnlingoWidget-iOS
+        embed: true
+  # The widget is its own process, so it reuses the app's sources rather than
+  # keeping a second copy of the model. PwnlingoStatusApp.swift is excluded —
+  # two @main attributes in one module do not compile.
+  PwnlingoWidget-iOS:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: App
+        excludes:
+          - "PwnlingoStatusApp.swift"
+          - "Info-macOS.plist"
+          - "Info-iOS.plist"
+          - "Info-watchOS.plist"
+      - path: Widget
+    info:
+      path: Widget/Info-Widget.plist
+      properties:
+        CFBundleDisplayName: Pwnlingo
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_NAME: PwnlingoWidget
+        PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.pwnlingo-status.widget
+        MARKETING_VERSION: "1.0"
