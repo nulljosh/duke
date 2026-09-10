@@ -35,7 +35,7 @@ struct MenuBarPanel: View {
                     ChessBoardView(fen: fen)
                         .frame(width: 220, height: 220)
                         .opacity(s.paused == true ? 0.5 : 1)
-                } else if s.prompt != nil || s.answer != nil {
+                } else if s.track != "math" && (s.prompt != nil || s.answer != nil) {
                     PromptCardView(prompt: s.prompt, answer: s.answer, choices: s.choices)
                         .frame(width: 220, height: 120)
                         .opacity(s.paused == true ? 0.5 : 1)

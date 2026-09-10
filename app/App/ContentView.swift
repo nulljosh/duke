@@ -104,9 +104,13 @@ struct ContentView: View {
                 // shows the whole board, nothing extra to look at.
                 ChessBoardView(fen: fen, cover: false)
                     .opacity(s.paused == true ? 0.5 : 1)
-            } else if s.prompt != nil || s.answer != nil {
+            } else if s.track != "math" && (s.prompt != nil || s.answer != nil) {
                 PromptCardView(prompt: s.prompt, answer: s.answer, choices: s.choices)
             } else {
+                // ponytail: math's __duo.prompt() only gives the plain-text
+                // instruction, never the actual widget (grid, drag targets,
+                // diagram) — the cropped screenshot (run.mjs clips to the
+                // challenge container) is the real preview there.
                 AuthedImage(url: screenshotURL(s), token: poller.token)
             }
         } else {
