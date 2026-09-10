@@ -9,10 +9,17 @@
   (level 5 can take >10s in-page). A stronger search is a real fix, not yet
   attempted.
 - [ ] `run.mjs`'s orchestration (drag retries, story loop, tree-walk
-  fallback) has no test coverage — only `solver.js`'s pure functions do
-  (`solver.test.mjs`).
+  fallback) has no test coverage beyond `courseIdFor` now — most of it is
+  `page.evaluate`-bound and needs a live browser, not a pure-function test.
 
 ## Done
+- 2026-09-10: `courseIdFor` extracted to `courseId.mjs` + tested
+  (`courseId.test.mjs`) — the rest of run.mjs's orchestration is browser-bound
+  and not unit-testable the same way. Surfaced a real bug while verifying the
+  refactor: a request landing during the startup window threw a TDZ error
+  synchronously inside the http handler and killed the whole process. Fixed
+  with a try/catch around the router → 503 instead of a crash; verified by
+  hitting /fen immediately after restart. Commit: d4b4805.
 - 2026-09-10: chess underpromotion puzzle infinite loop fixed. Root cause:
   promo() was hardcoding a click on the queen's slot (x=370) regardless of
   which piece a puzzle required, so rook/bishop/knight finales always graded
