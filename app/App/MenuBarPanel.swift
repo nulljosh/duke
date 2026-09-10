@@ -74,7 +74,22 @@ struct MenuBarPanel: View {
                 HStack {
                     Button(s.paused == true ? "Resume" : "Pause") { poller.togglePause() }
                     Spacer()
+                    Menu("Switch") {
+                        ForEach(otherTracks, id: \.self) { t in
+                            Button(trackNames[t] ?? t.capitalized) { poller.switchTrack(t) }
+                        }
+                        Menu("Language") {
+                            ForEach(languages, id: \.code) { lang in
+                                Button(lang.name) { poller.switchTrack(lang.code) }
+                            }
+                        }
+                    }
+                    .frame(width: 70)
+                }
+
+                HStack {
                     Button("Settings…") { openSettings() }
+                    Spacer()
                     Button("Quit") {
                         if !backgroundRun { poller.quit() }
                         NSApplication.shared.terminate(nil)

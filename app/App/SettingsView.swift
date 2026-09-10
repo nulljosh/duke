@@ -3,7 +3,6 @@ import SwiftUI
 struct SettingsView: View {
     @AppStorage("pwnlingoHost") private var host = "localhost:8737"
     @AppStorage("pwnlingoToken") private var token = ""
-    @AppStorage("alwaysOnTop") private var alwaysOnTop = false
     @AppStorage("soundEnabled") private var soundEnabled = true
     #if os(macOS)
     @AppStorage("backgroundRun") private var backgroundRun = true
@@ -15,7 +14,6 @@ struct SettingsView: View {
         Form {
             TextField("Mac address", text: $host)
             SecureField("API token", text: $token)
-            Toggle("Always on top", isOn: $alwaysOnTop)
             Toggle("Sound effects", isOn: $soundEnabled)
             #if os(macOS)
             Toggle("Works in the background (even when closed)", isOn: $backgroundRun)
