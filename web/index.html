@@ -156,7 +156,12 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   // ponytail: real solved exercises from each track (mate-in-1/fork, algebra,
   // word-order), replayed on a mini stage (move/type + flash + XP), cycling
   // subjects like the runner cycles tracks. No screenshot anywhere.
-  var glyph = { K:'♔', Q:'♕', R:'♖', N:'♘', k:'♚', q:'♛', p:'♟' };
+  // All twelve: the scripted demo only ever used a handful, but a live FEN can
+  // contain anything.
+  var glyph = {
+    K:'♔', Q:'♕', R:'♖', B:'♗', N:'♘', P:'♙',
+    k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟'
+  };
   var stage = document.getElementById('demoStage');
   var trackEl = document.getElementById('appTrackName');
   var xpEl = document.getElementById('appXp'), labelEl = document.getElementById('appLabel');
@@ -218,10 +223,12 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   var trackName = { chess: 'Chess', math: 'Math', lang: 'Language' };
   var players = { chess: playChess, math: playMath, lang: playLang };
   function playNext() {
+    if (live) return;              // the real runner took over
     var p = puzzles[solved % puzzles.length];
     trackEl.textContent = 'pwnlingo — solving ' + trackName[p.type];
     labelEl.classList.remove('on');
     players[p.type](p, function() {
+      if (live) return;
       labelEl.textContent = p.label;
       labelEl.classList.add('on');
       xp += 10; solved += 1;
@@ -230,7 +237,62 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
       setTimeout(playNext, 1600);
     });
   }
+
+  // ponytail: if the runner is actually up, show the real board instead of the
+  // replay — same data the apps read, through an edge-cached Function so the
+  // Mac takes one request per 10s no matter how many people are looking.
+  // It goes back to the scripted demo the moment that stops being true, because
+  // a landing page that breaks whenever a laptop sleeps is worse than a canned one.
+  var live = false;
+  var captionEl = document.querySelector('.device-caption');
+  var canned = captionEl ? captionEl.textContent : '';
+
+  function drawLiveBoard(fen) {
+    stage.innerHTML = '<div class="demo-board" id="demoBoard"></div>';
+    var board = document.getElementById('demoBoard');
+    fen.split(' ')[0].split('/').forEach(function(rank, r) {
+      var f = 0;
+      rank.split('').forEach(function(ch) {
+        if (/\d/.test(ch)) { f += parseInt(ch, 10); return; }
+        var el = document.createElement('div');
+        el.className = 'demo-piece ' + (ch === ch.toUpperCase() ? 'w' : 'b');
+        el.textContent = glyph[ch] || glyph[ch.toLowerCase()] || '';
+        el.style.left = (f * 12.5) + '%';
+        el.style.top = (r * 12.5) + '%';
+        board.appendChild(el);
+        f += 1;
+      });
+    });
+  }
+
+  function poll() {
+    fetch('/api/live').then(function(r) { return r.json(); }).then(function(d) {
+      // Stale `at` means the Mac went away since the edge last looked.
+      var fresh = d.live && d.at && (Date.now() - new Date(d.at).getTime() < 120000);
+      if (!fresh) {
+        if (live) { live = false; if (captionEl) captionEl.textContent = canned; playNext(); }
+        return;
+      }
+      var wasLive = live;
+      live = true;
+      if (!wasLive && captionEl) {
+        captionEl.textContent = 'Live right now, from the Mac actually running it.';
+      }
+      trackEl.textContent = 'pwnlingo — solving ' + (trackName[d.track] || d.track);
+      if (d.xp != null) xpEl.textContent = '+' + d.xp + ' XP';
+      solvedEl.textContent = d.track === 'chess' ? d.puzzles : d.lessons;
+      missesEl.textContent = d.misses;
+      labelEl.textContent = d.paused ? 'Paused' : 'Solving…';
+      labelEl.classList.add('on');
+      if (d.fen) drawLiveBoard(d.fen);
+    }).catch(function() {
+      if (live) { live = false; if (captionEl) captionEl.textContent = canned; playNext(); }
+    });
+  }
+
   playNext();
+  poll();
+  setInterval(poll, 10000);
 })();
 </script>
 
