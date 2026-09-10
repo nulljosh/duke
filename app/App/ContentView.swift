@@ -18,6 +18,9 @@ struct ContentView: View {
                 } placeholder: { Color.black.opacity(0.05) }
                     .frame(width: 240, height: 154)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
+                if let u = s.username {
+                    Text(u).font(.caption).foregroundStyle(.secondary)
+                }
                 Text(trackNames[s.track] ?? s.track.capitalized).font(.title2.bold())
                 if let xp0 = s.xp0, let xp = s.xp {
                     Text("+\(xp - xp0) XP").font(.largeTitle.monospacedDigit().bold()).foregroundStyle(.green)

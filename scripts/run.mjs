@@ -56,7 +56,7 @@ const jwt = fs.readFileSync(path.join(D, 'jwt.txt'), 'utf8').trim();
 const uid = JSON.parse(Buffer.from(jwt.split('.')[1], 'base64').toString()).sub;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const log = o => fs.appendFileSync(path.join(D, 'log.jsonl'), JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n');
-const S = { started: new Date().toISOString(), track, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null };
+const S = { started: new Date().toISOString(), track, username: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null };
 const saveState = () => fs.writeFileSync(path.join(D, 'state.json'), JSON.stringify({ at: new Date().toISOString(), ...S }, null, 1));
 const ledger = rows => rows.length && fs.appendFileSync(path.join(D, 'lessons.jsonl'), rows.map(r => JSON.stringify(r)).join('\n') + '\n');
 
@@ -81,6 +81,7 @@ const inject = async () => {
   if (isChessTrack) await page.evaluate(c => { window.__duo.promoCalib = c; }, promoCalib);
 };
 const xp = () => page.evaluate(async u => { try { return (await (await fetch(`/2017-06-30/users/${u}?fields=totalXp`)).json()).totalXp; } catch (e) { return null; } }, uid);
+const username = () => page.evaluate(async u => { try { return (await (await fetch(`/2017-06-30/users/${u}?fields=username`)).json()).username; } catch (e) { return null; } }, uid);
 // held click: instant down/up is ignored by the Rive chess board
 const click = async ([x, y]) => { await page.mouse.move(x, y); await page.mouse.down(); await sleep(90); await page.mouse.up(); await sleep(550); };
 const fen = () => page.evaluate(() => { try { return __duo.liveFen(); } catch (e) { return null; } });
@@ -115,7 +116,7 @@ const setCourse = t => page.evaluate(async ({ u, id }) => fetch(`/2017-06-30/use
 await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded' });
 await sleep(4000);
 await setCourse(track);
-S.xp0 = S.xp = await xp(); saveState();
+S.xp0 = S.xp = await xp(); S.username = await username(); saveState();
 
 const hasChallenge = () => page.evaluate(() => !!document.querySelector('[data-test^="challenge "], [data-test="stories-element"]'));
 // walk the tree and pick the next non-radio level by URL (0-based tree, 1-based URL),

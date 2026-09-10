@@ -8,6 +8,7 @@ import AudioToolbox
 
 struct RunState: Decodable {
     let at, started, track: String
+    let username: String?
     let lessons, puzzles, matches, misses: Int
     let xp0, xp: Int?
     let last: String?
