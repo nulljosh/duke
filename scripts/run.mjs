@@ -355,6 +355,7 @@ while (true) {
         lastCountedKey = key;
         const ok = !/incorrect|wrong/i.test(graded_ || '');
         S.puzzles++; if (!ok) S.misses++; S.last = 'puzzle'; log({ ev: 'puzzle', moves: st.plan.moves, ok }); saveState();
+        S.xp = await xp(); saveState(); // ponytail: puzzles never funneled through the lesson-complete xp refresh — was silently stale
         // self-calibration: a promotion move that graded wrong means the guessed picker
         // slot ('qrbn' order) is off for this piece — cycle to the next slot (0-3) and
         // persist it, so the next puzzle needing that piece (and a retry of this one,
@@ -371,7 +372,7 @@ while (true) {
       }
     } else if (st.kind === 'match') {
       const r = st.r;
-      if (r.over) { S.matches++; log({ ev: 'match-over', status: r.status, ply: r.hist && r.hist.length }); saveState();
+      if (r.over) { S.matches++; log({ ev: 'match-over', status: r.status, ply: r.hist && r.hist.length }); S.xp = await xp(); saveState();
         await page.evaluate(() => { const n = document.querySelector('[data-test="player-next"]'); n && n.click(); }); await sleep(2000); }
       else if (r.clicks) { await chessMove(r.clicks); log({ ev: 'move', move: r.move, ply: r.ply }); }
       else if (r.err) { log({ ev: 'match-err', err: r.err }); await sleep(3000); }
