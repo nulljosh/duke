@@ -3,6 +3,7 @@ jwt.txt
 log.jsonl
 lessons.jsonl
 state.json
+promo-calib.json
 open-fail.png
 node_modules/
 package-lock.json
