@@ -9,16 +9,7 @@ struct ContentView: View {
     @State private var editingHost = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Spacer()
-                Button { editingHost = true } label: { Image(systemName: "gearshape") }
-                    .buttonStyle(.plain)
-            }
-            .padding()
-
-            Spacer()
-
+        VStack(spacing: 14) {
             if let s = poller.state {
                 Text(trackNames[s.track] ?? s.track.capitalized).font(.title2.bold())
                 HStack(spacing: 14) {
@@ -34,7 +25,6 @@ struct ContentView: View {
                         .help(trackNames[t] ?? t)
                     }
                 }
-                .padding(.top, 6)
                 if let xp0 = s.xp0, let xp = s.xp {
                     Text("+\(xp - xp0) XP").font(.largeTitle.monospacedDigit().bold()).foregroundStyle(.green)
                 }
@@ -47,22 +37,27 @@ struct ContentView: View {
                         stat("Lessons", s.lessons)
                     }
                 }
-                .padding(.top, 12)
-                if poller.stale {
-                    Label("Stuck — no update in 90s+", systemImage: "exclamationmark.triangle.fill")
-                        .font(.caption).foregroundStyle(.red).padding(.top, 8)
-                } else if let last = poller.events.first {
-                    Text(last.summary)
-                        .font(.caption).foregroundStyle(.secondary)
-                        .lineLimit(1).padding(.top, 8)
+                Group {
+                    if poller.stale {
+                        Label("Stuck — no update in 90s+", systemImage: "exclamationmark.triangle.fill")
+                            .font(.caption).foregroundStyle(.red)
+                    } else if let last = poller.events.first {
+                        Text(last.summary).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                    }
                 }
+                .frame(height: 14)
             } else if poller.unreachable {
                 Label("Can't reach \(poller.host)", systemImage: "wifi.slash").foregroundStyle(.red)
             } else {
                 ProgressView()
             }
-
-            Spacer()
+        }
+        .padding(.top, 8)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(alignment: .topTrailing) {
+            Button { editingHost = true } label: { Image(systemName: "gearshape") }
+                .buttonStyle(.plain)
+                .padding(14)
         }
         .task { poller.start() }
         .frame(width: 320, height: 260)
