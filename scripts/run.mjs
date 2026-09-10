@@ -308,6 +308,16 @@ const openLesson = async () => {
     if (start) { await page.mouse.click(start[0], start[1]); await sleep(6000); await inject(); }
   }
   if (await hasChallenge()) return true;
+  // ponytail: a first-time "Welcome to X Puzzles"-style onboarding interstitial
+  // (chess/music especially) matches neither the tip-node click above nor
+  // hasChallenge() — but its CTA is the same CONTINUE/GOT IT/KEEP LEARNING
+  // button clickByText() already knows how to find. Click through up to 3
+  // stacked screens before falling to the much slower tree-walk.
+  for (let i = 0; i < 3 && !(await hasChallenge()); i++) {
+    if (!(await clickByText())) break;
+    await sleep(1500); await inject();
+  }
+  if (await hasChallenge()) return true;
   // last resort: walk the tree by URL instead of the (still-stuck) served lesson
   const tgt = await pickTreeTarget();
   if (tgt && await gotoTreeTarget(tgt)) return true;
