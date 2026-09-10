@@ -3,7 +3,7 @@ name: Deploy landing page
 on:
   push:
     branches: [main]
-    paths: [web/**]
+    paths: [web/**, functions/**, wrangler.toml]
 
 jobs:
   deploy:
@@ -14,4 +14,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy web --project-name=pwnlingo --commit-dirty=true
+          # No directory argument: wrangler.toml's pages_build_output_dir points
+          # at web/, which is also what makes root-level functions/ compile.
+          command: pages deploy --project-name=pwnlingo --commit-dirty=true

@@ -1,0 +1,6 @@
+name = "pwnlingo"
+compatibility_date = "2025-01-01"
+# This is what makes the root-level functions/ directory get picked up. Deploying
+# web/ directly (wrangler pages deploy web) ships the site with no API — the
+# function lands as a static .js file and /api/live falls through to index.html.
+pages_build_output_dir = "web"
