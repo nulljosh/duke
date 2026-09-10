@@ -67,7 +67,7 @@ const jwt = fs.readFileSync(path.join(D, 'jwt.txt'), 'utf8').trim();
 const uid = JSON.parse(Buffer.from(jwt.split('.')[1], 'base64').toString()).sub;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const log = o => fs.appendFileSync(path.join(D, 'log.jsonl'), JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n');
-const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null };
+const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null };
 const saveState = () => fs.writeFileSync(path.join(D, 'state.json'), JSON.stringify({ at: new Date().toISOString(), ...S }, null, 1));
 const ledger = rows => rows.length && fs.appendFileSync(path.join(D, 'lessons.jsonl'), rows.map(r => JSON.stringify(r)).join('\n') + '\n');
 
@@ -95,8 +95,12 @@ const xp = () => page.evaluate(async u => { try { return (await (await fetch(`/2
 const username = () => page.evaluate(async u => { try { return (await (await fetch(`/2017-06-30/users/${u}?fields=username`)).json()).username; } catch (e) { return null; } }, uid);
 const stats = () => page.evaluate(async u => {
   try {
-    const j = await (await fetch(`/2017-06-30/users/${u}?fields=streak,xpGoal,xpGoalMetToday,health`)).json();
-    return { streak: j.streak ?? null, xpGoal: j.xpGoal ?? null, xpGoalMetToday: j.xpGoalMetToday ?? null, hearts: j.health?.hearts ?? null, maxHearts: j.health?.maxHearts ?? null };
+    const j = await (await fetch(`/2017-06-30/users/${u}?fields=streak,xpGoal,xpGoalMetToday,health,trackingProperties`)).json();
+    return {
+      streak: j.streak ?? null, xpGoal: j.xpGoal ?? null, xpGoalMetToday: j.xpGoalMetToday ?? null,
+      hearts: j.health?.hearts ?? null, maxHearts: j.health?.maxHearts ?? null,
+      league: j.trackingProperties?.leaderboard_league ?? null, // was already in the payload, unused
+    };
   } catch (e) { return null; }
 }, uid);
 // held click: instant down/up is ignored by the Rive chess board

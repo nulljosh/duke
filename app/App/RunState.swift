@@ -10,7 +10,7 @@ struct RunState: Decodable {
     let at, started, track: String
     let username: String?
     let paused: Bool?
-    let streak, xpGoal, hearts, maxHearts: Int?
+    let streak, xpGoal, hearts, maxHearts, league: Int?
     let xpGoalMetToday: Bool?
     let lessons, puzzles, matches, misses: Int
     let xp0, xp: Int?

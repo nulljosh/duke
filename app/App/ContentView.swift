@@ -19,6 +19,7 @@ let languages: [(code: String, name: String)] = [
 let tracks = otherTracks + languages.map(\.code)
 let trackNames: [String: String] = Dictionary(uniqueKeysWithValues: languages.map { ($0.code, $0.name) })
     .merging(["math": "Math", "chess": "Chess", "music": "Music"]) { a, _ in a }
+let leagueNames = ["Bronze", "Silver", "Gold", "Sapphire", "Ruby", "Emerald", "Amethyst", "Pearl", "Obsidian", "Diamond"]
 
 struct ContentView: View {
     @ObservedObject private var poller = Poller.shared
@@ -51,6 +52,9 @@ struct ContentView: View {
 
                 if let u = s.username {
                     Text(u).font(.caption).foregroundStyle(.secondary)
+                }
+                if let league = s.league, leagueNames.indices.contains(league) {
+                    Text("\(leagueNames[league]) League").font(.caption2).foregroundStyle(.secondary)
                 }
                 HStack(spacing: 16) {
                     if let streak = s.streak {
