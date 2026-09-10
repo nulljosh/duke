@@ -52,6 +52,19 @@ struct ContentView: View {
                 if let u = s.username {
                     Text(u).font(.caption).foregroundStyle(.secondary)
                 }
+                HStack(spacing: 16) {
+                    if let streak = s.streak {
+                        Label("\(streak)", systemImage: "flame.fill").foregroundStyle(.orange)
+                    }
+                    if let hearts = s.hearts, let maxHearts = s.maxHearts {
+                        Label("\(hearts)/\(maxHearts)", systemImage: "heart.fill").foregroundStyle(.red)
+                    }
+                    if let goal = s.xpGoal {
+                        Label("\(goal)", systemImage: s.xpGoalMetToday == true ? "checkmark.circle.fill" : "target")
+                            .foregroundStyle(s.xpGoalMetToday == true ? .green : .secondary)
+                    }
+                }
+                .font(.caption).labelStyle(.titleAndIcon)
                 Text(trackNames[s.track] ?? s.track.capitalized).font(.title2.bold())
                 if let xp0 = s.xp0, let xp = s.xp {
                     Text("+\(xp - xp0) XP").font(.largeTitle.monospacedDigit().bold()).foregroundStyle(.green)
