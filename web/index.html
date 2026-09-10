@@ -255,7 +255,15 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
 
 <section><div class="container">
   <h2>Status app</h2>
-  <p>A small iOS/macOS app polls the runner over the LAN or the open internet. Chess renders as a real animated board with real chess pieces, sliding move to move, not a screenshot; other tracks show a live screenshot instead. Track, XP, streak, hearts, league, and a real per-puzzle progress bar sit in a frosted glass panel below the board. Pause the runner from the app, switch tracks (any of ~35 languages, plus math and music) from its Track menu, no terminal needed.</p>
+  <p>A small app polls the runner over the LAN or the open internet. Chess renders as a real animated board with real chess pieces, sliding move to move, not a screenshot; other tracks show a live screenshot instead. Track, XP, streak, hearts, league, and a real per-puzzle progress bar sit in a frosted glass panel below the board. Pause the runner from the app, switch tracks (any of ~35 languages, plus math and music) from its Track menu, no terminal needed.</p>
+  <p>Native on every platform, no web wrapper: iOS and macOS in SwiftUI, Android and Windows and Linux in Compose Multiplatform. All of them read the same endpoints on the runner, so there is one source of truth and every client is just a view of it.</p>
+  <div class="status">
+    <div class="row"><b>macOS</b><span>SwiftUI. Live board, frosted panel, Track menu, pause.</span></div>
+    <div class="row"><b>iOS</b><span>SwiftUI, same screen, reaches the Mac over the LAN or the tunnel.</span></div>
+    <div class="row"><b>Android</b><span>Compose Multiplatform. Sideloadable APK from CI.</span></div>
+    <div class="row"><b>Windows</b><span>Compose Desktop, packaged as an .msi.</span></div>
+    <div class="row"><b>Linux</b><span>Compose Desktop, packaged as a .deb.</span></div>
+  </div>
 </div></section>
 
 <section><div class="container">
