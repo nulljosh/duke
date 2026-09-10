@@ -97,7 +97,9 @@ struct ContentView: View {
     // panel below floats on top with a frosted material so text stays legible.
     @ViewBuilder private var background: some View {
         if let s = poller.state {
-            if s.track == "chess", let fen = poller.fen {
+            if poller.switching {
+                ProgressView()
+            } else if s.track == "chess", let fen = poller.fen {
                 // ponytail: no blur layer — a .cover crop chopped off board edges,
                 // and the blurred-letterbox compromise for that turned out to be
                 // its own eyesore. Plain contained board on a plain background:

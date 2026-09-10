@@ -31,7 +31,9 @@ struct MenuBarPanel: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             if let s = poller.state {
-                if s.track == "chess", let fen = poller.fen {
+                if poller.switching {
+                    ProgressView().frame(width: 220, height: 140)
+                } else if s.track == "chess", let fen = poller.fen {
                     ChessBoardView(fen: fen)
                         .frame(width: 220, height: 220)
                         .opacity(s.paused == true ? 0.5 : 1)
@@ -47,11 +49,8 @@ struct MenuBarPanel: View {
                 }
 
                 HStack {
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text(trackNames[s.track] ?? s.track.capitalized).font(.headline)
-                        if let u = s.username {
-                            Text(u).font(.caption).foregroundStyle(.secondary)
-                        }
+                    if let u = s.username {
+                        Text(u).font(.caption).foregroundStyle(.secondary)
                     }
                     Spacer()
                     if let xp0 = s.xp0, let xp = s.xp {

@@ -332,6 +332,9 @@ while (true) {
     track = pendingTrack; pendingTrack = null;
     isMath = track === 'math'; isChessTrack = track === 'chess';
     S.track = track; idleOpens = 0;
+    // the old track's prompt/choices/grid otherwise linger on screen until the
+    // new track's first question loads — a switch looked like it did nothing.
+    S.prompt = S.answer = S.choices = S.grid = null; saveState();
     // ponytail: /lesson just resumes whatever session is already in flight
     // server-side, regardless of the PATCHed currentCourseId — a switch mid
     // puzzle/match/lesson silently kept solving the OLD track's content under

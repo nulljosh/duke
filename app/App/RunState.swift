@@ -67,6 +67,7 @@ final class Poller: ObservableObject {
     @Published var fen: String?
     @Published var stale = false
     @Published var unreachable = false
+    @Published var switching = false
     @AppStorage("pwnlingoHost") var host = "localhost:8737"
     // The runner's reads are open; pause/resume/switch need this, since the
     // tunnel puts those routes on the public internet. Printed by run.mjs on
@@ -102,7 +103,13 @@ final class Poller: ObservableObject {
     }
 
     func switchTrack(_ t: String) {
+        // ponytail: run.mjs clears prompt/choices/grid the instant it honors the
+        // switch, but the new track's own content can take a few seconds to load
+        // — without this, the panel just sat on the old track's stale content
+        // with nothing to show a click landed.
+        switching = true
         mutate("switch?track=\(t)")
+        Task { try? await Task.sleep(for: .seconds(15)); switching = false }
     }
 
     func quit() {
@@ -127,6 +134,15 @@ final class Poller: ObservableObject {
                         self.playSound(for: newest)
                     }
                     if s.track != "chess" { self.fen = nil }
+                    // switching clears once there's something real to show: chess
+                    // has a fen (checked on the next tick below), everything else
+                    // has a prompt/choices/grid. A screenshot-only widget type
+                    // never sets any of those, so switchTrack()'s own timeout is
+                    // what clears switching in that case.
+                    if self.switching, s.track != "chess",
+                       s.prompt != nil || s.answer != nil || !(s.choices?.isEmpty ?? true) || !(s.grid?.isEmpty ?? true) {
+                        self.switching = false
+                    }
                     if let at = pwnlingoDateFormatter.date(from: s.at) {
                         self.stale = Date().timeIntervalSince(at) > 90
                     }
@@ -134,7 +150,7 @@ final class Poller: ObservableObject {
                 if s.track == "chess", let fenURL = URL(string: "http://\(host)/fen"),
                    let (fData, _) = try? await URLSession.shared.data(from: fenURL),
                    let f = try? JSONDecoder().decode(FenResponse.self, from: fData).fen {
-                    await MainActor.run { self.fen = f }
+                    await MainActor.run { self.fen = f; self.switching = false }
                 }
             } catch {
                 await MainActor.run { self.unreachable = true }
