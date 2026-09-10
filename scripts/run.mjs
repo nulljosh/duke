@@ -70,8 +70,14 @@ http.createServer((req, res) => {
   } catch (e) { if (!res.headersSent) { res.writeHead(503); res.end(); } }
 }).listen(8737, '0.0.0.0');
 
-const jwt = fs.readFileSync(path.join(D, 'jwt.txt'), 'utf8').trim();
-const uid = JSON.parse(Buffer.from(jwt.split('.')[1], 'base64').toString()).sub;
+// ponytail: the session lives in the persistent Chromium profile (.pw-profile),
+// which Duolingo refreshes on its own — the cookie currently on disk is good for
+// a year. jwt.txt is only a bootstrap for a machine that has no profile yet, so
+// a missing one is not fatal; `uid` comes from whichever cookie ends up live.
+// (A missing jwt.txt used to throw here and kill the runner on a fresh clone.)
+let bootstrapJwt = null;
+try { bootstrapJwt = fs.readFileSync(path.join(D, 'jwt.txt'), 'utf8').trim() || null; } catch { /* profile-only is fine */ }
+let uid = null;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const LOG_PATH = path.join(D, 'log.jsonl');
 // ponytail: unattended runs (hours/days over the public tunnel) would let this
@@ -99,7 +105,30 @@ const saveCalib = () => fs.writeFileSync(CALIB_PATH, JSON.stringify(promoCalib))
 const ctx = await chromium.launchPersistentContext(path.join(D, '.pw-profile'), {
   headless: true, viewport: { width: 1400, height: 900 }, args: ['--disable-background-timer-throttling'],
 });
-await ctx.addCookies([{ name: 'jwt_token', value: jwt, domain: '.duolingo.com', path: '/', secure: true, sameSite: 'Lax' }]);
+if (bootstrapJwt) {
+  await ctx.addCookies([{ name: 'jwt_token', value: bootstrapJwt, domain: '.duolingo.com', path: '/', secure: true, sameSite: 'Lax' }]);
+}
+// Whatever is live now — the bootstrap we just injected, or the one the profile
+// already carried from a previous run — is the session this process will use.
+const liveJwt = (await ctx.cookies('https://www.duolingo.com')).find(c => c.name === 'jwt_token')?.value || null;
+if (!liveJwt) {
+  console.error(
+    'No Duolingo session.\n' +
+    '  This machine has no signed-in browser profile (scripts/.pw-profile) and no scripts/jwt.txt.\n' +
+    '  Fix either way:\n' +
+    '    - log in once: node scripts/login.mjs   (opens a real browser, session persists after)\n' +
+    '    - or paste a jwt_token cookie into scripts/jwt.txt'
+  );
+  await ctx.close();
+  process.exit(1);
+}
+try {
+  uid = JSON.parse(Buffer.from(liveJwt.split('.')[1], 'base64').toString()).sub;
+} catch {
+  console.error('Session cookie is not a readable JWT — re-run scripts/login.mjs.');
+  await ctx.close();
+  process.exit(1);
+}
 const page = ctx.pages()[0] || await ctx.newPage();
 
 const inject = async () => {
