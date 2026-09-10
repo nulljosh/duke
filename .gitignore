@@ -13,3 +13,8 @@ kmp/*/build/
 kmp/local.properties
 kmp/keystore.properties
 kmp/*.jks
+
+# SwiftPM (tui/)
+.build/
+tui/.build/
+tui/Package.resolved
