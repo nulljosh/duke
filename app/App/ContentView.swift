@@ -29,6 +29,8 @@ struct ContentView: View {
     #endif
     #if os(macOS)
     @AppStorage("startTrack") private var startTrack = "chess"
+    @AppStorage("backgroundRun") private var backgroundRun = true
+    @State private var autoStarted = false
     #endif
 
     var body: some View {
@@ -65,6 +67,17 @@ struct ContentView: View {
         }
         #endif
         .task { poller.start() }
+        #if os(macOS)
+        // ponytail: open-at-login only relaunches this viewer — run.mjs and the
+        // tunnel still need a real kick after a crash/reboot. Fire it once per
+        // launch the first time the poller confirms nobody's there, instead of
+        // requiring a manual Start click every time the Mac restarts.
+        .onChange(of: poller.unreachable) { _, unreachable in
+            guard unreachable, backgroundRun, !autoStarted else { return }
+            autoStarted = true
+            SolverProcess.start(track: startTrack)
+        }
+        #endif
         .frame(minWidth: 320, idealWidth: 420, minHeight: 420, idealHeight: 640)
         #if !os(macOS)
         .sheet(isPresented: $editingHost) {
