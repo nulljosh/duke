@@ -69,6 +69,7 @@ struct ContentView: View {
                     }
                 }
                 .frame(height: 14)
+                .padding(.bottom, 14)
             } else if poller.unreachable {
                 Label("Can't reach \(poller.host)", systemImage: "wifi.slash").foregroundStyle(.red)
             } else {
