@@ -5,3 +5,11 @@ state.json
 app/PwnlingoStatus.xcodeproj/
 app/*.xcuserdatad/
 scripts/run.out
+
+# Kotlin Multiplatform (kmp/) — same pattern as nimble
+kmp/.gradle/
+kmp/build/
+kmp/*/build/
+kmp/local.properties
+kmp/keystore.properties
+kmp/*.jks
