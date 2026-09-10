@@ -89,10 +89,15 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
 .app-demo { background: var(--demo-bg); color: var(--demo-text); border-radius: 0 0 10px 10px; padding: 1.1rem 1rem 1.3rem; text-align: center; }
 .app-demo h4 { font-size: .95rem; font-weight: 700; margin-bottom: .3rem; }
 .app-meta { font-size: .7rem; color: var(--demo-text2); margin-bottom: .8rem; }
-.demo-board { position: relative; width: 200px; aspect-ratio: 1; margin: 0 auto .8rem; border-radius: 6px; overflow: hidden;
-  background-image: linear-gradient(45deg,var(--demo-square) 25%,transparent 25%),linear-gradient(-45deg,var(--demo-square) 25%,transparent 25%),
-    linear-gradient(45deg,transparent 75%,var(--demo-square) 75%),linear-gradient(-45deg,transparent 75%,var(--demo-square) 75%);
-  background-size: 50px 50px; background-position: 0 0,0 25px,25px -25px,-25px 0; background-color: var(--demo-tile); }
+/* The board keeps the app's own colours in both themes rather than following
+   the page — a chessboard that inverts with a colour scheme stops reading as a
+   chessboard, and the native apps don't do it either. Exact values from
+   ChessBoardView.swift. */
+.demo-board { --board-dark: #759657; --board-light: #ededd1;
+  position: relative; width: 200px; aspect-ratio: 1; margin: 0 auto .8rem; border-radius: 6px; overflow: hidden;
+  background-image: linear-gradient(45deg,var(--board-dark) 25%,transparent 25%),linear-gradient(-45deg,var(--board-dark) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,var(--board-dark) 75%),linear-gradient(-45deg,transparent 75%,var(--board-dark) 75%);
+  background-size: 50px 50px; background-position: 0 0,0 25px,25px -25px,-25px 0; background-color: var(--board-light); }
 .demo-piece { position: absolute; width: 12.5%; height: 12.5%; display: flex; align-items: center; justify-content: center;
   font-size: 1.4rem; line-height: 1; transition: left .6s cubic-bezier(.4,0,.2,1), top .6s cubic-bezier(.4,0,.2,1), opacity .3s; }
 .demo-piece.w { color: #fff; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
