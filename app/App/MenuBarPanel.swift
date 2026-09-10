@@ -25,6 +25,8 @@ struct MenuBarLabel: View {
 struct MenuBarPanel: View {
     @ObservedObject private var poller = Poller.shared
     @Environment(\.openSettings) private var openSettings
+    @AppStorage("backgroundRun") private var backgroundRun = true
+    @AppStorage("startTrack") private var startTrack = "chess"
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -73,11 +75,15 @@ struct MenuBarPanel: View {
                     Button(s.paused == true ? "Resume" : "Pause") { poller.togglePause() }
                     Spacer()
                     Button("Settings…") { openSettings() }
-                    Button("Quit") { NSApplication.shared.terminate(nil) }
+                    Button("Quit") {
+                        if !backgroundRun { poller.quit() }
+                        NSApplication.shared.terminate(nil)
+                    }
                 }
             } else if poller.unreachable {
-                Label("Can't reach \(poller.host)", systemImage: "wifi.slash")
-                    .foregroundStyle(.red)
+                Label("Not running", systemImage: "wifi.slash")
+                    .foregroundStyle(.secondary)
+                Button("Start \(trackNames[startTrack] ?? startTrack)") { SolverProcess.start(track: startTrack) }
                 Button("Settings…") { openSettings() }
             } else {
                 ProgressView()

@@ -80,7 +80,7 @@ http.createServer((req, res) => {
       ? fs.readFileSync(path.join(D, 'log.jsonl'), 'utf8').trim().split('\n').slice(-50) : [];
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean)));
-  } else if (req.method === 'POST' && /^\/(switch|pause|resume)/.test(req.url) && !authed(req)) {
+  } else if (req.method === 'POST' && /^\/(switch|pause|resume|quit)/.test(req.url) && !authed(req)) {
     res.writeHead(401); res.end('{"ok":false,"err":"bad or missing X-Pwnlingo-Token"}');
   } else if (req.method === 'POST' && req.url.startsWith('/switch')) {
     // Token-gated already, so this is just a sanity check: a track is a short
@@ -91,6 +91,8 @@ http.createServer((req, res) => {
     paused = true; S.paused = true; saveState(); res.end('{"ok":true}');
   } else if (req.method === 'POST' && req.url.startsWith('/resume')) {
     paused = false; S.paused = false; saveState(); res.end('{"ok":true}');
+  } else if (req.method === 'POST' && req.url.startsWith('/quit')) {
+    res.end('{"ok":true}'); setTimeout(() => process.exit(0), 100);
   } else if (req.url.startsWith('/fen')) {
     // ponytail: reuses the same liveFen() the chess-move planner already calls
     fen().then(f => {

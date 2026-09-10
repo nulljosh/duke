@@ -95,6 +95,10 @@ final class Poller: ObservableObject {
         mutate("switch?track=\(t)")
     }
 
+    func quit() {
+        mutate("quit")
+    }
+
     func reload() {
         Task {
             guard let stateURL = URL(string: "http://\(host)/state"),

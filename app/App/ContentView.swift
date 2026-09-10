@@ -27,6 +27,9 @@ struct ContentView: View {
     #if !os(macOS)
     @State private var editingHost = false
     #endif
+    #if os(macOS)
+    @AppStorage("startTrack") private var startTrack = "chess"
+    #endif
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -38,11 +41,15 @@ struct ContentView: View {
             }
             if poller.state == nil {
                 if poller.unreachable {
-                    Label("Can't reach \(poller.host)", systemImage: "wifi.slash")
-                        .foregroundStyle(.red)
-                        .padding()
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
-                        .padding(14)
+                    VStack(spacing: 8) {
+                        Label("Not running", systemImage: "wifi.slash").foregroundStyle(.secondary)
+                        #if os(macOS)
+                        Button("Start \(trackNames[startTrack] ?? startTrack)") { SolverProcess.start(track: startTrack) }
+                        #endif
+                    }
+                    .padding()
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                    .padding(14)
                 } else {
                     ProgressView()
                 }

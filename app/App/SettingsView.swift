@@ -5,6 +5,10 @@ struct SettingsView: View {
     @AppStorage("pwnlingoToken") private var token = ""
     @AppStorage("alwaysOnTop") private var alwaysOnTop = false
     @AppStorage("soundEnabled") private var soundEnabled = true
+    #if os(macOS)
+    @AppStorage("backgroundRun") private var backgroundRun = true
+    @AppStorage("startTrack") private var startTrack = "chess"
+    #endif
 
     var body: some View {
         Form {
@@ -12,6 +16,12 @@ struct SettingsView: View {
             SecureField("API token", text: $token)
             Toggle("Always on top", isOn: $alwaysOnTop)
             Toggle("Sound effects", isOn: $soundEnabled)
+            #if os(macOS)
+            Toggle("Works in the background (even when closed)", isOn: $backgroundRun)
+            Picker("Start track", selection: $startTrack) {
+                ForEach(tracks, id: \.self) { t in Text(trackNames[t] ?? t.capitalized).tag(t) }
+            }
+            #endif
         }
         .padding(20)
         .frame(width: 300)
