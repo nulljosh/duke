@@ -187,14 +187,14 @@ struct ContentView: View {
     }
 
     private func elapsed(since started: String) -> String {
-        guard let start = ISO8601DateFormatter().date(from: started) else { return "" }
+        guard let start = pwnlingoDateFormatter.date(from: started) else { return "" }
         let secs = Int(Date().timeIntervalSince(start))
         let h = secs / 3600, m = (secs % 3600) / 60
         return h > 0 ? "running \(h)h \(m)m" : "running \(m)m"
     }
 
     private func xpPerMinute(_ s: RunState, gained: Int) -> Double? {
-        guard let start = ISO8601DateFormatter().date(from: s.started) else { return nil }
+        guard let start = pwnlingoDateFormatter.date(from: s.started) else { return nil }
         let mins = Date().timeIntervalSince(start) / 60
         guard mins > 1, gained > 0 else { return nil }
         return Double(gained) / mins

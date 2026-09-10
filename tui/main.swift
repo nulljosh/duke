@@ -26,6 +26,15 @@ let trackNames = ["math": "Math", "chess": "Chess", "music": "Music",
 
 let host = ProcessInfo.processInfo.environment["PWNLINGO_HOST"] ?? "localhost:8737"
 
+// run.mjs timestamps carry fractional seconds; a default ISO8601DateFormatter
+// returns nil for those, which silently blanks elapsed time and disables the
+// stuck check. Same formatter the GUI apps use.
+let pwnlingoDateFormatter: ISO8601DateFormatter = {
+    let f = ISO8601DateFormatter()
+    f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    return f
+}()
+
 func fetchState() -> RunState? {
     guard let url = URL(string: "http://\(host)/state") else { return nil }
     var result: RunState?
@@ -39,7 +48,7 @@ func fetchState() -> RunState? {
 }
 
 func elapsed(since started: String) -> String {
-    guard let start = ISO8601DateFormatter().date(from: started) else { return "" }
+    guard let start = pwnlingoDateFormatter.date(from: started) else { return "" }
     let secs = Int(Date().timeIntervalSince(start))
     let h = secs / 3600, m = (secs % 3600) / 60
     return h > 0 ? "\(h)h \(m)m" : "\(m)m"
@@ -48,7 +57,7 @@ func elapsed(since started: String) -> String {
 /// Stale means the runner stopped writing its heartbeat — the same 90s rule the
 /// GUI apps use, which is how a hung browser session looks different from idle.
 func isStale(_ s: RunState) -> Bool {
-    guard let at = ISO8601DateFormatter().date(from: s.at) else { return false }
+    guard let at = pwnlingoDateFormatter.date(from: s.at) else { return false }
     return Date().timeIntervalSince(at) > 90
 }
 

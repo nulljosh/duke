@@ -8,6 +8,17 @@ import WatchKit
 import AudioToolbox
 #endif
 
+// ponytail: run.mjs writes `new Date().toISOString()`, which carries fractional
+// seconds ("…:05.132Z"). A default ISO8601DateFormatter refuses those and
+// returns nil, which silently disabled every timestamp feature in the apps —
+// the "stuck" warning could never fire because the parse failed before the
+// comparison. Every client parses through this one formatter now.
+let pwnlingoDateFormatter: ISO8601DateFormatter = {
+    let f = ISO8601DateFormatter()
+    f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    return f
+}()
+
 struct RunState: Decodable {
     let at, started, track: String
     let username: String?
@@ -102,7 +113,7 @@ final class Poller: ObservableObject {
                         self.playSound(for: newest)
                     }
                     if s.track != "chess" { self.fen = nil }
-                    if let at = ISO8601DateFormatter().date(from: s.at) {
+                    if let at = pwnlingoDateFormatter.date(from: s.at) {
                         self.stale = Date().timeIntervalSince(at) > 90
                     }
                 }
