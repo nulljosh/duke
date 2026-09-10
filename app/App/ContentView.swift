@@ -84,9 +84,7 @@ struct ContentView: View {
                 ChessBoardView(fen: fen, cover: false)
                     .opacity(s.paused == true ? 0.5 : 1)
             } else {
-                AsyncImage(url: screenshotURL(s)) { img in
-                    img.resizable().aspectRatio(contentMode: .fit)
-                } placeholder: { Color.clear }
+                AuthedImage(url: screenshotURL(s), token: poller.token)
             }
         } else {
             Color.black.opacity(0.05)

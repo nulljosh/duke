@@ -45,9 +45,27 @@ try {
 }
 const authed = req => (req.headers['x-pwnlingo-token'] || '') === apiToken;
 
+// ponytail: /screenshot is a live picture of whatever the runner's browser is
+// showing, so it gets the token too — the rest of the reads are just a score.
+// Plus a crude global rate limit: a stranger who finds the hostname shouldn't
+// be able to make this Mac render JPEGs as fast as they can ask. One counter,
+// no per-IP bookkeeping — behind a tunnel every request looks the same anyway.
+// Each client polls state+log+fen(+screenshot) every 3s, so roughly 13 req per
+// window per client. 120 leaves room for all four apps open at once and still
+// caps a stranger at ~12 req/sec.
+const RATE_WINDOW_MS = 10_000;
+const RATE_MAX = 120;
+let rateCount = 0, rateWindowStart = Date.now();
+const rateLimited = () => {
+  const now = Date.now();
+  if (now - rateWindowStart > RATE_WINDOW_MS) { rateWindowStart = now; rateCount = 0; }
+  return ++rateCount > RATE_MAX;
+};
+
 http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'X-Pwnlingo-Token');
+  if (rateLimited()) { res.writeHead(429); res.end('{"ok":false,"err":"slow down"}'); return; }
   // ponytail: a request landing during the startup window (before page/fen/etc
   // below finish initializing) threw a TDZ ReferenceError synchronously inside
   // this handler, which crashed the whole process — not just that one request.
@@ -79,6 +97,8 @@ http.createServer((req, res) => {
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify({ fen: f }));
     }).catch(() => { res.writeHead(503); res.end(); });
+  } else if (req.url.startsWith('/screenshot') && !authed(req)) {
+    res.writeHead(401); res.end('{"ok":false,"err":"bad or missing X-Pwnlingo-Token"}');
   } else if (req.url.startsWith('/screenshot')) {
     // ponytail: reuses the live page, no separate headful/video pipeline
     page.screenshot({ type: 'jpeg', quality: 60 }).then(buf => {

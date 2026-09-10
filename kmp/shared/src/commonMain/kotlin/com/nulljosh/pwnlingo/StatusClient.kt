@@ -89,8 +89,12 @@ class StatusClient(
 
     suspend fun fen(): String? = runCatchingNull { http.get("http://$host/fen").body<FenResponse>().fen }
 
-    suspend fun screenshotBytes(cacheBust: String): ByteArray? =
-        runCatchingNull { http.get("http://$host/screenshot?t=$cacheBust").bodyAsBytes() }
+    // Token-gated server-side: it's a live picture of the runner's screen.
+    suspend fun screenshotBytes(cacheBust: String): ByteArray? = runCatchingNull {
+        http.get("http://$host/screenshot?t=$cacheBust") {
+            header("X-Pwnlingo-Token", token)
+        }.bodyAsBytes()
+    }
 
     private suspend fun mutate(pathAndQuery: String) {
         runCatchingNull {
