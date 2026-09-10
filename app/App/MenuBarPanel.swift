@@ -35,9 +35,9 @@ struct MenuBarPanel: View {
                     ChessBoardView(fen: fen)
                         .frame(width: 220, height: 220)
                         .opacity(s.paused == true ? 0.5 : 1)
-                } else if s.track != "math" && (s.prompt != nil || s.answer != nil) {
-                    PromptCardView(prompt: s.prompt, answer: s.answer, choices: s.choices)
-                        .frame(width: 220, height: 120)
+                } else if s.prompt != nil || s.answer != nil || !(s.choices?.isEmpty ?? true) || !(s.grid?.isEmpty ?? true) {
+                    PromptCardView(prompt: s.prompt, answer: s.answer, choices: s.choices, grid: s.grid)
+                        .frame(width: 220, height: 140)
                         .opacity(s.paused == true ? 0.5 : 1)
                 } else {
                     AuthedImage(url: URL(string: "http://\(poller.host)/screenshot?t=\(s.at)"), token: poller.token)

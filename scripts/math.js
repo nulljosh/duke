@@ -2713,6 +2713,21 @@ Object.assign(window.__duo, {
     return g ? g.grid.map(r => r.filter(v => v !== '')).filter(r => r.length) : null;
   },
 
+  // Structured read for the status app's native preview (same idea as
+  // ChessBoardView reading a FEN instead of a screenshot): prompt text +
+  // the answer-choice pool + any table/pattern grid, all already-solved
+  // reads (prompt(), table(), challenge-choice) reused as-is. Returns null
+  // fields, never throws — a geometry/SVG/number-line widget with nothing
+  // textual to show just yields {prompt, choices:null, table:null}, and the
+  // status app falls back to a screenshot for those only.
+  widget() {
+    let prompt = null; try { prompt = this.prompt(); } catch {}
+    const choices = [...document.querySelectorAll('[data-test="challenge-choice"]')]
+      .map(e => e.innerText.replace(/\n/g, ' ').trim()).filter(Boolean);
+    let table = null; try { table = this.table(); } catch {}
+    return { prompt, choices: choices.length ? choices : null, table };
+  },
+
   grandTotal() {
     const T = this.table(); if (!T || T.length < 2) return null;
     const body = T.slice(1);

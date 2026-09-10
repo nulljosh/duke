@@ -1,22 +1,34 @@
 import SwiftUI
 
-// ponytail: native flashcard for the language track's prompt/choices/answer
-// (run.mjs exposes these via ledgerRow(), see CLAUDE.md's solveLang() notes) —
-// same idea as ChessBoardView: render the data, not a screenshot of the page.
-// choices (the actual tile row) is the "move by move" equivalent for
-// multiple-choice/select types; translate/word-bank types have no fixed pool
-// so it falls back to just the prompt+answer text. Math has no exposed
-// question data at all yet (autoLesson() never surfaces choices/prompt beyond
-// __duo.prompt()'s plain text), so it stays screenshot-only for now.
+// ponytail: native card for the language/math prompt/choices/answer/grid
+// (run.mjs exposes these via solveLang()'s ledger row and math.js's widget())
+// — same idea as ChessBoardView: render the actual elements, not a
+// screenshot of the page. choices (the answer tile row) and grid (a
+// pattern/data table) are the "move by move" equivalent of the chess board.
+// A widget type with nothing textual (geometry/SVG/number-line/drag) has
+// every field nil here — that's the one case that still falls back to the
+// cropped screenshot, decided by the caller, not this view.
 struct PromptCardView: View {
     let prompt: String?
     let answer: String?
     let choices: [String]?
+    let grid: [[String]]?
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 10) {
             if let prompt {
                 Text(prompt).font(.title3.weight(.medium)).multilineTextAlignment(.center)
+            }
+            if let grid, !grid.isEmpty {
+                Grid(horizontalSpacing: 8, verticalSpacing: 4) {
+                    ForEach(0..<grid.count, id: \.self) { r in
+                        GridRow {
+                            ForEach(0..<grid[r].count, id: \.self) { c in
+                                Text(grid[r][c]).font(.callout.monospacedDigit())
+                            }
+                        }
+                    }
+                }
             }
             if let choices, !choices.isEmpty {
                 FlowLayout(spacing: 6) {
@@ -32,7 +44,7 @@ struct PromptCardView: View {
             } else if let answer {
                 Text(answer).font(.callout).foregroundStyle(.green).multilineTextAlignment(.center)
             }
-            if prompt == nil && (choices?.isEmpty ?? true) && answer == nil {
+            if prompt == nil && (grid?.isEmpty ?? true) && (choices?.isEmpty ?? true) && answer == nil {
                 Image(systemName: "book.closed").font(.largeTitle).foregroundStyle(.secondary)
             }
         }

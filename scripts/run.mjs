@@ -369,11 +369,14 @@ while (true) {
     if (pendingTrack && pendingTrack !== track) break;   // same problem for /switch: a chess puzzle loop has no natural exit, so a switch sat ignored until the session ended on its own
     saveState();   // heartbeat: an `at` that stops advancing means the loop is stuck, not just between puzzles
     if (isMath) {
-      // ponytail: __duo.prompt() (math.js) reads the live \text{} instruction out
-      // of the question's LaTeX — same idea as solveLang()'s ledger row, just a
-      // read instead of a full parse. Best-effort: goes null between questions.
-      page.evaluate(() => { try { return window.__duo.prompt(); } catch { return null; } })
-        .then(p => { S.prompt = p || null; S.answer = null; S.choices = null; saveState(); }).catch(() => {});
+      // ponytail: __duo.widget() (math.js) reads prompt + answer choices + any
+      // pattern/table grid straight off the DOM — same idea as solveLang()'s
+      // ledger row, just a read instead of a full parse. Best-effort: goes all
+      // null between questions, and table/choices stay null on the widget
+      // types (geometry/SVG/number-line) that have nothing textual to read —
+      // those still fall back to the cropped screenshot on the status app.
+      page.evaluate(() => { try { return window.__duo.widget(); } catch { return null; } })
+        .then(w => { S.prompt = (w && w.prompt) || null; S.choices = (w && w.choices) || null; S.grid = (w && w.table) || null; S.answer = null; saveState(); }).catch(() => {});
       // autoLesson() is the real driver (run(15) only hits the generic
       // fallback loop and halts 'manual' on the first widget it can't
       // click). Mirror boot.js's 12-min watchdog race.
@@ -570,7 +573,7 @@ while (true) {
       }
       await sleep(1000);
     } else if (st.kind === 'challenge') {
-      if (st.row) { ledger([st.row]); S.prompt = st.row.prompt || null; S.answer = st.row.answer || null; S.choices = st.row.choices || null; saveState(); }
+      if (st.row) { ledger([st.row]); S.prompt = st.row.prompt || null; S.answer = st.row.answer || null; S.choices = st.row.choices || null; S.grid = null; saveState(); }
       if (!st.via) log({ ev: 'unknown-challenge', type: st.type, keys: st.unknown && st.unknown.keys });
       const ok = await page.evaluate(async () => { const n = document.querySelector('[data-test="player-next"]'); if (n && !n.disabled && n.getAttribute('aria-disabled') !== 'true') { n.click(); return true; } return false; });
       if (!ok) {

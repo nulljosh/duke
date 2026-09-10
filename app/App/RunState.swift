@@ -30,6 +30,7 @@ struct RunState: Decodable {
     let last: String?
     let prompt, answer: String?
     let choices: [String]?
+    let grid: [[String]]?
 }
 
 struct FenResponse: Decodable { let fen: String? }
