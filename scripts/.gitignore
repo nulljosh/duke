@@ -5,6 +5,7 @@ lessons.jsonl
 puzzles.jsonl
 state.json
 promo-calib.json
+cycle.json
 api-token.txt
 open-fail.png
 node_modules/

@@ -77,13 +77,25 @@ http.createServer((req, res) => {
       ? fs.readFileSync(path.join(D, 'log.jsonl'), 'utf8').trim().split('\n').slice(-50) : [];
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean)));
-  } else if (req.method === 'POST' && /^\/(switch|pause|resume|quit)/.test(req.url) && !authed(req)) {
+  } else if (req.method === 'POST' && /^\/(switch|pause|resume|quit|cycle)/.test(req.url) && !authed(req)) {
     res.writeHead(401); res.end('{"ok":false,"err":"bad or missing X-Pwnlingo-Token"}');
   } else if (req.method === 'POST' && req.url.startsWith('/switch')) {
     // Token-gated already, so this is just a sanity check: a track is a short
     // alphanumeric code (a language code, or math/chess/music), nothing else.
     const t = new URL(req.url, 'http://x').searchParams.get('track');
     if (isValidTrack(t)) { pendingTrack = t; res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }
+  } else if (req.method === 'GET' && req.url === '/cycle') {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(cycle));
+  } else if (req.method === 'POST' && req.url.startsWith('/cycle')) {
+    const q = new URL(req.url, 'http://x').searchParams;
+    const mode = q.get('mode');
+    const value = Number(q.get('value'));
+    if (q.get('enabled') != null) cycle.enabled = q.get('enabled') === 'true';
+    if (mode === 'time' || mode === 'count') cycle.mode = mode;
+    if (Number.isFinite(value) && value > 0) cycle.value = value;
+    cycle.lastAt = Date.now(); cycle.sinceCount = 0; saveCycle();
+    res.end(JSON.stringify(cycle));
   } else if (req.method === 'POST' && req.url.startsWith('/pause')) {
     paused = true; S.paused = true; saveState(); res.end('{"ok":true}');
   } else if (req.method === 'POST' && req.url.startsWith('/resume')) {
@@ -143,6 +155,26 @@ const puzzleLedger = row => fs.appendFileSync(path.join(D, 'puzzles.jsonl'), JSO
 const CALIB_PATH = path.join(D, 'promo-calib.json');
 let promoCalib = {}; try { promoCalib = JSON.parse(fs.readFileSync(CALIB_PATH, 'utf8')); } catch {}
 const saveCalib = () => fs.writeFileSync(CALIB_PATH, JSON.stringify(promoCalib));
+
+// ponytail: disabled-by-default topic variance. Rotation order is fixed —
+// chess, math, then every language in the app's own picker order — rather
+// than configurable, since the ask was "some variance," not a playlist
+// editor. music is excluded: no known challenge shapes yet (roadmap.md),
+// so it would just churn on the 15s detect-timeout every rotation.
+const LANGUAGE_CODES = ['es', 'fr', 'de', 'it', 'pt', 'ja', 'zh', 'ko', 'ru', 'ar', 'hi', 'nl', 'sv', 'tr', 'el', 'pl', 'cy', 'ga', 'hu', 'da', 'id', 'vi', 'uk', 'ro', 'cs', 'he', 'yi', 'sw', 'hw', 'la', 'eo', 'zu', 'gd', 'fi', 'tl', 'ht', 'gn', 'nv'];
+const ROTATION = ['chess', 'math', ...LANGUAGE_CODES];
+const CYCLE_PATH = path.join(D, 'cycle.json');
+let cycle = { enabled: false, mode: 'time', value: 20, sinceCount: 0, lastAt: Date.now() };
+try { cycle = { ...cycle, ...JSON.parse(fs.readFileSync(CYCLE_PATH, 'utf8')) }; } catch {}
+const saveCycle = () => fs.writeFileSync(CYCLE_PATH, JSON.stringify(cycle));
+const bumpCycleCount = () => { if (cycle.enabled && cycle.mode === 'count') { cycle.sinceCount++; saveCycle(); } };
+const cycleDue = () => {
+  if (!cycle.enabled) return false;
+  return cycle.mode === 'time'
+    ? Date.now() - cycle.lastAt >= cycle.value * 60_000
+    : cycle.sinceCount >= cycle.value;
+};
+const nextInRotation = t => ROTATION[(ROTATION.indexOf(t) + 1) % ROTATION.length] || ROTATION[0];
 
 const ctx = await chromium.launchPersistentContext(path.join(D, '.pw-profile'), {
   headless: true, viewport: { width: 1400, height: 900 }, args: ['--disable-background-timer-throttling'],
@@ -284,6 +316,7 @@ const clickByText = () => page.evaluate(() => {
 let idleOpens = 0;
 while (true) {
   if (paused) { saveState(); await sleep(500); continue; }
+  if (!pendingTrack && cycleDue()) { pendingTrack = nextInRotation(track); cycle.lastAt = Date.now(); cycle.sinceCount = 0; saveCycle(); }
   if (pendingTrack && pendingTrack !== track) {
     track = pendingTrack; pendingTrack = null;
     isMath = track === 'math'; isChessTrack = track === 'chess';
@@ -367,7 +400,7 @@ while (true) {
       }
       if (!r.ok) { log({ ev: 'math-err', err: r.err }); break; }
       log({ ev: 'math', res: r.res, drags });
-      if (r.res && r.res.ok) { S.lessons++; saveState(); }   // only a real 'lessondone' counts
+      if (r.res && r.res.ok) { S.lessons++; bumpCycleCount(); saveState(); }   // only a real 'lessondone' counts
       if (r.res && r.res.err === 'no hearts') { log({ ev: 'no-hearts' }); process.exit(0); }
       // Still stuck after 3 drags (or no drag plan at all, or 3 strikes on a
       // non-drag widget): skip the question, and if the level is still stuck,
@@ -475,7 +508,7 @@ while (true) {
       if ((graded_ || done) && key !== lastCountedKey) {
         lastCountedKey = key;
         const ok = !/incorrect|wrong/i.test(graded_ || '');
-        S.puzzles++; if (!ok) S.misses++; S.last = 'puzzle'; log({ ev: 'puzzle', moves: st.plan.moves, ok }); saveState();
+        S.puzzles++; if (!ok) S.misses++; S.last = 'puzzle'; log({ ev: 'puzzle', moves: st.plan.moves, ok }); bumpCycleCount(); saveState();
         puzzleLedger({ at: new Date().toISOString(), moves: st.plan.moves, ok });
         S.xp = await xp(); S.puzzleStep = null; S.puzzleTotal = null; saveState(); // ponytail: puzzles never funneled through the lesson-complete xp refresh — was silently stale
         // self-calibration: a promotion move that graded wrong means the guessed picker
@@ -494,7 +527,7 @@ while (true) {
       }
     } else if (st.kind === 'match') {
       const r = st.r;
-      if (r.over) { S.matches++; log({ ev: 'match-over', status: r.status, ply: r.hist && r.hist.length }); S.xp = await xp(); saveState();
+      if (r.over) { S.matches++; log({ ev: 'match-over', status: r.status, ply: r.hist && r.hist.length }); bumpCycleCount(); S.xp = await xp(); saveState();
         await page.evaluate(() => { const n = document.querySelector('[data-test="player-next"]'); n && n.click(); }); await sleep(2000); }
       else if (r.clicks) { await chessMove(r.clicks); log({ ev: 'move', move: r.move, ply: r.ply }); }
       else if (r.err) { log({ ev: 'match-err', err: r.err }); await sleep(3000); }
@@ -535,6 +568,6 @@ while (true) {
     else { await sleep(1500); const stillLesson = await page.evaluate(() => location.pathname.startsWith('/lesson')).catch(() => false); if (!stillLesson) break; }
   }
 
-  S.lessons++; S.xp = await xp(); Object.assign(S, (await stats()) || {}); S.last = track; saveState();
+  S.lessons++; bumpCycleCount(); S.xp = await xp(); Object.assign(S, (await stats()) || {}); S.last = track; saveState();
   log({ ev: 'lesson-end', xp: S.xp });
 }

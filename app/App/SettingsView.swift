@@ -12,6 +12,10 @@ struct SettingsView: View {
     @AppStorage("startTrack") private var startTrack = "chess"
     @AppStorage("openAtLogin") private var openAtLogin = true
     @AppStorage("hideDockIcon") private var hideDockIcon = true
+    @AppStorage("cycleEnabled") private var cycleEnabled = false
+    @AppStorage("cycleMode") private var cycleMode = "time"
+    @AppStorage("cycleMinutes") private var cycleMinutes = 20
+    @AppStorage("cycleCount") private var cycleCount = 5
     #endif
 
     var body: some View {
@@ -28,9 +32,37 @@ struct SettingsView: View {
             Picker("Start track", selection: $startTrack) {
                 ForEach(tracks, id: \.self) { t in Text(trackNames[t] ?? t.capitalized).tag(t) }
             }
+
+            // ponytail: rotation order (chess, math, then every language) is
+            // fixed in run.mjs, not editable here — this just picks the pace.
+            Toggle("Cycle topics for variance", isOn: $cycleEnabled)
+                .onChange(of: cycleEnabled) { syncCycle() }
+            if cycleEnabled {
+                Picker("Switch every", selection: $cycleMode) {
+                    Text("X minutes").tag("time")
+                    Text("X completed lessons").tag("count")
+                }
+                .onChange(of: cycleMode) { syncCycle() }
+                Stepper(
+                    cycleMode == "time" ? "\(cycleMinutes) minutes" : "\(cycleCount) lessons",
+                    value: cycleMode == "time" ? $cycleMinutes : $cycleCount,
+                    in: 1...180
+                )
+                .onChange(of: cycleMinutes) { syncCycle() }
+                .onChange(of: cycleCount) { syncCycle() }
+            }
             #endif
         }
         .padding(20)
         .frame(width: 300)
+        #if os(macOS)
+        .onAppear { if cycleEnabled { syncCycle() } }
+        #endif
     }
+
+    #if os(macOS)
+    private func syncCycle() {
+        Poller.shared.setCycle(enabled: cycleEnabled, mode: cycleMode, value: cycleMode == "time" ? cycleMinutes : cycleCount)
+    }
+    #endif
 }

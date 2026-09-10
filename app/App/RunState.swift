@@ -91,6 +91,13 @@ final class Poller: ObservableObject {
         mutate((state?.paused ?? false) ? "resume" : "pause")
     }
 
+    // ponytail: run.mjs owns the rotation order and the actual timer/count
+    // logic (persisted to cycle.json so it survives this app not running) —
+    // this just flips the switch and sets mode/value.
+    func setCycle(enabled: Bool, mode: String, value: Int) {
+        mutate("cycle?enabled=\(enabled)&mode=\(mode)&value=\(value)")
+    }
+
     func switchTrack(_ t: String) {
         mutate("switch?track=\(t)")
     }
