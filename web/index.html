@@ -143,7 +143,7 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   <div class="device device-mac has-chrome" aria-hidden="true"><div class="device-screen">
     <div class="app-demo">
       <h4 id="appTrackName">pwnlingo — solving Chess</h4>
-      <div class="app-meta">155 day streak · 5/5 hearts · Diamond League</div>
+      <div class="app-meta" id="appMeta">155 day streak · 5/5 hearts · Diamond League</div>
       <div id="demoStage"></div>
       <div class="app-label" id="appLabel">Checkmate!</div>
       <div class="app-xp" id="appXp">+0 XP</div>
@@ -171,6 +171,7 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   var trackEl = document.getElementById('appTrackName');
   var xpEl = document.getElementById('appXp'), labelEl = document.getElementById('appLabel');
   var solvedEl = document.getElementById('statPuzzles'), missesEl = document.getElementById('statMisses');
+  var metaEl = document.getElementById('appMeta');
   var xp = 0, solved = 0;
   missesEl.textContent = '0';
 
@@ -270,33 +271,56 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
     });
   }
 
+  // ponytail: math/lang have no board to draw, just a prompt+answer pair off
+  // the last graded challenge (run.mjs now saves it to state.json). Reuse the
+  // same reveal box the scripted demo uses so a subject switch actually looks
+  // like a different subject, not a frozen chessboard with new stats next to it.
+  var lastLiveKey = null;
+  function drawLiveText(prompt, answer) {
+    stage.innerHTML = '<div class="demo-math"><div class="problem">' + prompt + '</div><div class="answer on">' + answer + '</div></div>';
+  }
+
   function poll() {
     fetch('/api/live').then(function(r) { return r.json(); }).then(function(d) {
       // Stale `at` means the Mac went away since the edge last looked.
       // Between puzzles the runner has no position to report. Taking over on
       // one of those would stop the replay and leave a scripted board sitting
-      // under a "live right now" caption — so only take over once there is a
-      // real board to draw. After that, a momentary gap just holds the last one.
+      // under a "live right now" caption — so only take over once there is
+      // something real to draw. After that, a momentary gap just holds the last one.
+      var hasContent = d.fen || (d.track !== 'chess' && d.prompt);
       var fresh = d.live && d.at && (Date.now() - new Date(d.at).getTime() < 120000)
-        && (d.fen || (live && d.track === 'chess'));
+        && (hasContent || (live && d.track === trackEl.dataset.liveTrack));
       if (!fresh) {
-        if (live) { live = false; if (captionEl) captionEl.textContent = canned; playNext(); }
+        if (live) { live = false; lastLiveKey = null; if (captionEl) captionEl.textContent = canned; playNext(); }
         return;
       }
-      var wasLive = live;
+      var wasLive = live, trackChanged = trackEl.dataset.liveTrack !== d.track;
       live = true;
+      trackEl.dataset.liveTrack = d.track;
       if (!wasLive && captionEl) {
         captionEl.textContent = 'Live right now, from the Mac actually running it.';
       }
       trackEl.textContent = 'pwnlingo — solving ' + (trackName[d.track] || d.track);
       if (d.xp != null) xpEl.textContent = '+' + d.xp + ' XP';
-      solvedEl.textContent = d.track === 'chess' ? d.puzzles : d.lessons;
+      var solved = d.track === 'chess' ? d.puzzles : d.lessons;
+      solvedEl.textContent = solved;
       missesEl.textContent = d.misses;
+      if (metaEl && d.streak != null) {
+        var acc = solved > 0 ? Math.round(100 * (solved - d.misses) / solved) : 100;
+        metaEl.textContent = d.streak + ' day streak · ' + acc + '% solve rate';
+      }
       labelEl.textContent = d.paused ? 'Paused' : 'Solving…';
       labelEl.classList.add('on');
-      if (d.fen) drawLiveBoard(d.fen);
+      if (d.track === 'chess') {
+        if (d.fen) drawLiveBoard(d.fen);
+      } else if (d.prompt) {
+        var key = d.track + '|' + d.prompt;
+        if (key !== lastLiveKey || trackChanged) { lastLiveKey = key; drawLiveText(d.prompt, d.answer || ''); }
+      } else if (trackChanged) {
+        stage.innerHTML = '';
+      }
     }).catch(function() {
-      if (live) { live = false; if (captionEl) captionEl.textContent = canned; playNext(); }
+      if (live) { live = false; lastLiveKey = null; if (captionEl) captionEl.textContent = canned; playNext(); }
     });
   }
 

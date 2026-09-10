@@ -486,7 +486,7 @@ while (true) {
       }
       await sleep(1000);
     } else if (st.kind === 'challenge') {
-      if (st.row) ledger([st.row]);
+      if (st.row) { ledger([st.row]); S.prompt = st.row.prompt || null; S.answer = st.row.answer || null; saveState(); }
       if (!st.via) log({ ev: 'unknown-challenge', type: st.type, keys: st.unknown && st.unknown.keys });
       const ok = await page.evaluate(async () => { const n = document.querySelector('[data-test="player-next"]'); if (n && !n.disabled && n.getAttribute('aria-disabled') !== 'true') { n.click(); return true; } return false; });
       if (!ok) {

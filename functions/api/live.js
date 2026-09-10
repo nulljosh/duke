@@ -32,6 +32,8 @@ export async function onRequest(context) {
       live: true,
       track: s.track,
       fen,
+      prompt: s.prompt ?? null,
+      answer: s.answer ?? null,
       xp: s.xp != null && s.xp0 != null ? s.xp - s.xp0 : null,
       puzzles: s.puzzles,
       misses: s.misses,
