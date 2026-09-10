@@ -320,7 +320,7 @@ while (true) {
   if (pendingTrack && pendingTrack !== track) {
     track = pendingTrack; pendingTrack = null;
     isMath = track === 'math'; isChessTrack = track === 'chess';
-    S.track = track; S.xp0 = S.xp = null; idleOpens = 0;
+    S.track = track; idleOpens = 0;
     // ponytail: /lesson just resumes whatever session is already in flight
     // server-side, regardless of the PATCHed currentCourseId — a switch mid
     // puzzle/match/lesson silently kept solving the OLD track's content under
@@ -336,6 +336,7 @@ while (true) {
     await setCourse(track);
     log({ ev: 'switch', track });
     await sleep(2000);
+    S.xp0 = S.xp = await xp(); saveState();
   }
   saveState();   // heartbeat before a potentially-hanging navigation, so a stuck run still shows a moving `at`
   if (!(await openLesson())) {
