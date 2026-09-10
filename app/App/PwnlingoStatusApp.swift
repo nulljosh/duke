@@ -1,9 +1,13 @@
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
 @main
 struct PwnlingoStatusApp: App {
     #if os(macOS)
     @AppStorage("openAtLogin") private var openAtLogin = true
+    @AppStorage("hideDockIcon") private var hideDockIcon = true
     #endif
 
     init() {
@@ -12,6 +16,11 @@ struct PwnlingoStatusApp: App {
         #endif
         #if os(macOS)
         LoginItem.sync(enabled: UserDefaults.standard.object(forKey: "openAtLogin") as? Bool ?? true)
+        // ponytail: NSApp isn't wired up yet this early in App.init() (nil
+        // unwrap crash) — NSApplication.shared always exists and does the same
+        // thing, but bounce to the next runloop turn to be safe either way.
+        let hide = UserDefaults.standard.object(forKey: "hideDockIcon") as? Bool ?? true
+        DispatchQueue.main.async { NSApplication.shared.setActivationPolicy(hide ? .accessory : .regular) }
         #endif
     }
 
