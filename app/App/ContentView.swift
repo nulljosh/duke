@@ -2,6 +2,7 @@ import SwiftUI
 
 private let tracks = ["es", "el", "math", "chess", "music"]
 private let trackNames = ["es": "Spanish", "el": "Greek", "math": "Math", "chess": "Chess", "music": "Music"]
+private let trackIcons = ["es": "quote.bubble.fill", "el": "character.book.closed.fill", "math": "function", "chess": "crown.fill", "music": "music.note"]
 
 struct ContentView: View {
     @StateObject private var poller = Poller()
@@ -19,14 +20,21 @@ struct ContentView: View {
             Spacer()
 
             if let s = poller.state {
-                Menu {
+                Text(trackNames[s.track] ?? s.track.capitalized).font(.title2.bold())
+                HStack(spacing: 14) {
                     ForEach(tracks, id: \.self) { t in
-                        Button(trackNames[t] ?? t.capitalized) { poller.switchTrack(t) }
+                        Button { poller.switchTrack(t) } label: {
+                            Image(systemName: trackIcons[t] ?? "questionmark")
+                                .font(.system(size: 16, weight: .semibold))
+                                .frame(width: 34, height: 34)
+                                .foregroundStyle(t == s.track ? .white : .secondary)
+                                .background(t == s.track ? Color.accentColor : Color.clear, in: Circle())
+                        }
+                        .buttonStyle(.plain)
+                        .help(trackNames[t] ?? t)
                     }
-                } label: {
-                    Label(trackNames[s.track] ?? s.track.capitalized, systemImage: "chevron.up.chevron.down")
-                        .font(.title2.bold())
                 }
+                .padding(.top, 6)
                 if let xp0 = s.xp0, let xp = s.xp {
                     Text("+\(xp - xp0) XP").font(.largeTitle.monospacedDigit().bold()).foregroundStyle(.green)
                 }
