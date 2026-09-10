@@ -268,7 +268,12 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   function poll() {
     fetch('/api/live').then(function(r) { return r.json(); }).then(function(d) {
       // Stale `at` means the Mac went away since the edge last looked.
-      var fresh = d.live && d.at && (Date.now() - new Date(d.at).getTime() < 120000);
+      // Between puzzles the runner has no position to report. Taking over on
+      // one of those would stop the replay and leave a scripted board sitting
+      // under a "live right now" caption — so only take over once there is a
+      // real board to draw. After that, a momentary gap just holds the last one.
+      var fresh = d.live && d.at && (Date.now() - new Date(d.at).getTime() < 120000)
+        && (d.fen || (live && d.track === 'chess'));
       if (!fresh) {
         if (live) { live = false; if (captionEl) captionEl.textContent = canned; playNext(); }
         return;
