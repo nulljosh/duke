@@ -83,7 +83,10 @@ http.createServer((req, res) => {
     // Token-gated already, so this is just a sanity check: a track is a short
     // alphanumeric code (a language code, or math/chess/music), nothing else.
     const t = new URL(req.url, 'http://x').searchParams.get('track');
-    if (isValidTrack(t)) { pendingTrack = t; res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }
+    // A manual switch means "play this one" — auto-cycle rotating back within a
+    // few completions made it look like the click "did nothing". Turn cycling
+    // off so a manual pick sticks; the app's own cycle toggle turns it back on.
+    if (isValidTrack(t)) { pendingTrack = t; cycle.enabled = false; saveCycle(); res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }
   } else if (req.method === 'GET' && req.url === '/cycle') {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(cycle));
@@ -111,8 +114,16 @@ http.createServer((req, res) => {
   } else if (req.url.startsWith('/screenshot') && !authed(req)) {
     res.writeHead(401); res.end('{"ok":false,"err":"bad or missing X-Pwnlingo-Token"}');
   } else if (req.url.startsWith('/screenshot')) {
-    // ponytail: reuses the live page, no separate headful/video pipeline
-    page.screenshot({ type: 'jpeg', quality: 60 }).then(buf => {
+    // ponytail: reuses the live page, no separate headful/video pipeline. Clip
+    // to the challenge widget itself (same container hasChallenge() checks) so
+    // math/story previews read like a clean crop, not Duolingo's full chrome —
+    // the closest a screenshot gets to how ChessBoardView renders just the board.
+    page.evaluate(() => {
+      const el = document.querySelector('[data-test^="challenge "], [data-test="stories-element"]');
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { x: Math.max(0, r.x), y: Math.max(0, r.y), width: r.width, height: r.height };
+    }).catch(() => null).then(clip => page.screenshot({ type: 'jpeg', quality: 60, ...(clip && clip.width > 0 && clip.height > 0 ? { clip } : {}) })).then(buf => {
       res.setHeader('Content-Type', 'image/jpeg');
       res.end(buf);
     }).catch(() => { res.writeHead(503); res.end(); });
@@ -355,8 +366,14 @@ while (true) {
 
   while (Date.now() - t0 < 20 * 60e3) {                     // one lesson, 20 min ceiling
     if (paused) break;   // was only checked at the top of the outer loop — a match/puzzle session kept playing through a pause
+    if (pendingTrack && pendingTrack !== track) break;   // same problem for /switch: a chess puzzle loop has no natural exit, so a switch sat ignored until the session ended on its own
     saveState();   // heartbeat: an `at` that stops advancing means the loop is stuck, not just between puzzles
     if (isMath) {
+      // ponytail: __duo.prompt() (math.js) reads the live \text{} instruction out
+      // of the question's LaTeX — same idea as solveLang()'s ledger row, just a
+      // read instead of a full parse. Best-effort: goes null between questions.
+      page.evaluate(() => { try { return window.__duo.prompt(); } catch { return null; } })
+        .then(p => { S.prompt = p || null; S.answer = null; S.choices = null; saveState(); }).catch(() => {});
       // autoLesson() is the real driver (run(15) only hits the generic
       // fallback loop and halts 'manual' on the first widget it can't
       // click). Mirror boot.js's 12-min watchdog race.
@@ -553,7 +570,7 @@ while (true) {
       }
       await sleep(1000);
     } else if (st.kind === 'challenge') {
-      if (st.row) { ledger([st.row]); S.prompt = st.row.prompt || null; S.answer = st.row.answer || null; saveState(); }
+      if (st.row) { ledger([st.row]); S.prompt = st.row.prompt || null; S.answer = st.row.answer || null; S.choices = st.row.choices || null; saveState(); }
       if (!st.via) log({ ev: 'unknown-challenge', type: st.type, keys: st.unknown && st.unknown.keys });
       const ok = await page.evaluate(async () => { const n = document.querySelector('[data-test="player-next"]'); if (n && !n.disabled && n.getAttribute('aria-disabled') !== 'true') { n.click(); return true; } return false; });
       if (!ok) {

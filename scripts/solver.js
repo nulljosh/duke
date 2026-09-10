@@ -176,7 +176,12 @@ window.__duo = window.__duo || {};
       (c.correctTokens && c.correctTokens.filter(t => /[\p{L}\p{N}]/u.test(t)).join(' ')) ||
       (typeof c.correctIndex === 'number' && choiceText((c.choices || [])[c.correctIndex])) ||
       (Array.isArray(c.correctIndices) && c.correctIndices.map(i => choiceText((c.choices || [])[i])).join(' ')) || '';
-    return { at: new Date().toISOString(), course: localStorage.duoCourse || null, type: c.type, prompt: c.prompt || '', answer: ans, via, href: location.pathname };
+    // choices: the full option pool for multiple-choice/select types, so the
+    // status app can render the actual tile row (like a chessboard move) with
+    // the answer highlighted, instead of just the answer text alone. null for
+    // translate/word-bank types — there's no fixed pool to list.
+    const choices = Array.isArray(c.choices) ? c.choices.map(choiceText) : null;
+    return { at: new Date().toISOString(), course: localStorage.duoCourse || null, type: c.type, prompt: c.prompt || '', answer: ans, choices, via, href: location.pathname };
   };
 
   // ---- chess: puzzles ----

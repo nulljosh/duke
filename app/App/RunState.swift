@@ -28,6 +28,8 @@ struct RunState: Decodable {
     let lessons, puzzles, matches, misses: Int
     let xp0, xp: Int?
     let last: String?
+    let prompt, answer: String?
+    let choices: [String]?
 }
 
 struct FenResponse: Decodable { let fen: String? }

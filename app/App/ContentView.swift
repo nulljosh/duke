@@ -104,6 +104,8 @@ struct ContentView: View {
                 // shows the whole board, nothing extra to look at.
                 ChessBoardView(fen: fen, cover: false)
                     .opacity(s.paused == true ? 0.5 : 1)
+            } else if s.prompt != nil || s.answer != nil {
+                PromptCardView(prompt: s.prompt, answer: s.answer, choices: s.choices)
             } else {
                 AuthedImage(url: screenshotURL(s), token: poller.token)
             }

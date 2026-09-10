@@ -35,6 +35,15 @@ struct MenuBarPanel: View {
                     ChessBoardView(fen: fen)
                         .frame(width: 220, height: 220)
                         .opacity(s.paused == true ? 0.5 : 1)
+                } else if s.prompt != nil || s.answer != nil {
+                    PromptCardView(prompt: s.prompt, answer: s.answer, choices: s.choices)
+                        .frame(width: 220, height: 120)
+                        .opacity(s.paused == true ? 0.5 : 1)
+                } else {
+                    AuthedImage(url: URL(string: "http://\(poller.host)/screenshot?t=\(s.at)"), token: poller.token)
+                        .frame(width: 220, height: 220)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .opacity(s.paused == true ? 0.5 : 1)
                 }
 
                 HStack {
@@ -74,7 +83,7 @@ struct MenuBarPanel: View {
                 HStack {
                     Button(s.paused == true ? "Resume" : "Pause") { poller.togglePause() }
                     Spacer()
-                    Menu("Switch") {
+                    Menu(trackNames[s.track] ?? s.track.capitalized) {
                         ForEach(otherTracks, id: \.self) { t in
                             Button(trackNames[t] ?? t.capitalized) { poller.switchTrack(t) }
                         }
@@ -84,7 +93,6 @@ struct MenuBarPanel: View {
                             }
                         }
                     }
-                    .frame(width: 70)
                 }
 
                 HStack {
