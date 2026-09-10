@@ -2,6 +2,7 @@
 jwt.txt
 log.jsonl
 lessons.jsonl
+puzzles.jsonl
 state.json
 promo-calib.json
 api-token.txt

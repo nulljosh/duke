@@ -133,6 +133,10 @@ const log = o => { fs.appendFileSync(LOG_PATH, JSON.stringify({ at: new Date().t
 const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null, puzzleStep: null, puzzleTotal: null };
 const saveState = () => fs.writeFileSync(path.join(D, 'state.json'), JSON.stringify({ at: new Date().toISOString(), ...S }, null, 1));
 const ledger = rows => rows.length && fs.appendFileSync(path.join(D, 'lessons.jsonl'), rows.map(r => JSON.stringify(r)).join('\n') + '\n');
+// ponytail: language gets lessons.jsonl (prompt+answer per question) but chess
+// puzzles only ever lived in log.jsonl, which rotates at 5MB / keeps ~5000
+// lines — same permanent record language gets, chess never had one.
+const puzzleLedger = row => fs.appendFileSync(path.join(D, 'puzzles.jsonl'), JSON.stringify(row) + '\n');
 
 // self-calibrating promotion-picker slot: {piece: slotIndex}, learned by trial when the
 // guessed 'qrbn' order fails a graded puzzle, persisted so it sticks across runs.
@@ -472,6 +476,7 @@ while (true) {
         lastCountedKey = key;
         const ok = !/incorrect|wrong/i.test(graded_ || '');
         S.puzzles++; if (!ok) S.misses++; S.last = 'puzzle'; log({ ev: 'puzzle', moves: st.plan.moves, ok }); saveState();
+        puzzleLedger({ at: new Date().toISOString(), moves: st.plan.moves, ok });
         S.xp = await xp(); S.puzzleStep = null; S.puzzleTotal = null; saveState(); // ponytail: puzzles never funneled through the lesson-complete xp refresh — was silently stale
         // self-calibration: a promotion move that graded wrong means the guessed picker
         // slot ('qrbn' order) is off for this piece — cycle to the next slot (0-3) and
