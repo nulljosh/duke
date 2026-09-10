@@ -10,10 +10,14 @@ struct PwnlingoStatusApp: App {
 
     var body: some Scene {
         WindowGroup {
+            #if os(watchOS)
+            WatchView()
+            #else
             ContentView()
                 #if os(macOS)
                 .background(FloatingWindow())
                 #endif
+            #endif
         }
         #if os(macOS)
         .windowResizability(.contentMinSize)
@@ -32,6 +36,16 @@ struct PwnlingoStatusApp: App {
         }
         #endif
         #if os(macOS)
+        // ponytail: the point of a status app is not having to go look at it.
+        // The title is live XP, so the answer is in the menu bar itself and the
+        // panel is only for when you want the board or the pause button.
+        MenuBarExtra {
+            MenuBarPanel()
+        } label: {
+            MenuBarLabel()
+        }
+        .menuBarExtraStyle(.window)
+
         Settings { SettingsView() }
         #endif
     }

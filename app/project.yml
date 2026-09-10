@@ -8,7 +8,7 @@ targets:
     deploymentTarget: "14.0"
     sources:
       - path: App
-        excludes: ["Info-iOS.plist"]
+        excludes: ["Info-iOS.plist", "Info-watchOS.plist"]
     info:
       path: App/Info-macOS.plist
       properties:
@@ -22,13 +22,33 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.pwnlingo-status
         MARKETING_VERSION: "1.0"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  PwnlingoStatus-watchOS:
+    type: application
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources:
+      - path: App
+        excludes: ["Info-macOS.plist", "Info-iOS.plist"]
+    info:
+      path: App/Info-watchOS.plist
+      properties:
+        NSLocalNetworkUsageDescription: Reads live puzzle progress from the pwnlingo autopilot running on your Mac.
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        WKApplication: true
+        WKWatchOnly: true
+    settings:
+      base:
+        PRODUCT_NAME: Pwnlingo
+        PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.pwnlingo-status.watch
+        MARKETING_VERSION: "1.0"
   PwnlingoStatus-iOS:
     type: application
     platform: iOS
     deploymentTarget: "17.0"
     sources:
       - path: App
-        excludes: ["Info-macOS.plist"]
+        excludes: ["Info-macOS.plist", "Info-watchOS.plist"]
     info:
       path: App/Info-iOS.plist
       properties:

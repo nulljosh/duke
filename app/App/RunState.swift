@@ -2,6 +2,8 @@ import Foundation
 import SwiftUI
 #if os(macOS)
 import AppKit
+#elseif os(watchOS)
+import WatchKit
 #else
 import AudioToolbox
 #endif
@@ -121,6 +123,9 @@ final class Poller: ObservableObject {
         guard soundEnabled else { return }
         #if os(macOS)
         NSSound(named: ev.ok == false ? "Basso" : "Pop")?.play()
+        #elseif os(watchOS)
+        // No AudioToolbox system sounds on the watch — a tap is the equivalent.
+        WKInterfaceDevice.current().play(ev.ok == false ? .failure : .success)
         #else
         AudioServicesPlaySystemSound(ev.ok == false ? 1053 : 1057)
         #endif

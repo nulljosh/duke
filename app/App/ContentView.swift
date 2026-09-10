@@ -21,6 +21,7 @@ let trackNames: [String: String] = Dictionary(uniqueKeysWithValues: languages.ma
     .merging(["math": "Math", "chess": "Chess", "music": "Music"]) { a, _ in a }
 let leagueNames = ["Bronze", "Silver", "Gold", "Sapphire", "Ruby", "Emerald", "Amethyst", "Pearl", "Obsidian", "Diamond"]
 
+#if !os(watchOS)
 struct ContentView: View {
     @ObservedObject private var poller = Poller.shared
     #if !os(macOS)
@@ -218,3 +219,4 @@ struct ContentView: View {
         }
     }
 }
+#endif
