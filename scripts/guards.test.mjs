@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { rateLimited, isValidTrack, shouldRotateLog, cycleDue, nextInRotation, courseComplete, stallAction } from './guards.mjs';
+import { rateLimited, isValidTrack, shouldRotateLog, cycleDue, nextInRotation, courseComplete, stallAction, summarizePath } from './guards.mjs';
 
 test('rateLimited allows up to max requests in a window', () => {
   const win = { start: 0, count: 0 };
@@ -85,4 +85,43 @@ test('stallAction escalates: nothing, then reset, then switch', () => {
   assert.equal(stallAction(3), 'reset');
   assert.equal(stallAction(5), 'reset');
   assert.equal(stallAction(6), 'switch');
+});
+
+// Shapes taken from the live CHESS_CH payload: sections carry completedUnits/
+// totalUnits, levels carry a state. Section 7 shipped with everything locked.
+const section = (done, total, states) => ({
+  completedUnits: done, totalUnits: total,
+  units: [{ levels: states.map((state) => ({ state })) }],
+});
+
+test('summarizePath counts passed/legendary levels and sums section units', () => {
+  const out = summarizePath([
+    section(6, 6, ['passed', 'passed', 'legendary']),
+    section(0, 48, ['locked', 'locked', 'unit_test', 'active']),
+  ]);
+  assert.deepEqual(out, { passed: 3, total: 7, unitsDone: 6, unitsTotal: 54 });
+});
+
+test('summarizePath: unit_test and active are NOT passed', () => {
+  const out = summarizePath([section(1, 1, ['unit_test', 'active'])]);
+  assert.equal(out.passed, 0);
+  assert.equal(out.total, 2);
+});
+
+test('summarizePath returns null for empty/garbage rather than a fake zero', () => {
+  // null matters: a {passed:0,total:0} would divide by zero downstream
+  for (const bad of [null, undefined, [], 'nope', [{ units: [] }]])
+    assert.equal(summarizePath(bad), null, JSON.stringify(bad));
+});
+
+test('summarizePath tolerates missing units/levels keys', () => {
+  const out = summarizePath([{ completedUnits: 2, totalUnits: 3 }, section(1, 1, ['passed'])]);
+  assert.deepEqual(out, { passed: 1, total: 1, unitsDone: 3, unitsTotal: 4 });
+});
+
+test('summarizePath output feeds courseComplete correctly', () => {
+  const finished = summarizePath([section(2, 2, ['passed', 'passed'])]);
+  assert.equal(courseComplete(finished, finished.total), true);
+  const partial = summarizePath([section(2, 2, ['passed', 'passed'])]);
+  assert.equal(courseComplete(partial, 9999), false);   // total shrank vs peak
 });

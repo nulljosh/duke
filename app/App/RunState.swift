@@ -24,7 +24,9 @@ let pwnlingoDateFormatter: ISO8601DateFormatter = {
 // (a switch doesn't touch it, only relaunching the runner does).
 func uptimeString(since started: String) -> String {
     guard let start = pwnlingoDateFormatter.date(from: started) else { return "" }
-    let secs = Int(Date().timeIntervalSince(start))
+    // A clock adjustment (or a started timestamp slightly in the future) would
+    // otherwise render "running -1h -3m".
+    let secs = max(0, Int(Date().timeIntervalSince(start)))
     let h = secs / 3600, m = (secs % 3600) / 60
     let duration = h > 0 ? "\(h)h \(m)m" : "\(m)m"
     // String(localized:) — a plain interpolated literal never touches the catalog.
@@ -65,9 +67,13 @@ struct CourseProgress: Decodable {
     /// "1d 4h" / "27h" / "45m" — nil when there's no measured rate yet.
     var etaText: String? {
         guard let h = etaHours, h > 0 else { return nil }
-        if h < 1 { return "\(Int(h * 60))m" }
-        if h < 24 { return "\(Int(h.rounded()))h" }
-        let days = Int(h) / 24, hrs = Int(h.rounded()) % 24
+        if h < 1 { return "\(Int((h * 60).rounded()))m" }
+        // Round ONCE, then split. Deriving days from the truncated value and
+        // hours from the rounded one dropped the carry: 47.8h rendered "1d"
+        // (days = 47/24 = 1, hrs = 48 % 24 = 0) instead of ~2d.
+        let totalHours = Int(h.rounded())
+        if totalHours < 24 { return "\(totalHours)h" }
+        let days = totalHours / 24, hrs = totalHours % 24
         return hrs > 0 ? "\(days)d \(hrs)h" : "\(days)d"
     }
 }

@@ -20,7 +20,7 @@ import path from 'node:path';
 import http from 'node:http';
 import crypto from 'node:crypto';
 import { courseIdFor } from './courseId.mjs';
-import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction } from './guards.mjs';
+import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, summarizePath } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -139,6 +139,11 @@ http.createServer((req, res) => {
     }).catch(() => { res.writeHead(503); res.end(); });
   } else { res.writeHead(404); res.end(); }
   } catch (e) { if (!res.headersSent) { res.writeHead(503); res.end(); } }
+}).on('error', (e) => {
+  // Witnessed: starting a second runner crashed the whole process with an
+  // unhandled 'error' event and a raw stack. Say what's wrong and stop.
+  if (e.code === 'EADDRINUSE') { console.error('Port 8737 is already in use — another runner is running. Stop it first (lsof -ti:8737 | xargs kill).'); process.exit(1); }
+  console.error('HTTP server error:', e); process.exit(1);
 }).listen(8737, '0.0.0.0');
 
 // ponytail: the session lives in the persistent Chromium profile (.pw-profile),
@@ -224,7 +229,7 @@ try {
   await ctx.close();
   process.exit(1);
 }
-const page = ctx.pages()[0] || await ctx.newPage();
+let page = ctx.pages()[0] || await ctx.newPage();
 
 const inject = async () => {
   // mathjs (local bundle, no network dependency) replaces the hand-rolled
@@ -253,27 +258,27 @@ const stats = () => page.evaluate(async u => {
 // track, because the course id comes from courseIdFor() the same as setCourse().
 // Caveat worth knowing: totalLevels grows when Duolingo ships a new section, so
 // 100% is a moving target — the percentage is honest for the tree as it stands.
-const progress = (t) => page.evaluate(async ({ u, cid }) => {
+// The browser only fetches and TRIMS (the raw payload carries megabytes of
+// per-level chess/lesson metadata). The counting itself happens in Node via
+// summarizePath(), so the logic that decides "this course is finished" — which
+// is allowed to switch tracks — is the same code the tests exercise, instead of
+// a copy of it living out of reach inside page.evaluate.
+const fetchPath = (t) => page.evaluate(async ({ u, cid }) => {
   try {
     const r = await fetch(`/2017-06-30/users/${u}/courses/${cid}`);
     if (!r.ok) return null;
     const j = await r.json();
     const secs = j.pathSectioned || [];
     if (!secs.length) return null;
-    let passed = 0, total = 0, unitsDone = 0, unitsTotal = 0;
-    for (const s of secs) {
-      unitsDone += s.completedUnits || 0;
-      unitsTotal += s.totalUnits || 0;
-      for (const unit of (s.units || [])) {
-        for (const lv of (unit.levels || [])) {
-          total++;
-          if (lv.state === 'passed' || lv.state === 'legendary') passed++;
-        }
-      }
-    }
-    return total ? { passed, total, unitsDone, unitsTotal } : null;
+    // Same shape as the real payload, just without the metadata.
+    return secs.map((s) => ({
+      completedUnits: s.completedUnits || 0,
+      totalUnits: s.totalUnits || 0,
+      units: (s.units || []).map((u2) => ({ levels: (u2.levels || []).map((lv) => ({ state: lv.state })) })),
+    }));
   } catch (e) { return null; }
 }, { u: uid, cid: courseIdFor(t) }).catch(() => null);
+const progress = async (t) => summarizePath(await fetchPath(t));
 
 // Rate is MEASURED, never assumed: anchor the first sample of this run, then
 // extrapolate from levels actually passed since. Resets on a track switch,
@@ -458,7 +463,15 @@ const clickByText = () => page.evaluate(() => {
 
 let idleOpens = 0;
 let unproductiveCycles = 0;   // cycles that opened fine but gained nothing — see stallAction()
+// ponytail: witnessed tonight — one "page.evaluate: Target page, context or
+// browser has been closed" propagated out of the loop and killed the runner
+// outright. Nothing restarts run.mjs (the LaunchAgent only covers the status
+// app), so an unattended overnight run just ended. A closed page is recoverable:
+// open a new one from the same context. Anything else gets logged and retried
+// with a backoff, and repeated failures exit loudly rather than spinning hot.
+let consecutiveCrashes = 0;
 while (true) {
+ try {
   if (paused) { saveState(); await sleep(500); continue; }
   if (!pendingTrack && cycleDue()) { pendingTrack = nextInRotation(track); cycle.lastAt = Date.now(); cycle.sinceCount = 0; saveCycle(); }
   if (pendingTrack && pendingTrack !== track) {
@@ -767,4 +780,27 @@ while (true) {
     unproductiveCycles = 0;
     pendingTrack = nextInRotation(track);   // this track is going nowhere; try another
   }
+  consecutiveCrashes = 0;   // a cycle finished end to end; the loop is healthy
+ } catch (e) {
+  const msg = String(e && e.message || e);
+  consecutiveCrashes++;
+  log({ ev: 'loop-error', err: msg.slice(0, 300), consecutive: consecutiveCrashes });
+  // A closed page is the recoverable one: the context is still alive, so open
+  // a fresh page and carry on rather than ending an overnight run.
+  if (page.isClosed?.() || /Target page, context or browser has been closed|Target closed/i.test(msg)) {
+    try {
+      page = await ctx.newPage();
+      forceQuitOnOpen = true;   // the new page has no idea what session was open
+      log({ ev: 'page-recovered' });
+    } catch (e2) {
+      console.error('Browser is gone and a new page could not be opened:', e2);
+      process.exit(1);   // the context itself died — nothing left to recover
+    }
+  }
+  if (consecutiveCrashes >= 5) {
+    console.error(`Giving up after ${consecutiveCrashes} consecutive loop errors. Last: ${msg}`);
+    process.exit(1);   // exit loudly instead of spinning hot on a permanent fault
+  }
+  await sleep(Math.min(30_000, 2000 * consecutiveCrashes));   // back off, don't hammer
+ }
 }

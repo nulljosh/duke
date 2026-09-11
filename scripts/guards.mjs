@@ -30,6 +30,26 @@ export const cycleDue = (cycle, now) => {
 // Falls back to the first entry for an unknown/off-list current track.
 export const nextInRotation = (rotation, t) => rotation[(rotation.indexOf(t) + 1) % rotation.length] || rotation[0];
 
+// Reduce Duolingo's pathSectioned payload to {passed,total,unitsDone,unitsTotal}.
+// Pure so it can be tested against real payload shapes — it feeds courseComplete(),
+// which is allowed to switch tracks, so a miscount here has real consequences.
+// 'legendary' counts as passed; 'locked'/'active'/'unit_test' do not.
+export const summarizePath = (sections) => {
+  if (!Array.isArray(sections) || !sections.length) return null;
+  let passed = 0, total = 0, unitsDone = 0, unitsTotal = 0;
+  for (const s of sections) {
+    unitsDone += s?.completedUnits || 0;
+    unitsTotal += s?.totalUnits || 0;
+    for (const unit of (s?.units || [])) {
+      for (const lv of (unit?.levels || [])) {
+        total++;
+        if (lv?.state === "passed" || lv?.state === "legendary") passed++;
+      }
+    }
+  }
+  return total ? { passed, total, unitsDone, unitsTotal } : null;
+};
+
 // Is a course REALLY finished? Gating auto-advance on `passed >= total` alone is
 // not safe: Duolingo's path payload can come back short (an unreleased section
 // with units:[] , a partial response), and a shrunken total makes an unfinished
