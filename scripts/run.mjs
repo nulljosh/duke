@@ -20,7 +20,7 @@ import path from 'node:path';
 import http from 'node:http';
 import crypto from 'node:crypto';
 import { courseIdFor } from './courseId.mjs';
-import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard } from './guards.mjs';
+import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -71,7 +71,17 @@ http.createServer((req, res) => {
   if (req.url === '/state') {
     res.setHeader('Content-Type', 'application/json');
     if (!fs.existsSync(path.join(D, 'state.json'))) { res.writeHead(503); res.end(); return; }
-    res.end(fs.readFileSync(path.join(D, 'state.json'), 'utf8').toString());
+    const raw = fs.readFileSync(path.join(D, 'state.json'), 'utf8').toString();
+    // ponytail: reads stay open so every client keeps working without a token,
+    // but this hostname is on the public internet via the tunnel and the payload
+    // has grown past "a chess score". Only `username` actually identifies the
+    // account, so only that is withheld — stripping streak/league too would
+    // regress the tui and KMP clients, which send no token and show them.
+    if (authed(req)) { res.end(raw); return; }
+    try {
+      const { username, ...rest } = JSON.parse(raw);
+      res.end(JSON.stringify(rest));
+    } catch { res.end(raw); }
   } else if (req.url === '/log') {
     const lines = fs.existsSync(path.join(D, 'log.jsonl'))
       ? fs.readFileSync(path.join(D, 'log.jsonl'), 'utf8').trim().split('\n').slice(-50) : [];
@@ -145,21 +155,26 @@ const LOG_PATH = path.join(D, 'log.jsonl');
 // grow forever otherwise. Keep only the most recent ~5000 lines once the file
 // crosses 5MB — /log only ever serves the last 50 anyway, so nothing useful
 // is lost, and this needs no cron/launchd entry, just a check on each write.
-const rotateLogIfNeeded = () => {
+const rotateIfNeeded = (file, keep = 5000) => {
   try {
-    if (!shouldRotateLog(fs.statSync(LOG_PATH).size, 5 * 1024 * 1024)) return;
-    const lines = fs.readFileSync(LOG_PATH, 'utf8').trim().split('\n').slice(-5000);
-    fs.writeFileSync(LOG_PATH, lines.join('\n') + '\n');
+    if (!shouldRotateLog(fs.statSync(file).size, 5 * 1024 * 1024)) return;
+    const lines = fs.readFileSync(file, 'utf8').trim().split('\n').slice(-keep);
+    fs.writeFileSync(file, lines.join('\n') + '\n');
   } catch (e) { /* file may not exist yet — nothing to rotate */ }
 };
+const rotateLogIfNeeded = () => rotateIfNeeded(LOG_PATH);
 const log = o => { fs.appendFileSync(LOG_PATH, JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n'); rotateLogIfNeeded(); };
 const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null, puzzleStep: null, puzzleTotal: null, progress: null };
 const saveState = () => fs.writeFileSync(path.join(D, 'state.json'), JSON.stringify({ at: new Date().toISOString(), ...S }, null, 1));
-const ledger = rows => rows.length && fs.appendFileSync(path.join(D, 'lessons.jsonl'), rows.map(r => JSON.stringify(r)).join('\n') + '\n');
+// Both ledgers rotate on the same 5MB rule as log.jsonl — they used to grow
+// forever, which at ~22 levels/hour running unattended is real disk over weeks.
+const LESSONS_PATH = path.join(D, 'lessons.jsonl');
+const ledger = rows => { if (!rows.length) return; fs.appendFileSync(LESSONS_PATH, rows.map(r => JSON.stringify(r)).join('\n') + '\n'); rotateIfNeeded(LESSONS_PATH); };
 // ponytail: language gets lessons.jsonl (prompt+answer per question) but chess
 // puzzles only ever lived in log.jsonl, which rotates at 5MB / keeps ~5000
 // lines — same permanent record language gets, chess never had one.
-const puzzleLedger = row => fs.appendFileSync(path.join(D, 'puzzles.jsonl'), JSON.stringify(row) + '\n');
+const PUZZLES_PATH = path.join(D, 'puzzles.jsonl');
+const puzzleLedger = row => { fs.appendFileSync(PUZZLES_PATH, JSON.stringify(row) + '\n'); rotateIfNeeded(PUZZLES_PATH); };
 
 // self-calibrating promotion-picker slot: {piece: slotIndex}, learned by trial when the
 // guessed 'qrbn' order fails a graded puzzle, persisted so it sticks across runs.
@@ -269,11 +284,20 @@ let lastProgressAt = 0;
 // Not persisted on purpose: a restart on a finished track SHOULD re-detect the
 // completion and advance again, rather than sit there grinding a done tree.
 const completedTracks = new Set();
+// Largest level count ever seen per track. A real tree only grows (Duolingo
+// ships new sections); a payload that comes back smaller is partial, and
+// courseComplete() refuses to call that a finish.
+const progressPeak = new Map();
 const refreshProgress = async (force = false) => {
   if (!force && Date.now() - lastProgressAt < PROGRESS_EVERY_MS) return;
   lastProgressAt = Date.now();
   const p = await progress(track);
   if (!p) { S.progress = null; return; }
+  // A short payload would otherwise drag the percentage backwards and (worse)
+  // look like a finish. Keep the last good numbers and wait for the next poll.
+  const peak = progressPeak.get(track) || 0;
+  if (p.total < peak) { log({ ev: 'progress-partial', track, total: p.total, peak }); return; }
+  progressPeak.set(track, p.total);
   if (!progressAnchor || progressAnchor.track !== track) {
     progressAnchor = { at: Date.now(), passed: p.passed, track };
   }
@@ -297,7 +321,7 @@ const refreshProgress = async (force = false) => {
   // track in ROTATION (chess -> math -> languages, which is already the order).
   // Only ever fires on a real, complete payload: a failed fetch returns null
   // above and never reaches here, so a network blip can't fake a completion.
-  if (remaining === 0) {
+  if (courseComplete(p, progressPeak.get(track) || 0)) {
     if (!completedTracks.has(track)) {
       completedTracks.add(track);
       log({ ev: 'track-complete', track, passed: p.passed, total: p.total });
@@ -433,6 +457,7 @@ const clickByText = () => page.evaluate(() => {
 });
 
 let idleOpens = 0;
+let unproductiveCycles = 0;   // cycles that opened fine but gained nothing — see stallAction()
 while (true) {
   if (paused) { saveState(); await sleep(500); continue; }
   if (!pendingTrack && cycleDue()) { pendingTrack = nextInRotation(track); cycle.lastAt = Date.now(); cycle.sinceCount = 0; saveCycle(); }
@@ -475,6 +500,14 @@ while (true) {
     continue;
   }
   idleOpens = 0;
+  // ponytail: idleOpens only counts open FAILURES. A cycle that opens a lesson
+  // fine and then finishes nothing (seen live: a stale session resumed for over
+  // an hour, one lesson-end every 20 min, zero moves in between) was invisible.
+  // Snapshot the counters and compare after the cycle.
+  // XP is the one signal that works on every track: puzzles/matches only move on
+  // chess, and S.lessons++ fires unconditionally at the end of the cycle. During
+  // the real stall the xp field was byte-identical across every 20-min lesson-end.
+  const xpBefore = S.xp, workBefore = S.puzzles + S.matches;
   const t0 = Date.now();
   let lastKey = null, repeats = 0, lastCountedKey = null;
 
@@ -719,4 +752,19 @@ while (true) {
 
   S.lessons++; bumpCycleCount(); S.xp = await xp(); Object.assign(S, (await stats()) || {}); S.last = track; saveState();
   log({ ev: 'lesson-end', xp: S.xp });
+
+  const gainedXp = S.xp != null && xpBefore != null && S.xp > xpBefore;
+  if (gainedXp || S.puzzles + S.matches > workBefore) unproductiveCycles = 0;
+  else unproductiveCycles++;
+  const action = stallAction(unproductiveCycles);
+  if (action === 'reset') {
+    log({ ev: 'stalled', cycles: unproductiveCycles, action });
+    forceQuitOnOpen = true;   // dump whatever session keeps getting resumed
+    await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded' }).catch(() => {});
+    await sleep(2000);
+  } else if (action === 'switch') {
+    log({ ev: 'stalled', cycles: unproductiveCycles, action });
+    unproductiveCycles = 0;
+    pendingTrack = nextInRotation(track);   // this track is going nowhere; try another
+  }
 }

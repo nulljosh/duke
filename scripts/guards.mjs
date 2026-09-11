@@ -29,3 +29,21 @@ export const cycleDue = (cycle, now) => {
 // Next track in the fixed rotation order (chess, math, then every language).
 // Falls back to the first entry for an unknown/off-list current track.
 export const nextInRotation = (rotation, t) => rotation[(rotation.indexOf(t) + 1) % rotation.length] || rotation[0];
+
+// Is a course REALLY finished? Gating auto-advance on `passed >= total` alone is
+// not safe: Duolingo's path payload can come back short (an unreleased section
+// with units:[] , a partial response), and a shrunken total makes an unfinished
+// course look complete — the runner would then mark it done and switch away.
+// So: require units to agree with levels, and refuse any payload whose total is
+// below the largest total seen for this course. A real tree only ever grows.
+export const courseComplete = (cur, peakTotal = 0) => {
+  if (!cur || !cur.total || !cur.unitsTotal) return false;
+  if (cur.total < peakTotal) return false;          // payload shrank -> partial, not progress
+  return cur.passed >= cur.total && cur.unitsDone >= cur.unitsTotal;
+};
+
+// A cycle that opened a lesson fine but finished nothing is the failure mode
+// idleOpens can't see (that only counts open failures). Escalate: reset the
+// in-flight session first, then give up on the track entirely.
+export const stallAction = (unproductiveCycles) =>
+  unproductiveCycles >= 6 ? "switch" : unproductiveCycles >= 3 ? "reset" : null;

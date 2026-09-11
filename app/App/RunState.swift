@@ -26,7 +26,9 @@ func uptimeString(since started: String) -> String {
     guard let start = pwnlingoDateFormatter.date(from: started) else { return "" }
     let secs = Int(Date().timeIntervalSince(start))
     let h = secs / 3600, m = (secs % 3600) / 60
-    return h > 0 ? "running \(h)h \(m)m" : "running \(m)m"
+    let duration = h > 0 ? "\(h)h \(m)m" : "\(m)m"
+    // String(localized:) — a plain interpolated literal never touches the catalog.
+    return String(localized: "running \(duration)")
 }
 
 // count/hour since `started` — nil before a minute has elapsed, matching
@@ -83,16 +85,16 @@ struct LogEvent: Decodable, Identifiable {
 
     var summary: String {
         switch ev {
-        case "puzzle": return ok == true ? "Solved puzzle" : "Missed puzzle"
-        case "match-over": return "Match finished"
-        case "switch": return "Switched to \(track ?? "?")"
-        case "math": return "Math lesson"
-        case "story-end": return "Finished story"
-        case "rotate": return "Rotated course"
-        case "track-complete": return "Finished \(track ?? "the course")!"
-        case "auto-advance": return "Moved on to \(track ?? "the next track")"
-        case "all-complete": return "Every track finished"
-        default: return ev ?? "Working…"
+        case "puzzle": return ok == true ? String(localized: "Solved puzzle") : String(localized: "Missed puzzle")
+        case "match-over": return String(localized: "Match finished")
+        case "switch": return String(localized: "Switched to \(track ?? "?")")
+        case "math": return String(localized: "Math lesson")
+        case "story-end": return String(localized: "Finished story")
+        case "rotate": return String(localized: "Rotated course")
+        case "track-complete": return String(localized: "Finished \(track ?? "the course")!")
+        case "auto-advance": return String(localized: "Moved on to \(track ?? "the next track")")
+        case "all-complete": return String(localized: "Every track finished")
+        default: return ev ?? String(localized: "Working…")
         }
     }
 }
@@ -161,7 +163,12 @@ final class Poller: ObservableObject {
             guard let stateURL = URL(string: "http://\(host)/state"),
                   let logURL = URL(string: "http://\(host)/log") else { return }
             do {
-                let (sData, _) = try await URLSession.shared.data(from: stateURL)
+                // /state stays readable without a token, but the runner withholds
+                // username/streak/league from anonymous callers — send ours so the
+                // panel still shows them.
+                var stateReq = URLRequest(url: stateURL)
+                stateReq.setValue(token, forHTTPHeaderField: "X-Pwnlingo-Token")
+                let (sData, _) = try await URLSession.shared.data(for: stateReq)
                 let s = try JSONDecoder().decode(RunState.self, from: sData)
                 let (lData, _) = try await URLSession.shared.data(from: logURL)
                 let evs = (try? JSONDecoder().decode([LogEvent].self, from: lData)) ?? []

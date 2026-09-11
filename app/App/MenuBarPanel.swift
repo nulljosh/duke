@@ -9,7 +9,7 @@ struct MenuBarLabel: View {
         Group {
             if poller.stale {
                 Image(systemName: "exclamationmark.triangle.fill")
-                    .accessibilityLabel("Runner has gone quiet")
+                    .accessibilityLabel(Text("Runner has gone quiet"))
             } else if let s = poller.state, let xp0 = s.xp0, let xp = s.xp {
                 Text("+\(xp - xp0)")
             } else {
@@ -161,11 +161,12 @@ struct MenuBarPanel: View {
 
     private func courseCountdown(_ p: CourseProgress, track: String) -> String {
         let name = trackNames[track] ?? track.capitalized
-        let pct = String(format: "%.1f", p.pct)
+        let pct = String(format: "%.1f%%", p.pct)
         // No measured rate yet → say how much is left, never invent a duration.
-        let left = p.etaText.map { "~\($0) until all of \(name) is done" }
-            ?? "\(p.remaining) levels until all of \(name) is done"
-        return "\(pct)% of \(name) · \(left)"
+        // Each piece goes through the catalog; a plain interpolation would not.
+        let left = p.etaText.map { String(localized: "~\($0) until all of \(name) is done") }
+            ?? String(localized: "\(p.remaining) levels until all of \(name) is done")
+        return String(localized: "\(pct) of \(name)") + " · " + left
     }
 }
 #endif

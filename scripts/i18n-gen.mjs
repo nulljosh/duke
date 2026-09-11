@@ -29,14 +29,27 @@ for (const lng of locales) console.log(`  ${lng}: ${translated(lng)}/${keys.leng
 
 // Native String Catalog. SwiftUI's key for `Text("\(n) puzzles")` is "%lld puzzles",
 // so the web's {n}/{s} tokens are rewritten to the printf specifiers Swift generates.
-const swiftKey = (k) => k.replace(/\{n\d*\}/g, "%lld").replace(/\{s\}/g, "%@");
+const swiftKey = (k) => k.replace(/\{n\d*\}/g, "%lld").replace(/\{s\d*\}/g, "%@");
+// A translation may legitimately reorder arguments (Punjabi puts the course name
+// before the duration where English puts it after). Plain %@/%lld is positional,
+// so a reordered translation would print the wrong value in the wrong slot.
+// Numbering each token by its position in the ENGLISH key makes order irrelevant:
+// the token NAME carries the meaning, and %2$@ fetches the right argument wherever
+// it lands. Keys stay unnumbered, because that's what Swift generates at the call site.
+const swiftValue = (english, translated) => {
+  const order = [...english.matchAll(/\{[ns]\d*\}/g)].map((m) => m[0]);
+  const index = new Map(order.map((tok, i) => [tok, i + 1]));
+  if (order.length < 2) return swiftKey(translated);
+  return translated.replace(/\{[ns]\d*\}/g, (tok) =>
+    `%${index.get(tok) ?? 1}$${tok.startsWith("{n") ? "lld" : "@"}`);
+};
 const strings = {};
 for (const k of keys) {
   const localizations = {};
   for (const lng of locales) {
     const v = lng === sourceLanguage ? src[k][sourceLanguage] : src[k][lng];
     if (!v) continue;
-    localizations[lng] = { stringUnit: { state: "translated", value: swiftKey(v) } };
+    localizations[lng] = { stringUnit: { state: "translated", value: swiftValue(k, v) } };
   }
   strings[swiftKey(k)] = { extractionState: "manual", localizations };
 }
