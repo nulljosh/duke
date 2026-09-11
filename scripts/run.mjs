@@ -320,7 +320,24 @@ let sweptOnce = false;   // full candidate sweep on the first balance evaluation
 // Tracks that proved unplayable this run. Without this, a stalled track that is
 // also the nearest to done (English, six speaking levels short) gets re-picked
 // the moment we switch away from it, forever.
+// Persisted, because without it every restart re-learns the same lesson the
+// slow way: balance picks the nearest-done track, spends half an hour proving
+// it is unplayable, blacklists it, and forgets again on the next start.
+// Entries expire so a one-off stall (a flaky lesson, a bad night) is not a
+// permanent ban — Duolingo content does change.
+const STALLED_PATH = path.join(D, 'stalled.json');
+const STALL_TTL_MS = 24 * 3600e3;
 const stalledTracks = new Set();
+let stalledUntil = {};
+try {
+  stalledUntil = JSON.parse(fs.readFileSync(STALLED_PATH, 'utf8'));
+  for (const [t, until] of Object.entries(stalledUntil)) if (until > Date.now()) stalledTracks.add(t);
+} catch {}
+const markStalled = (t) => {
+  stalledTracks.add(t);
+  stalledUntil = { ...stalledUntil, [t]: Date.now() + STALL_TTL_MS };
+  try { fs.writeFileSync(STALLED_PATH, JSON.stringify(stalledUntil)); } catch {}
+};
 const balanceCandidates = () =>
   (cycle.scope === 'all' ? [...CORE_TRACKS, ...enrolledTracks] : CORE_TRACKS)
     .filter((t) => !stalledTracks.has(t));
@@ -888,7 +905,7 @@ while (true) {
     await sleep(2000);
   } else if (action === 'switch') {
     log({ ev: 'stalled', cycles: unproductiveCycles, action, track });
-    stalledTracks.add(track);   // stop balance handing it straight back
+    markStalled(track);   // stop balance handing it straight back, this run or the next
     trackPct.delete(track); trackRemaining.delete(track);
     unproductiveCycles = 0;
     pendingTrack = nextInRotation(track);   // this track is going nowhere; try another

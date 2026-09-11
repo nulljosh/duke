@@ -18,3 +18,4 @@ kmp/*.jks
 .build/
 tui/.build/
 tui/Package.resolved
+stalled.json
