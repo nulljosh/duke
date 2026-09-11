@@ -19,6 +19,16 @@ let pwnlingoDateFormatter: ISO8601DateFormatter = {
     return f
 }()
 
+// Shared by ContentView and MenuBarPanel — one uptime string, not two copies.
+// `started` is run.mjs's process start time, so this resets on every restart
+// (a switch doesn't touch it, only relaunching the runner does).
+func uptimeString(since started: String) -> String {
+    guard let start = pwnlingoDateFormatter.date(from: started) else { return "" }
+    let secs = Int(Date().timeIntervalSince(start))
+    let h = secs / 3600, m = (secs % 3600) / 60
+    return h > 0 ? "running \(h)h \(m)m" : "running \(m)m"
+}
+
 struct RunState: Decodable {
     let at, started, track: String
     let username: String?

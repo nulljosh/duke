@@ -72,6 +72,10 @@ struct MenuBarPanel: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
+                Text(uptimeString(since: s.started))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+
                 if poller.stale {
                     Label("No update in 90s+", systemImage: "exclamationmark.triangle.fill")
                         .font(.caption).foregroundStyle(.red)
