@@ -633,6 +633,7 @@ while (true) {
   const quietSince = Date.now();
   let unanswerable = 0;   // consecutive challenges that can be neither answered nor skipped
   let lastKind = null;    // what the detector last decided — the only clue a silent cycle leaves
+  const kinds = {};       // tally per cycle: the solve paths log nothing individually
   while (Date.now() - t0 < 20 * 60e3) {                     // one lesson, 20 min ceiling
     // ponytail: the 20-minute ceiling was the ONLY escape from a cycle that
     // loops without ever logging — seen live on an English "Speak this
@@ -755,7 +756,6 @@ while (true) {
         // that's why music never got past this line to reach solveLang() at all.
         if (window.__isChessTrack && c && c.match) { const r = await D.matchTurn(4); return { kind: 'match', r: { ...r, clicks: r.clicks && r.clicks.map(([x, y]) => [x * innerWidth / 1568, y * innerWidth / 1568]) } }; }
         if (document.querySelector('[data-test="stories-player-continue"], [data-test="stories-player-done"], [data-test="stories-element"]')) return { kind: 'story' };
-        if (!c && !document.querySelector('[data-test^="challenge "]') && document.querySelector('[data-test="quit-button"]')) return { kind: 'radio-maybe' };
         const n = document.querySelector('[data-test="player-next"]') || [...document.querySelectorAll('button')].find(b => !b.disabled && /^(CONTINUE|NO THANKS|GOT IT|START \+\d+ XP|CLAIM|KEEP LEARNING)$/i.test(b.innerText.trim()));
         // ponytail: aria-disabled, not just .disabled. Duolingo marks the CHECK
         // button aria-disabled="true" while a word bank is unanswered but leaves
@@ -765,6 +765,14 @@ while (true) {
         // 99 lessons, zero XP. The challenge branch below already checked both;
         // this one never learned.
         if (n && !n.disabled && n.getAttribute('aria-disabled') !== 'true') { n.click(); return { kind: 'next', txt: n.innerText.trim() }; }
+        // ponytail: this check used to run BEFORE the one above, and the
+        // lesson-complete screen satisfies it — no challenge element, quit
+        // button still in the DOM. So every finished lesson was read as a
+        // DuoRadio ad, quit, and the XP just earned was thrown away. Duolingo's
+        // own numbers confirmed it: 12 questions answered per cycle, totalXp
+        // unmoved. A screen with something to click is an end screen, not a
+        // stuck one; only fall through to the radio heuristic when nothing is.
+        if (!c && !document.querySelector('[data-test^="challenge "]') && document.querySelector('[data-test="quit-button"]')) return { kind: 'radio-maybe' };
         if (c) {
           const via = await D.solveLang().catch(() => null);
           const row = via ? D.ledgerRow(via) : null;
@@ -775,6 +783,7 @@ while (true) {
       sleep(15000).then(() => ({ kind: 'err', e: 'detect-timeout' })),
     ]);
     lastKind = st.kind;
+    kinds[st.kind] = (kinds[st.kind] || 0) + 1;
     if (st.kind === 'err' && st.e === 'detect-timeout') {
       log({ ev: 'detect-timeout' });
       await page.evaluate(() => { const q = document.querySelector('[data-test="quit-button"]'); q && q.click(); }).catch(() => {});
@@ -901,7 +910,7 @@ while (true) {
   }
 
   S.lessons++; bumpCycleCount(); S.xp = await xp(); Object.assign(S, (await stats()) || {}); S.last = track; saveState();
-  log({ ev: 'lesson-end', xp: S.xp });
+  log({ ev: 'lesson-end', xp: S.xp, kinds });
 
   const gainedXp = S.xp != null && xpBefore != null && S.xp > xpBefore;
   if (gainedXp || S.puzzles + S.matches > workBefore) unproductiveCycles = 0;
