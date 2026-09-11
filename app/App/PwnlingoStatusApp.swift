@@ -27,6 +27,9 @@ struct PwnlingoStatusApp: App {
         // thing, but bounce to the next runloop turn to be safe either way.
         let hide = UserDefaults.standard.object(forKey: "hideDockIcon") as? Bool ?? true
         DispatchQueue.main.async { NSApplication.shared.setActivationPolicy(hide ? .accessory : .regular) }
+        // ponytail: self-heals the cloudflared tunnel on this already-running,
+        // launchd-kept-alive process — no separate daemon for it.
+        SolverProcess.watchTunnel()
         #endif
     }
 

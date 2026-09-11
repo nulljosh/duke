@@ -51,6 +51,18 @@ enum SolverProcess {
     // path), so it survives node version bumps without another edit here.
     private static let nodeURL = URL(fileURLWithPath: NSString(string: "~/.local/share/fnm/aliases/default/bin/node").expandingTildeInPath)
 
+    // ponytail: the tunnel can die (cloudflared crash, network blip) while the
+    // local runner stays perfectly healthy — start(track:)'s check only fires
+    // when the runner itself (re)starts, which never happens in that case.
+    // Piggyback a periodic check on this same always-running, launchd-kept-
+    // alive process instead of adding a second launchd job for it.
+    static func watchTunnel() {
+        Task { await startTunnelIfNeeded() }
+        Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            Task { await startTunnelIfNeeded() }
+        }
+    }
+
     static func start(track: String) {
         Task { await startTunnelIfNeeded() }
         let p = Process()
