@@ -43,11 +43,19 @@ enum SolverProcess {
         try? t.run()
     }
 
+    // ponytail: launchd/SMAppService-launched apps don't inherit the login
+    // shell's PATH, so `env node` silently failed ("No such file or
+    // directory") the moment auto-start actually ran unattended instead of
+    // from a Start click made inside a Terminal-derived Xcode session. fnm's
+    // default alias is a stable symlink (unlike its per-shell multishell
+    // path), so it survives node version bumps without another edit here.
+    private static let nodeURL = URL(fileURLWithPath: NSString(string: "~/.local/share/fnm/aliases/default/bin/node").expandingTildeInPath)
+
     static func start(track: String) {
         Task { await startTunnelIfNeeded() }
         let p = Process()
-        p.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        p.arguments = ["node", scriptURL.path, track]
+        p.executableURL = nodeURL
+        p.arguments = [scriptURL.path, track]
         p.currentDirectoryURL = scriptURL.deletingLastPathComponent()
         FileManager.default.createFile(atPath: logURL.path, contents: nil)
         if let handle = try? FileHandle(forWritingTo: logURL) {

@@ -10,6 +10,10 @@ struct MenuBarLabel: View {
     // the same reason — the dropdown card carries the full prompt and choices.
     @AppStorage("menuBarShows") private var menuBarShows = "xp"
 
+    @AppStorage("backgroundRun") private var backgroundRun = true
+    @AppStorage("startTrack") private var startTrack = "chess"
+    @State private var autoStarted = false
+
     private var questionTitle: String? {
         guard let p = poller.state?.prompt, !p.isEmpty else { return nil }
         return p.count > 24 ? String(p.prefix(23)) + "\u{2026}" : p
@@ -30,6 +34,15 @@ struct MenuBarLabel: View {
             }
         }
         .task { poller.start() }
+        // ponytail: this label (not the dropdown panel below) is the one view
+        // guaranteed to be live the moment the app launches — the panel is
+        // lazy and doesn't build until the user opens the menu, so putting
+        // the auto-kick there never fired without a manual click first.
+        .onChange(of: poller.unreachable) { _, unreachable in
+            guard unreachable, backgroundRun, !autoStarted else { return }
+            autoStarted = true
+            SolverProcess.start(track: startTrack)
+        }
     }
 }
 
