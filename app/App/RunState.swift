@@ -50,6 +50,24 @@ struct RunState: Decodable {
     let prompt, answer: String?
     let choices: [String]?
     let grid: [[String]]?
+    let progress: CourseProgress?
+}
+
+// Course completion, straight off Duolingo's own path data (run.mjs's
+// progress()). etaHours is nil until the runner has measured a real rate.
+struct CourseProgress: Decodable {
+    let passed, total, unitsDone, unitsTotal, remaining: Int
+    let pct: Double
+    let levelsPerHour, etaHours: Double?
+
+    /// "1d 4h" / "27h" / "45m" — nil when there's no measured rate yet.
+    var etaText: String? {
+        guard let h = etaHours, h > 0 else { return nil }
+        if h < 1 { return "\(Int(h * 60))m" }
+        if h < 24 { return "\(Int(h.rounded()))h" }
+        let days = Int(h) / 24, hrs = Int(h.rounded()) % 24
+        return hrs > 0 ? "\(days)d \(hrs)h" : "\(days)d"
+    }
 }
 
 struct FenResponse: Decodable { let fen: String? }

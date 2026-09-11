@@ -81,6 +81,27 @@ struct MenuBarPanel: View {
                 .font(.caption2)
                 .foregroundStyle(.secondary)
 
+                if let p = s.progress {
+                    VStack(alignment: .leading, spacing: 3) {
+                        GeometryReader { geo in
+                            ZStack(alignment: .leading) {
+                                Capsule().fill(Color.primary.opacity(0.12))
+                                Capsule().fill(Color.accentColor)
+                                    .frame(width: geo.size.width * min(1, max(0, p.pct / 100)))
+                            }
+                        }
+                        .frame(height: 4)
+                        HStack(spacing: 4) {
+                            Text("\(p.pct, specifier: "%.1f")% of \(trackNames[s.track] ?? s.track.capitalized)")
+                            Spacer()
+                            // No measured rate yet → show what's left, not a fabricated ETA.
+                            Text(p.etaText.map { "~\($0) left" } ?? "\(p.remaining) levels left")
+                        }
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    }
+                }
+
                 if poller.stale {
                     Label("No update in 90s+", systemImage: "exclamationmark.triangle.fill")
                         .font(.caption).foregroundStyle(.red)

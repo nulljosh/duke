@@ -153,7 +153,7 @@ const rotateLogIfNeeded = () => {
   } catch (e) { /* file may not exist yet — nothing to rotate */ }
 };
 const log = o => { fs.appendFileSync(LOG_PATH, JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n'); rotateLogIfNeeded(); };
-const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null, puzzleStep: null, puzzleTotal: null };
+const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null, puzzleStep: null, puzzleTotal: null, progress: null };
 const saveState = () => fs.writeFileSync(path.join(D, 'state.json'), JSON.stringify({ at: new Date().toISOString(), ...S }, null, 1));
 const ledger = rows => rows.length && fs.appendFileSync(path.join(D, 'lessons.jsonl'), rows.map(r => JSON.stringify(r)).join('\n') + '\n');
 // ponytail: language gets lessons.jsonl (prompt+answer per question) but chess
@@ -232,6 +232,64 @@ const stats = () => page.evaluate(async u => {
     };
   } catch (e) { return null; }
 }, uid);
+// ponytail: course completion is real data, not a guess — /courses/<id> returns
+// pathSectioned, every section carrying completedUnits/totalUnits and every level
+// carrying a state ('passed' | 'active' | 'locked' | 'unit_test'). Works for any
+// track, because the course id comes from courseIdFor() the same as setCourse().
+// Caveat worth knowing: totalLevels grows when Duolingo ships a new section, so
+// 100% is a moving target — the percentage is honest for the tree as it stands.
+const progress = (t) => page.evaluate(async ({ u, cid }) => {
+  try {
+    const r = await fetch(`/2017-06-30/users/${u}/courses/${cid}`);
+    if (!r.ok) return null;
+    const j = await r.json();
+    const secs = j.pathSectioned || [];
+    if (!secs.length) return null;
+    let passed = 0, total = 0, unitsDone = 0, unitsTotal = 0;
+    for (const s of secs) {
+      unitsDone += s.completedUnits || 0;
+      unitsTotal += s.totalUnits || 0;
+      for (const unit of (s.units || [])) {
+        for (const lv of (unit.levels || [])) {
+          total++;
+          if (lv.state === 'passed' || lv.state === 'legendary') passed++;
+        }
+      }
+    }
+    return total ? { passed, total, unitsDone, unitsTotal } : null;
+  } catch (e) { return null; }
+}, { u: uid, cid: courseIdFor(t) }).catch(() => null);
+
+// Rate is MEASURED, never assumed: anchor the first sample of this run, then
+// extrapolate from levels actually passed since. Resets on a track switch,
+// because a chess rate says nothing about how fast a language tree moves.
+const PROGRESS_EVERY_MS = 5 * 60e3;
+let progressAnchor = null;   // { at, passed, track }
+let lastProgressAt = 0;
+const refreshProgress = async (force = false) => {
+  if (!force && Date.now() - lastProgressAt < PROGRESS_EVERY_MS) return;
+  lastProgressAt = Date.now();
+  const p = await progress(track);
+  if (!p) { S.progress = null; return; }
+  if (!progressAnchor || progressAnchor.track !== track) {
+    progressAnchor = { at: Date.now(), passed: p.passed, track };
+  }
+  const hours = (Date.now() - progressAnchor.at) / 3600e3;
+  const gained = p.passed - progressAnchor.passed;
+  // Need a real sample before quoting an ETA — a few minutes and at least one
+  // level, otherwise the first tick would divide by ~0 and print a wild number.
+  const rate = (hours >= 0.05 && gained > 0) ? gained / hours : null;
+  const remaining = p.total - p.passed;
+  S.progress = {
+    ...p,
+    pct: Math.round(p.passed / p.total * 1000) / 10,
+    remaining,
+    levelsPerHour: rate ? Math.round(rate * 10) / 10 : null,
+    etaHours: rate ? Math.round(remaining / rate * 10) / 10 : null,
+  };
+  saveState();
+};
+
 // held click: instant down/up is ignored by the Rive chess board
 const click = async ([x, y]) => { await page.mouse.move(x, y); await page.mouse.down(); await sleep(90); await page.mouse.up(); await sleep(550); };
 const fen = () => page.evaluate(() => { try { return __duo.liveFen(); } catch (e) { return null; } });
@@ -266,6 +324,7 @@ await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded
 await sleep(4000);
 await setCourse(track);
 S.xp0 = S.xp = await xp(); S.username = await username(); Object.assign(S, (await stats()) || {}); saveState();
+await refreshProgress(true);   // seed the percentage immediately; ETA fills in once there's a measured rate
 
 const hasChallenge = () => page.evaluate(() => !!document.querySelector('[data-test^="challenge "], [data-test="stories-element"]'));
 let forceQuitOnOpen = true;   // true on cold start too — see openLesson()
@@ -360,6 +419,7 @@ while (true) {
     track = pendingTrack; pendingTrack = null;
     isMath = track === 'math'; isChessTrack = track === 'chess';
     S.track = track; idleOpens = 0; forceQuitOnOpen = true;
+    progressAnchor = null; S.progress = null;   // a new tree needs its own rate, not the old track's
     // the old track's prompt/choices/grid otherwise linger on screen until the
     // new track's first question loads — a switch looked like it did nothing.
     S.prompt = S.answer = S.choices = S.grid = null; saveState();
@@ -379,8 +439,10 @@ while (true) {
     log({ ev: 'switch', track });
     await sleep(2000);
     S.xp0 = S.xp = await xp(); saveState();
+    await refreshProgress(true);   // new track, new tree — seed its percentage right away
   }
   saveState();   // heartbeat before a potentially-hanging navigation, so a stuck run still shows a moving `at`
+  await refreshProgress();   // self-throttled to every 5 min; one extra fetch per lesson cycle at most
   if (!(await openLesson())) {
     log({ ev: 'open-fail', url: page.url() });
     idleOpens++;
