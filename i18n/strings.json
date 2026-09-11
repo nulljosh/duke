@@ -1,0 +1,43 @@
+{
+  "_meta": {
+    "sourceLanguage": "en",
+    "locales": ["en", "fr", "es", "zh", "pa"],
+    "note": "Master string source. Keys ARE the literal English UI text. {n}/{s} are simple placeholder tokens substituted by i18n.js's t(key, vars) -- no ICU/plurals. Same convention as quotestreak/i18n/strings.json. This one source generates web/locales/*.json for the landing page and app/App/Localizable.xcstrings for the native macOS/iOS/watchOS apps. Long-form landing prose is deliberately English-only: the runtime keeps the inline copy when a key is missing, so partial coverage degrades cleanly."
+  },
+
+  "Settings": { "en": "Settings", "fr": "Réglages", "es": "Ajustes", "zh": "设置", "pa": "ਸੈਟਿੰਗਾਂ" },
+  "Language": { "en": "Language", "fr": "Langue", "es": "Idioma", "zh": "语言", "pa": "ਭਾਸ਼ਾ" },
+  "System": { "en": "System", "fr": "Système", "es": "Sistema", "zh": "跟随系统", "pa": "ਸਿਸਟਮ" },
+  "Sound effects": { "en": "Sound effects", "fr": "Effets sonores", "es": "Efectos de sonido", "zh": "音效", "pa": "ਧੁਨੀ ਪ੍ਰਭਾਵ" },
+  "Works in the background (even when closed)": { "en": "Works in the background (even when closed)", "fr": "Fonctionne en arrière-plan (même fermé)", "es": "Funciona en segundo plano (incluso cerrado)", "zh": "后台运行（即使已关闭）", "pa": "ਬੈਕਗਰਾਊਂਡ ਵਿੱਚ ਚੱਲਦਾ ਹੈ (ਬੰਦ ਹੋਣ 'ਤੇ ਵੀ)" },
+  "Open at login": { "en": "Open at login", "fr": "Ouvrir à la connexion", "es": "Abrir al iniciar sesión", "zh": "登录时打开", "pa": "ਲੌਗਇਨ 'ਤੇ ਖੋਲ੍ਹੋ" },
+  "Hide app icon in the Dock": { "en": "Hide app icon in the Dock", "fr": "Masquer l'icône dans le Dock", "es": "Ocultar el icono en el Dock", "zh": "在程序坞中隐藏图标", "pa": "ਡੌਕ ਵਿੱਚ ਆਈਕਨ ਲੁਕਾਓ" },
+  "Start track": { "en": "Start track", "fr": "Parcours de départ", "es": "Pista inicial", "zh": "起始科目", "pa": "ਸ਼ੁਰੂਆਤੀ ਟ੍ਰੈਕ" },
+  "Cycle topics for variance": { "en": "Cycle topics for variance", "fr": "Alterner les sujets", "es": "Alternar temas", "zh": "轮换科目", "pa": "ਵਿਸ਼ੇ ਬਦਲਦੇ ਰਹੋ" },
+  "Switch every": { "en": "Switch every", "fr": "Changer toutes les", "es": "Cambiar cada", "zh": "切换间隔", "pa": "ਹਰ ਵਾਰ ਬਦਲੋ" },
+  "X minutes": { "en": "X minutes", "fr": "X minutes", "es": "X minutos", "zh": "X 分钟", "pa": "X ਮਿੰਟ" },
+  "X completed lessons": { "en": "X completed lessons", "fr": "X leçons terminées", "es": "X lecciones completadas", "zh": "X 节已完成课程", "pa": "X ਪੂਰੇ ਹੋਏ ਪਾਠ" },
+  "Mac address": { "en": "Mac address", "fr": "Adresse du Mac", "es": "Dirección del Mac", "zh": "Mac 地址", "pa": "Mac ਪਤਾ" },
+  "Done": { "en": "Done", "fr": "Terminé", "es": "Listo", "zh": "完成", "pa": "ਹੋ ਗਿਆ" },
+
+  "Pause": { "en": "Pause", "fr": "Pause", "es": "Pausar", "zh": "暂停", "pa": "ਰੋਕੋ" },
+  "Resume": { "en": "Resume", "fr": "Reprendre", "es": "Reanudar", "zh": "继续", "pa": "ਜਾਰੀ ਰੱਖੋ" },
+  "Quit": { "en": "Quit", "fr": "Quitter", "es": "Salir", "zh": "退出", "pa": "ਬੰਦ ਕਰੋ" },
+  "Not running": { "en": "Not running", "fr": "Arrêté", "es": "No está en ejecución", "zh": "未运行", "pa": "ਨਹੀਂ ਚੱਲ ਰਿਹਾ" },
+  "Language track": { "en": "Language track", "fr": "Parcours de langue", "es": "Pista de idioma", "zh": "语言科目", "pa": "ਭਾਸ਼ਾ ਟ੍ਰੈਕ" },
+
+  "{n} puzzles": { "en": "{n} puzzles", "fr": "{n} énigmes", "es": "{n} puzles", "zh": "{n} 道谜题", "pa": "{n} ਬੁਝਾਰਤਾਂ" },
+  "{n} misses": { "en": "{n} misses", "fr": "{n} erreurs", "es": "{n} fallos", "zh": "{n} 次失误", "pa": "{n} ਗਲਤੀਆਂ" },
+  "{n} lessons": { "en": "{n} lessons", "fr": "{n} leçons", "es": "{n} lecciones", "zh": "{n} 节课", "pa": "{n} ਪਾਠ" },
+  "{n} day streak": { "en": "{n} day streak", "fr": "Série de {n} jours", "es": "Racha de {n} días", "zh": "连续 {n} 天", "pa": "{n} ਦਿਨਾਂ ਦੀ ਲੜੀ" },
+  "{n} levels left": { "en": "{n} levels left", "fr": "{n} niveaux restants", "es": "Quedan {n} niveles", "zh": "还剩 {n} 关", "pa": "{n} ਪੱਧਰ ਬਾਕੀ" },
+  "running {s}": { "en": "running {s}", "fr": "en cours depuis {s}", "es": "en marcha {s}", "zh": "已运行 {s}", "pa": "{s} ਤੋਂ ਚੱਲ ਰਿਹਾ" },
+  "No update in 90s+": { "en": "No update in 90s+", "fr": "Aucune mise à jour depuis 90 s", "es": "Sin actualizar desde hace 90 s", "zh": "超过 90 秒无更新", "pa": "90 ਸਕਿੰਟਾਂ ਤੋਂ ਕੋਈ ਅੱਪਡੇਟ ਨਹੀਂ" },
+
+  "Duolingo on autopilot": { "en": "Duolingo on autopilot", "fr": "Duolingo en pilote automatique", "es": "Duolingo en piloto automático", "zh": "自动完成 Duolingo", "pa": "ਆਟੋਪਾਇਲਟ 'ਤੇ Duolingo" },
+  "Status app": { "en": "Status app", "fr": "Application de suivi", "es": "App de estado", "zh": "状态应用", "pa": "ਸਥਿਤੀ ਐਪ" },
+  "Chess": { "en": "Chess", "fr": "Échecs", "es": "Ajedrez", "zh": "国际象棋", "pa": "ਸ਼ਤਰੰਜ" },
+  "Languages": { "en": "Languages", "fr": "Langues", "es": "Idiomas", "zh": "语言", "pa": "ਭਾਸ਼ਾਵਾਂ" },
+  "Audio": { "en": "Audio", "fr": "Audio", "es": "Audio", "zh": "音频", "pa": "ਆਡੀਓ" },
+  "Source": { "en": "Source", "fr": "Code source", "es": "Código fuente", "zh": "源代码", "pa": "ਸਰੋਤ" }
+}

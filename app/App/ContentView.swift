@@ -17,6 +17,11 @@ let languages: [(code: String, name: String)] = [
     ("gn", "Guarani"), ("nv", "Navajo"), ("kl", "Klingon"),
 ]
 let tracks = otherTracks + languages.map(\.code)
+// UI languages the app itself ships (Localizable.xcstrings), NOT Duolingo tracks.
+// Keep in sync with i18n/strings.json's _meta.locales.
+let appLanguages: [(code: String, name: String)] = [
+    ("en", "English"), ("fr", "Français"), ("es", "Español"), ("zh", "中文"), ("pa", "ਪੰਜਾਬੀ"),
+]
 let trackNames: [String: String] = Dictionary(uniqueKeysWithValues: languages.map { ($0.code, $0.name) })
     .merging(["math": "Math", "chess": "Chess", "music": "Music"]) { a, _ in a }
 let leagueNames = ["Bronze", "Silver", "Gold", "Sapphire", "Ruby", "Emerald", "Amethyst", "Pearl", "Obsidian", "Diamond"]
@@ -60,6 +65,7 @@ struct ContentView: View {
         #if !os(macOS)
         .overlay(alignment: .topTrailing) {
             Button { editingHost = true } label: { Image(systemName: "gearshape") }
+                .accessibilityLabel("Settings")
                 .buttonStyle(.plain)
                 .padding(14)
                 .background(.ultraThinMaterial, in: Circle())
@@ -197,6 +203,7 @@ struct ContentView: View {
                 Button { poller.togglePause() } label: {
                     Image(systemName: s.paused == true ? "play.fill" : "pause.fill")
                 }
+                .accessibilityLabel(s.paused == true ? "Resume" : "Pause")
                 .buttonStyle(.bordered)
                 .controlSize(.small)
             }

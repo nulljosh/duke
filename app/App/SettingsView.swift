@@ -7,6 +7,7 @@ struct SettingsView: View {
     @AppStorage("pwnlingoHost") private var host = "localhost:8737"
     @AppStorage("pwnlingoToken") private var token = ""
     @AppStorage("soundEnabled") private var soundEnabled = true
+    @AppStorage("appLanguage") private var appLanguage = ""   // "" = follow the system
     #if os(macOS)
     @AppStorage("backgroundRun") private var backgroundRun = true
     @AppStorage("startTrack") private var startTrack = "chess"
@@ -22,6 +23,17 @@ struct SettingsView: View {
         Form {
             TextField("Mac address", text: $host)
             SecureField("API token", text: $token)
+            // ponytail: writes AppleLanguages, which only takes effect on relaunch —
+            // SwiftUI can't re-resolve an already-loaded string catalog in place.
+            // "System" clears the override and goes back to the OS setting.
+            Picker("Language", selection: $appLanguage) {
+                Text("System").tag("")
+                ForEach(appLanguages, id: \.code) { l in Text(l.name).tag(l.code) }
+            }
+            .onChange(of: appLanguage) { _, new in
+                if new.isEmpty { UserDefaults.standard.removeObject(forKey: "AppleLanguages") }
+                else { UserDefaults.standard.set([new], forKey: "AppleLanguages") }
+            }
             Toggle("Sound effects", isOn: $soundEnabled)
             #if os(macOS)
             Toggle("Works in the background (even when closed)", isOn: $backgroundRun)

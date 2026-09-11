@@ -46,6 +46,7 @@ struct PromptCardView: View {
             }
             if prompt == nil && (grid?.isEmpty ?? true) && (choices?.isEmpty ?? true) && answer == nil {
                 Image(systemName: "book.closed").font(.largeTitle).foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
             }
         }
         .padding()

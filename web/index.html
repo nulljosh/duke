@@ -123,6 +123,7 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
 </style>
 </head>
 <body>
+<main>
 <div class="hero">
   <div class="hero-float" aria-hidden="true">
     <div class="hfloat" style="top:18%;left:12%;--size:40px;--dx:24px;--dy:-14px;--rot:10deg;--dur:15s;--bdur:11s;--delay:0s"><svg viewBox="0 0 24 24"><path d="M5 19h14v2H5zm.5-2 1-8.5L9 11l3-6 3 6 2.5-2.5 1 8.5zM7.2 7.3a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2zm9.6 0a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2zM12 5.6A1.6 1.6 0 1 1 12 2.4a1.6 1.6 0 0 1 0 3.2z"/></svg></div>
@@ -138,7 +139,7 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   </div>
   <div class="container">
   <img src="icon.svg" alt="pwnlingo icon">
-  <h1>Duolingo on autopilot.</h1>
+  <h1 data-i18n="Duolingo on autopilot">Duolingo on autopilot.</h1>
   <p class="lede">One script in your own Chrome tab reads the live lesson, works out the answer, and clicks. No API. No password. Nothing leaves the page.</p>
   <div class="device device-mac has-chrome" aria-hidden="true"><div class="device-screen">
     <div class="app-demo">
@@ -347,14 +348,14 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   <h2>Where it stands</h2>
   <div class="status">
     <div class="row"><b>Math</b><span>Course complete. 411 units, one open list of stubborn levels.</span></div>
-    <div class="row"><b>Chess</b><span>Puzzles and bot matches both solved. ~1,700 puzzles overnight, 0 misses.</span></div>
-    <div class="row"><b>Languages</b><span>Choice, word bank, typed, cloze, pairs and stories. Walks the whole tree unattended.</span></div>
-    <div class="row"><b>Audio</b><span>Listen and speak exercises are skipped, not guessed.</span></div>
+    <div class="row"><b data-i18n="Chess">Chess</b><span>Puzzles and bot matches both solved. ~1,700 puzzles overnight, 0 misses.</span></div>
+    <div class="row"><b data-i18n="Languages">Languages</b><span>Choice, word bank, typed, cloze, pairs and stories. Walks the whole tree unattended.</span></div>
+    <div class="row"><b data-i18n="Audio">Audio</b><span>Listen and speak exercises are skipped, not guessed.</span></div>
   </div>
 </div></section>
 
 <section><div class="container">
-  <h2>Status app</h2>
+  <h2 data-i18n="Status app">Status app</h2>
   <p>A small app polls the runner over the LAN or the open internet. Chess renders as a real animated board with real chess pieces, sliding move to move. Language and math read the same way: the actual prompt, answer choices, and pattern tables, straight off the page's own elements — a screenshot only shows up for the rare widget type with nothing textual to read, like a geometry diagram. Track, XP, streak, hearts, league, and a real per-puzzle progress bar sit in a frosted glass panel below the board. Pause the runner from the app, switch tracks (any of ~35 languages, plus math and chess) from its Track menu, no terminal needed.</p>
   <p>Native everywhere, no web wrapper: Apple platforms in SwiftUI, Android and Windows and Linux in Compose Multiplatform, plus a terminal client. All of them read the same endpoints on the runner, so there is one source of truth and every client is just a view of it.</p>
   <div class="status">
@@ -374,7 +375,27 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   <p>It started as a way to keep a streak alive during a busy week and turned into a study of how much of a gamified app is actually the client grading itself. Automated play is against Duolingo's terms, and the XP still ranks you against real people, so this is a curiosity to read, not a product to run.</p>
 </div></section>
 
-<footer><div class="container"><a href="https://github.com/nulljosh/pwnlingo">github.com/nulljosh/pwnlingo</a> · <a href="https://heyitsmejosh.com">heyitsmejosh.com</a></div></footer>
+<footer><div class="container"><a href="https://github.com/nulljosh/pwnlingo">github.com/nulljosh/pwnlingo</a> · <a href="https://heyitsmejosh.com">heyitsmejosh.com</a>
+  · <label for="langPicker" data-i18n="Language">Language</label>
+  <select id="langPicker" aria-label="Language">
+    <option value="en">English</option>
+    <option value="fr">Français</option>
+    <option value="es">Español</option>
+    <option value="zh">中文</option>
+    <option value="pa">ਪੰਜਾਬੀ</option>
+  </select>
+</div></footer>
+<script>
+  // Set after i18n.js resolves so the control shows the language actually in use.
+  document.addEventListener("DOMContentLoaded", () => {
+    const sel = document.getElementById("langPicker");
+    if (!sel || !window.I18N) return;
+    sel.value = window.I18N.lang;
+    sel.addEventListener("change", (e) => window.I18N.set(e.target.value));
+  });
+</script>
+</main>
+<script src="i18n.js"></script>
 </body>
 </html>
 

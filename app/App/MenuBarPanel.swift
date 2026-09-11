@@ -9,10 +9,12 @@ struct MenuBarLabel: View {
         Group {
             if poller.stale {
                 Image(systemName: "exclamationmark.triangle.fill")
+                    .accessibilityLabel("Runner has gone quiet")
             } else if let s = poller.state, let xp0 = s.xp0, let xp = s.xp {
                 Text("+\(xp - xp0)")
             } else {
                 Image(systemName: "gamecontroller")
+                    .accessibilityLabel("pwnlingo")
             }
         }
         .task { poller.start() }
@@ -81,24 +83,25 @@ struct MenuBarPanel: View {
                 .font(.caption2)
                 .foregroundStyle(.secondary)
 
-                if let p = s.progress {
-                    VStack(alignment: .leading, spacing: 3) {
-                        GeometryReader { geo in
-                            ZStack(alignment: .leading) {
-                                Capsule().fill(Color.primary.opacity(0.12))
-                                Capsule().fill(Color.accentColor)
-                                    .frame(width: geo.size.width * min(1, max(0, p.pct / 100)))
-                            }
-                        }
-                        .frame(height: 4)
-                        HStack(spacing: 4) {
-                            Text("\(p.pct, specifier: "%.1f")% of \(trackNames[s.track] ?? s.track.capitalized)")
-                            Spacer()
-                            // No measured rate yet → show what's left, not a fabricated ETA.
-                            Text(p.etaText.map { "~\($0) left" } ?? "\(p.remaining) levels left")
-                        }
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                // Two different things, deliberately not merged: the bar is the
+                // task in flight right now, the line under it is the whole course.
+                VStack(alignment: .leading, spacing: 3) {
+                    if let step = s.puzzleStep, let total = s.puzzleTotal, total > 0 {
+                        progressBar(min(1, max(0, Double(step) / Double(total))))
+                        Text("Move \(min(step + 1, total)) of \(total) in this puzzle")
+                            .font(.caption2).foregroundStyle(.secondary)
+                    } else if let p = s.progress {
+                        // Nothing in flight — fall back to the course bar so the row isn't dead.
+                        progressBar(min(1, max(0, p.pct / 100)))
+                    }
+
+                    if let p = s.progress {
+                        // The countdown is about finishing the ENTIRE track, not
+                        // the current puzzle — say so in words, don't make it guessable.
+                        Text(courseCountdown(p, track: s.track))
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
 
@@ -144,6 +147,25 @@ struct MenuBarPanel: View {
         .padding(12)
         .frame(width: 250)
         .task { poller.start() }
+    }
+
+    @ViewBuilder private func progressBar(_ fraction: Double) -> some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                Capsule().fill(Color.primary.opacity(0.12))
+                Capsule().fill(Color.accentColor).frame(width: geo.size.width * fraction)
+            }
+        }
+        .frame(height: 4)
+    }
+
+    private func courseCountdown(_ p: CourseProgress, track: String) -> String {
+        let name = trackNames[track] ?? track.capitalized
+        let pct = String(format: "%.1f", p.pct)
+        // No measured rate yet → say how much is left, never invent a duration.
+        let left = p.etaText.map { "~\($0) until all of \(name) is done" }
+            ?? "\(p.remaining) levels until all of \(name) is done"
+        return "\(pct)% of \(name) · \(left)"
     }
 }
 #endif
