@@ -171,7 +171,8 @@ const rotateIfNeeded = (file, keep = 5000) => {
   } catch (e) { /* file may not exist yet — nothing to rotate */ }
 };
 const rotateLogIfNeeded = () => rotateIfNeeded(LOG_PATH);
-const log = o => { fs.appendFileSync(LOG_PATH, JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n'); rotateLogIfNeeded(); };
+let lastLogAt = Date.now();
+const log = o => { lastLogAt = Date.now(); fs.appendFileSync(LOG_PATH, JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n'); rotateLogIfNeeded(); };
 const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null, puzzleStep: null, puzzleTotal: null, progress: null };
 const saveState = () => fs.writeFileSync(path.join(D, 'state.json'), JSON.stringify({ at: new Date().toISOString(), ...S }, null, 1));
 // Both ledgers rotate on the same 5MB rule as log.jsonl — they used to grow
@@ -316,8 +317,13 @@ const trackPolledAt = new Map();     // track -> when we last asked
 let lastBalanceSwitchAt = 0;
 let sweptOnce = false;   // full candidate sweep on the first balance evaluation
 
+// Tracks that proved unplayable this run. Without this, a stalled track that is
+// also the nearest to done (English, six speaking levels short) gets re-picked
+// the moment we switch away from it, forever.
+const stalledTracks = new Set();
 const balanceCandidates = () =>
-  cycle.scope === 'all' ? [...CORE_TRACKS, ...enrolledTracks] : CORE_TRACKS;
+  (cycle.scope === 'all' ? [...CORE_TRACKS, ...enrolledTracks] : CORE_TRACKS)
+    .filter((t) => !stalledTracks.has(t));
 
 const pollCandidates = async (n = 2) => {
   const due = balanceCandidates()
@@ -607,7 +613,16 @@ while (true) {
   const t0 = Date.now();
   let lastKey = null, repeats = 0, lastCountedKey = null;
 
+  const quietSince = Date.now();
+  let unanswerable = 0;   // consecutive challenges that can be neither answered nor skipped
   while (Date.now() - t0 < 20 * 60e3) {                     // one lesson, 20 min ceiling
+    // ponytail: the 20-minute ceiling was the ONLY escape from a cycle that
+    // loops without ever logging — seen live on an English "Speak this
+    // sentence" exercise, which solveLang can only skip when Duolingo offers a
+    // skip button, and here it did not. Three of those at 20 minutes each is an
+    // hour before the stall guard even notices. If nothing at all has been
+    // logged for five minutes, this cycle is not working; end it.
+    if (Date.now() - Math.max(lastLogAt, quietSince) > 5 * 60e3) { log({ ev: 'quiet-cycle', track }); break; }
     if (paused) break;   // was only checked at the top of the outer loop — a match/puzzle session kept playing through a pause
     if (pendingTrack && pendingTrack !== track) break;   // same problem for /switch: a chess puzzle loop has no natural exit, so a switch sat ignored until the session ended on its own
     saveState();   // heartbeat: an `at` that stops advancing means the loop is stuck, not just between puzzles
@@ -835,8 +850,21 @@ while (true) {
       const ok = await page.evaluate(async () => { const n = document.querySelector('[data-test="player-next"]'); if (n && !n.disabled && n.getAttribute('aria-disabled') !== 'true') { n.click(); return true; } return false; });
       if (!ok) {
         const skipped = await page.evaluate(() => { const s = document.querySelector('[data-test="player-skip"]'); if (s) { s.click(); return true; } return false; });
+        // ponytail: neither answerable nor skippable. Seen live on English's
+        // "Speak this sentence" — a microphone exercise solveLang can only skip
+        // when Duolingo offers a skip button, and on that screen it does not.
+        // The old code slept a second and looped, forever, logging nothing.
+        // Quit the lesson instead: another one will serve different content.
+        if (!skipped && ++unanswerable >= 5) {
+          log({ ev: 'unanswerable', type: st.type });
+          await page.evaluate(() => { const q = document.querySelector('[data-test="quit-button"]'); q && q.click(); }).catch(() => {});
+          await sleep(1000);
+          await page.evaluate(() => { const y = document.querySelector('[data-test="notification-drawer-no-thanks-button"]') || [...document.querySelectorAll('button')].find(b => /END SESSION|QUIT/i.test(b.innerText)); y && y.click(); }).catch(() => {});
+          await sleep(1500);
+          break;
+        }
         if (!skipped) await sleep(1000);
-      }
+      } else unanswerable = 0;
       await sleep(1400);
     } else if (st.kind === 'next') {
       await sleep(1200);
@@ -859,7 +887,9 @@ while (true) {
     await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded' }).catch(() => {});
     await sleep(2000);
   } else if (action === 'switch') {
-    log({ ev: 'stalled', cycles: unproductiveCycles, action });
+    log({ ev: 'stalled', cycles: unproductiveCycles, action, track });
+    stalledTracks.add(track);   // stop balance handing it straight back
+    trackPct.delete(track); trackRemaining.delete(track);
     unproductiveCycles = 0;
     pendingTrack = nextInRotation(track);   // this track is going nowhere; try another
   }
