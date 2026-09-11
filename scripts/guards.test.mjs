@@ -170,3 +170,26 @@ test('trackForCourseId maps course ids back to track codes', () => {
   assert.equal(trackForCourseId('CHESS_CH'), null);   // not a language course
   assert.equal(trackForCourseId(null), null);
 });
+
+test('leastComplete finishes a nearly-done course before chasing the lowest', () => {
+  // English 99.9% with 6 levels left would otherwise never be played again,
+  // because pure least-complete only ever picks the furthest behind.
+  const pcts = { en: 99.9, pt: 0.1, chess: 70 };
+  const remaining = { en: 6, pt: 7729, chess: 673 };
+  assert.equal(leastComplete(pcts, 'chess', { ...LATE, remaining }), 'en');
+});
+
+test('leastComplete: a big course is never mistaken for nearly-done', () => {
+  const pcts = { en: 99.9, pt: 0.1 };
+  const remaining = { en: 600, pt: 7729 };   // 600 left is not "within reach"
+  assert.equal(leastComplete(pcts, 'chess', { ...LATE, remaining }), 'pt');
+});
+
+test('leastComplete: already finishing it, so stay put', () => {
+  assert.equal(leastComplete({ en: 99.9, pt: 0.1 }, 'en', { ...LATE, remaining: { en: 6 } }), null);
+});
+
+test('leastComplete: a finished course does not re-trigger the finish rule', () => {
+  // remaining 0 is done — auto-advance handles that, balance must not loop on it
+  assert.equal(leastComplete({ en: 100, pt: 0.1 }, 'chess', { ...LATE, remaining: { en: 0, pt: 7729 } }), 'pt');
+});

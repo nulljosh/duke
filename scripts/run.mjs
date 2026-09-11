@@ -308,11 +308,13 @@ const progress = async (t) => summarizePath(await fetchPath(t));
 const CORE_TRACKS = ['chess', 'math'];
 let enrolledTracks = [];   // filled once at startup from the account's course list
 const trackPct = new Map();          // track -> percent complete
+const trackRemaining = new Map();    // track -> levels left, so a nearly-done course can jump the queue
 const trackPolledAt = new Map();     // track -> when we last asked
 // Epoch, not now: the dwell window exists to stop flip-flopping between two
 // near-equal tracks, not to make a fresh start ignore a track that is clearly
 // behind for the first 20 minutes.
 let lastBalanceSwitchAt = 0;
+let sweptOnce = false;   // full candidate sweep on the first balance evaluation
 
 const balanceCandidates = () =>
   cycle.scope === 'all' ? [...CORE_TRACKS, ...enrolledTracks] : CORE_TRACKS;
@@ -325,7 +327,7 @@ const pollCandidates = async (n = 2) => {
   for (const t of due) {
     trackPolledAt.set(t, Date.now());
     const p = await progress(t);
-    if (p) trackPct.set(t, Math.round((p.passed / p.total) * 1000) / 10);
+    if (p) { trackPct.set(t, Math.round((p.passed / p.total) * 1000) / 10); trackRemaining.set(t, p.total - p.passed); }
   }
 };
 
@@ -369,6 +371,7 @@ const refreshProgress = async (force = false) => {
     etaHours: rate ? Math.round(remaining / rate * 10) / 10 : null,
   };
   trackPct.set(track, S.progress.pct);
+  trackRemaining.set(track, remaining);
   trackPolledAt.set(track, Date.now());
 
   // Balance mode: keep a background read on the other candidates, then play
@@ -376,9 +379,14 @@ const refreshProgress = async (force = false) => {
   // that one is a correctness guard (a finished tree serves nothing), not a
   // preference, so it applies in every mode.
   if (cycle.enabled && cycle.mode === 'balance') {
-    await pollCandidates();
+    // One full sweep up front, round-robin after. Discovering two courses per
+    // five minutes meant the first hour of decisions was made on a fraction of
+    // the picture — it would happily grind Klingon while not yet knowing English
+    // was six levels from finished. 27 sequential reads take about half a minute.
+    if (!sweptOnce) { sweptOnce = true; await pollCandidates(balanceCandidates().length); }
+    else await pollCandidates();
     S.balance = { scope: cycle.scope, pcts: Object.fromEntries(trackPct) };
-    const behind = leastComplete(S.balance.pcts, track, { now: Date.now(), lastSwitchAt: lastBalanceSwitchAt });
+    const behind = leastComplete(S.balance.pcts, track, { now: Date.now(), lastSwitchAt: lastBalanceSwitchAt, remaining: Object.fromEntries(trackRemaining) });
     if (behind && behind !== track) {
       log({ ev: 'balance-switch', from: track, track: behind, pcts: S.balance.pcts });
       lastBalanceSwitchAt = Date.now();

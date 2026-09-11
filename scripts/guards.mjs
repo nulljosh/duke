@@ -70,8 +70,16 @@ export const courseComplete = (cur, peakTotal = 0) => {
 // PATCH and a reload. And it must not switch for a trivial difference, hence the
 // margin. `pcts` is a track -> percent map; unknown tracks are simply absent.
 export const leastComplete = (pcts, current, opts = {}) => {
-  const { margin = 2, now = 0, lastSwitchAt = 0, minDwellMs = 20 * 60e3 } = opts;
+  const { margin = 2, now = 0, lastSwitchAt = 0, minDwellMs = 20 * 60e3, remaining = {}, finishWithin = 15 } = opts;
   if (now - lastSwitchAt < minDwellMs) return null;
+  // Finish what is within reach first. Pure least-complete never plays the MOST
+  // complete course, so a tree sitting 6 levels from done would stay unfinished
+  // forever (real case: English at 99.9%). A handful of levels is minutes of
+  // work and banks a finished course, so it jumps the queue.
+  const nearlyDone = Object.entries(remaining)
+    .filter(([, left]) => Number.isFinite(left) && left > 0 && left <= finishWithin)
+    .sort((a, b) => a[1] - b[1])[0];
+  if (nearlyDone) return nearlyDone[0] === current ? null : nearlyDone[0];
   const ranked = Object.entries(pcts || {})
     .filter(([, v]) => typeof v === "number" && Number.isFinite(v))
     .sort((a, b) => a[1] - b[1]);
