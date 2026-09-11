@@ -21,13 +21,17 @@ struct MenuBarLabel: View {
 
     var body: some View {
         Group {
-            if poller.stale {
+            if poller.stale || poller.unreachable {
                 Image(systemName: "exclamationmark.triangle.fill")
-                    .accessibilityLabel(Text("Runner has gone quiet"))
+                    .accessibilityLabel(Text(poller.unreachable ? "Runner unreachable" : "Runner has gone quiet"))
             } else if menuBarShows == "question", let q = questionTitle {
                 Text(q)
             } else if let s = poller.state, let n = s.xpToday ?? (s.xp0.flatMap { a in s.xp.map { $0 - a } }) {
+                // ponytail: numericText() is a stdlib SwiftUI content transition —
+                // digits roll like an odometer on change, no custom timer/animator.
                 Text("+\(n)")
+                    .contentTransition(.numericText(value: Double(n)))
+                    .animation(.snappy, value: n)
             } else {
                 Image(systemName: "gamecontroller")
                     .accessibilityLabel("pwnlingo")
