@@ -22,7 +22,10 @@ struct MenuBarLabel: View {
     var body: some View {
         Group {
             if poller.stale || poller.unreachable {
+                // ponytail: .pulse is a stdlib SwiftUI symbol effect — draws the
+                // eye to a state that needs action, no custom timer/opacity loop.
                 Image(systemName: "exclamationmark.triangle.fill")
+                    .symbolEffect(.pulse)
                     .accessibilityLabel(Text(poller.unreachable ? "Runner unreachable" : "Runner has gone quiet"))
             } else if menuBarShows == "question", let q = questionTitle {
                 Text(q)
@@ -70,22 +73,29 @@ struct MenuBarPanel: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             if let s = poller.state {
-                if poller.switching {
-                    ProgressView().frame(width: 220, height: 140)
-                } else if s.track == "chess", let fen = poller.fen {
-                    ChessBoardView(fen: fen)
-                        .frame(width: 220, height: 220)
-                        .opacity(s.paused == true ? 0.5 : 1)
-                } else if s.prompt != nil || s.answer != nil || !(s.choices?.isEmpty ?? true) || !(s.grid?.isEmpty ?? true) {
-                    PromptCardView(prompt: s.prompt, answer: s.answer, choices: s.choices, grid: s.grid)
-                        .frame(width: 220, height: 140)
-                        .opacity(s.paused == true ? 0.5 : 1)
-                } else {
-                    AuthedImage(url: URL(string: "http://\(poller.host)/screenshot?t=\(s.at)"), token: poller.token)
-                        .frame(width: 220, height: 220)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                        .opacity(s.paused == true ? 0.5 : 1)
+                // ponytail: blurReplace is a stdlib transition — the swap between
+                // board/prompt/screenshot/spinner gets a soft cross-fade instead of
+                // an instant pop, no custom animator.
+                Group {
+                    if poller.switching {
+                        ProgressView().frame(width: 220, height: 140)
+                    } else if s.track == "chess", let fen = poller.fen {
+                        ChessBoardView(fen: fen)
+                            .frame(width: 220, height: 220)
+                            .opacity(s.paused == true ? 0.5 : 1)
+                    } else if s.prompt != nil || s.answer != nil || !(s.choices?.isEmpty ?? true) || !(s.grid?.isEmpty ?? true) {
+                        PromptCardView(prompt: s.prompt, answer: s.answer, choices: s.choices, grid: s.grid)
+                            .frame(width: 220, height: 140)
+                            .opacity(s.paused == true ? 0.5 : 1)
+                    } else {
+                        AuthedImage(url: URL(string: "http://\(poller.host)/screenshot?t=\(s.at)"), token: poller.token)
+                            .frame(width: 220, height: 220)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .opacity(s.paused == true ? 0.5 : 1)
+                    }
                 }
+                .transition(.blurReplace)
+                .animation(.smooth, value: poller.switching)
 
                 HStack {
                     if let u = s.username {
