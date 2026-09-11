@@ -29,6 +29,15 @@ func uptimeString(since started: String) -> String {
     return h > 0 ? "running \(h)h \(m)m" : "running \(m)m"
 }
 
+// count/hour since `started` — nil before a minute has elapsed, matching
+// xpPerMinute's own guard against a noisy rate right after a restart.
+func perHourRate(_ count: Int, since started: String) -> Double? {
+    guard let start = pwnlingoDateFormatter.date(from: started) else { return nil }
+    let hours = Date().timeIntervalSince(start) / 3600
+    guard hours > 1.0 / 60, count > 0 else { return nil }
+    return Double(count) / hours
+}
+
 struct RunState: Decodable {
     let at, started, track: String
     let username: String?

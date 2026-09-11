@@ -72,9 +72,14 @@ struct MenuBarPanel: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-                Text(uptimeString(since: s.started))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 4) {
+                    Text(uptimeString(since: s.started))
+                    if let rate = perHourRate(s.track == "chess" ? s.puzzles : s.lessons, since: s.started) {
+                        Text("· \(rate, specifier: "%.0f")/hr")
+                    }
+                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
 
                 if poller.stale {
                     Label("No update in 90s+", systemImage: "exclamationmark.triangle.fill")
