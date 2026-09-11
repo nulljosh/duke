@@ -12,7 +12,7 @@ struct MenuBarLabel: View {
 
     @AppStorage("backgroundRun") private var backgroundRun = true
     @AppStorage("startTrack") private var startTrack = "chess"
-    @State private var autoStarted = false
+    @State private var lastStartAt: Date?
 
     private var questionTitle: String? {
         guard let p = poller.state?.prompt, !p.isEmpty else { return nil }
@@ -38,9 +38,17 @@ struct MenuBarLabel: View {
         // guaranteed to be live the moment the app launches — the panel is
         // lazy and doesn't build until the user opens the menu, so putting
         // the auto-kick there never fired without a manual click first.
+        // A one-shot latch here only covered the launch-time gap: once the
+        // runner crashed later (browser closed mid-session, Playwright
+        // context torn down) unreachable flips true again but nothing
+        // relaunched it, leaving the user stuck re-clicking Start by hand —
+        // exactly what was being avoided. Retry on every unreachable
+        // transition instead, debounced so a genuinely broken session (no
+        // Duolingo login) doesn't spin-restart and spam the failure alert.
         .onChange(of: poller.unreachable) { _, unreachable in
-            guard unreachable, backgroundRun, !autoStarted else { return }
-            autoStarted = true
+            guard unreachable, backgroundRun else { return }
+            if let last = lastStartAt, Date().timeIntervalSince(last) < 15 { return }
+            lastStartAt = Date()
             SolverProcess.start(track: startTrack)
         }
     }

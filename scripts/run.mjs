@@ -636,6 +636,21 @@ while (true) {
     if (!isMath && !isChessTrack && idleOpens > 2) {
       const rotated = await page.evaluate(() => __duo.nextCourse()).catch(() => null);
       log({ ev: 'rotate', rotated }); idleOpens = 0; await sleep(2000);
+      // ponytail: __duo.nextCourse() patches currentCourseId server-side but
+      // only ever told run.mjs {ok, id} — the local `track` binding (what the
+      // status app's UI, S.track, and every log line report) never followed,
+      // so a rotate silently kept reporting the OLD track's label while
+      // actually solving whatever course it picked. Same reverse-mapping
+      // solver.js uses internally (strip DUOLINGO_/_EN, split on '-', lower).
+      if (rotated?.ok && rotated.id) {
+        const newTrack = rotated.id.replace(/^DUOLINGO_/, '').replace(/_EN$/, '').split('-')[0].toLowerCase();
+        if (newTrack && newTrack !== track) {
+          track = newTrack; isMath = false; isChessTrack = false;
+          S.track = track; forceQuitOnOpen = true;
+          progressAnchor = null; S.progress = null;
+          S.prompt = S.answer = S.choices = S.grid = null; saveState();
+        }
+      }
     } else if (idleOpens > 6) { await sleep(60e3); idleOpens = 0; }
     continue;
   }
