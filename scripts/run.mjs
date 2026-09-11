@@ -632,6 +632,7 @@ while (true) {
 
   const quietSince = Date.now();
   let unanswerable = 0;   // consecutive challenges that can be neither answered nor skipped
+  let lastKind = null;    // what the detector last decided — the only clue a silent cycle leaves
   while (Date.now() - t0 < 20 * 60e3) {                     // one lesson, 20 min ceiling
     // ponytail: the 20-minute ceiling was the ONLY escape from a cycle that
     // loops without ever logging — seen live on an English "Speak this
@@ -639,7 +640,7 @@ while (true) {
     // skip button, and here it did not. Three of those at 20 minutes each is an
     // hour before the stall guard even notices. If nothing at all has been
     // logged for five minutes, this cycle is not working; end it.
-    if (Date.now() - Math.max(lastLogAt, quietSince) > 5 * 60e3) { log({ ev: 'quiet-cycle', track }); break; }
+    if (Date.now() - Math.max(lastLogAt, quietSince) > 5 * 60e3) { log({ ev: 'quiet-cycle', track, lastKind }); break; }
     if (paused) break;   // was only checked at the top of the outer loop — a match/puzzle session kept playing through a pause
     if (pendingTrack && pendingTrack !== track) break;   // same problem for /switch: a chess puzzle loop has no natural exit, so a switch sat ignored until the session ended on its own
     saveState();   // heartbeat: an `at` that stops advancing means the loop is stuck, not just between puzzles
@@ -756,7 +757,14 @@ while (true) {
         if (document.querySelector('[data-test="stories-player-continue"], [data-test="stories-player-done"], [data-test="stories-element"]')) return { kind: 'story' };
         if (!c && !document.querySelector('[data-test^="challenge "]') && document.querySelector('[data-test="quit-button"]')) return { kind: 'radio-maybe' };
         const n = document.querySelector('[data-test="player-next"]') || [...document.querySelectorAll('button')].find(b => !b.disabled && /^(CONTINUE|NO THANKS|GOT IT|START \+\d+ XP|CLAIM|KEEP LEARNING)$/i.test(b.innerText.trim()));
-        if (n && !n.disabled) { n.click(); return { kind: 'next', txt: n.innerText.trim() }; }
+        // ponytail: aria-disabled, not just .disabled. Duolingo marks the CHECK
+        // button aria-disabled="true" while a word bank is unanswered but leaves
+        // the DOM property false, so this branch treated an unsolved challenge as
+        // "press continue", clicked a dead button, and returned before the solver
+        // ever ran. kind:'next' logs nothing, so it span silently — 7.5 hours,
+        // 99 lessons, zero XP. The challenge branch below already checked both;
+        // this one never learned.
+        if (n && !n.disabled && n.getAttribute('aria-disabled') !== 'true') { n.click(); return { kind: 'next', txt: n.innerText.trim() }; }
         if (c) {
           const via = await D.solveLang().catch(() => null);
           const row = via ? D.ledgerRow(via) : null;
@@ -766,6 +774,7 @@ while (true) {
       }).catch(e => ({ kind: 'err', e: String(e) })),
       sleep(15000).then(() => ({ kind: 'err', e: 'detect-timeout' })),
     ]);
+    lastKind = st.kind;
     if (st.kind === 'err' && st.e === 'detect-timeout') {
       log({ ev: 'detect-timeout' });
       await page.evaluate(() => { const q = document.querySelector('[data-test="quit-button"]'); q && q.click(); }).catch(() => {});
