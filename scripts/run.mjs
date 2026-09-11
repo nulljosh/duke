@@ -560,9 +560,14 @@ const openLesson = async () => {
 
 // buttons with no data-test: end-of-lesson upsells (Legendary, streak, quests)
 const clickByText = () => page.evaluate(() => {
-  const n = document.querySelector('[data-test="player-next"]') ||
-    [...document.querySelectorAll('button')].find(b => !b.disabled && /^START \+\d+ XP$/i.test(b.innerText.trim())) ||
-    [...document.querySelectorAll('button')].find(b => !b.disabled && /^(CONTINUE|NO THANKS|GOT IT|CLAIM|KEEP LEARNING)$/i.test(b.innerText.trim()));
+  const live = (b) => b && !b.disabled && b.getAttribute('aria-disabled') !== 'true';
+  const pn = document.querySelector('[data-test="player-next"]');
+  const n = (live(pn) ? pn : null) ||
+    // aria-disabled, not just .disabled — Duolingo disables buttons that way,
+    // and clicking a dead one reports success to the caller. Same class of bug
+    // that cost a whole overnight run.
+    [...document.querySelectorAll('button')].find(b => live(b) && /^START \+\d+ XP$/i.test(b.innerText.trim())) ||
+    [...document.querySelectorAll('button')].find(b => live(b) && /^(CONTINUE|NO THANKS|GOT IT|CLAIM|KEEP LEARNING)$/i.test(b.innerText.trim()));
   if (n) { n.click(); return n.innerText.trim(); }
   return null;
 });
@@ -699,7 +704,16 @@ while (true) {
       if (!r.ok) { log({ ev: 'math-err', err: r.err }); break; }
       log({ ev: 'math', res: r.res, drags });
       if (r.res && r.res.ok) { S.lessons++; bumpCycleCount(); saveState(); }   // only a real 'lessondone' counts
-      if (r.res && r.res.err === 'no hearts') { log({ ev: 'no-hearts' }); process.exit(0); }
+      // ponytail: this used to process.exit(0). That was survivable while the
+      // solver was broken and never lost a heart; now that it answers for real
+      // a bad run ends the whole unattended session, and nothing restarts
+      // run.mjs (the LaunchAgent only covers the status app). Hearts refill on
+      // their own, so wait for them instead of dying.
+      if (r.res && r.res.err === 'no hearts') {
+        log({ ev: 'no-hearts', waitMin: 20 });
+        await sleep(20 * 60e3);
+        break;
+      }
       // Still stuck after 3 drags (or no drag plan at all, or 3 strikes on a
       // non-drag widget): skip the question, and if the level is still stuck,
       // quit so /lesson's tree-walker fallback advances treeCursor to a new level.
