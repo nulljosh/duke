@@ -11,7 +11,6 @@ struct SettingsView: View {
     #if os(macOS)
     @AppStorage("backgroundRun") private var backgroundRun = true
     @AppStorage("startTrack") private var startTrack = "chess"
-    @AppStorage("openAtLogin") private var openAtLogin = true
     @AppStorage("hideDockIcon") private var hideDockIcon = true
     // One picker replaces the old enabled-toggle + mode-picker + stepper cluster.
     // "" is off; otherwise it mirrors run.mjs's cycle.mode.
@@ -83,8 +82,6 @@ struct SettingsView: View {
                 Toggle("Sound effects", isOn: $soundEnabled)
                 #if os(macOS)
                 Toggle("Works in the background (even when closed)", isOn: $backgroundRun)
-                Toggle("Open at login", isOn: $openAtLogin)
-                    .onChange(of: openAtLogin) { LoginItem.sync(enabled: $1) }
                 Toggle("Hide app icon in the Dock", isOn: $hideDockIcon)
                     .onChange(of: hideDockIcon) { NSApp.setActivationPolicy($1 ? .accessory : .regular) }
                 #endif

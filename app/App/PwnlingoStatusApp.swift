@@ -15,7 +15,13 @@ struct PwnlingoStatusApp: App {
         chessBoardSelfCheck()
         #endif
         #if os(macOS)
-        LoginItem.sync(enabled: UserDefaults.standard.object(forKey: "openAtLogin") as? Bool ?? true)
+        // ponytail: the launchd LaunchAgent (com.nulljosh.pwnlingo-status,
+        // RunAtLoad+KeepAlive) already opens this at login and relaunches it
+        // on crash. Registering as an SMAppService login item too made macOS
+        // launch a SECOND copy on every boot (two menu-bar icons, neither
+        // actually started). Unregister unconditionally instead of syncing
+        // to the user's toggle — the LaunchAgent is the one launch path now.
+        LoginItem.sync(enabled: false)
         // ponytail: NSApp isn't wired up yet this early in App.init() (nil
         // unwrap crash) — NSApplication.shared always exists and does the same
         // thing, but bounce to the next runloop turn to be safe either way.
