@@ -2489,35 +2489,7 @@ window.__duo.RULES.splice(2, 0,
 
 // ---- two-way frequency tables (unit 135) ----
 Object.assign(window.__duo, {
-  // Some tables are a real <table>, others are positioned text. For the latter,
-  // cluster cells into rows/columns by coordinate so EMPTY cells survive — a
-  // ragged row-by-row parse silently shifts every value left.
-  gridCells() {
-    const f = document.querySelector('iframe'); if (!f || !f.contentDocument) return null;
-    const d = f.contentDocument, fr = f.getBoundingClientRect();
-    const cells = [...d.querySelectorAll('*')].filter(e => e.children.length === 0 && e.textContent.trim())
-      .map(e => { const r = e.getBoundingClientRect();
-        return { t: this.ascii(e.textContent.trim()), x: fr.left + r.left + r.width / 2,
-                 y: fr.top + r.top + r.height / 2, w: r.width, h: r.height }; })
-      .filter(c => c.w > 0 && c.h > 0);
-    if (cells.length < 6) return null;
-    const cluster = (vals, tol) => { const s = [...vals].sort((a, b) => a - b), out = [];
-      s.forEach(v => { const g = out.find(g => Math.abs(g[0] - v) < tol); if (g) g.push(v); else out.push([v]); });
-      return out.map(g => g.reduce((a, b) => a + b, 0) / g.length); };
-    const ys = cluster(cells.map(c => c.y), 14), xs = cluster(cells.map(c => c.x), 24);
-    const near = (v, arr) => arr.reduce((b, a, i) => Math.abs(a - v) < Math.abs(arr[b] - v) ? i : b, 0);
-    const grid = ys.map(() => xs.map(() => ''));
-    cells.forEach(c => { grid[near(c.y, ys)][near(c.x, xs)] = c.t; });
-    return { grid, xs, ys };
-  },
 
-  table() {
-    const f = document.querySelector('iframe'); if (!f || !f.contentDocument) return null;
-    const t = f.contentDocument.querySelector('table');
-    if (t) return [...t.rows].map(r => [...r.cells].map(c => this.ascii(c.textContent.trim())));
-    const g = this.gridCells();
-    return g ? g.grid.map(r => r.filter(v => v !== '')).filter(r => r.length) : null;
-  },
 
   // header "9th" vs prompt "Grade 9": fall back to matching on the digits
   hdrMatch(h, L) {
@@ -2529,41 +2501,7 @@ Object.assign(window.__duo, {
     return w.length > 2 && L.includes(w);
   },
 
-  solveTableCell() {
-    const T = this.table(); if (!T || T.length < 2) return null;
-    const L0 = this.ascii(this.read().latex[0] || '').replace(/[{}\\]|mathbf|textbf|text/g, '').toLowerCase();
-    const head = T[0], body = T.slice(1);
-    const off = body.length ? body[0].length - head.length : 0;
-    let col = -1; head.forEach((h, i) => { if (this.hdrMatch(h, L0)) col = i; });
-    let row = null; body.forEach(r => { if (this.hdrMatch(r[0], L0)) row = r; });
-    if (!row || col < 0) return null;
-    const v = row[col + off];
-    const c = [...document.querySelectorAll('[data-test="challenge-choice"]')];
-    const i = c.findIndex(e => this.clean(e.innerText) === String(v));
-    return i < 0 ? { miss: v } : { i, want: v };
-  },
 
-  // if the table HAS a Total row, read it; otherwise sum, skipping any Total
-  // line (double-counting it gave 33 where the answer was 19)
-  solveTableTotal() {
-    const T = this.table(); if (!T || T.length < 2) return null;
-    const L0 = this.ascii(this.read().latex[0] || '').replace(/[{}\\]|mathbf|textbf|text/g, '').toLowerCase();
-    const head = T[0], body = T.slice(1);
-    const num = s => { const v = parseFloat(String(s).replace(/[^\d.-]/g, '')); return isNaN(v) ? null : v; };
-    const off = body.length ? body[0].length - head.length : 0;
-    const totalRow = body.find(r => /total/i.test(String(r[0])));
-    let want = null;
-    head.forEach((h, i) => { if (!this.hdrMatch(h, L0)) return;
-      if (totalRow) { const v = num(totalRow[i + off]); if (v !== null) want = v; }
-      else { const s = body.filter(r => !/total/i.test(String(r[0])))
-        .reduce((a, r) => a + (num(r[i + off]) || 0), 0); if (s) want = s; } });
-    if (want === null) body.forEach(r => { if (/total/i.test(String(r[0]))) return;
-      if (this.hdrMatch(r[0], L0)) { const s = r.slice(1).reduce((a, v) => a + (num(v) || 0), 0); if (s) want = s; } });
-    if (want === null) return null;
-    const c = [...document.querySelectorAll('[data-test="challenge-choice"]')];
-    const i = c.findIndex(e => this.clean(e.innerText) === String(want));
-    return i < 0 ? { miss: want } : { i, want };
-  },
 
   // a "?" cell is recoverable from its column total
   solveTableMissing() {
