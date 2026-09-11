@@ -173,8 +173,24 @@ const rotateIfNeeded = (file, keep = 5000) => {
 const rotateLogIfNeeded = () => rotateIfNeeded(LOG_PATH);
 let lastLogAt = Date.now();
 const log = o => { lastLogAt = Date.now(); fs.appendFileSync(LOG_PATH, JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n'); rotateLogIfNeeded(); };
-const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, last: null, puzzleStep: null, puzzleTotal: null, progress: null };
-const saveState = () => fs.writeFileSync(path.join(D, 'state.json'), JSON.stringify({ at: new Date().toISOString(), ...S }, null, 1));
+const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, xpToday: null, last: null, puzzleStep: null, puzzleTotal: null, progress: null };
+// ponytail: xp0 is captured at PROCESS start, so "+N XP" silently resets on
+// every restart — it read +70 while the day's real gain was +345. Duolingo's
+// own unit is the day (streak, daily goal), so track that too and persist it.
+// Local date, not UTC: the day rolls over when Duolingo says it does.
+const XPDAY_PATH = path.join(D, 'xpday.json');
+const localDay = () => new Date().toLocaleDateString('en-CA');
+let xpDay = { date: localDay(), startXp: null };
+try { xpDay = { ...xpDay, ...JSON.parse(fs.readFileSync(XPDAY_PATH, 'utf8')) }; } catch {}
+const noteXp = (xp) => {
+  if (xp == null) return;
+  if (xpDay.date !== localDay() || xpDay.startXp == null) {
+    xpDay = { date: localDay(), startXp: xp };
+    try { fs.writeFileSync(XPDAY_PATH, JSON.stringify(xpDay)); } catch {}
+  }
+  S.xpToday = Math.max(0, xp - xpDay.startXp);
+};
+const saveState = () => { noteXp(S.xp); fs.writeFileSync(path.join(D, 'state.json'), JSON.stringify({ at: new Date().toISOString(), ...S }, null, 1)); };
 // Both ledgers rotate on the same 5MB rule as log.jsonl — they used to grow
 // forever, which at ~22 levels/hour running unattended is real disk over weeks.
 const LESSONS_PATH = path.join(D, 'lessons.jsonl');

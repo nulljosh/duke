@@ -4,14 +4,26 @@ import SwiftUI
 /// Menu bar title: live XP, or a warning glyph when the runner has gone quiet.
 struct MenuBarLabel: View {
     @ObservedObject private var poller = Poller.shared
+    // XP by default. The question is available but off by default on purpose:
+    // prompts change every few seconds, and a title that resizes with them
+    // shoves every other menu bar icon sideways each time. Truncated hard for
+    // the same reason — the dropdown card carries the full prompt and choices.
+    @AppStorage("menuBarShows") private var menuBarShows = "xp"
+
+    private var questionTitle: String? {
+        guard let p = poller.state?.prompt, !p.isEmpty else { return nil }
+        return p.count > 24 ? String(p.prefix(23)) + "\u{2026}" : p
+    }
 
     var body: some View {
         Group {
             if poller.stale {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .accessibilityLabel(Text("Runner has gone quiet"))
-            } else if let s = poller.state, let xp0 = s.xp0, let xp = s.xp {
-                Text("+\(xp - xp0)")
+            } else if menuBarShows == "question", let q = questionTitle {
+                Text(q)
+            } else if let s = poller.state, let n = s.xpToday ?? (s.xp0.flatMap { a in s.xp.map { $0 - a } }) {
+                Text("+\(n)")
             } else {
                 Image(systemName: "gamecontroller")
                     .accessibilityLabel("pwnlingo")
@@ -55,7 +67,13 @@ struct MenuBarPanel: View {
                         Text(u).font(.caption).foregroundStyle(.secondary)
                     }
                     Spacer()
-                    if let xp0 = s.xp0, let xp = s.xp {
+                    // Today's gain, not the session's: xp0 resets on every
+                    // restart, so the session number reads low after a crash.
+                    if let today = s.xpToday {
+                        Text("+\(today) XP today")
+                            .font(.title3.monospacedDigit().bold())
+                            .foregroundStyle(.green)
+                    } else if let xp0 = s.xp0, let xp = s.xp {
                         Text("+\(xp - xp0) XP")
                             .font(.title3.monospacedDigit().bold())
                             .foregroundStyle(.green)

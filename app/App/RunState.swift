@@ -49,7 +49,7 @@ struct RunState: Decodable {
     let streak, xpGoal, hearts, maxHearts, league, puzzleStep, puzzleTotal: Int?
     let xpGoalMetToday: Bool?
     let lessons, puzzles, matches, misses: Int
-    let xp0, xp: Int?
+    let xp0, xp, xpToday: Int?
     let last: String?
     let prompt, answer: String?
     let choices: [String]?

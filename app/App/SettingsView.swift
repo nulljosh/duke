@@ -15,6 +15,7 @@ struct SettingsView: View {
     @AppStorage("hideDockIcon") private var hideDockIcon = true
     // One picker replaces the old enabled-toggle + mode-picker + stepper cluster.
     // "" is off; otherwise it mirrors run.mjs's cycle.mode.
+    @AppStorage("menuBarShows") private var menuBarShows = "xp"
     @AppStorage("autoSwitch") private var autoSwitch = "balance"
     @AppStorage("balanceScope") private var balanceScope = "all"
     @AppStorage("cycleMinutes") private var cycleMinutes = 20
@@ -32,6 +33,10 @@ struct SettingsView: View {
             Section("Playing") {
                 Picker("Start track", selection: $startTrack) {
                     ForEach(tracks, id: \.self) { t in Text(trackNames[t] ?? t.capitalized).tag(t) }
+                }
+                Picker("Menu bar shows", selection: $menuBarShows) {
+                    Text("XP today").tag("xp")
+                    Text("Current question").tag("question")
                 }
                 Picker("Auto-switch", selection: $autoSwitch) {
                     Text("Off").tag("")
