@@ -19,6 +19,7 @@
   stay wired up in case that ever changes account-side.
 
 ## Done
+- 2026-09-11: Fixed Mac app stability on reboot: dropped redundant SMAppService login item registration that was launching two copies of the status app, and moved the auto-kick solver trigger from a dead-code ContentView to the MenuBarLabel (which is guaranteed live at launch) with corrected node PATH invocation so fnm's stable Node version is used instead of relying on the login shell's PATH (absent for launchd GUI apps). Verified live: solver auto-starts on reboot without manual interaction. Commits c09a4ce, b36abf0.
 - 2026-09-10: Menu bar native previews for every track (chess board, language
   prompt+choice tiles, math prompt+choices+pattern grid read off the DOM via
   `__duo.widget()`), screenshot now only a last-resort fallback. Fixed
