@@ -1,10 +1,11 @@
 # Roadmap
 
 ## Open
-- [ ] `run.mjs`'s orchestration (drag retries, story loop, tree-walk
-  fallback) has no test coverage beyond `courseIdFor`/`guards`/`solver` now —
-  most of it is `page.evaluate`-bound and needs a live browser, not a pure-
-  function test.
+- [ ] `run.mjs`'s browser-bound orchestration (drag retries, story loop,
+  tree-walk fallback) still has no test coverage — most of it is
+  `page.evaluate`-bound and needs a live browser, not a pure-function test.
+  Pure orchestration functions (cycleDue, nextInRotation, courseIdFor, guards)
+  are now fully tested.
 - [ ] Bot chess matches search one extra ply deeper (level 5) if it can be
   done without blocking the page for >10s — needs a Web Worker running
   `jsChessEngine` off the main thread with a real cancellable timeout, not
