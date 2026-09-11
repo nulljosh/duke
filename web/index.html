@@ -335,6 +335,7 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   <h2>How it works</h2>
   <p>Duolingo renders every exercise from a React component, and that component still holds the answer key. pwnlingo walks the fiber tree from the visible widget up to the challenge props, reads the correct answer, and does what a very fast, very bored student would do. A Claude session only appears when an exercise type shows up that the script has never seen.</p>
   <p>The whole thing is one file. Solver families for exponentials, geometry, trigonometry, probability, statistics and 3D solids were appended one lesson at a time until the Math course ran out of units.</p>
+  <p>It runs unattended for weeks, not minutes. Every course shows a completion percentage and a measured ETA, and finished tracks auto-advance to the next one. Balance mode plays whichever course is furthest behind instead of grinding one to 100% while the rest stall. XP counts by calendar day, running out of hearts doesn't stop the run, and a lesson that loops without ever finishing gets escaped instead of hung on forever.</p>
 </div></section>
 
 <section><div class="container">

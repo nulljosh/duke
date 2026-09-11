@@ -27,7 +27,7 @@ One track at a time; Duolingo keeps one active course per account. Progress land
 
 ## Status app
 
-A SwiftUI status app (`app/`, iOS + macOS) polls the runner over the LAN: current track, XP gained, puzzles/misses/matches or lesson count, and the latest log line. Tap an icon to switch track without touching the terminal.
+Native everywhere: SwiftUI on iOS/macOS/watchOS, Compose Multiplatform on Android/Windows/Linux, plus a terminal client (`pwnlingo-tui`). All poll the runner over the LAN or tunnel for the same state: current track, XP gained, puzzles/misses/matches or lesson count, live chess board, and the latest log line. Switch track or pause from any client, no terminal needed.
 
 ## Files
 
@@ -41,4 +41,4 @@ A SwiftUI status app (`app/`, iOS + macOS) polls the runner over the LAN: curren
 
 ## Honest notes
 
-Automated play is against Duolingo's terms. XP earned this way ranks you against real people in your league. Speak and listen questions are skipped, DuoRadio is skipped, and chess bot matches are mostly lost; puzzles are what earn.
+Automated play is against Duolingo's terms. XP earned this way ranks you against real people in your league. Speak and listen questions are skipped, DuoRadio is skipped.

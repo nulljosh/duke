@@ -1,6 +1,6 @@
 # Pwnlingo Technical Whitepaper
 
-**v2.0.0** | September 2026
+**v2.1.0** | September 2026
 
 Pwnlingo is a personal Duolingo autopilot. It plays language, math, chess and
 music tracks back to back, reading answers straight out of the client-side
@@ -46,10 +46,14 @@ time. Also serves `state.json`/`log.jsonl` over a small stdlib HTTP endpoint
 
 ## Status app
 
-`app/` is a shared SwiftUI codebase (xcodegen, no checked-in `.xcodeproj`)
-building both a macOS window and an iOS app off the same `ContentView.swift`.
-Polls `/state` every three seconds: track, puzzles, misses, matches, XP
-delta. Red warning if the heartbeat goes stale.
+Every client reads the same runner endpoints, so there is one source of
+truth: SwiftUI for iOS/macOS/watchOS (`app/`, xcodegen, no checked-in
+`.xcodeproj`), Compose Multiplatform for Android/Windows/Linux (`kmp/`), and
+a terminal client (`tui/`). Chess renders as a real animated board; language
+and math show the live prompt and answer choices. Balance mode plays
+whichever course is furthest behind instead of grinding one to completion
+while the rest stall; finished courses auto-advance and show a measured ETA.
+Red warning if the heartbeat goes stale.
 
 ## Ethics note
 
