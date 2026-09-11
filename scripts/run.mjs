@@ -198,7 +198,7 @@ const saveCalib = () => fs.writeFileSync(CALIB_PATH, JSON.stringify(promoCalib))
 const LANGUAGE_CODES = ['es', 'fr', 'de', 'it', 'pt', 'ja', 'zh', 'ko', 'ru', 'ar', 'hi', 'nl', 'sv', 'tr', 'el', 'pl', 'cy', 'ga', 'hu', 'da', 'id', 'vi', 'uk', 'ro', 'cs', 'he', 'yi', 'sw', 'hw', 'la', 'eo', 'zu', 'gd', 'fi', 'tl', 'ht', 'gn', 'nv'];
 const ROTATION = ['chess', 'math', ...LANGUAGE_CODES];
 const CYCLE_PATH = path.join(D, 'cycle.json');
-let cycle = { enabled: true, mode: 'balance', scope: 'core', value: 20, sinceCount: 0, lastAt: Date.now() };
+let cycle = { enabled: true, mode: 'balance', scope: 'all', value: 20, sinceCount: 0, lastAt: Date.now() };
 try {
   const saved = JSON.parse(fs.readFileSync(CYCLE_PATH, 'utf8'));
   // A file with no `scope` was written before balance mode existed. Its
@@ -299,11 +299,12 @@ const progress = async (t) => summarizePath(await fetchPath(t));
 // can work at all. Candidates are polled a couple at a time, round-robin, so a
 // full picture builds up in the background instead of 27 API calls at once.
 //
-// Scope matters more than it looks. Real numbers on this account: chess 70%,
-// math 75.5%, and 25 language courses between 0.1% and 2.8%. "Least complete"
-// across everything therefore parks in languages forever and chess/math never
-// finish — Spanish alone is 7,495 levels. 'core' compares the two that are
-// actually comparable; 'all' is there for when the languages catch up.
+// Scope: 'all' (the default) means exactly what it says — every enrolled course
+// competes, so the languages sitting at 0.1-2.8% get played long before chess
+// (70%) or math (75.5%) come up again. That is the point of balancing: nothing
+// is starved because it started late. The margin keeps it from flapping between
+// languages that are effectively tied, so it plays one for hours before moving
+// on. 'core' narrows it to chess+math for when you want those two finished.
 const CORE_TRACKS = ['chess', 'math'];
 let enrolledTracks = [];   // filled once at startup from the account's course list
 const trackPct = new Map();          // track -> percent complete

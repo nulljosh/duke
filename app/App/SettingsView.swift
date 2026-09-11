@@ -16,7 +16,7 @@ struct SettingsView: View {
     // One picker replaces the old enabled-toggle + mode-picker + stepper cluster.
     // "" is off; otherwise it mirrors run.mjs's cycle.mode.
     @AppStorage("autoSwitch") private var autoSwitch = "balance"
-    @AppStorage("balanceScope") private var balanceScope = "core"
+    @AppStorage("balanceScope") private var balanceScope = "all"
     @AppStorage("cycleMinutes") private var cycleMinutes = 20
     @AppStorage("cycleCount") private var cycleCount = 5
     #endif
@@ -42,13 +42,13 @@ struct SettingsView: View {
                 .onChange(of: autoSwitch) { syncCycle() }
 
                 if autoSwitch == "balance" {
-                    // Scope is load-bearing, not a nicety: chess and math sit near
-                    // 70%, every language course is under 3%. Comparing across all
-                    // of them parks in languages forever and the two nearly-done
-                    // tracks never finish.
+                    // Everything by default — a course that started late should not
+                    // be starved. Narrow it to chess+math when you specifically
+                    // want those two finished, since they sit near 70% while every
+                    // language course is still under 3%.
                     Picker("Balance across", selection: $balanceScope) {
-                        Text("Chess and Math").tag("core")
                         Text("Everything").tag("all")
+                        Text("Chess and Math only").tag("core")
                     }
                     .onChange(of: balanceScope) { syncCycle() }
                 } else if autoSwitch == "time" || autoSwitch == "count" {
