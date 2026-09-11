@@ -1,5 +1,32 @@
 # Working on this solver
 
+## After any app/App/*.swift change: rebuild and relaunch
+
+The menu bar app doesn't hot-reload — a source edit does nothing until a new
+binary replaces the running one. A LaunchAgent
+(`~/Library/LaunchAgents/com.nulljosh.pwnlingo-status.plist`, RunAtLoad +
+KeepAlive) already keeps it running from a fixed path — **always build to
+that exact path**, never to `/tmp` or any other derivedData dir, or you get
+two copies (one launchd-managed, one orphaned) fighting for the same menu
+bar slot. After editing anything under `app/App/`:
+
+```bash
+cd app && xcodegen generate
+xcodebuild -scheme PwnlingoStatus-macOS -configuration Debug \
+  -derivedDataPath build build
+killall Pwnlingo 2>/dev/null   # launchd's KeepAlive relaunches it from the new binary within ~10s (ThrottleInterval)
+```
+
+Don't `open` the built .app yourself — that spawns a second, launchd-blind
+process. Just kill the running one; the agent restarts it. Verify exactly
+one is running after: `pgrep -fl "Pwnlingo.app/Contents/MacOS/Pwnlingo"`
+should print one line.
+
+Do this automatically at the end of a Swift-editing turn — don't wait to be
+asked "restart the app." No new launchd/cron watcher for this rebuild step
+itself (see `~/CLAUDE.md` "No background automation") — it's a manual step
+folded into the edit, riding the LaunchAgent that already exists.
+
 ## Live track switch (2026-09-09)
 
 `run.mjs`'s HTTP server (port 8737) takes `POST /switch?track=<x>` in
