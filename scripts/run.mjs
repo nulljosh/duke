@@ -266,6 +266,9 @@ const progress = (t) => page.evaluate(async ({ u, cid }) => {
 const PROGRESS_EVERY_MS = 5 * 60e3;
 let progressAnchor = null;   // { at, passed, track }
 let lastProgressAt = 0;
+// Not persisted on purpose: a restart on a finished track SHOULD re-detect the
+// completion and advance again, rather than sit there grinding a done tree.
+const completedTracks = new Set();
 const refreshProgress = async (force = false) => {
   if (!force && Date.now() - lastProgressAt < PROGRESS_EVERY_MS) return;
   lastProgressAt = Date.now();
@@ -288,6 +291,24 @@ const refreshProgress = async (force = false) => {
     etaHours: rate ? Math.round(remaining / rate * 10) / 10 : null,
   };
   saveState();
+
+  // ponytail: a finished tree has nothing left to serve — grinding it forever is
+  // the one thing worse than stopping. On 100%, move to the next unfinished
+  // track in ROTATION (chess -> math -> languages, which is already the order).
+  // Only ever fires on a real, complete payload: a failed fetch returns null
+  // above and never reaches here, so a network blip can't fake a completion.
+  if (remaining === 0) {
+    if (!completedTracks.has(track)) {
+      completedTracks.add(track);
+      log({ ev: 'track-complete', track, passed: p.passed, total: p.total });
+    }
+    // Walk forward for the first track we haven't already seen finished, so a
+    // fully-finished rotation parks instead of switching in a tight circle.
+    let next = nextInRotation(track);
+    for (let i = 0; i < ROTATION.length && completedTracks.has(next); i++) next = nextInRotation(next);
+    if (completedTracks.has(next)) log({ ev: 'all-complete' });
+    else if (next !== track) { pendingTrack = next; log({ ev: 'auto-advance', from: track, track: next }); }
+  }
 };
 
 // held click: instant down/up is ignored by the Rive chess board

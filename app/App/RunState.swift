@@ -89,6 +89,9 @@ struct LogEvent: Decodable, Identifiable {
         case "math": return "Math lesson"
         case "story-end": return "Finished story"
         case "rotate": return "Rotated course"
+        case "track-complete": return "Finished \(track ?? "the course")!"
+        case "auto-advance": return "Moved on to \(track ?? "the next track")"
+        case "all-complete": return "Every track finished"
         default: return ev ?? "Working…"
         }
     }
