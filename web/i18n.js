@@ -4,9 +4,15 @@
 (function () {
   const SUPPORTED = ["en", "fr", "es", "zh", "pa"];
   const FALLBACK = "en";
+  // ?lang= wins over the stored choice, which wins over the browser's — so a
+  // link can carry a language (and so the translations are actually testable).
+  const queried = new URLSearchParams(location.search).get("lang");
   const stored = localStorage.getItem("pwnlingo.lang");
   const detected = (navigator.language || "en").slice(0, 2);
-  const lang = SUPPORTED.includes(stored) ? stored : SUPPORTED.includes(detected) ? detected : FALLBACK;
+  const lang = SUPPORTED.includes(queried) ? queried
+    : SUPPORTED.includes(stored) ? stored
+    : SUPPORTED.includes(detected) ? detected
+    : FALLBACK;
 
   let dict = {};
   let fallbackDict = {};
