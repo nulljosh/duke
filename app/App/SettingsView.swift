@@ -13,68 +13,94 @@ struct SettingsView: View {
     @AppStorage("startTrack") private var startTrack = "chess"
     @AppStorage("openAtLogin") private var openAtLogin = true
     @AppStorage("hideDockIcon") private var hideDockIcon = true
-    @AppStorage("cycleEnabled") private var cycleEnabled = false
-    @AppStorage("cycleMode") private var cycleMode = "time"
+    // One picker replaces the old enabled-toggle + mode-picker + stepper cluster.
+    // "" is off; otherwise it mirrors run.mjs's cycle.mode.
+    @AppStorage("autoSwitch") private var autoSwitch = "balance"
+    @AppStorage("balanceScope") private var balanceScope = "core"
     @AppStorage("cycleMinutes") private var cycleMinutes = 20
     @AppStorage("cycleCount") private var cycleCount = 5
     #endif
 
     var body: some View {
         Form {
-            TextField("Mac address", text: $host)
-            SecureField("API token", text: $token)
-            // ponytail: writes AppleLanguages, which only takes effect on relaunch —
-            // SwiftUI can't re-resolve an already-loaded string catalog in place.
-            // "System" clears the override and goes back to the OS setting.
-            Picker("Language", selection: $appLanguage) {
-                Text("System").tag("")
-                ForEach(appLanguages, id: \.code) { l in Text(l.name).tag(l.code) }
-            }
-            .onChange(of: appLanguage) { _, new in
-                if new.isEmpty { UserDefaults.standard.removeObject(forKey: "AppleLanguages") }
-                else { UserDefaults.standard.set([new], forKey: "AppleLanguages") }
-            }
-            Toggle("Sound effects", isOn: $soundEnabled)
-            #if os(macOS)
-            Toggle("Works in the background (even when closed)", isOn: $backgroundRun)
-            Toggle("Open at login", isOn: $openAtLogin)
-                .onChange(of: openAtLogin) { LoginItem.sync(enabled: $1) }
-            Toggle("Hide app icon in the Dock", isOn: $hideDockIcon)
-                .onChange(of: hideDockIcon) { NSApp.setActivationPolicy($1 ? .accessory : .regular) }
-            Picker("Start track", selection: $startTrack) {
-                ForEach(tracks, id: \.self) { t in Text(trackNames[t] ?? t.capitalized).tag(t) }
+            Section("Connection") {
+                TextField("Mac address", text: $host)
+                SecureField("API token", text: $token)
             }
 
-            // ponytail: rotation order (chess, math, then every language) is
-            // fixed in run.mjs, not editable here — this just picks the pace.
-            Toggle("Cycle topics for variance", isOn: $cycleEnabled)
-                .onChange(of: cycleEnabled) { syncCycle() }
-            if cycleEnabled {
-                Picker("Switch every", selection: $cycleMode) {
-                    Text("X minutes").tag("time")
-                    Text("X completed lessons").tag("count")
+            #if os(macOS)
+            Section("Playing") {
+                Picker("Start track", selection: $startTrack) {
+                    ForEach(tracks, id: \.self) { t in Text(trackNames[t] ?? t.capitalized).tag(t) }
                 }
-                .onChange(of: cycleMode) { syncCycle() }
-                Stepper(
-                    cycleMode == "time" ? "\(cycleMinutes) minutes" : "\(cycleCount) lessons",
-                    value: cycleMode == "time" ? $cycleMinutes : $cycleCount,
-                    in: 1...180
-                )
-                .onChange(of: cycleMinutes) { syncCycle() }
-                .onChange(of: cycleCount) { syncCycle() }
+                Picker("Auto-switch", selection: $autoSwitch) {
+                    Text("Off").tag("")
+                    Text("Whichever is furthest behind").tag("balance")
+                    Text("Every X minutes").tag("time")
+                    Text("Every X lessons").tag("count")
+                }
+                .onChange(of: autoSwitch) { syncCycle() }
+
+                if autoSwitch == "balance" {
+                    // Scope is load-bearing, not a nicety: chess and math sit near
+                    // 70%, every language course is under 3%. Comparing across all
+                    // of them parks in languages forever and the two nearly-done
+                    // tracks never finish.
+                    Picker("Balance across", selection: $balanceScope) {
+                        Text("Chess and Math").tag("core")
+                        Text("Everything").tag("all")
+                    }
+                    .onChange(of: balanceScope) { syncCycle() }
+                } else if autoSwitch == "time" || autoSwitch == "count" {
+                    Stepper(
+                        autoSwitch == "time" ? "\(cycleMinutes) minutes" : "\(cycleCount) lessons",
+                        value: autoSwitch == "time" ? $cycleMinutes : $cycleCount,
+                        in: 1...180
+                    )
+                    .onChange(of: cycleMinutes) { syncCycle() }
+                    .onChange(of: cycleCount) { syncCycle() }
+                }
             }
             #endif
+
+            Section("App") {
+                // ponytail: writes AppleLanguages, which only takes effect on relaunch —
+                // SwiftUI can't re-resolve an already-loaded string catalog in place.
+                // "System" clears the override and goes back to the OS setting.
+                Picker("Language", selection: $appLanguage) {
+                    Text("System").tag("")
+                    ForEach(appLanguages, id: \.code) { l in Text(l.name).tag(l.code) }
+                }
+                .onChange(of: appLanguage) { _, new in
+                    if new.isEmpty { UserDefaults.standard.removeObject(forKey: "AppleLanguages") }
+                    else { UserDefaults.standard.set([new], forKey: "AppleLanguages") }
+                }
+                Toggle("Sound effects", isOn: $soundEnabled)
+                #if os(macOS)
+                Toggle("Works in the background (even when closed)", isOn: $backgroundRun)
+                Toggle("Open at login", isOn: $openAtLogin)
+                    .onChange(of: openAtLogin) { LoginItem.sync(enabled: $1) }
+                Toggle("Hide app icon in the Dock", isOn: $hideDockIcon)
+                    .onChange(of: hideDockIcon) { NSApp.setActivationPolicy($1 ? .accessory : .regular) }
+                #endif
+            }
         }
+        .formStyle(.grouped)
         .padding(20)
-        .frame(width: 300)
+        .frame(width: 340)
         #if os(macOS)
-        .onAppear { if cycleEnabled { syncCycle() } }
+        .onAppear { syncCycle() }
         #endif
     }
 
     #if os(macOS)
     private func syncCycle() {
-        Poller.shared.setCycle(enabled: cycleEnabled, mode: cycleMode, value: cycleMode == "time" ? cycleMinutes : cycleCount)
+        Poller.shared.setCycle(
+            enabled: !autoSwitch.isEmpty,
+            mode: autoSwitch.isEmpty ? "balance" : autoSwitch,
+            value: autoSwitch == "time" ? cycleMinutes : cycleCount,
+            scope: balanceScope
+        )
     }
     #endif
 }

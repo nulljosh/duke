@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { rateLimited, isValidTrack, shouldRotateLog, cycleDue, nextInRotation, courseComplete, stallAction, summarizePath } from './guards.mjs';
+import { rateLimited, isValidTrack, shouldRotateLog, cycleDue, nextInRotation, courseComplete, stallAction, summarizePath, leastComplete, trackForCourseId } from './guards.mjs';
 
 test('rateLimited allows up to max requests in a window', () => {
   const win = { start: 0, count: 0 };
@@ -124,4 +124,49 @@ test('summarizePath output feeds courseComplete correctly', () => {
   assert.equal(courseComplete(finished, finished.total), true);
   const partial = summarizePath([section(2, 2, ['passed', 'passed'])]);
   assert.equal(courseComplete(partial, 9999), false);   // total shrank vs peak
+});
+
+// Real numbers off the live account, which is what makes scope matter.
+const REAL = { chess: 70.0, math: 75.5, pt: 0.1, es: 2.5, tlh: 0.2 };
+const LATE = { now: 1e9, lastSwitchAt: 0 };   // well past the dwell window
+
+test('leastComplete picks the track furthest behind', () => {
+  assert.equal(leastComplete({ chess: 70, math: 75.5 }, 'math', LATE), 'chess');
+});
+
+test('leastComplete stays put when already on the furthest-behind track', () => {
+  assert.equal(leastComplete({ chess: 70, math: 75.5 }, 'chess', LATE), null);
+});
+
+test('leastComplete ignores a difference smaller than the margin', () => {
+  // 69 vs 70 is noise, and a switch costs a quit + course PATCH + reload
+  assert.equal(leastComplete({ chess: 70, math: 69 }, 'chess', LATE), null);
+  assert.equal(leastComplete({ chess: 70, math: 60 }, 'chess', LATE), 'math');
+});
+
+test('leastComplete will not thrash inside the dwell window', () => {
+  const soon = { now: 1000, lastSwitchAt: 900 };   // 100ms ago
+  assert.equal(leastComplete({ chess: 70, math: 10 }, 'chess', soon), null);
+});
+
+test('leastComplete: scope is what keeps chess/math from being abandoned', () => {
+  // across everything, the 0.1% language wins and the near-done tracks starve
+  assert.equal(leastComplete(REAL, 'chess', LATE), 'pt');
+  // scoped to the two comparable tracks, it does what you actually want
+  assert.equal(leastComplete({ chess: REAL.chess, math: REAL.math }, 'math', LATE), 'chess');
+});
+
+test('leastComplete survives an empty or half-known map', () => {
+  assert.equal(leastComplete({}, 'chess', LATE), null);
+  assert.equal(leastComplete({ chess: NaN, math: 5 }, 'chess', LATE), 'math');
+  // unknown current track: still willing to move to the known-lowest
+  assert.equal(leastComplete({ math: 5 }, 'chess', LATE), 'math');
+});
+
+test('trackForCourseId maps course ids back to track codes', () => {
+  assert.equal(trackForCourseId('DUOLINGO_ES_EN'), 'es');
+  assert.equal(trackForCourseId('DUOLINGO_ZH-CN_EN'), 'zh');
+  assert.equal(trackForCourseId('DUOLINGO_NL-NL_EN'), 'nl');
+  assert.equal(trackForCourseId('CHESS_CH'), null);   // not a language course
+  assert.equal(trackForCourseId(null), null);
 });

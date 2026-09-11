@@ -62,6 +62,37 @@ export const courseComplete = (cur, peakTotal = 0) => {
   return cur.passed >= cur.total && cur.unitsDone >= cur.unitsTotal;
 };
 
+// Balance mode: play whichever track is furthest behind, so everything levels up
+// together instead of one finishing while the rest sit at zero.
+//
+// Two things this must not do. It must not thrash — two tracks within a hair of
+// each other would otherwise swap every poll, and a switch costs a quit, a course
+// PATCH and a reload. And it must not switch for a trivial difference, hence the
+// margin. `pcts` is a track -> percent map; unknown tracks are simply absent.
+export const leastComplete = (pcts, current, opts = {}) => {
+  const { margin = 2, now = 0, lastSwitchAt = 0, minDwellMs = 20 * 60e3 } = opts;
+  if (now - lastSwitchAt < minDwellMs) return null;
+  const ranked = Object.entries(pcts || {})
+    .filter(([, v]) => typeof v === "number" && Number.isFinite(v))
+    .sort((a, b) => a[1] - b[1]);
+  if (!ranked.length) return null;
+  const [track, pct] = ranked[0];
+  if (track === current) return null;
+  const cur = pcts[current];
+  // Only move if the candidate is MEANINGFULLY behind where we already are.
+  if (typeof cur === "number" && pct + margin > cur) return null;
+  return track;
+};
+
+// Duolingo course id -> our track code. DUOLINGO_ES_EN -> es, and the two
+// hyphenated outliers courseIdFor() special-cases in the other direction.
+export const trackForCourseId = (id) => {
+  if (typeof id !== "string") return null;
+  const m = /^DUOLINGO_([A-Z-]+)_EN$/.exec(id);
+  if (!m) return null;
+  return { "ZH-CN": "zh", "NL-NL": "nl" }[m[1]] ?? m[1].toLowerCase();
+};
+
 // A cycle that opened a lesson fine but finished nothing is the failure mode
 // idleOpens can't see (that only counts open failures). Escalate: reset the
 // in-flight session first, then give up on the track entirely.

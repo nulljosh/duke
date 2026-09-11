@@ -20,7 +20,7 @@ import path from 'node:path';
 import http from 'node:http';
 import crypto from 'node:crypto';
 import { courseIdFor } from './courseId.mjs';
-import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, summarizePath } from './guards.mjs';
+import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, summarizePath, leastComplete, trackForCourseId } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -93,9 +93,10 @@ http.createServer((req, res) => {
     // Token-gated already, so this is just a sanity check: a track is a short
     // alphanumeric code (a language code, or math/chess/music), nothing else.
     const t = new URL(req.url, 'http://x').searchParams.get('track');
-    // A manual switch means "play this one" — auto-cycle rotating back within a
-    // few completions made it look like the click "did nothing". Turn cycling
-    // off so a manual pick sticks; the app's own cycle toggle turns it back on.
+    // A manual switch means "play this one" — any auto-switching (timer rotation
+    // OR balance mode) would otherwise pull it back within minutes and make the
+    // click look like it did nothing. Turn it off so a manual pick sticks; the
+    // app's own Auto-switch picker turns it back on.
     if (isValidTrack(t)) { pendingTrack = t; cycle.enabled = false; saveCycle(); res.end('{"ok":true}'); } else { res.writeHead(400); res.end('{"ok":false}'); }
   } else if (req.method === 'GET' && req.url === '/cycle') {
     res.setHeader('Content-Type', 'application/json');
@@ -105,7 +106,9 @@ http.createServer((req, res) => {
     const mode = q.get('mode');
     const value = Number(q.get('value'));
     if (q.get('enabled') != null) cycle.enabled = q.get('enabled') === 'true';
-    if (mode === 'time' || mode === 'count') cycle.mode = mode;
+    if (mode === 'time' || mode === 'count' || mode === 'balance') cycle.mode = mode;
+    const scope = q.get('scope');
+    if (scope === 'core' || scope === 'all') cycle.scope = scope;
     if (Number.isFinite(value) && value > 0) cycle.value = value;
     cycle.lastAt = Date.now(); cycle.sinceCount = 0; saveCycle();
     res.end(JSON.stringify(cycle));
@@ -195,8 +198,18 @@ const saveCalib = () => fs.writeFileSync(CALIB_PATH, JSON.stringify(promoCalib))
 const LANGUAGE_CODES = ['es', 'fr', 'de', 'it', 'pt', 'ja', 'zh', 'ko', 'ru', 'ar', 'hi', 'nl', 'sv', 'tr', 'el', 'pl', 'cy', 'ga', 'hu', 'da', 'id', 'vi', 'uk', 'ro', 'cs', 'he', 'yi', 'sw', 'hw', 'la', 'eo', 'zu', 'gd', 'fi', 'tl', 'ht', 'gn', 'nv'];
 const ROTATION = ['chess', 'math', ...LANGUAGE_CODES];
 const CYCLE_PATH = path.join(D, 'cycle.json');
-let cycle = { enabled: false, mode: 'time', value: 20, sinceCount: 0, lastAt: Date.now() };
-try { cycle = { ...cycle, ...JSON.parse(fs.readFileSync(CYCLE_PATH, 'utf8')) }; } catch {}
+let cycle = { enabled: true, mode: 'balance', scope: 'core', value: 20, sinceCount: 0, lastAt: Date.now() };
+try {
+  const saved = JSON.parse(fs.readFileSync(CYCLE_PATH, 'utf8'));
+  // A file with no `scope` was written before balance mode existed. Its
+  // enabled/mode values describe a feature that has since been replaced, so
+  // adopting them would silently leave the new default (balance, on) switched
+  // off. Migrate once; every choice made after this point is honoured.
+  cycle = 'scope' in saved ? { ...cycle, ...saved } : { ...cycle, value: saved.value ?? cycle.value };
+} catch {}
+// Persist immediately so the file stops looking like the pre-balance format
+// (and so `cat cycle.json` tells the truth about what the runner is doing).
+try { fs.writeFileSync(CYCLE_PATH, JSON.stringify(cycle)); } catch {}
 const saveCycle = () => fs.writeFileSync(CYCLE_PATH, JSON.stringify(cycle));
 const bumpCycleCount = () => { if (cycle.enabled && cycle.mode === 'count') { cycle.sinceCount++; saveCycle(); } };
 const cycleDue = () => cycleDueGuard(cycle, Date.now());
@@ -280,6 +293,41 @@ const fetchPath = (t) => page.evaluate(async ({ u, cid }) => {
 }, { u: uid, cid: courseIdFor(t) }).catch(() => null);
 const progress = async (t) => summarizePath(await fetchPath(t));
 
+// ---- balance mode -----------------------------------------------------------
+// A course's completion can be read WITHOUT switching to it (verified: read
+// MATH_BT while CHESS_CH was the active course), which is the whole reason this
+// can work at all. Candidates are polled a couple at a time, round-robin, so a
+// full picture builds up in the background instead of 27 API calls at once.
+//
+// Scope matters more than it looks. Real numbers on this account: chess 70%,
+// math 75.5%, and 25 language courses between 0.1% and 2.8%. "Least complete"
+// across everything therefore parks in languages forever and chess/math never
+// finish — Spanish alone is 7,495 levels. 'core' compares the two that are
+// actually comparable; 'all' is there for when the languages catch up.
+const CORE_TRACKS = ['chess', 'math'];
+let enrolledTracks = [];   // filled once at startup from the account's course list
+const trackPct = new Map();          // track -> percent complete
+const trackPolledAt = new Map();     // track -> when we last asked
+// Epoch, not now: the dwell window exists to stop flip-flopping between two
+// near-equal tracks, not to make a fresh start ignore a track that is clearly
+// behind for the first 20 minutes.
+let lastBalanceSwitchAt = 0;
+
+const balanceCandidates = () =>
+  cycle.scope === 'all' ? [...CORE_TRACKS, ...enrolledTracks] : CORE_TRACKS;
+
+const pollCandidates = async (n = 2) => {
+  const due = balanceCandidates()
+    .filter((t) => t !== track)   // the active track is refreshed by refreshProgress()
+    .sort((a, b) => (trackPolledAt.get(a) || 0) - (trackPolledAt.get(b) || 0))
+    .slice(0, n);
+  for (const t of due) {
+    trackPolledAt.set(t, Date.now());
+    const p = await progress(t);
+    if (p) trackPct.set(t, Math.round((p.passed / p.total) * 1000) / 10);
+  }
+};
+
 // Rate is MEASURED, never assumed: anchor the first sample of this run, then
 // extrapolate from levels actually passed since. Resets on a track switch,
 // because a chess rate says nothing about how fast a language tree moves.
@@ -319,6 +367,25 @@ const refreshProgress = async (force = false) => {
     levelsPerHour: rate ? Math.round(rate * 10) / 10 : null,
     etaHours: rate ? Math.round(remaining / rate * 10) / 10 : null,
   };
+  trackPct.set(track, S.progress.pct);
+  trackPolledAt.set(track, Date.now());
+
+  // Balance mode: keep a background read on the other candidates, then play
+  // whichever is furthest behind. Auto-advance below still wins on a 100% —
+  // that one is a correctness guard (a finished tree serves nothing), not a
+  // preference, so it applies in every mode.
+  if (cycle.enabled && cycle.mode === 'balance') {
+    await pollCandidates();
+    S.balance = { scope: cycle.scope, pcts: Object.fromEntries(trackPct) };
+    const behind = leastComplete(S.balance.pcts, track, { now: Date.now(), lastSwitchAt: lastBalanceSwitchAt });
+    if (behind && behind !== track) {
+      log({ ev: 'balance-switch', from: track, track: behind, pcts: S.balance.pcts });
+      lastBalanceSwitchAt = Date.now();
+      pendingTrack = behind;
+    }
+  } else {
+    S.balance = null;
+  }
   saveState();
 
   // ponytail: a finished tree has nothing left to serve — grinding it forever is
@@ -374,6 +441,13 @@ await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded
 await sleep(4000);
 await setCourse(track);
 S.xp0 = S.xp = await xp(); S.username = await username(); Object.assign(S, (await stats()) || {}); saveState();
+enrolledTracks = await page.evaluate(async (u) => {
+  try {
+    const r = await fetch(`/2017-06-30/users/${u}?fields=courses`);
+    const j = await r.json();
+    return (j.courses || []).map((c) => c.id);
+  } catch (e) { return []; }
+}, uid).then((ids) => ids.map(trackForCourseId).filter(Boolean)).catch(() => []);
 await refreshProgress(true);   // seed the percentage immediately; ETA fills in once there's a measured rate
 
 const hasChallenge = () => page.evaluate(() => !!document.querySelector('[data-test^="challenge "], [data-test="stories-element"]'));
