@@ -78,17 +78,26 @@ enum SolverProcess {
         // of hanging — catch that specific case and say so, rather than leaving
         // the user staring at a menu bar that silently never turns green.
         let logPath = logURL
+        // ponytail: run.mjs has no restart-on-crash of its own (detached
+        // Process, see comment atop this file) — a network blip or a
+        // transient browser-closed error otherwise needs a human to hit
+        // Start again. Auto-restart on any unexpected exit except the one
+        // that truly needs a person (no signed-in session).
         p.terminationHandler = { proc in
             guard proc.terminationStatus != 0 else { return }
             let tail = (try? String(contentsOf: logPath, encoding: .utf8))
                 .map { $0.split(separator: "\n").suffix(6).joined(separator: "\n") } ?? ""
-            DispatchQueue.main.async {
-                let alert = NSAlert()
-                alert.messageText = "Pwnlingo didn't start"
-                alert.informativeText = tail.contains("No Duolingo session")
-                    ? "No signed-in session yet. Run this once in Terminal, then hit Start again:\n\nnode ~/Documents/Code/pwnlingo/scripts/login.mjs"
-                    : tail.isEmpty ? "Check ~/Documents/Code/pwnlingo/scripts/run.log" : tail
-                alert.runModal()
+            if tail.contains("No Duolingo session") {
+                DispatchQueue.main.async {
+                    let alert = NSAlert()
+                    alert.messageText = "Pwnlingo didn't start"
+                    alert.informativeText = "No signed-in session yet. Run this once in Terminal, then hit Start again:\n\nnode ~/Documents/Code/pwnlingo/scripts/login.mjs"
+                    alert.runModal()
+                }
+                return
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                start(track: track)
             }
         }
         try? p.run()
