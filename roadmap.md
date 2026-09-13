@@ -1,6 +1,13 @@
 # Roadmap
 
 ## Open
+- [x] Fixed 2026-09-12: watchdog's `startTunnelIfNeeded()` never tracked the
+  cloudflared child process, so a tunnel that died from a DNS blip left a
+  zombie process behind (cloudflared doesn't exit on its own connector
+  failing) — every 60s tick spawned a *second* cloudflared fighting the first
+  for the same tunnel instead of replacing it, and neither one recovered.
+  Now holds the `Process` handle and calls `.terminate()` on a stale one
+  before starting a fresh tunnel.
 - [ ] `run.mjs`'s browser-bound orchestration (drag retries, story loop,
   tree-walk fallback) still has no test coverage — most of it is
   `page.evaluate`-bound and needs a live browser, not a pure-function test.

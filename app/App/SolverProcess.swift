@@ -28,9 +28,19 @@ enum SolverProcess {
         return (try? await URLSession.shared.data(for: req)) != nil
     }
 
+    // ponytail: the process that died from a DNS blip stays alive as a zombie
+    // (cloudflared doesn't exit on its own connector failing) — reachability
+    // alone can't tell that apart from "no tunnel running yet", so a stale
+    // handle here means kill-then-restart instead of just restart.
+    private static var tunnelProcess: Process?
+
     private static func startTunnelIfNeeded() async {
         let reachable = await tunnelReachable()
         guard !reachable else { return }
+
+        if let stale = tunnelProcess, stale.isRunning {
+            stale.terminate()
+        }
 
         let t = Process()
         t.executableURL = URL(fileURLWithPath: "/opt/homebrew/bin/cloudflared")
@@ -40,6 +50,7 @@ enum SolverProcess {
             t.standardOutput = handle
             t.standardError = handle
         }
+        tunnelProcess = t
         try? t.run()
     }
 
