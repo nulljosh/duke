@@ -18,6 +18,31 @@ test('strip drops a leading shortcut number, never includes()', () => {
   assert.notEqual(strip({ innerText: '3 ești' }), 'e');
 });
 
+// --- tileKey (mirrors solveLang's characterMatch tile-matching key) ---
+// Regression for the bug where match-pairs tiles never matched: innerText is
+// "5\n물mul" (index + word + romanization glued with no separator) for the
+// target-language side, so scraping displayed text can never equal the plain
+// vocab word. The tile's data-test attribute names it "<word>-challenge-tap-token"
+// verbatim, so read the key from there instead.
+const tileKey = e => (e.dataset.test || '').replace(/-challenge-tap-token$/, '').toLowerCase();
+
+test('tileKey reads the vocab word from data-test, ignoring innerText noise', () => {
+  const koreanTile = { dataset: { test: '물-challenge-tap-token' }, innerText: '5\n물mul' };
+  const englishTile = { dataset: { test: 'water-challenge-tap-token' }, innerText: '1\nwater' };
+  assert.equal(tileKey(koreanTile), '물');
+  assert.equal(tileKey(englishTile), 'water');
+});
+
+// --- pairsSpeech (mirrors ledgerRow's characterMatch narration fallback) ---
+// characterMatch challenges have no sentence prompt/answer at all, so voice
+// mode went silent for this entire challenge type until this fallback.
+const pairsSpeech = pairs => pairs.map(p => `${p.fromToken} is ${p.learningToken}`).join('. ');
+
+test('pairsSpeech reads out every matched vocab pair', () => {
+  const pairs = [{ fromToken: 'tea', learningToken: '차' }, { fromToken: 'bread', learningToken: '빵' }];
+  assert.equal(pairsSpeech(pairs), 'tea is 차. bread is 빵');
+});
+
 // --- puzzleBest: FEN-keyed lookup against a fake chal() ---
 function puzzleBest(chal, liveFen) {
   const c = chal; if (!c || !c.chessPuzzleInfo) return null;

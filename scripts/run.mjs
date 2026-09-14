@@ -31,7 +31,11 @@ let isMath = track === 'math';
 let isChessTrack = track === 'chess';
 let pendingTrack = null; // set by POST /switch, picked up at the top of the outer loop
 let paused = false; // set by POST /pause and /resume, checked at the top of the outer loop
-let voiceOn = false; // set by POST /voice, read out loud as questions/answers land
+// set by POST /voice, read out loud as questions/answers land — seeded from
+// the last saved state.json so a runner restart (crash, or a code deploy)
+// doesn't silently flip the menu-bar toggle back off underneath the user.
+let voiceOn = false;
+try { voiceOn = !!JSON.parse(fs.readFileSync(path.join(D, 'state.json'), 'utf8')).voiceOn; } catch {}
 
 // ponytail: stdlib http, no deps — lets the status apps poll over LAN or the
 // Cloudflare Tunnel. Reads are open (worst case someone sees a chess score);
@@ -180,7 +184,7 @@ const rotateIfNeeded = (file, keep = 5000) => {
 const rotateLogIfNeeded = () => rotateIfNeeded(LOG_PATH);
 let lastLogAt = Date.now();
 const log = o => { lastLogAt = Date.now(); fs.appendFileSync(LOG_PATH, JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n'); rotateLogIfNeeded(); };
-const S = { started: new Date().toISOString(), track, username: null, paused: false, voiceOn: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, xpToday: null, last: null, puzzleStep: null, puzzleTotal: null, progress: null };
+const S = { started: new Date().toISOString(), track, username: null, paused: false, voiceOn, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, xpToday: null, last: null, puzzleStep: null, puzzleTotal: null, progress: null };
 // ponytail: xp0 is captured at PROCESS start, so "+N XP" silently resets on
 // every restart — it read +70 while the day's real gain was +345. Duolingo's
 // own unit is the day (streak, daily goal), so track that too and persist it.
@@ -264,7 +268,11 @@ async function synthSpeech(text) {
 // back just read one after the other instead of talking over themselves.
 function speakOut(text) {
   if (!canSpeak || !voiceOn || !text) return;
-  try { execFile('say', [String(text).slice(0, 500)]); } catch {}
+  // `say` reads em/en dashes as a literal pause artifact, not punctuation —
+  // dash-joined prompt/answer pairs (see the pairs.join('. ') callsite) sound
+  // like a glitch, so normalize them to a period the way `say` actually speaks.
+  const clean = String(text).replace(/[–—]/g, '.').slice(0, 500);
+  try { execFile('say', [clean], () => {}); } catch {}
 }
 
 // the fake-audio-capture flag needs the file to exist at launch; content gets

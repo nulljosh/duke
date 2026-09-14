@@ -95,6 +95,12 @@ window.__duo = window.__duo || {};
   // shape (or blob-graded Math challenge) → hand back null, never guess.
   const txt = e => (e.innerText || e.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
   const tokText = e => { const s = e.querySelector('[data-test="challenge-tap-token-text"]'); return txt(s || e); };
+  // characterMatch tiles: innerText is "<index>\n<word>" for the English side
+  // and "<index>\n<word><romanization>" glued with no separator for the
+  // target-language side ("5\n물mul") — neither is a clean match key. The
+  // data-test attribute is: Duolingo names the tile "<word>-challenge-tap-token"
+  // verbatim, so read the key from there instead of scraping displayed text.
+  const tileKey = e => (e.dataset.test || '').replace(/-challenge-tap-token$/, '').toLowerCase();
   const choiceText = c => txt({ innerText: typeof c === 'string' ? c : (c.text || c.phrase || c.character || c.transliteration || '') });
   // Placed tokens live outside [data-test="word-bank"] and match the same
   // selector; clicking one un-places it. Scope to the bank when there is one
@@ -128,7 +134,7 @@ window.__duo = window.__duo || {};
       const live = () => bank().filter(b => b.getAttribute('aria-disabled') !== 'true');
       for (const p of c.pairs) {
         const a = Object.values(p).filter(v => typeof v === 'string' && !/^https?:/.test(v)).map(s => s.toLowerCase());   // characterMatch: character/transliteration
-        const hit = live().filter(b => a.includes(tokText(b))).slice(0, 2);
+        const hit = live().filter(b => a.includes(tileKey(b))).slice(0, 2);
         if (hit.length < 2) continue;                              // never click a lone tile, it offsets every later pair
         for (const b of hit) { b.click(); await this.sleep(350); }
       }
@@ -197,7 +203,12 @@ window.__duo = window.__duo || {};
     // the answer highlighted, instead of just the answer text alone. null for
     // translate/word-bank types — there's no fixed pool to list.
     const choices = Array.isArray(c.choices) ? c.choices.map(choiceText) : null;
-    return { at: new Date().toISOString(), course: localStorage.duoCourse || null, type: c.type, prompt: c.prompt || '', answer: ans, choices, via, href: location.pathname };
+    // characterMatch (via: 'pairs') has no sentence prompt/answer at all — say
+    // the vocab it just matched instead, or voice mode goes silent for this
+    // entire challenge type (it's the majority of some courses' challenge mix).
+    const pairsSpeech = via === 'pairs' && Array.isArray(c.pairs)
+      ? c.pairs.map(p => `${p.fromToken} is ${p.learningToken}`).join('. ') : '';
+    return { at: new Date().toISOString(), course: localStorage.duoCourse || null, type: c.type, prompt: c.prompt || pairsSpeech, answer: pairsSpeech ? '' : ans, choices, via, href: location.pathname };
   };
 
   // ---- chess: puzzles ----
@@ -373,6 +384,7 @@ window.__duo = window.__duo || {};
   // ---- music / unknown shapes: log and skip, never guess ----
   D.logUnknown = function () {
     const c = this.chal();
-    return { type: c && c.type, keys: c ? Object.keys(c).filter(k => /correct|solution|token|pair|choice|display/i.test(k)) : [] };
+    const keys = c ? Object.keys(c).filter(k => /correct|solution|token|pair|choice|display/i.test(k)) : [];
+    return { type: c && c.type, keys };
   };
 })();
