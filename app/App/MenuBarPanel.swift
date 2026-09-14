@@ -167,6 +167,15 @@ struct MenuBarPanel: View {
 
                 HStack {
                     Button(s.paused == true ? "Resume" : "Pause") { poller.togglePause() }
+                    #if os(macOS)
+                    Button {
+                        poller.toggleVoice()
+                    } label: {
+                        Image(systemName: s.voiceOn == true ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                    }
+                    .accessibilityLabel(s.voiceOn == true ? "Voice on" : "Voice off")
+                    .help("Read questions and answers out loud")
+                    #endif
                     Spacer()
                     Menu(trackNames[s.track] ?? s.track.capitalized) {
                         ForEach(otherTracks, id: \.self) { t in

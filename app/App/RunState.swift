@@ -46,6 +46,7 @@ struct RunState: Decodable {
     let at, started, track: String
     let username: String?
     let paused: Bool?
+    let voiceOn: Bool?
     let streak, xpGoal, hearts, maxHearts, league, puzzleStep, puzzleTotal: Int?
     let xpGoalMetToday: Bool?
     let lessons, puzzles, matches, misses: Int
@@ -141,6 +142,13 @@ final class Poller: ObservableObject {
 
     func togglePause() {
         mutate((state?.paused ?? false) ? "resume" : "pause")
+    }
+
+    // Narration: reads the current question/answer (or move) out loud through
+    // the Mac's own speakers via `say`, macOS-only, off by default. Good for a
+    // machine that's already on the desk all day — see run.mjs's speakOut().
+    func toggleVoice() {
+        mutate("voice?on=\((!(state?.voiceOn ?? false)))")
     }
 
     // ponytail: run.mjs owns the rotation order and the actual timer/count

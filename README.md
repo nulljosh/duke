@@ -59,4 +59,4 @@ Native everywhere: SwiftUI on iOS/macOS/watchOS, Compose Multiplatform on Androi
 
 ## Honest notes
 
-Automated play is against Duolingo's terms. XP earned this way ranks you against real people in your league. Speak and listen questions are skipped, DuoRadio is skipped.
+Automated play is against Duolingo's terms. XP earned this way ranks you against real people in your league. Listen questions are skipped. Speak questions are voiced with macOS `say` through a fake mic (the sentence is on the page already, same as any other answer key) — unverified against a live speak screen yet, falls back to skip if the record button isn't found. DuoRadio is skipped.

@@ -19,6 +19,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
 import crypto from 'node:crypto';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { courseIdFor } from './courseId.mjs';
 import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, summarizePath, leastComplete, trackForCourseId } from './guards.mjs';
 
@@ -29,6 +31,7 @@ let isMath = track === 'math';
 let isChessTrack = track === 'chess';
 let pendingTrack = null; // set by POST /switch, picked up at the top of the outer loop
 let paused = false; // set by POST /pause and /resume, checked at the top of the outer loop
+let voiceOn = false; // set by POST /voice, read out loud as questions/answers land
 
 // ponytail: stdlib http, no deps — lets the status apps poll over LAN or the
 // Cloudflare Tunnel. Reads are open (worst case someone sees a chess score);
@@ -116,6 +119,10 @@ http.createServer((req, res) => {
     paused = true; S.paused = true; saveState(); res.end('{"ok":true}');
   } else if (req.method === 'POST' && req.url.startsWith('/resume')) {
     paused = false; S.paused = false; saveState(); res.end('{"ok":true}');
+  } else if (req.method === 'POST' && req.url.startsWith('/voice')) {
+    const on = new URL(req.url, 'http://x').searchParams.get('on');
+    voiceOn = on === 'true' || on === '1'; S.voiceOn = voiceOn; saveState();
+    res.end(JSON.stringify({ ok: true, voiceOn, canSpeak }));
   } else if (req.method === 'POST' && req.url.startsWith('/quit')) {
     res.end('{"ok":true}'); setTimeout(() => process.exit(0), 100);
   } else if (req.url.startsWith('/fen')) {
@@ -173,7 +180,7 @@ const rotateIfNeeded = (file, keep = 5000) => {
 const rotateLogIfNeeded = () => rotateIfNeeded(LOG_PATH);
 let lastLogAt = Date.now();
 const log = o => { lastLogAt = Date.now(); fs.appendFileSync(LOG_PATH, JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n'); rotateLogIfNeeded(); };
-const S = { started: new Date().toISOString(), track, username: null, paused: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, xpToday: null, last: null, puzzleStep: null, puzzleTotal: null, progress: null };
+const S = { started: new Date().toISOString(), track, username: null, paused: false, voiceOn: false, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, xpToday: null, last: null, puzzleStep: null, puzzleTotal: null, progress: null };
 // ponytail: xp0 is captured at PROCESS start, so "+N XP" silently resets on
 // every restart — it read +70 while the day's real gain was +345. Duolingo's
 // own unit is the day (streak, daily goal), so track that too and persist it.
@@ -232,9 +239,50 @@ const bumpCycleCount = () => { if (cycle.enabled && cycle.mode === 'count') { cy
 const cycleDue = () => cycleDueGuard(cycle, Date.now());
 const nextInRotation = t => nextInRotationGuard(ROTATION, t);
 
+// Voice mode: "Speak this sentence" challenges have no skip button and used
+// to strand the runner for its full 20-min ceiling (see the quiet-cycle
+// comment below). The answer text is already known — it's the sentence
+// Duolingo displays, same as any other challenge's answer key — so instead
+// of guessing at speech, we say it: macOS `say` renders the exact prompt to
+// a wav, and Chromium's fake-audio-capture flag feeds that wav back as the
+// mic input Duolingo's own recognizer grades.
+const VOICE_WAV = path.join(D, 'voice.wav');
+const execFileP = promisify(execFile);
+const canSpeak = process.platform === 'darwin';
+async function synthSpeech(text) {
+  const aiff = VOICE_WAV.replace(/\.wav$/, '.aiff');
+  await execFileP('say', ['-o', aiff, text]);
+  await execFileP('afconvert', ['-f', 'WAVE', '-d', 'LEI16@16000', aiff, VOICE_WAV]);
+}
+
+// Narration mode: read the question and answer out loud as they land, for a
+// machine that's just sitting on the desk running unattended anyway. Off by
+// default, toggled from the status app (POST /voice). Fire-and-forget `say`
+// straight to the real speakers — unrelated to synthSpeech()/VOICE_WAV above,
+// which feeds Chromium's fake mic instead. Queued: macOS's `say` already
+// serializes overlapping calls onto one voice, so two speakOut()s back to
+// back just read one after the other instead of talking over themselves.
+function speakOut(text) {
+  if (!canSpeak || !voiceOn || !text) return;
+  try { execFile('say', [String(text).slice(0, 500)]); } catch {}
+}
+
+// the fake-audio-capture flag needs the file to exist at launch; content gets
+// overwritten per-question below, chromium re-reads it fresh each capture.
+if (canSpeak && !fs.existsSync(VOICE_WAV)) await synthSpeech('placeholder').catch(() => {});
+
 const ctx = await chromium.launchPersistentContext(path.join(D, '.pw-profile'), {
-  headless: true, viewport: { width: 1400, height: 900 }, args: ['--disable-background-timer-throttling'],
+  headless: true, viewport: { width: 1400, height: 900 },
+  args: [
+    '--disable-background-timer-throttling',
+    ...(canSpeak ? [
+      '--use-fake-ui-for-media-stream',
+      '--use-fake-device-for-media-stream',
+      `--use-file-for-fake-audio-capture=${VOICE_WAV}`,
+    ] : []),
+  ],
 });
+if (canSpeak) await ctx.grantPermissions(['microphone'], { origin: 'https://www.duolingo.com' });
 if (bootstrapJwt) {
   await ctx.addCookies([{ name: 'jwt_token', value: bootstrapJwt, domain: '.duolingo.com', path: '/', secure: true, sameSite: 'Lax' }]);
 }
@@ -268,6 +316,7 @@ const inject = async () => {
   const files = isMath ? ['mathjs.min.js', 'math.js'] : isChessTrack ? ['solver.js', 'js-chess-engine.js'] : ['solver.js'];
   for (const f of files) await page.addScriptTag({ content: fs.readFileSync(path.join(D, f), 'utf8') });
   await page.evaluate(v => { window.__isChessTrack = v; }, isChessTrack);
+  await page.evaluate(v => { window.__canSpeak = v; }, canSpeak);
   if (isChessTrack) await page.evaluate(c => { window.__duo.promoCalib = c; }, promoCalib);
 };
 const xp = () => page.evaluate(async u => { try { return (await (await fetch(`/2017-06-30/users/${u}?fields=totalXp`)).json()).totalXp; } catch (e) { return null; } }, uid);
@@ -689,7 +738,7 @@ while (true) {
       // types (geometry/SVG/number-line) that have nothing textual to read —
       // those still fall back to the cropped screenshot on the status app.
       page.evaluate(() => { try { return window.__duo.widget(); } catch { return null; } })
-        .then(w => { S.prompt = (w && w.prompt) || null; S.choices = (w && w.choices) || null; S.grid = (w && w.table) || null; S.answer = null; saveState(); }).catch(() => {});
+        .then(w => { const p = (w && w.prompt) || null; if (p && p !== S.prompt) speakOut(p); S.prompt = p; S.choices = (w && w.choices) || null; S.grid = (w && w.table) || null; S.answer = null; saveState(); }).catch(() => {});
       // autoLesson() is the real driver (run(15) only hits the generic
       // fallback loop and halts 'manual' on the first widget it can't
       // click). Mirror boot.js's 12-min watchdog race.
@@ -818,6 +867,10 @@ while (true) {
         // unmoved. A screen with something to click is an end screen, not a
         // stuck one; only fall through to the radio heuristic when nothing is.
         if (!c && !document.querySelector('[data-test^="challenge "]') && document.querySelector('[data-test="quit-button"]')) return { kind: 'radio-maybe' };
+        if (c && window.__canSpeak) {
+          const text = D.speakText();
+          if (text) return { kind: 'speak', text, tests: [...new Set([...document.querySelectorAll('[data-test]')].map(x => x.dataset.test))] };
+        }
         if (c) {
           const via = await D.solveLang().catch(() => null);
           const row = via ? D.ledgerRow(via) : null;
@@ -902,7 +955,7 @@ while (true) {
       const r = st.r;
       if (r.over) { S.matches++; log({ ev: 'match-over', status: r.status, ply: r.hist && r.hist.length }); bumpCycleCount(); S.xp = await xp(); saveState();
         await page.evaluate(() => { const n = document.querySelector('[data-test="player-next"]'); n && n.click(); }); await sleep(2000); }
-      else if (r.clicks) { await chessMove(r.clicks); log({ ev: 'move', move: r.move, ply: r.ply }); }
+      else if (r.clicks) { await chessMove(r.clicks); log({ ev: 'move', move: r.move, ply: r.ply }); speakOut(r.move); }
       else if (r.err) { log({ ev: 'match-err', err: r.err }); await sleep(3000); }
       else await sleep(1500);
     } else if (st.kind === 'story') {
@@ -924,8 +977,38 @@ while (true) {
         log({ ev: 'radio-skip' }); await sleep(2000); break;
       }
       await sleep(1000);
+    } else if (st.kind === 'speak') {
+      // ponytail: the record-button selector below is a best guess (Duolingo
+      // ships no public data-test docs and this hasn't been verified against
+      // a live "speak this sentence" screen yet). If it's wrong, nothing
+      // breaks — the click no-ops, unanswerable climbs, and st.tests above is
+      // already logged so the real data-test can be read off log.jsonl and
+      // swapped in, same as every other "logUnknown() then fix" case here.
+      await synthSpeech(st.text).catch(e => log({ ev: 'speak-tts-err', e: String(e) }));
+      const clicked = await page.evaluate(() => {
+        const b = document.querySelector('[data-test="speak-button"], [data-test*="record"], [data-test*="microphone"]');
+        if (b) { b.click(); return true; }
+        return false;
+      });
+      log({ ev: 'speak', text: st.text, clicked, tests: st.tests });
+      await sleep(2600);   // let the fake mic "finish talking" before Duolingo grades it
+      if (clicked) {
+        await page.evaluate(() => {
+          const b = document.querySelector('[data-test="speak-button"], [data-test*="record"], [data-test*="microphone"]');
+          b && b.click();   // stop, if it's a start/stop toggle rather than auto-stop
+        }).catch(() => {});
+        unanswerable = 0;
+      } else if (++unanswerable >= 5) {
+        log({ ev: 'unanswerable', type: 'speak' });
+        await page.evaluate(() => { const q = document.querySelector('[data-test="quit-button"]'); q && q.click(); }).catch(() => {});
+        await sleep(1000);
+        await page.evaluate(() => { const y = document.querySelector('[data-test="notification-drawer-no-thanks-button"]') || [...document.querySelectorAll('button')].find(b => /END SESSION|QUIT/i.test(b.innerText)); y && y.click(); }).catch(() => {});
+        await sleep(1500);
+        break;
+      }
+      await sleep(1400);
     } else if (st.kind === 'challenge') {
-      if (st.row) { ledger([st.row]); S.prompt = st.row.prompt || null; S.answer = st.row.answer || null; S.choices = st.row.choices || null; S.grid = null; saveState(); }
+      if (st.row) { ledger([st.row]); S.prompt = st.row.prompt || null; S.answer = st.row.answer || null; S.choices = st.row.choices || null; S.grid = null; saveState(); speakOut([st.row.prompt, st.row.answer].filter(Boolean).join('. ')); }
       if (!st.via) log({ ev: 'unknown-challenge', type: st.type, keys: st.unknown && st.unknown.keys });
       const ok = await page.evaluate(async () => { const n = document.querySelector('[data-test="player-next"]'); if (n && !n.disabled && n.getAttribute('aria-disabled') !== 'true') { n.click(); return true; } return false; });
       if (!ok) {

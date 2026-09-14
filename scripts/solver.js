@@ -102,11 +102,27 @@ window.__duo = window.__duo || {};
   const bank = () => [...((document.querySelector('[data-test="word-bank"]') || document).querySelectorAll('[data-test*="challenge-tap-token"]:not([data-test="challenge-tap-token-text"])'))]
     .filter(b => b.getAttribute('aria-disabled') !== 'true' && !b.disabled);
 
+  // speak / listenSpeak: no correctTokens/correctIndex to grade against, but
+  // the sentence to read out loud IS the answer key, same as any other
+  // challenge's prompt — run.mjs turns this into real audio via voice mode.
+  // Never invented: null when there's no text, same "don't guess" rule as
+  // everything else here.
+  D.speakText = function () {
+    const c = this.chal(); if (!c) return null;
+    if (!/^(speak|listenSpeak)$/.test(c.type)) return null;
+    if ((c.correctTokens || []).length || typeof c.correctIndex === 'number') return null;
+    const fromTokens = Array.isArray(c.displayTokens) ? c.displayTokens.filter(t => t && t.text).map(t => t.text).join('') : '';
+    return c.prompt || fromTokens || null;
+  };
+
   D.solveLang = async function () {
     const c = this.chal(); if (!c || c.challengeBlob) return null;
     const dom = [...document.querySelectorAll('[data-test="challenge-choice"]')];
     const skip = document.querySelector('[data-test="player-skip"]');
-    // listen / speak: never guess audio, take the skip Duolingo offers
+    // listen / speak: never guess audio, take the skip Duolingo offers.
+    // speak/listenSpeak with readable text is handled by voice mode before
+    // solveLang is even called (see run.mjs) — this is the leftover case
+    // where there's no text either, so skip is genuinely all that's left.
     if (/^(listen|speak|selectPronunciation|listenComplete|listenSpeak)$/.test(c.type) && skip && !(c.correctTokens || []).length && typeof c.correctIndex !== 'number') { skip.click(); return 'skip:' + c.type; }
     if (Array.isArray(c.pairs) && c.pairs.length) {              // match the pairs
       const live = () => bank().filter(b => b.getAttribute('aria-disabled') !== 'true');
