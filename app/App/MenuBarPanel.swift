@@ -190,7 +190,7 @@ struct MenuBarPanel: View {
                 }
 
                 HStack {
-                    Button("Settings…") { openSettings() }
+                    Button("Settings…") { openSettingsWindow() }
                     Spacer()
                     Button("Quit") {
                         if !backgroundRun { poller.quit() }
@@ -201,7 +201,7 @@ struct MenuBarPanel: View {
                 Label("Not running", systemImage: "wifi.slash")
                     .foregroundStyle(.secondary)
                 Button("Start \(trackNames[startTrack] ?? startTrack)") { SolverProcess.start(track: startTrack) }
-                Button("Settings…") { openSettings() }
+                Button("Settings…") { openSettingsWindow() }
             } else {
                 ProgressView()
             }
@@ -209,6 +209,14 @@ struct MenuBarPanel: View {
         .padding(12)
         .frame(width: 250)
         .task { poller.start() }
+    }
+
+    // ponytail: openSettings() alone opens the window behind everything since
+    // this app runs as .accessory (no Dock icon) — nothing brings it forward.
+    // Activate first so the window actually appears on top.
+    private func openSettingsWindow() {
+        NSApp.activate(ignoringOtherApps: true)
+        openSettings()
     }
 
     @ViewBuilder private func progressBar(_ fraction: Double) -> some View {

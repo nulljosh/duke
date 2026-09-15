@@ -6,7 +6,7 @@ import AppKit
 struct SettingsView: View {
     @AppStorage("pwnlingoHost") private var host = "localhost:8737"
     @AppStorage("pwnlingoToken") private var token = ""
-    @AppStorage("soundEnabled") private var soundEnabled = true
+    @AppStorage("soundEnabled") private var soundEnabled = false
     @AppStorage("appLanguage") private var appLanguage = ""   // "" = follow the system
     #if os(macOS)
     @AppStorage("backgroundRun") private var backgroundRun = true

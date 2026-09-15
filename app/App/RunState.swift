@@ -219,7 +219,7 @@ final class Poller: ObservableObject {
         }
     }
 
-    @AppStorage("soundEnabled") private var soundEnabled = true
+    @AppStorage("soundEnabled") private var soundEnabled = false
 
     private func playSound(for ev: LogEvent) {
         guard soundEnabled else { return }
