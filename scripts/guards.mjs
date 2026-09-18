@@ -106,3 +106,11 @@ export const trackForCourseId = (id) => {
 // in-flight session first, then give up on the track entirely.
 export const stallAction = (unproductiveCycles) =>
   unproductiveCycles >= 6 ? "switch" : unproductiveCycles >= 3 ? "reset" : null;
+
+// Count attempts across feedback screens and repeated mistakes, not clicks.
+// A per-lesson map also catches a small set of unsolved questions cycling.
+export const repeatedChallenge = (attempts, key, maxAttempts = 5) => {
+  const count = (attempts.get(key) || 0) + 1;
+  attempts.set(key, count);
+  return count > maxAttempts;
+};

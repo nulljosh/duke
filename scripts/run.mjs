@@ -22,7 +22,7 @@ import crypto from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { courseIdFor } from './courseId.mjs';
-import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, summarizePath, leastComplete, trackForCourseId } from './guards.mjs';
+import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -725,6 +725,7 @@ while (true) {
 
   const quietSince = Date.now();
   let unanswerable = 0;   // consecutive challenges that can be neither answered nor skipped
+  const challengeAttempts = new Map();
   let lastKind = null;    // what the detector last decided — the only clue a silent cycle leaves
   const kinds = {};       // tally per cycle: the solve paths log nothing individually
   while (Date.now() - t0 < 20 * 60e3) {                     // one lesson, 20 min ceiling
@@ -882,7 +883,7 @@ while (true) {
         if (c) {
           const via = await D.solveLang().catch(() => null);
           const row = via ? D.ledgerRow(via) : null;
-          return { kind: 'challenge', type: c.type, via, row, unknown: via ? null : D.logUnknown() };
+          return { kind: 'challenge', key: JSON.stringify([c.id, c.type, c.prompt, c.correctIndices, c.correctTokens, c.displayTokens]), type: c.type, via, row, unknown: via ? null : D.logUnknown() };
         }
         return { kind: 'idle', href: location.href, txt: document.body.innerText.slice(0, 80) };
       }).catch(e => ({ kind: 'err', e: String(e) })),
@@ -1016,6 +1017,13 @@ while (true) {
       }
       await sleep(1400);
     } else if (st.kind === 'challenge') {
+      // A skip/continue click is not progress. The same challenge can return
+      // indefinitely, with feedback screens in between every failed attempt.
+      if (repeatedChallenge(challengeAttempts, st.key)) {
+        log({ ev: 'repeated-challenge', type: st.type });
+        forceQuitOnOpen = true;
+        break;
+      }
       if (st.row) { ledger([st.row]); S.prompt = st.row.prompt || null; S.answer = st.row.answer || null; S.choices = st.row.choices || null; S.grid = null; saveState(); speakOut([st.row.prompt, st.row.answer].filter(Boolean).join('. ')); }
       if (!st.via) log({ ev: 'unknown-challenge', type: st.type, keys: st.unknown && st.unknown.keys });
       const ok = await page.evaluate(async () => { const n = document.querySelector('[data-test="player-next"]'); if (n && !n.disabled && n.getAttribute('aria-disabled') !== 'true') { n.click(); return true; } return false; });
@@ -1045,10 +1053,11 @@ while (true) {
     else { await sleep(1500); const stillLesson = await page.evaluate(() => location.pathname.startsWith('/lesson')).catch(() => false); if (!stillLesson) break; }
   }
 
-  S.lessons++; bumpCycleCount(); S.xp = await xp(); Object.assign(S, (await stats()) || {}); S.last = track; saveState();
-  log({ ev: 'lesson-end', xp: S.xp, kinds });
-
+  S.xp = await xp(); Object.assign(S, (await stats()) || {}); S.last = track;
   const gainedXp = S.xp != null && xpBefore != null && S.xp > xpBefore;
+  if (gainedXp) { S.lessons++; bumpCycleCount(); }
+  saveState();
+  log({ ev: 'lesson-end', xp: S.xp, gainedXp, kinds });
   if (gainedXp || S.puzzles + S.matches > workBefore) unproductiveCycles = 0;
   else unproductiveCycles++;
   const action = stallAction(unproductiveCycles);

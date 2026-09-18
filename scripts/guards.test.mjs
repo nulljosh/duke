@@ -193,3 +193,14 @@ test('leastComplete: a finished course does not re-trigger the finish rule', () 
   // remaining 0 is done — auto-advance handles that, balance must not loop on it
   assert.equal(leastComplete({ en: 100, pt: 0.1 }, 'chess', { ...LATE, remaining: { en: 0, pt: 7729 } }), 'pt');
 });
+
+const { repeatedChallenge } = await import('./guards.mjs');
+test('repeated challenge stops retries even with feedback and other questions between', () => {
+  const attempts = new Map();
+  for (let i = 0; i < 5; i++) {
+    assert.equal(repeatedChallenge(attempts, 'stuck'), false);
+    assert.equal(repeatedChallenge(attempts, `other-${i}`), false);
+  }
+  assert.equal(repeatedChallenge(attempts, 'stuck'), true);
+  assert.equal(repeatedChallenge(new Map(), 'stuck'), false);
+});
