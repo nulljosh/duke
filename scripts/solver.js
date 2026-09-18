@@ -94,7 +94,14 @@ window.__duo = window.__duo || {};
   // click works. No per-type classes — one field-driven dispatch. Unknown
   // shape (or blob-graded Math challenge) → hand back null, never guess.
   const txt = e => (e.innerText || e.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
-  const tokText = e => { const s = e.querySelector('[data-test="challenge-tap-token-text"]'); return txt(s || e); };
+  const tokText = e => {
+    // Korean/Japanese tiles include romanization in innerText (제je).
+    // Their data-test keeps the actual word, including on tapComplete.
+    const key = e.dataset?.test;
+    if (key?.endsWith('-challenge-tap-token')) return key.slice(0, -'-challenge-tap-token'.length).toLowerCase();
+    const s = e.querySelector('[data-test="challenge-tap-token-text"]');
+    return txt(s || e);
+  };
   // characterMatch tiles: innerText is "<index>\n<word>" for the English side
   // and "<index>\n<word><romanization>" glued with no separator for the
   // target-language side ("5\n물mul") — neither is a clean match key. The

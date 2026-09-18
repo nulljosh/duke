@@ -125,3 +125,28 @@ test('chessSquares scales by shotW/innerWidth', () => {
   assert.equal(at2x[0], at1x[0] * 2);
   assert.equal(at2x[1], at1x[1] * 2);
 });
+
+// Exercise the real solver against romanized tiles, rather than a mirrored helper.
+const { readFileSync } = await import('node:fs');
+const { runInNewContext } = await import('node:vm');
+test('tapComplete matches Korean words without their displayed romanization', async () => {
+  const clicked = [];
+  const tiles = ['무거운', '가방'].map(word => ({
+    dataset: { test: word + '-challenge-tap-token' },
+    innerText: word + 'romanization',
+    getAttribute: () => null,
+    querySelector: () => null,
+    click: () => clicked.push(word),
+  }));
+  const document = {
+    querySelector: selector => selector === '[data-test="word-bank"]'
+      ? { querySelectorAll: () => tiles } : null,
+    querySelectorAll: () => [],
+  };
+  const window = {};
+  runInNewContext(readFileSync(new URL('./solver.js', import.meta.url), 'utf8'), { window, document });
+  window.__duo.chal = () => ({ type: 'tapComplete', choices: ['무거운', '가방'], correctIndices: [0, 1] });
+  window.__duo.sleep = async () => {};
+  assert.equal(await window.__duo.solveLang(), 'tapIndices');
+  assert.deepEqual(clicked, ['무거운', '가방']);
+});
