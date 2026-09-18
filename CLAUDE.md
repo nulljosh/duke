@@ -154,3 +154,7 @@ node --test scripts/solver.test.mjs
 
 For a live check, run `node run.mjs <track>` — it launches its own Chromium,
 no separate reload step needed (edit the file, Ctrl-C, rerun).
+
+## Recovery checkpoint (2026-09-18)
+
+Romanized word-bank tiles must use their `*-challenge-tap-token` label, not innerText. The runner now bounds repeated challenge attempts across feedback screens and counts lessons only when XP rises. All 52 tests pass; changes pushed. Sustained live XP recovery still needs confirmation. A profile backup is at `/tmp/pwnlingo-profile-backup-20260918`.
