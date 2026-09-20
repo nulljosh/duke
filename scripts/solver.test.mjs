@@ -150,3 +150,48 @@ test('tapComplete matches Korean words without their displayed romanization', as
   assert.equal(await window.__duo.solveLang(), 'tapIndices');
   assert.deepEqual(clicked, ['무거운', '가방']);
 });
+
+test('a single-answer shape whose options are tap tokens, not challenge-choices, is answered', async () => {
+  const clicked = [];
+  const tiles = ['ka', 'ki', 'ku'].map(word => ({
+    dataset: { test: word + '-challenge-tap-token' },
+    innerText: word,
+    getAttribute: () => null,
+    querySelector: () => null,
+    click: () => clicked.push(word),
+  }));
+  const document = {
+    querySelector: selector => selector === '[data-test="word-bank"]'
+      ? { querySelectorAll: () => tiles } : null,
+    querySelectorAll: () => [],
+  };
+  const window = {};
+  runInNewContext(readFileSync(new URL('./solver.js', import.meta.url), 'utf8'), { window, document });
+  // transliterationAssist ships correctIndex and nothing else — position is the only key
+  window.__duo.chal = () => ({ type: 'transliterationAssist', correctIndex: 1 });
+  window.__duo.sleep = async () => {};
+  assert.equal(await window.__duo.solveLang(), 'indexTok');
+  assert.deepEqual(clicked, ['ki']);
+});
+
+test('tapComplete clicks nothing when one of its tiles is missing', async () => {
+  const clicked = [];
+  const tiles = ['가방'].map(word => ({
+    dataset: { test: word + '-challenge-tap-token' },
+    innerText: word,
+    getAttribute: () => null,
+    querySelector: () => null,
+    click: () => clicked.push(word),
+  }));
+  const document = {
+    querySelector: selector => selector === '[data-test="word-bank"]'
+      ? { querySelectorAll: () => tiles } : null,
+    querySelectorAll: () => [],
+  };
+  const window = {};
+  runInNewContext(readFileSync(new URL('./solver.js', import.meta.url), 'utf8'), { window, document });
+  window.__duo.chal = () => ({ type: 'tapComplete', choices: ['가방', '없는'], correctIndices: [0, 1] });
+  window.__duo.sleep = async () => {};
+  assert.equal(await window.__duo.solveLang(), null);
+  assert.deepEqual(clicked, []);   // never leave a half-answered challenge on screen
+});

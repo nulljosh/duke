@@ -1049,7 +1049,7 @@ while (true) {
         break;
       }
       if (st.row) { ledger([st.row]); S.prompt = st.row.prompt || null; S.answer = st.row.answer || null; S.choices = st.row.choices || null; S.grid = null; saveState(); speakOut([st.row.prompt, st.row.answer].filter(Boolean).join('. ')); }
-      if (!st.via) log({ ev: 'unknown-challenge', type: st.type, keys: st.unknown && st.unknown.keys });
+      if (!st.via) log({ ev: 'unknown-challenge', type: st.type, u: st.unknown });
       const ok = await page.evaluate(async () => { const n = document.querySelector('[data-test="player-next"]'); if (n && !n.disabled && n.getAttribute('aria-disabled') !== 'true') { n.click(); return true; } return false; });
       if (!ok) {
         const skipped = await page.evaluate(() => { const s = document.querySelector('[data-test="player-skip"]'); if (s) { s.click(); return true; } return false; });

@@ -177,11 +177,18 @@ window.__duo = window.__duo || {};
       return 'tokens';
     }
     if (Array.isArray(c.correctIndices) && c.correctIndices.length && !dom.length && bank().length) {   // tapComplete: fill blanks from the bank, in order
+      // ponytail: resolve every tile BEFORE clicking any. This used to click
+      // its way down the list and bail on the first miss, leaving a
+      // half-answered challenge on screen — worse than handing back null,
+      // because the next poll sees the same challenge in a dirtier state.
+      const picks = [];
       for (const i of c.correctIndices) {
-        const w = choiceText((c.choices || [])[i]); const b = bank().find(b => tokText(b) === w);
+        const w = choiceText((c.choices || [])[i]);
+        const b = bank().find(b => tokText(b) === w && !picks.includes(b));
         if (!b) return null;
-        b.click(); await this.sleep(250);
+        picks.push(b);
       }
+      for (const b of picks) { b.click(); await this.sleep(250); }
       return 'tapIndices';
     }
     if (Array.isArray(c.correctIndices) && c.correctIndices.length && dom.length) {
@@ -194,6 +201,18 @@ window.__duo = window.__duo || {};
       const strip = e => txt(e).replace(/^\d+\s+/, '');                 // tiles read "1 ești"
       const i = dom.findIndex(e => strip(e) === w);                      // never includes(): "e" matched "ești"
       dom[i >= 0 ? i : c.correctIndex].click(); return 'index';
+    }
+    if (typeof c.correctIndex === 'number' && bank().length) {
+      // transliterationAssist / patternTapComplete: the same single-answer
+      // shape, but the options render as tap tokens instead of
+      // [data-test="challenge-choice"], so the branch above never saw them.
+      // transliterationAssist ships correctIndex and nothing else, so position
+      // is the only key available — the same positional fallback the dom
+      // branch already uses when text matching fails.
+      const tiles = bank();
+      const w = (c.choices || []).length ? choiceText(c.choices[c.correctIndex]) : null;
+      const b = (w && tiles.find(t => tokText(t) === w)) || tiles[c.correctIndex];
+      if (b) { b.click(); return 'indexTok'; }
     }
     return null;
   };
@@ -392,6 +411,18 @@ window.__duo = window.__duo || {};
   D.logUnknown = function () {
     const c = this.chal();
     const keys = c ? Object.keys(c).filter(k => /correct|solution|token|pair|choice|display/i.test(k)) : [];
-    return { type: c && c.type, keys };
+    // ponytail: keys alone said WHICH shape failed but never WHY — 6561
+    // tapCompletes handed back null and the log could not tell whether the
+    // bank was empty or the tile text simply didn't match the choice text.
+    // Dump both sides of that comparison, capped so the log stays readable.
+    const cut = a => a.slice(0, 6);
+    const tiles = bank();
+    const want = Array.isArray(c && c.correctIndices) ? c.correctIndices.map(i => choiceText((c.choices || [])[i])) : null;
+    return {
+      type: c && c.type, keys, n: tiles.length,
+      tiles: cut(tiles.map(tokText)),
+      choices: cut([...document.querySelectorAll('[data-test="challenge-choice"]')].map(txt)),
+      want: want && cut(want),
+    };
   };
 })();
