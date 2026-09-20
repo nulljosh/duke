@@ -1,6 +1,13 @@
 # Roadmap
 
 ## Open
+- [ ] `tapComplete` is the solver's largest remaining gap: ~6,561 unrecognized
+  challenges across Korean, Russian and Japanese. Two sub-cases already fixed
+  (transliterationAssist, patternTapComplete) but the main one stays dark.
+  A unit test proves the matching logic correct in isolation; the bug only
+  shows live. Instrumentation now dumps the tile text, choice text and wanted
+  text side by side per failed challenge (2026-09-19). Next run should answer
+  it with data; do not guess the fix.
 - [ ] `run.mjs`'s browser-bound orchestration (drag retries, story loop,
   tree-walk fallback) still has no test coverage — most of it is
   `page.evaluate`-bound and needs a live browser, not a pure-function test.
@@ -19,6 +26,15 @@
   stay wired up in case that ever changes account-side.
 
 ## Done
+- 2026-09-19: Stalled-loop fixed. The solver had been stuck in 1033 identical
+  cycles with zero XP for 23 hours. Two bugs were feeding each other: close/quit
+  buttons didn't end the session server-side, so the next lesson resumed the
+  exact same story; fixed by setting forceQuitOnOpen. Rotation logic was
+  picking the least-XP course, which was the blacklisted track, creating
+  pt -> ja -> rotate -> pt forever; rotation now skips stalled tracks. Also
+  fixed transliterationAssist and patternTapComplete challenge shapes (245
+  failures), and added DOM instrumentation for unknown challenges. Commits
+  f854f6a, 4efc3ad, 3e5fd0f. 46 tests green, XP flowing.
 - 2026-09-11: Fixed menu bar icon and animated XP ticker. Menu bar only checked `poller.stale` for heartbeat timeout but not `poller.unreachable`, so when the runner lost connection it froze showing the last XP number instead of flipping to the warning icon. Now checks both conditions. Added `.contentTransition(.numericText())` + `.animation(.snappy)` to the XP Text so the counter rolls like an odometer when numbers update. Restarted the Cloudflare Tunnel that had crashed (error 1033). Commit d91919f.
 - 2026-09-11: Polished menu bar with pulse effect on warning icon (`.symbolEffect(.pulse)`) and cross-fade transitions between board/prompt/screenshot panels (`.transition(.blurReplace)` + `.animation(.smooth)`). Discovered rebuild gotcha: building to /tmp spawned duplicate orphaned Pwnlingo processes outside launchd's control. The app must always rebuild to its fixed launchd-managed path (app/build/Build/Products/Debug/Pwnlingo.app) to avoid forking a second unmanaged copy; documented in pwnlingo's CLAUDE.md rebuild/restart workflow section. Commits 2dca192, c5bbc20.
 - 2026-09-11: Tunnel auto-recovery wired: `SolverProcess.watchTunnel()` runs an immediate reachability check plus a repeating 60s Timer, both calling `startTunnelIfNeeded()`. Wired into PwnlingoStatusApp.init() so it starts when the launchd-managed menu bar app launches. Context: earlier the cloudflared tunnel died silently while the local runner stayed healthy, creating a dead API bridge that went unnoticed until manual restart. Now the already-launchd-kept-alive status app self-heals the tunnel automatically on its own timer, respecting the "no background automation" rule by piggybacking on a process already allowed to run. Rebuilt to the launchd path, restarted, confirmed tunnel recovered (200 on pwnlingo-status.heyitsmejosh.com/state) with exactly one app instance running. Commit e3eb635.
