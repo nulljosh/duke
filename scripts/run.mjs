@@ -700,9 +700,20 @@ while (true) {
       // actually solving whatever course it picked. Same reverse-mapping
       // solver.js uses internally (strip DUOLINGO_/_EN, split on '-', lower).
       if (rotated?.ok && rotated.id) {
-        const newTrack = rotated.id.replace(/^DUOLINGO_/, '').replace(/_EN$/, '').split('-')[0].toLowerCase();
+        let newTrack = rotated.id.replace(/^DUOLINGO_/, '').replace(/_EN$/, '').split('-')[0].toLowerCase();
+        // ponytail: nextCourse() picks the LEAST-XP course, which is exactly the
+        // track the stall guard just blacklisted. Seen live: pt stalls 6 cycles
+        // -> switch to ja -> ja's first 3 opens fail -> rotate hands pt straight
+        // back -> forever. Walk past anything already marked stalled.
+        if (stalledTracks.has(newTrack)) {
+          let alt = nextInRotation(newTrack);
+          for (let i = 0; i < ROTATION.length && stalledTracks.has(alt); i++) alt = nextInRotation(alt);
+          log({ ev: 'rotate-blocked', blocked: newTrack, track: alt });
+          await setCourse(alt); await sleep(2000);
+          newTrack = alt;
+        }
         if (newTrack && newTrack !== track) {
-          track = newTrack; isMath = false; isChessTrack = false;
+          track = newTrack; isMath = track === 'math'; isChessTrack = track === 'chess';
           S.track = track; forceQuitOnOpen = true;
           progressAnchor = null; S.progress = null;
           S.prompt = S.answer = S.choices = S.grid = null; saveState();
@@ -971,7 +982,14 @@ while (true) {
       let idle = 0, tStory = Date.now();
       while (Date.now() - tStory < 10 * 60e3) {
         const s = await page.evaluate(() => __duo.storyStep()).catch(e => 'ERR:' + e);
-        if (!s) { if (++idle > 120) { await page.evaluate(() => { const q = document.querySelector('[data-test="close-button-stories"], [data-test="quit-button"]'); q && q.click(); }); await sleep(1000); await clickByText(); log({ ev: 'story-abort' }); break; } await sleep(500); continue; }
+        if (!s) { if (++idle > 120) { await page.evaluate(() => { const q = document.querySelector('[data-test="close-button-stories"], [data-test="quit-button"]'); q && q.click(); }); await sleep(1000); await clickByText(); log({ ev: 'story-abort' });
+          // ponytail: the close buttons above do NOT end the story session
+          // server-side, so the next /lesson resumed the SAME unsolvable story
+          // — 1033 identical 80-second abort cycles on 'pt' before this line.
+          // forceQuitOnOpen makes openLesson() dismiss it and fall through to
+          // the tree-walker, which picks a different node.
+          forceQuitOnOpen = true;
+          break; } await sleep(500); continue; }
         idle = 0;
         const stillStory = await page.evaluate(() => !!document.querySelector('[data-test="stories-player-continue"], [data-test="stories-player-done"], [data-test="stories-element"]'));
         if (!stillStory) break;
