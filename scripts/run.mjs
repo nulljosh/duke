@@ -982,7 +982,13 @@ while (true) {
       let idle = 0, tStory = Date.now();
       while (Date.now() - tStory < 10 * 60e3) {
         const s = await page.evaluate(() => __duo.storyStep()).catch(e => 'ERR:' + e);
-        if (!s) { if (++idle > 120) { await page.evaluate(() => { const q = document.querySelector('[data-test="close-button-stories"], [data-test="quit-button"]'); q && q.click(); }); await sleep(1000); await clickByText(); log({ ev: 'story-abort' });
+        if (!s) { if (++idle > 120) { await page.evaluate(() => { const q = document.querySelector('[data-test="close-button-stories"], [data-test="quit-button"]'); q && q.click(); }); await sleep(1000); await clickByText();
+          // ponytail: same "log the shape, don't guess it" rule solveLang()'s
+          // player-skip path already follows — an abort used to record nothing,
+          // so 1033 of them said nothing about WHICH story shape storyStep()
+          // can't answer.
+          const dump = await page.evaluate(() => { const e = __duo.storyEl() || {}; return { type: e.type, keys: Object.keys(e).slice(0, 40) }; }).catch(() => null);
+          log({ ev: 'story-abort', dump });
           // ponytail: the close buttons above do NOT end the story session
           // server-side, so the next /lesson resumed the SAME unsolvable story
           // — 1033 identical 80-second abort cycles on 'pt' before this line.
