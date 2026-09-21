@@ -10,6 +10,12 @@ Plays Duolingo for you. Languages, math, chess. Music is wired up too, but Duoli
 
 It runs its own Chrome, signed in with your session cookie, and reads each question's answer out of the page's React state. Where there is no answer on the page (math), it solves the question itself. Nothing is guessed. A wrong answer means a bug, and the log says which question.
 
+<img src="progress.svg" width="460">
+
+## Architecture
+
+<img src="architecture.svg" width="600">
+
 ## Run
 
 ```sh
