@@ -24,6 +24,17 @@ Menu bar status app (`app/App/ContentView.swift`) shows XP, streak, current leve
 | `app/App/PwnlingoStatus.swift` | macOS app entry and menu bar integration |
 | `app/project.yml` | XcodeGen: scheme `PwnlingoStatus-macOS`, builds to fixed derivedData path for launchd |
 | `~/Library/LaunchAgents/com.nulljosh.pwnlingo-status.plist` | LaunchAgent: keeps menu bar app running, restarts on edit via `killall` |
+| `Package.swift` + `tui/main.swift` | SwiftPM target for CLI player: fetches runner state via HTTP and renders current track, XP, streak, and league in a terminal card (static, one-shot render) |
+| `duo.py` | Standalone script: fetches public Duolingo profile stats via REST, logs progress snapshots to `~/.claude/data/duolingo/` for tracking (used for Lexly import) |
+| `functions/api/live.js` | Cloudflare Worker: caches live runner state and chess FEN for 10 seconds, serves to landing page demo (prevents visitor floods from hitting the Mac directly) |
+| `web/index.html` | Landing page: hero with live/demo chess board, challenge type examples, menu bar app download, feature highlights |
+| `web/devices.css` | Device frame styling for landing page device screenshots (iPhone, Mac windows) |
+| `web/i18n.js` | Localization runtime: loads language JSON, applies to `[data-i18n]` attributes, exposes `t()` for dynamic strings |
+| `kmp/` | Kotlin Multiplatform: Android/desktop clients; StatusClient fetches live runner state via HTTP |
+| `kmp/composeApp/src/commonMain/kotlin/com/nulljosh/pwnlingo/StatusScreen.kt` | Shared game/runner status UI (Compose Multiplatform) for Android and desktop |
+| `kmp/composeApp/src/androidMain/kotlin/com/nulljosh/pwnlingo/MainActivity.kt` | Android entry point, activity setup |
+| `kmp/composeApp/src/desktopMain/kotlin/com/nulljosh/pwnlingo/Main.kt` | Desktop (JVM) entry point, window setup |
+| `kmp/shared/src/commonMain/kotlin/com/nulljosh/pwnlingo/StatusClient.kt` | HTTP client to fetch runner state from `PWNLINGO_HOST` environment variable |
 
 ## Challenge types
 
