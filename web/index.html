@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>pwnlingo — Duolingo on autopilot</title>
 <meta name="description" content="A script that plays Duolingo Math, Chess and language courses for you, inside your own Chrome tab. No API, no credentials.">
-<meta name="theme-color" content="#58cc02">
+<meta name="theme-color" content="#f5f0e4">
 <meta property="og:title" content="pwnlingo — Duolingo on autopilot">
 <meta property="og:description" content="Reads the live lesson state, works out the answer, clicks. Math complete, chess solved, languages running.">
 <meta property="og:type" content="website">
@@ -15,19 +15,16 @@
 @import url("https://heyitsmejosh.com/tokens.css");
 :root {
   --accent: #3f9a00; --link: #2f7500; --accent-soft: #eef8e3; --on-accent: #fff;
-  --bg: #fff; --bg2: #f7f7f8; --text: #1c1d22; --text2: #5c5f6a; --border: #e6e7ea;
   --font-body: -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
   --demo-bg: #fff; --demo-tile: #eef0f3; --demo-square: #d7dae0; --demo-tile2: rgba(28,29,34,.06);
   --demo-text: #1c1d22; --demo-text2: rgba(28,29,34,.55);
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #121316; --bg2: #1a1b1f; --text: #ececf0; --text2: rgba(236,236,240,.62);
-  --border: rgba(236,236,240,.12); --accent-soft: #14200a; --link: #8be04a;
+  --accent-soft: #14200a; --link: #8be04a;
   --demo-bg: #16171b; --demo-tile: #26282e; --demo-square: #3a3d44; --demo-tile2: rgba(236,236,240,.08);
   --demo-text: #ececf0; --demo-text2: rgba(236,236,240,.55); } }
 :root[data-theme="dark"] {
-  --bg: #121316; --bg2: #1a1b1f; --text: #ececf0; --text2: rgba(236,236,240,.62);
-  --border: rgba(236,236,240,.12); --accent-soft: #14200a; --link: #8be04a;
+  --accent-soft: #14200a; --link: #8be04a;
   --demo-bg: #16171b; --demo-tile: #26282e; --demo-square: #3a3d44; --demo-tile2: rgba(236,236,240,.08);
   --demo-text: #ececf0; --demo-text2: rgba(236,236,240,.55); }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
