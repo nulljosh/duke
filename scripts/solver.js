@@ -176,6 +176,20 @@ window.__duo = window.__duo || {};
       }
       return 'tokens';
     }
+    if (/translate/i.test(c.type) && sol && !dom.length && !bank().length) {
+      // 849 ja translates logged tiles:[] with no text input either: the tile branch above
+      // needs a bank to reach the keyboard toggle, so these fell through to null forever.
+      const find = () => document.querySelector('[data-test^="challenge "] textarea, [data-test^="challenge "] input[type="text"], textarea, [data-test="challenge-text-input"]');
+      let ta = find();
+      if (!ta) {
+        const kb = document.querySelector('[data-test="player-toggle-keyboard"]') || [...document.querySelectorAll('button')].find(b => /USE KEYBOARD/i.test(b.innerText));
+        if (kb) { kb.click(); await this.sleep(400); ta = find(); }
+      }
+      if (ta) {
+        Object.getOwnPropertyDescriptor(ta.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype, 'value').set.call(ta, sol);
+        ta.dispatchEvent(new Event('input', { bubbles: true })); return 'type:bare';
+      }
+    }
     if (Array.isArray(c.correctIndices) && c.correctIndices.length && !dom.length && bank().length) {   // tapComplete: fill blanks from the bank, in order
       // ponytail: resolve every tile BEFORE clicking any. This used to click
       // its way down the list and bail on the first miss, leaving a
@@ -234,7 +248,11 @@ window.__duo = window.__duo || {};
     // entire challenge type (it's the majority of some courses' challenge mix).
     const pairsSpeech = via === 'pairs' && Array.isArray(c.pairs)
       ? c.pairs.map(p => `${p.fromToken} is ${p.learningToken}`).join('. ') : '';
-    return { at: new Date().toISOString(), course: localStorage.duoCourse || null, type: c.type, prompt: c.prompt || pairsSpeech, answer: pairsSpeech ? '' : ans, choices, via, href: location.pathname };
+    // gapFill/tapComplete/dialogue carry no c.prompt; rebuild it so the row is importable into Lexly.
+    const cloze = Array.isArray(c.displayTokens) ? c.displayTokens.map(t => (t && t.isBlank) ? '___' : ((t && t.text) || '')).join('').trim() : '';
+    const convo = Array.isArray(c.dialogue) ? c.dialogue.map(d => d && d.text).filter(Boolean).join(' / ') : '';
+    const pairs = Array.isArray(c.pairs) ? c.pairs.map(p => [p.fromToken || p.transliteration, p.learningToken || p.character]).filter(([a, b]) => a && b) : null;
+    return { at: new Date().toISOString(), course: localStorage.duoCourse || null, type: c.type, prompt: c.prompt || pairsSpeech || cloze || convo, answer: pairsSpeech ? '' : ans, choices, pairs, via, href: location.pathname };
   };
 
   // ---- chess: puzzles ----
@@ -431,6 +449,7 @@ window.__duo = window.__duo || {};
       tiles: cut(tiles.map(tokText)),
       choices: cut([...document.querySelectorAll('[data-test="challenge-choice"]')].map(txt)),
       want: want && cut(want),
+      dt: [...new Set([...document.querySelectorAll('[data-test]')].map(e => e.dataset.test.split(' ')[0]))].filter(t => /challenge|player|word|token|input|keyboard/i.test(t)).slice(0, 20),
     };
   };
 })();

@@ -195,3 +195,34 @@ test('tapComplete clicks nothing when one of its tiles is missing', async () => 
   assert.equal(await window.__duo.solveLang(), null);
   assert.deepEqual(clicked, []);   // never leave a half-answered challenge on screen
 });
+
+// --- ledgerRow: gapFill/match rows must carry a prompt and pairs, or Lexly can't import them ---
+test('ledgerRow rebuilds cloze prompt and keeps match pairs', () => {
+  const document = { querySelector: () => null, querySelectorAll: () => [] };
+  const window = {};
+  runInNewContext(readFileSync(new URL('./solver.js', import.meta.url), 'utf8'), { window, document, localStorage: {}, location: { pathname: '/lesson' } });
+  window.__duo.chal = () => ({ type: 'gapFill', choices: ['a', 'b'], correctIndex: 1, displayTokens: [{ text: 'I ' }, { text: 'b', isBlank: true }, { text: ' here' }] });
+  assert.equal(window.__duo.ledgerRow('index').prompt, 'I ___ here');
+  window.__duo.chal = () => ({ type: 'match', pairs: [{ fromToken: 'door', learningToken: 'दरवाज़ा' }] });
+  assert.equal(JSON.stringify(window.__duo.ledgerRow('pairs').pairs), JSON.stringify([['door', 'दरवाज़ा']]));
+});
+
+// --- translate with no tiles and no input: open keyboard mode and type the solution ---
+test('bare translate opens the keyboard and types', async () => {
+  let typed = null, kbClicked = false;
+  const ta = { tagName: 'TEXTAREA', dispatchEvent: () => {} };
+  const kb = { innerText: 'USE KEYBOARD', click: () => { kbClicked = true; } };
+  const document = {
+    querySelector: sel => (/toggle-keyboard/.test(sel) ? kb : (kbClicked && /textarea/.test(sel) ? ta : null)),
+    querySelectorAll: sel => (sel === 'button' ? [kb] : []),
+  };
+  class HTMLTextAreaElement {} class HTMLInputElement {}
+  Object.defineProperty(HTMLTextAreaElement.prototype, 'value', { set(v) { typed = v; } });
+  Object.defineProperty(HTMLInputElement.prototype, 'value', { set(v) { typed = v; } });
+  const window = {};
+  runInNewContext(readFileSync(new URL('./solver.js', import.meta.url), 'utf8'), { window, document, HTMLTextAreaElement, HTMLInputElement, Event: class { constructor(t) { this.type = t; } } });
+  window.__duo.chal = () => ({ type: 'translate', correctSolutions: ['私は日本に行きます'], correctTokens: ['私', 'は'] });
+  window.__duo.sleep = async () => {};
+  assert.equal(await window.__duo.solveLang(), 'type:bare');
+  assert.equal(typed, '私は日本に行きます');
+});
