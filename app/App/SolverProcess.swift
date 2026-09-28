@@ -25,7 +25,10 @@ enum SolverProcess {
         guard let url = URL(string: "https://pwnlingo-status.heyitsmejosh.com/state") else { return false }
         var req = URLRequest(url: url)
         req.timeoutInterval = 4
-        return (try? await URLSession.shared.data(for: req)) != nil
+        // ponytail: a dead origin still answers 530 through Cloudflare, so any
+        // response used to count as "reachable" and the tunnel never restarted.
+        guard let (_, resp) = try? await URLSession.shared.data(for: req) else { return false }
+        return (resp as? HTTPURLResponse)?.statusCode == 200
     }
 
     // ponytail: the process that died from a DNS blip stays alive as a zombie
