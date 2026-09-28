@@ -1,13 +1,11 @@
 # Roadmap
 
 ## Open
-- [ ] `tapComplete` is the solver's largest remaining gap: ~6,561 unrecognized
-  challenges across Korean, Russian and Japanese. Two sub-cases already fixed
-  (transliterationAssist, patternTapComplete) but the main one stays dark.
-  A unit test proves the matching logic correct in isolation; the bug only
-  shows live. Instrumentation now dumps the tile text, choice text and wanted
-  text side by side per failed challenge (2026-09-19). Next run should answer
-  it with data; do not guess the fix.
+- [ ] Verify the bare-translate fix live on the next ja round. Log data (2026-09-27)
+  showed the real gap was not tapComplete (44 misses) but translate (849, mostly ja):
+  zero tiles and no text box on screen, so the keyboard fallback never ran. New
+  `type:bare` branch opens keyboard mode and types the solution. If misses continue,
+  the unknown-challenge log now carries a `dt` list of on-screen data-test ids.
 - [ ] `run.mjs`'s browser-bound orchestration (drag retries, story loop,
   tree-walk fallback) still has no test coverage — most of it is
   `page.evaluate`-bound and needs a live browser, not a pure-function test.
