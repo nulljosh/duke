@@ -177,8 +177,10 @@ const LOG_PATH = path.join(D, 'log.jsonl');
 const rotateIfNeeded = (file, keep = 5000) => {
   try {
     if (!shouldRotateLog(fs.statSync(file).size, 5 * 1024 * 1024)) return;
-    const lines = fs.readFileSync(file, 'utf8').trim().split('\n').slice(-keep);
-    fs.writeFileSync(file, lines.join('\n') + '\n');
+    const all = fs.readFileSync(file, 'utf8').trim().split('\n');
+    // ponytail: ledgers feed Lexly imports, so trimmed lines go to <file>.archive instead of the void.
+    fs.appendFileSync(file.replace(/\.jsonl$/, '.archive.jsonl'), all.slice(0, -keep).join('\n') + '\n');
+    fs.writeFileSync(file, all.slice(-keep).join('\n') + '\n');
   } catch (e) { /* file may not exist yet — nothing to rotate */ }
 };
 const rotateLogIfNeeded = () => rotateIfNeeded(LOG_PATH);

@@ -10,3 +10,4 @@ api-token.txt
 open-fail.png
 node_modules/
 package-lock.json
+*.archive.jsonl
