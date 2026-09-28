@@ -4,7 +4,7 @@
   "description": "pwnlingo: one Playwright runner for every Duolingo track",
   "main": "run.mjs",
   "scripts": {
-    "test": "node --test solver.test.mjs"
+    "test": "node --test solver.test.mjs stockfish.test.mjs"
   },
   "keywords": [],
   "type": "commonjs",

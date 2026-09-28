@@ -340,7 +340,15 @@ window.__duo = window.__duo || {};
 
   D.matchTurn = async function (level = 2, maxMs = 15000) {   // wait until it is our move, then plan
     const t0 = Date.now(); let r;
-    do { r = this.matchStep(level); if (!r.wait) return r; await this.sleep(400); } while (Date.now() - t0 < maxMs);
+    do { r = this.matchStep(level); if (!r.wait) break; await this.sleep(400); } while (Date.now() - t0 < maxMs);
+    // Stockfish (exposed by run.mjs as window.__sf) overrides the in-page engine's pick when it answers.
+    if (r && r.move && window.__sf) {
+      const uci = await window.__sf(r.fen).catch(() => null);
+      if (uci) {
+        const white = r.fen.split(' ')[1] === 'w', g = this.chessSquares(white), a = g.sq(uci.slice(0, 2)), b = g.sq(uci.slice(2, 4));
+        r = { ...r, move: uci.slice(0, 4).toUpperCase(), engine: 'stockfish', clicks: uci[4] ? [a, b, g.promo(b, uci[4])] : [a, b] };
+      }
+    }
     return r;
   };
 

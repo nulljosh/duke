@@ -22,6 +22,7 @@ import crypto from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { courseIdFor } from './courseId.mjs';
+import { makeEngine } from './stockfish.mjs';
 import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
@@ -318,6 +319,9 @@ try {
   process.exit(1);
 }
 let page = ctx.pages()[0] || await ctx.newPage();
+const stockfish = makeEngine();
+// ponytail: exposeFunction survives navigations, so once per page is enough.
+if (isChessTrack) await page.exposeFunction('__sf', fen => stockfish.bestMove(fen)).catch(() => {});
 
 const inject = async () => {
   // mathjs (local bundle, no network dependency) replaces the hand-rolled
@@ -977,7 +981,7 @@ while (true) {
       const r = st.r;
       if (r.over) { S.matches++; log({ ev: 'match-over', status: r.status, ply: r.hist && r.hist.length }); bumpCycleCount(); S.xp = await xp(); saveState();
         await page.evaluate(() => { const n = document.querySelector('[data-test="player-next"]'); n && n.click(); }); await sleep(2000); }
-      else if (r.clicks) { await chessMove(r.clicks); log({ ev: 'move', move: r.move, ply: r.ply }); speakOut(r.move); }
+      else if (r.clicks) { await chessMove(r.clicks); log({ ev: 'move', move: r.move, ply: r.ply, engine: r.engine || 'js' }); speakOut(r.move); }
       else if (r.err) { log({ ev: 'match-err', err: r.err }); await sleep(3000); }
       else await sleep(1500);
     } else if (st.kind === 'story') {
