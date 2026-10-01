@@ -1,6 +1,10 @@
 # Roadmap
 
 ## Open
+- [ ] Runner should detect missing Playwright Chromium and self-heal with
+  `npx playwright install chromium` instead of crash-looping. Discovered
+  2026-10-01: disk cleanup wiped the cache, causing instant restart failures
+  until manual reinstall (2026-09-29 crash → 2026-10-01 recovery).
 - [ ] Verify the bare-translate fix live on the next ja round. Log data (2026-09-27)
   showed the real gap was not tapComplete (44 misses) but translate (849, mostly ja):
   zero tiles and no text box on screen, so the keyboard fallback never ran. New
