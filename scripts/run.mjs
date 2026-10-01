@@ -157,7 +157,7 @@ http.createServer((req, res) => {
 }).on('error', (e) => {
   // Witnessed: starting a second runner crashed the whole process with an
   // unhandled 'error' event and a raw stack. Say what's wrong and stop.
-  if (e.code === 'EADDRINUSE') { console.error('Port 8737 is already in use — another runner is running. Stop it first (lsof -ti:8737 | xargs kill).'); process.exit(1); }
+  if (e.code === 'EADDRINUSE') { console.error('Port 8737 is already in use. Another runner is running. Stop it first (lsof -ti:8737 | xargs kill).'); process.exit(0); }  // ponytail: exit 0, the live runner is fine; 1 made the status app respawn us every 5s
   console.error('HTTP server error:', e); process.exit(1);
 }).listen(8737, '0.0.0.0');
 
@@ -282,7 +282,12 @@ function speakOut(text) {
 // overwritten per-question below, chromium re-reads it fresh each capture.
 if (canSpeak && !fs.existsSync(VOICE_WAV)) await synthSpeech('placeholder').catch(() => {});
 
-const ctx = await chromium.launchPersistentContext(path.join(D, '.pw-profile'), {
+// ponytail: disk cleanups wipe ~/Library/Caches/ms-playwright, and the status
+// app then crash-loops us every 5s forever (2026-09-29 and 2026-10-01). Install
+// the browser once and retry. Runs playwright's own cli.js with this node, so
+// it works under launchd's bare PATH where `npx` doesn't exist.
+const launch = () => chromium.launchPersistentContext(path.join(D, '.pw-profile'), launchOpts);
+const launchOpts = {
   headless: true, viewport: { width: 1400, height: 900 },
   args: [
     '--disable-background-timer-throttling',
@@ -292,6 +297,12 @@ const ctx = await chromium.launchPersistentContext(path.join(D, '.pw-profile'), 
       `--use-file-for-fake-audio-capture=${VOICE_WAV}`,
     ] : []),
   ],
+};
+const ctx = await launch().catch(async (e) => {
+  if (!/Executable doesn't exist/.test(e.message)) throw e;
+  console.error('Playwright browser missing, installing chromium...');
+  await promisify(execFile)(process.execPath, [path.join(D, 'node_modules/playwright/cli.js'), 'install', 'chromium'], { timeout: 600_000 });
+  return launch();
 });
 if (canSpeak) await ctx.grantPermissions(['microphone'], { origin: 'https://www.duolingo.com' });
 if (bootstrapJwt) {
