@@ -1135,6 +1135,7 @@ while (true) {
         claimed++; await sleep(2000);
       }
       if (claimed) log({ ev: 'quest-claim', claimed });
+      else log({ ev: 'quest-visit', buttons: await page.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.offsetParent).map(b => b.innerText.trim().slice(0, 30)).filter(Boolean).slice(0, 15)).catch(() => []) });   // no claim found: record what was on screen so a wrong label is visible
     } catch (e) { log({ ev: 'quest-error', err: String(e && e.message || e).slice(0, 200) }); }
   }
   consecutiveCrashes = 0;   // a cycle finished end to end; the loop is healthy
