@@ -1,5 +1,38 @@
 # Roadmap
 
+## Benchmarks: finishing Duolingo (measured 2026-10-02)
+"Finished" means every course on the account at 100%, plus math and chess. Run
+`node scripts/bench.mjs` for the live numbers; it reads `log.jsonl` only.
+
+Where we are: 441k XP, 23 language courses tracked, 2 at 100% (Greek, Hindi),
+Russian at 99%. Average course is 20%. Pace over the last 5 days is about 69
+course-percent points a day and 16k XP a day. Finishing the 23 tracked courses
+is roughly 1.8k points, about 570k more XP, so the end lands near 1M XP.
+
+| Milestone | Gate | ETA from 10-02 |
+|---|---|---|
+| 500k XP | total XP | 4 days |
+| Average course 25% | bench.mjs | 2 days |
+| Russian, Polish, Arabic at 100% | the three furthest along | 1 week |
+| Chess at 100% | 328 levels left at 85% | 1 week |
+| Average course 50% | bench.mjs | 10 days |
+| 750k XP | total XP | 3 weeks |
+| Average course 75% | bench.mjs | 19 days |
+| Math at 100% | 75% now, unit list not yet counted | 3 weeks |
+| Every tracked course at 100% | bench.mjs | 27 days |
+| 1M XP | total XP | about 5 weeks |
+
+Rules for the ETAs: they assume no track sits stalled for a full day, and the
+pace is a straight line, so the last courses will run slower than the early
+ones. Re-run bench.mjs weekly and fix the dates here. The track list is the 23
+the runner can see today; if Duolingo shows more courses on the account the
+100% gate moves with them.
+
+What can slip the dates, in order: speaking exercises (fixed 10-02, watch the
+English and Russian yield), tracks that fail to open a lesson (ja, el),
+a full disk (the runner now pauses under 2GB free), and Duolingo changing a
+screen the solver reads.
+
 ## Open
 - [ ] Verify the bare-translate fix live on the next ja round. Log data (2026-09-27)
   showed the real gap was not tapComplete (44 misses) but translate (849, mostly ja):
@@ -24,6 +57,7 @@
   stay wired up in case that ever changes account-side.
 
 ## Done
+- 2026-10-02: Speaking exercises no longer eat a lesson. Russian logged 25 lessons in a row at zero XP because the record button never matched and the runner quit after five tries. It now takes the Skip button when one is on screen. Russian earned XP again on the next lesson. Also: the runner pauses itself under 2GB free disk, claims finished quest rewards every 30 min (logs `quest-visit` with the buttons it saw when there is nothing to claim, so a wrong label shows up), and `scripts/bench.mjs` prints the progress ladder above. Verified from the logs that the bare-translate fix works: no unrecognized ja translate questions in 130 lessons since, down from about 250 a day.
 - 2026-09-19: Stalled-loop fixed. The solver had been stuck in 1033 identical
   cycles with zero XP for 23 hours. Two bugs were feeding each other: close/quit
   buttons didn't end the session server-side, so the next lesson resumed the

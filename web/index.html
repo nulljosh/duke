@@ -3,17 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>pwnlingo — Duolingo on autopilot</title>
-<meta name="description" content="A script that plays Duolingo Math, Chess and language courses for you, inside your own Chrome tab. No API, no credentials.">
+<title>pwnlingo: Duolingo on autopilot</title>
+<meta name="description" content="A runner that plays Duolingo Math, Chess and language courses in a real browser, around the clock.">
 <meta name="theme-color" content="#f5f0e4">
-<meta property="og:title" content="pwnlingo — Duolingo on autopilot">
-<meta property="og:description" content="Reads the live lesson state, works out the answer, clicks. Math complete, chess solved, languages running.">
+<meta property="og:title" content="pwnlingo: Duolingo on autopilot">
+<meta property="og:description" content="Reads the live lesson, works out the answer, clicks. Chess, math and every language course.">
 <meta property="og:type" content="website">
 <link rel="icon" href="icon.svg">
 <link rel="stylesheet" href="devices.css">
 <style>
 @import url("https://heyitsmejosh.com/tokens.css");
-:root{--accent-soft:color-mix(in srgb,var(--accent) 9%,var(--bg));}
 :root {
   --accent: #3f9a00; --link: #2f7500; --on-accent: #fff;
   --font-body: -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -30,54 +29,45 @@
 body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
 a { color: var(--link); text-decoration: none; }
 a:hover { text-decoration: underline; }
-.container { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; }
-.hero { position: relative; overflow: hidden; padding: 5rem 0 4rem; text-align: center; }
-/* ponytail: same radial-drift trick as wordroot's hero, just pwnlingo green instead of hue-per-word */
-.hero::before {
-  content: ''; position: absolute; inset: 0; z-index: 0;
-  background-color: var(--accent-soft);
-  background-image:
-    radial-gradient(55% 55% at 25% 20%, rgba(63,154,0,.30), transparent 60%),
-    radial-gradient(50% 60% at 80% 75%, rgba(139,224,74,.28), transparent 60%);
-  background-size: 200% 200%;
-  animation: heroDrift 16s ease-in-out infinite alternate;
-}
-@keyframes heroDrift {
-  0% { background-position: 0% 0%, 100% 100%; }
-  100% { background-position: 100% 40%, 0% 60%; }
-}
-@media (prefers-reduced-motion: reduce) { .hero::before { animation: none; } }
-/* ponytail: nimble's drifting-icon field, simplified — a fixed hand-placed set
-   instead of its JS collision-avoidance layout engine (not worth it for six icons). */
-.hero-float { position: absolute; inset: -40px; z-index: 0; color: rgba(63,154,0,.28); pointer-events: none; }
-.hfloat { position: absolute; width: var(--size); height: var(--size); margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
-  animation: heroFloatDrift var(--dur, 16s) ease-in-out var(--delay, 0s) infinite alternate; }
-.hfloat svg { display: block; width: 100%; height: 100%; fill: currentColor;
-  animation: heroFloatBob var(--bdur, 12s) ease-in-out var(--bdelay, 0s) infinite alternate; }
-@keyframes heroFloatDrift { to { transform: translate(var(--dx, 0px), var(--dy, 0px)); } }
-@keyframes heroFloatBob { from { transform: rotate(calc(var(--rot, 0deg) * -1)); } to { transform: rotate(var(--rot, 0deg)); } }
-@media (prefers-reduced-motion: reduce) { .hfloat, .hfloat svg { animation: none; } }
-.hero .container { position: relative; z-index: 1; }
-.hero img { width: 72px; height: 72px; border-radius: 18px; margin-bottom: 1.25rem; }
-h1 { font-size: clamp(2rem, 6vw, 3rem); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1rem; }
-.lede { font-size: 1.2rem; color: var(--text2); max-width: 32em; margin: 0 auto 2rem; }
-.btn { display: inline-block; background: var(--accent); color: var(--on-accent); padding: .8rem 1.4rem; border-radius: 10px; font-weight: 600; }
+.container { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; }
+.wide { max-width: 980px; margin: 0 auto; padding: 0 1.5rem; }
+/* Quiet, Apple-style page: one flat colour, big type, hairline rules, a frosted nav. No gradients, no floating clutter. */
+.nav { position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: color-mix(in srgb, var(--bg) 80%, transparent); border-bottom: 1px solid var(--border); }
+.nav-in { max-width: 980px; margin: 0 auto; padding: 0 1.5rem; height: 48px; display: flex; align-items: center; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: .55rem; font-weight: 600; font-size: .95rem; color: var(--text); }
+.brand:hover { text-decoration: none; }
+.brand img { width: 22px; height: 22px; border-radius: 6px; }
+.nav-links { display: flex; gap: 1.6rem; font-size: .85rem; }
+.nav-links a { color: var(--text2); }
+.nav-links a:hover { color: var(--text); text-decoration: none; }
+@media (max-width: 560px) { .nav-links a:not(:last-child) { display: none; } }
+.hero { padding: 6.5rem 0 4.5rem; text-align: center; }
+h1 { font-size: clamp(2.6rem, 8.5vw, 5rem); line-height: 1.04; letter-spacing: -0.04em; font-weight: 700; margin-bottom: 1.4rem; }
+.lede { font-size: clamp(1.1rem, 2.6vw, 1.4rem); line-height: 1.45; color: var(--text2); max-width: 30em; margin: 0 auto 2rem; }
+.cta { display: flex; justify-content: center; align-items: center; gap: 1.6rem; flex-wrap: wrap; }
+.btn { display: inline-block; background: var(--accent); color: var(--on-accent); padding: .75rem 1.5rem; border-radius: 980px; font-weight: 600; font-size: 1.02rem; }
 .btn:hover { text-decoration: none; opacity: .92; }
-a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-section { padding: 3.5rem 0; border-bottom: 1px solid var(--border); }
-h2 { font-size: 1.4rem; margin-bottom: .9rem; letter-spacing: -0.01em; }
-p + p { margin-top: 1rem; }
-.status { display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 1.5rem; }
-.row { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; background: var(--bg); padding: 1rem 1.25rem; }
+.more { font-size: 1.02rem; }
+.more::after { content: " \203A"; }
+a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.hero .device { margin: 3.5rem auto 0; }
+.hero .device-caption { text-align: center; color: var(--text2); font-size: .85rem; margin-top: .9rem; }
+section { padding: 6rem 0; border-top: 1px solid var(--border); }
+.eyebrow { font-size: .85rem; font-weight: 600; color: var(--link); margin-bottom: .6rem; }
+h2 { font-size: clamp(1.9rem, 4.6vw, 2.75rem); line-height: 1.1; margin-bottom: 1.4rem; letter-spacing: -0.03em; font-weight: 700; }
+section p { font-size: 1.1rem; color: var(--text2); }
+section p + p { margin-top: 1.1rem; }
+.status { margin-top: 2rem; border-top: 1px solid var(--border); }
+.row { display: grid; grid-template-columns: 8rem 1fr; gap: 1.5rem; padding: 1.1rem 0; border-bottom: 1px solid var(--border); }
 .row b { font-weight: 600; }
 .row span { color: var(--text2); }
-.quote { border-left: 3px solid var(--accent); padding: .25rem 0 .25rem 1.25rem; color: var(--text2); font-size: 1.1rem; margin: 1.5rem 0; }
-.quote small { display: block; color: var(--text2); font-size: .85rem; margin-top: .4rem; }
-.hero .device { margin: 2rem auto 0; }
-.hero .device-caption { text-align: center; color: var(--text2); font-size: .85rem; margin-top: .75rem; }
-footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: center; }
+@media (max-width: 560px) { .row { grid-template-columns: 1fr; gap: .25rem; } }
+.quote { padding: .25rem 0; color: var(--text); font-size: 1.5rem; line-height: 1.3; letter-spacing: -0.02em; font-weight: 600; margin: 2rem 0 0; }
+.quote small { display: block; color: var(--text2); font-size: .9rem; font-weight: 400; letter-spacing: 0; margin-top: .6rem; }
+footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-align: center; border-top: 1px solid var(--border); }
 
-/* ponytail: an actually-animated demo — a real mini chessboard replaying the
+/* ponytail: an actually-animated demo - a real mini chessboard replaying the
    solver's own move (slide + flash + XP), not a static screenshot of the app.
    Positions are illustrative (the real solver reads live puzzles from
    Duolingo's fiber tree), the moves themselves are real mate-in-1 / fork
@@ -86,7 +76,7 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
 .app-demo h4 { font-size: .95rem; font-weight: 700; margin-bottom: .3rem; }
 .app-meta { font-size: .7rem; color: var(--demo-text2); margin-bottom: .8rem; }
 /* The board keeps the app's own colours in both themes rather than following
-   the page — a chessboard that inverts with a colour scheme stops reading as a
+   the page - a chessboard that inverts with a colour scheme stops reading as a
    chessboard, and the native apps don't do it either. Exact values from
    ChessBoardView.swift. */
 .demo-board { --board-dark: #759657; --board-light: #ededd1;
@@ -119,27 +109,19 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
 </style>
 </head>
 <body>
-<main>
+<nav class="nav"><div class="nav-in">
+  <a class="brand" href="#top"><img src="icon.svg" alt="">pwnlingo</a>
+  <div class="nav-links"><a href="#how">How it works</a><a href="#status">Where it stands</a><a href="#finish">Finish line</a><a href="https://github.com/nulljosh/pwnlingo">Source</a></div>
+</div></nav>
+<main id="top">
 <div class="hero">
-  <div class="hero-float" aria-hidden="true">
-    <div class="hfloat" style="top:18%;left:12%;--size:40px;--dx:24px;--dy:-14px;--rot:10deg;--dur:15s;--bdur:11s;--delay:0s"><svg viewBox="0 0 24 24"><path d="M5 19h14v2H5zm.5-2 1-8.5L9 11l3-6 3 6 2.5-2.5 1 8.5zM7.2 7.3a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2zm9.6 0a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2zM12 5.6A1.6 1.6 0 1 1 12 2.4a1.6 1.6 0 0 1 0 3.2z"/></svg></div>
-    <div class="hfloat" style="top:70%;left:8%;--size:30px;--dx:-16px;--dy:18px;--rot:-14deg;--dur:13s;--bdur:9s;--delay:-3s"><svg viewBox="0 0 24 24"><path d="M14.5 3c-2.1 0-3.4 1.3-3.8 3.6L10.4 9H13v2h-2.9l-1 6.2C8.6 20.2 7 21.5 5 21.5c-1 0-1.9-.3-2.5-.8l.8-1.7c.4.3.9.5 1.4.5.9 0 1.5-.6 1.7-1.8L7.4 11H5V9h2.7l.3-1.8C8.5 4 10.2 2.5 12.6 2.5c1 0 1.9.3 2.5.8z"/><path d="m14.5 14 2-2 2 2 2-2 1.1 1.1-2 2 2 2L20.5 18l-2-2-2 2-1.1-1.1 2-2-2-2z"/></svg></div>
-    <div class="hfloat" style="top:14%;left:85%;--size:34px;--dx:-20px;--dy:16px;--rot:12deg;--dur:17s;--bdur:12s;--delay:-6s"><svg viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H9l-4.4 3.3A.6.6 0 0 1 3.6 20V17H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg></div>
-    <div class="hfloat" style="top:78%;left:90%;--size:28px;--dx:18px;--dy:-20px;--rot:-10deg;--dur:14s;--bdur:10s;--delay:-9s"><svg viewBox="0 0 24 24"><path d="M4 4.5C4 3.7 4.7 3 5.5 3H11v18H5.5A1.5 1.5 0 0 1 4 19.5zM13 3h5.5c.8 0 1.5.7 1.5 1.5v15c0 .8-.7 1.5-1.5 1.5H13z"/></svg></div>
-    <div class="hfloat" style="top:42%;left:4%;--size:22px;--dx:12px;--dy:22px;--rot:16deg;--dur:12s;--bdur:8s;--delay:-1s"><svg viewBox="0 0 24 24"><path d="M5 19h14v2H5zm.5-2 1-8.5L9 11l3-6 3 6 2.5-2.5 1 8.5zM7.2 7.3a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2zm9.6 0a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2zM12 5.6A1.6 1.6 0 1 1 12 2.4a1.6 1.6 0 0 1 0 3.2z"/></svg></div>
-    <div class="hfloat" style="top:38%;left:95%;--size:24px;--dx:-14px;--dy:-18px;--rot:-16deg;--dur:16s;--bdur:11s;--delay:-4s"><svg viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H9l-4.4 3.3A.6.6 0 0 1 3.6 20V17H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg></div>
-    <div class="hfloat" style="top:6%;left:45%;--size:20px;--dx:10px;--dy:20px;--rot:14deg;--dur:15s;--bdur:10s;--delay:-7s"><svg viewBox="0 0 24 24"><path d="M12 2 9.5 8.5 3 9l5 4.6L6.5 20 12 16.3 17.5 20 16 13.6 21 9l-6.5-.5z"/></svg></div>
-    <div class="hfloat" style="top:60%;left:50%;--size:26px;--dx:-18px;--dy:14px;--rot:-12deg;--dur:14s;--bdur:9s;--delay:-2s"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.2 2.4 4.5 6 4.5c2 0 3.4 1 4.5 2.4C11.6 5.5 13 4.5 15 4.5c3.6 0 5.6 3.7 4 7.2C19.5 16.4 12 21 12 21z"/></svg></div>
-    <div class="hfloat" style="top:88%;left:35%;--size:22px;--dx:16px;--dy:-12px;--rot:10deg;--dur:13s;--bdur:8s;--delay:-5s"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 8-4v6h2V7zM4 13.2v3.6C4 19 7.6 21 12 21s8-2 8-4.2v-3.6l-8 4z"/></svg></div>
-    <div class="hfloat" style="top:22%;left:60%;--size:18px;--dx:-8px;--dy:16px;--rot:-9deg;--dur:12s;--bdur:9s;--delay:-8s"><svg viewBox="0 0 24 24"><path d="M5 19h14v2H5zm.5-2 1-8.5L9 11l3-6 3 6 2.5-2.5 1 8.5zM7.2 7.3a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2zm9.6 0a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2zM12 5.6A1.6 1.6 0 1 1 12 2.4a1.6 1.6 0 0 1 0 3.2z"/></svg></div>
-  </div>
-  <div class="container">
-  <img src="icon.svg" alt="pwnlingo icon">
+  <div class="wide">
   <h1 data-i18n="Duolingo on autopilot">Duolingo on autopilot.</h1>
-  <p class="lede">One script in your own Chrome tab reads the live lesson, works out the answer, and clicks. No API. No password. Nothing leaves the page.</p>
+  <p class="lede">A runner that plays Duolingo in a real browser. It reads each exercise, works out the answer and clicks. Chess, math and every language course, around the clock.</p>
+  <div class="cta"><a class="btn" href="https://github.com/nulljosh/pwnlingo">Read the source</a><a class="more" href="#how">How it works</a></div>
   <div class="device device-mac has-chrome" aria-hidden="true"><div class="device-screen">
     <div class="app-demo">
-      <h4 id="appTrackName">pwnlingo — solving Chess</h4>
+      <h4 id="appTrackName">pwnlingo: solving Chess</h4>
       <div class="app-meta" id="appMeta">155 day streak · 5/5 hearts · Diamond League</div>
       <div id="demoStage"></div>
       <div class="app-label" id="appLabel">Checkmate!</div>
@@ -150,8 +132,7 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
       </div>
     </div>
   </div></div>
-  <p class="device-caption">Live replay of real solved exercises, cycling tracks — no screenshot, it actually plays the move.</p>
-  <a class="btn" href="https://github.com/nulljosh/pwnlingo">Read the source</a>
+  <p class="device-caption">Real solved exercises, replayed live and cycling tracks. Not a screenshot: it plays the move.</p>
 </div></div>
 <script>
 (function(){
@@ -228,7 +209,7 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   function playNext() {
     if (live) return;              // the real runner took over
     var p = puzzles[solved % puzzles.length];
-    trackEl.textContent = 'pwnlingo — solving ' + trackName[p.type];
+    trackEl.textContent = 'pwnlingo: solving ' + trackName[p.type];
     labelEl.classList.remove('on');
     players[p.type](p, function() {
       if (live) return;
@@ -242,7 +223,7 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
   }
 
   // ponytail: if the runner is actually up, show the real board instead of the
-  // replay — same data the apps read, through an edge-cached Function so the
+  // replay - same data the apps read, through an edge-cached Function so the
   // Mac takes one request per 10s no matter how many people are looking.
   // It goes back to the scripted demo the moment that stops being true, because
   // a landing page that breaks whenever a laptop sleeps is worse than a canned one.
@@ -282,7 +263,7 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
       // Stale `at` means the Mac went away since the edge last looked.
       // Between puzzles the runner has no position to report. Taking over on
       // one of those would stop the replay and leave a scripted board sitting
-      // under a "live right now" caption — so only take over once there is
+      // under a "live right now" caption - so only take over once there is
       // something real to draw. After that, a momentary gap just holds the last one.
       var hasContent = d.fen || (d.track !== 'chess' && d.prompt);
       var fresh = d.live && d.at && (Date.now() - new Date(d.at).getTime() < 120000)
@@ -297,7 +278,7 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
       if (!wasLive && captionEl) {
         captionEl.textContent = 'Live right now, from the Mac actually running it.';
       }
-      trackEl.textContent = 'pwnlingo — solving ' + (trackName[d.track] || d.track);
+      trackEl.textContent = 'pwnlingo: solving ' + (trackName[d.track] || d.track);
       if (d.xp != null) xpEl.textContent = '+' + d.xp + ' XP';
       var solved = d.track === 'chess' ? d.puzzles : d.lessons;
       solvedEl.textContent = solved;
@@ -327,33 +308,46 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
 })();
 </script>
 
-<section><div class="container">
-  <h2>How it works</h2>
-  <p>Duolingo renders every exercise from a React component, and that component still holds the answer key. pwnlingo walks the fiber tree from the visible widget up to the challenge props, reads the correct answer, and does what a very fast, very bored student would do. A Claude session only appears when an exercise type shows up that the script has never seen.</p>
-  <p>The whole thing is one file. Solver families for exponentials, geometry, trigonometry, probability, statistics and 3D solids were appended one lesson at a time until the Math course ran out of units.</p>
-  <p>It runs unattended for weeks, not minutes. Every course shows a completion percentage and a measured ETA, and finished tracks auto-advance to the next one. Balance mode plays whichever course is furthest behind instead of grinding one to 100% while the rest stall. XP counts by calendar day, running out of hearts doesn't stop the run, and a lesson that loops without ever finishing gets escaped instead of hung on forever.</p>
+<section id="how"><div class="container">
+  <p class="eyebrow">How it works</p>
+  <h2>It reads the answer key.</h2>
+  <p>Duolingo renders every exercise from a React component, and that component still holds the answer. pwnlingo walks the component tree from the visible widget up to the challenge props, reads the correct answer, and does what a very fast, very bored student would do. A shape it has never seen gets logged and skipped, never guessed.</p>
+  <p>One Node runner drives a real Chromium window, signed in as you. A browser-side solver handles language, chess and music, a second one handles math. Drags and chess moves use a real mouse, because Duolingo ignores synthetic ones.</p>
+  <p>It runs unattended for weeks, not minutes. Every course shows a completion percentage and a measured ETA, and finished tracks move on to the next. Balance mode plays whichever course is furthest behind instead of grinding one to 100% while the rest stall. Running out of hearts does not stop the run, a lesson that loops without finishing gets escaped, the runner pauses itself when the disk is nearly full, and a track that earns nothing is benched for a day.</p>
 </div></section>
 
 <section><div class="container">
-  <h2>Chess</h2>
-  <p>Puzzles hand over their solution in the same place, as a list of moves. The board is a Rive canvas that ignores synthetic events, so the script converts squares to screen pixels and a real mouse plays them.</p>
-  <p>Matches against Duolingo's bot get a small engine. It picks a move, then asks itself for a better one at greater depth, and keeps the deeper answer when the two disagree.</p>
+  <p class="eyebrow" data-i18n="Chess">Chess</p>
+  <h2>Puzzles hand over the moves.</h2>
+  <p>A puzzle carries its solution as a list of moves. The board is a canvas, so the runner converts squares to screen pixels and a real mouse plays them.</p>
+  <p>Matches against Duolingo's bot are played by Stockfish, with a bundled JavaScript engine as the fallback if Stockfish is missing.</p>
   <div class="quote">When you see a good move, look for a better one.<small>Emanuel Lasker</small></div>
 </div></section>
 
-<section><div class="container">
-  <h2>Where it stands</h2>
+<section id="status"><div class="container">
+  <p class="eyebrow">Where it stands</p>
+  <h2>What works today.</h2>
   <div class="status">
-    <div class="row"><b>Math</b><span>Course complete. 411 units, one open list of stubborn levels.</span></div>
-    <div class="row"><b data-i18n="Chess">Chess</b><span>Puzzles and bot matches both solved. ~1,700 puzzles overnight, 0 misses.</span></div>
-    <div class="row"><b data-i18n="Languages">Languages</b><span>Choice, word bank, typed, cloze, pairs and stories. Walks the whole tree unattended.</span></div>
-    <div class="row"><b data-i18n="Audio">Audio</b><span>Listen and speak exercises are skipped, not guessed.</span></div>
+    <div class="row"><b>Math</b><span>Solvers for every unit type. A short list of stubborn levels is still open.</span></div>
+    <div class="row"><b data-i18n="Chess">Chess</b><span>Puzzles and bot matches both solved.</span></div>
+    <div class="row"><b data-i18n="Languages">Languages</b><span>Choice, word bank, typed, cloze, pairs, bare translate and stories. Walks the whole tree unattended.</span></div>
+    <div class="row"><b data-i18n="Audio">Audio</b><span>Listen exercises are skipped, not guessed. Speaking exercises are spoken aloud on a Mac, and skipped when the screen has no record button, so a lesson is never thrown away.</span></div>
+    <div class="row"><b>Quests</b><span>Checks the quests page every half hour and claims finished rewards.</span></div>
   </div>
 </div></section>
 
+<section id="finish"><div class="container">
+  <p class="eyebrow">Finish line</p>
+  <h2>Every course, at 100%.</h2>
+  <p>The goal is simple: every language course on the account finished, then math and chess. The route there is measured, not guessed. A progress report reads the runner's own log and prints the pace and the days left to each checkpoint: an average course at 25%, 50%, 75% and 100%, and total XP at 500k, 750k and one million.</p>
+  <p>The dates live in the roadmap and get re-measured every week, because the last courses run slower than the first.</p>
+  <div class="cta" style="justify-content:flex-start;margin-top:1.6rem"><a class="more" href="https://github.com/nulljosh/pwnlingo/blob/main/roadmap.md">Read the roadmap</a></div>
+</div></section>
+
 <section><div class="container">
+  <p class="eyebrow">Clients</p>
   <h2 data-i18n="Status app">Status app</h2>
-  <p>A small app polls the runner over the LAN or the open internet. Chess renders as a real animated board with real chess pieces, sliding move to move. Language and math read the same way: the actual prompt, answer choices, and pattern tables, straight off the page's own elements — a screenshot only shows up for the rare widget type with nothing textual to read, like a geometry diagram. Track, XP, streak, hearts, league, and a real per-puzzle progress bar sit in a frosted glass panel below the board. Pause the runner from the app, switch tracks (any of ~35 languages, plus math and chess) from its Track menu, no terminal needed.</p>
+  <p>A small app polls the runner over the LAN or the open internet. Chess renders as a real animated board with real chess pieces, sliding move to move. Language and math read the same way: the actual prompt, answer choices, and pattern tables, straight off the page's own elements. A screenshot only shows up for the rare widget type with nothing textual to read, like a geometry diagram. Track, XP, streak, hearts, league, and a real per-puzzle progress bar sit in a frosted glass panel below the board. Pause the runner from the app, switch tracks (any language course, plus math and chess) from its Track menu, no terminal needed.</p>
   <p>Native everywhere, no web wrapper: Apple platforms in SwiftUI, Android and Windows and Linux in Compose Multiplatform, plus a terminal client. All of them read the same endpoints on the runner, so there is one source of truth and every client is just a view of it.</p>
   <div class="status">
     <div class="row"><b>macOS</b><span>SwiftUI. Live board, frosted panel, Track menu, pause. Menu bar extra shows live XP without opening a window.</span></div>
@@ -368,7 +362,8 @@ footer { padding: 2.5rem 0; color: var(--text2); font-size: .9rem; text-align: c
 </div></section>
 
 <section><div class="container">
-  <h2>Why</h2>
+  <p class="eyebrow">Why</p>
+  <h2>A study, not a product.</h2>
   <p>It started as a way to keep a streak alive during a busy week and turned into a study of how much of a gamified app is actually the client grading itself. Automated play is against Duolingo's terms, and the XP still ranks you against real people, so this is a curiosity to read, not a product to run.</p>
 </div></section>
 
