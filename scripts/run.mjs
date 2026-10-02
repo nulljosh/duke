@@ -31,6 +31,7 @@ if (!track) { console.error('usage: node run.mjs <track>   (a language code, mat
 let isMath = track === 'math';
 let isChessTrack = track === 'chess';
 let pendingTrack = null; // set by POST /switch, picked up at the top of the outer loop
+let pausedByDisk = false;
 let paused = false; // set by POST /pause and /resume, checked at the top of the outer loop
 // set by POST /voice, read out loud as questions/answers land — seeded from
 // the last saved state.json so a runner restart (crash, or a code deploy)
@@ -121,7 +122,7 @@ http.createServer((req, res) => {
     cycle.lastAt = Date.now(); cycle.sinceCount = 0; saveCycle();
     res.end(JSON.stringify(cycle));
   } else if (req.method === 'POST' && req.url.startsWith('/pause')) {
-    paused = true; S.paused = true; saveState(); res.end('{"ok":true}');
+    paused = true; pausedByDisk = false; S.paused = true; saveState(); res.end('{"ok":true}');
   } else if (req.method === 'POST' && req.url.startsWith('/resume')) {
     paused = false; S.paused = false; saveState(); res.end('{"ok":true}');
   } else if (req.method === 'POST' && req.url.startsWith('/voice')) {
@@ -675,7 +676,12 @@ let consecutiveCrashes = 0;
 while (true) {
  try {
   // ponytail: pauses (not exits) so the status app shows it; /resume after freeing space.
-  try { const f = fs.statfsSync(D); if (!paused && diskLow(f.bavail * f.bsize)) { paused = true; S.paused = true; log({ ev: 'disk-low' }); saveState(); } } catch {}
+  // Resumes on its own at 3GB so swap spikes don't leave it idle; a manual /pause is never auto-resumed.
+  try {
+    const free = (f => f.bavail * f.bsize)(fs.statfsSync(D));
+    if (!paused && diskLow(free)) { paused = pausedByDisk = true; S.paused = true; log({ ev: 'disk-low', freeMB: Math.round(free / 2 ** 20) }); saveState(); }
+    else if (paused && pausedByDisk && !diskLow(free, 3 * 1024 ** 3)) { paused = pausedByDisk = false; S.paused = false; log({ ev: 'disk-ok', freeMB: Math.round(free / 2 ** 20) }); saveState(); }
+  } catch {}
   if (paused) { saveState(); await sleep(500); continue; }
   if (!pendingTrack && cycleDue()) { pendingTrack = nextInRotation(track); cycle.lastAt = Date.now(); cycle.sinceCount = 0; saveCycle(); }
   if (pendingTrack && pendingTrack !== track) {
