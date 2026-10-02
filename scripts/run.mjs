@@ -1051,6 +1051,10 @@ while (true) {
           b && b.click();   // stop, if it's a start/stop toggle rather than auto-stop
         }).catch(() => {});
         unanswerable = 0;
+      } else if (await page.evaluate(() => { const k = document.querySelector('[data-test="player-skip"]'); if (k) k.click(); return !!k; }).catch(() => false)) {
+        // ponytail: ru logged 25 zero-XP lessons: no record button matched, but the screen
+        // had player-skip. Skip it instead of failing 5x and quitting, which threw away the lesson's XP.
+        log({ ev: 'speak-skip', text: st.text }); unanswerable = 0;
       } else if (++unanswerable >= 5) {
         log({ ev: 'unanswerable', type: 'speak' });
         await page.evaluate(() => { const q = document.querySelector('[data-test="quit-button"]'); q && q.click(); }).catch(() => {});
