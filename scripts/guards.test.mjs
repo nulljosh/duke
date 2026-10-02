@@ -204,3 +204,10 @@ test('repeated challenge stops retries even with feedback and other questions be
   assert.equal(repeatedChallenge(attempts, 'stuck'), true);
   assert.equal(repeatedChallenge(new Map(), 'stuck'), false);
 });
+
+const { diskLow } = await import('./guards.mjs');
+test('disk guard trips under the floor only', () => {
+  assert.equal(diskLow(1 * 1024 ** 3), true);
+  assert.equal(diskLow(6.9 * 1024 ** 3), false);
+  assert.equal(diskLow(500, 100), false);
+});

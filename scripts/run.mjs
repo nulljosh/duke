@@ -23,7 +23,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { courseIdFor } from './courseId.mjs';
 import { makeEngine } from './stockfish.mjs';
-import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId } from './guards.mjs';
+import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -673,6 +673,8 @@ let unproductiveCycles = 0;   // cycles that opened fine but gained nothing — 
 let consecutiveCrashes = 0;
 while (true) {
  try {
+  // ponytail: pauses (not exits) so the status app shows it; /resume after freeing space.
+  try { const f = fs.statfsSync(D); if (!paused && diskLow(f.bavail * f.bsize)) { paused = true; S.paused = true; log({ ev: 'disk-low' }); saveState(); } } catch {}
   if (paused) { saveState(); await sleep(500); continue; }
   if (!pendingTrack && cycleDue()) { pendingTrack = nextInRotation(track); cycle.lastAt = Date.now(); cycle.sinceCount = 0; saveCycle(); }
   if (pendingTrack && pendingTrack !== track) {

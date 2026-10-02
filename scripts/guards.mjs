@@ -114,3 +114,7 @@ export const repeatedChallenge = (attempts, key, maxAttempts = 5) => {
   attempts.set(key, count);
   return count > maxAttempts;
 };
+
+// Disk-full guard: a full disk killed the runner 09-29 and a cleanup then wiped
+// the browser cache. Pause under the floor instead of writing into a full disk.
+export const diskLow = (freeBytes, floorBytes = 2 * 1024 ** 3) => freeBytes < floorBytes;
