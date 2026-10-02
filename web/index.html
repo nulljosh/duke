@@ -112,14 +112,14 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
 <body>
 <nav class="nav"><div class="nav-in">
   <a class="brand" href="#top"><img src="icon.svg" alt="">pwnlingo</a>
-  <div class="nav-links"><a href="#how">How it works</a><a href="#status">Where it stands</a><a href="#finish">Finish line</a><a href="https://github.com/nulljosh/pwnlingo">Source</a></div>
+  <div class="nav-links"><a href="#how">How it works</a><a href="#status">Where it stands</a><a href="#finish">Finish line</a><a href="#clients">Clients</a></div>
 </div></nav>
 <main id="top">
 <div class="hero">
   <div class="wide">
   <h1 data-i18n="Duolingo on autopilot">Duolingo on autopilot.</h1>
   <p class="lede">A runner that plays Duolingo in a real browser. It reads each exercise, works out the answer and clicks. Chess, math and every language course, around the clock.</p>
-  <div class="cta"><a class="btn" href="https://github.com/nulljosh/pwnlingo">Read the source</a><a class="more" href="#how">How it works</a></div>
+  <div class="cta"><a class="btn" href="#how">See how it works</a><a class="more" href="#finish">The finish line</a></div>
   <div class="device device-mac has-chrome" aria-hidden="true"><div class="device-screen">
     <div class="app-demo">
       <h4 id="appTrackName">pwnlingo: solving Chess</h4>
@@ -344,7 +344,7 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
   <p>The dates live in the project roadmap and get re-measured every week, because the last courses run slower than the first.</p>
 </div></section>
 
-<section><div class="container">
+<section id="clients"><div class="container">
   <p class="eyebrow">Clients</p>
   <h2 data-i18n="Status app">Status app</h2>
   <p>A small app polls the runner over the LAN or the open internet. Chess renders as a real animated board with real chess pieces, sliding move to move. Language and math read the same way: the actual prompt, answer choices, and pattern tables, straight off the page's own elements. A screenshot only shows up for the rare widget type with nothing textual to read, like a geometry diagram. Track, XP, streak, hearts, league, and a real per-puzzle progress bar sit in a frosted glass panel below the board. Pause the runner from the app, switch tracks (any language course, plus math and chess) from its Track menu, no terminal needed.</p>
@@ -367,7 +367,7 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
   <p>It started as a way to keep a streak alive during a busy week and turned into a study of how much of a gamified app is actually the client grading itself. Automated play is against Duolingo's terms, and the XP still ranks you against real people, so this is a curiosity to read, not a product to run.</p>
 </div></section>
 
-<footer><div class="container"><a href="https://github.com/nulljosh/pwnlingo">github.com/nulljosh/pwnlingo</a> · <a href="https://heyitsmejosh.com">heyitsmejosh.com</a>
+<footer><div class="container"><a href="https://heyitsmejosh.com">heyitsmejosh.com</a>
   · <label for="langPicker" data-i18n="Language">Language</label>
   <select id="langPicker" aria-label="Language">
     <option value="en">English</option>
