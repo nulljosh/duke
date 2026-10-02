@@ -23,7 +23,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { courseIdFor } from './courseId.mjs';
 import { makeEngine } from './stockfish.mjs';
-import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow } from './guards.mjs';
+import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow, CLAIM_RE } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -663,6 +663,7 @@ const clickByText = () => page.evaluate(() => {
 });
 
 let idleOpens = 0;
+let lastQuestAt = 0;
 let unproductiveCycles = 0;   // cycles that opened fine but gained nothing — see stallAction()
 // ponytail: witnessed tonight — one "page.evaluate: Target page, context or
 // browser has been closed" propagated out of the loop and killed the runner
@@ -1116,6 +1117,25 @@ while (true) {
     trackPct.delete(track); trackRemaining.delete(track);
     unproductiveCycles = 0;
     pendingTrack = nextInRotation(track);   // this track is going nowhere; try another
+  }
+  // Quest rewards sit unclaimed until someone clicks them. Visit /quests at most
+  // every 30 min and click every live CLAIM button, like a person would.
+  if (Date.now() - lastQuestAt > 30 * 60e3) {
+    lastQuestAt = Date.now();
+    try {
+      await page.goto('https://www.duolingo.com/quests', { waitUntil: 'domcontentloaded' }); await sleep(3000);
+      let claimed = 0;
+      for (let i = 0; i < 6; i++) {   // ponytail: 6 caps a stuck button; a claim can reveal the next one
+        const hit = await page.evaluate(src => {
+          const ok = new RegExp(src, 'i');
+          const b = [...document.querySelectorAll('button')].find(b => b.offsetParent && !b.disabled && b.getAttribute('aria-disabled') !== 'true' && ok.test(b.innerText.trim()));
+          if (b) b.click(); return !!b;
+        }, CLAIM_RE.source);
+        if (!hit) break;
+        claimed++; await sleep(2000);
+      }
+      if (claimed) log({ ev: 'quest-claim', claimed });
+    } catch (e) { log({ ev: 'quest-error', err: String(e && e.message || e).slice(0, 200) }); }
   }
   consecutiveCrashes = 0;   // a cycle finished end to end; the loop is healthy
  } catch (e) {

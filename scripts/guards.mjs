@@ -118,3 +118,7 @@ export const repeatedChallenge = (attempts, key, maxAttempts = 5) => {
 // Disk-full guard: a full disk killed the runner 09-29 and a cleanup then wiped
 // the browser cache. Pause under the floor instead of writing into a full disk.
 export const diskLow = (freeBytes, floorBytes = 2 * 1024 ** 3) => freeBytes < floorBytes;
+
+// Quest reward button on /quests: "CLAIM", "CLAIM 60 GEMS". Not "CLAIMED" (done) or other buttons.
+export const CLAIM_RE = /^CLAIM(\s+\S.*)?$/i;
+export const isClaimLabel = t => CLAIM_RE.test(String(t).trim());

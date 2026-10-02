@@ -211,3 +211,11 @@ test('disk guard trips under the floor only', () => {
   assert.equal(diskLow(6.9 * 1024 ** 3), false);
   assert.equal(diskLow(500, 100), false);
 });
+
+const { isClaimLabel } = await import('./guards.mjs');
+test('claim label matches reward buttons only', () => {
+  assert.equal(isClaimLabel('CLAIM'), true);
+  assert.equal(isClaimLabel(' Claim 60 gems '), true);
+  assert.equal(isClaimLabel('CLAIMED'), false);
+  assert.equal(isClaimLabel('START +10 XP'), false);
+});
