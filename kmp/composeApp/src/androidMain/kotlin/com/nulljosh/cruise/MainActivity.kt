@@ -1,4 +1,4 @@
-package com.nulljosh.pwnlingo
+package com.nulljosh.cruise
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

@@ -4,7 +4,7 @@ import AppKit
 #endif
 
 @main
-struct PwnlingoStatusApp: App {
+struct CruiseStatusApp: App {
     #if os(macOS)
     @AppStorage("openAtLogin") private var openAtLogin = true
     @AppStorage("hideDockIcon") private var hideDockIcon = true
@@ -15,7 +15,7 @@ struct PwnlingoStatusApp: App {
         chessBoardSelfCheck()
         #endif
         #if os(macOS)
-        // ponytail: the launchd LaunchAgent (com.nulljosh.pwnlingo-status,
+        // ponytail: the launchd LaunchAgent (com.nulljosh.cruise-status,
         // RunAtLoad+KeepAlive) already opens this at login and relaunches it
         // on crash. Registering as an SMAppService login item too made macOS
         // launch a SECOND copy on every boot (two menu-bar icons, neither

@@ -1,4 +1,4 @@
-package com.nulljosh.pwnlingo
+package com.nulljosh.cruise
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

@@ -1,4 +1,4 @@
-package com.nulljosh.pwnlingo
+package com.nulljosh.cruise
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.DpSize
@@ -13,7 +13,7 @@ fun main() = application {
     LoginItem.sync(enabled = true)
     Window(
         onCloseRequest = ::exitApplication,
-        title = "Pwnlingo",
+        title = "Cruise",
         state = rememberWindowState(size = DpSize(420.dp, 640.dp)),
     ) {
         // ponytail: same reasoning as MainActivity — Windows/Linux desktop is

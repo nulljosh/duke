@@ -14,7 +14,7 @@ private struct Provider: TimelineProvider {
     // Read straight out of the same defaults the app writes, so pointing the app
     // at a new host or tunnel moves the widget too.
     private var host: String {
-        UserDefaults.standard.string(forKey: "pwnlingoHost") ?? "localhost:8737"
+        UserDefaults.standard.string(forKey: "cruiseHost") ?? "localhost:8737"
     }
 
     func placeholder(in context: Context) -> Entry { Entry(date: .now, state: nil) }
@@ -38,7 +38,7 @@ private struct Provider: TimelineProvider {
     }
 }
 
-private struct PwnlingoWidgetView: View {
+private struct CruiseWidgetView: View {
     var entry: Entry
     @Environment(\.widgetFamily) private var family
 
@@ -79,13 +79,13 @@ private struct PwnlingoWidgetView: View {
 }
 
 @main
-struct PwnlingoWidget: Widget {
+struct CruiseWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "PwnlingoWidget", provider: Provider()) { entry in
-            PwnlingoWidgetView(entry: entry)
+        StaticConfiguration(kind: "CruiseWidget", provider: Provider()) { entry in
+            CruiseWidgetView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("Pwnlingo")
+        .configurationDisplayName("Cruise")
         .description("XP earned this session, and whether the runner is still going.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }

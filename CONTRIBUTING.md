@@ -3,7 +3,7 @@
 ## Setup
 
 ```
-git clone https://github.com/nulljosh/pwnlingo.git
+git clone https://github.com/nulljosh/cruise.git
 cd cruise
 open Package.swift   # or the .xcodeproj/.xcworkspace, if present
 ```

@@ -4,7 +4,7 @@
 
 The menu bar app doesn't hot-reload — a source edit does nothing until a new
 binary replaces the running one. A LaunchAgent
-(`~/Library/LaunchAgents/com.nulljosh.pwnlingo-status.plist`, RunAtLoad +
+(`~/Library/LaunchAgents/com.nulljosh.cruise-status.plist`, RunAtLoad +
 KeepAlive) already keeps it running from a fixed path — **always build to
 that exact path**, never to `/tmp` or any other derivedData dir, or you get
 two copies (one launchd-managed, one orphaned) fighting for the same menu
@@ -12,14 +12,14 @@ bar slot. After editing anything under `app/App/`:
 
 ```bash
 cd app && xcodegen generate
-xcodebuild -scheme PwnlingoStatus-macOS -configuration Debug \
+xcodebuild -scheme CruiseStatus-macOS -configuration Debug \
   -derivedDataPath build build
-killall Pwnlingo 2>/dev/null   # launchd's KeepAlive relaunches it from the new binary within ~10s (ThrottleInterval)
+killall Cruise 2>/dev/null   # launchd's KeepAlive relaunches it from the new binary within ~10s (ThrottleInterval)
 ```
 
 Don't `open` the built .app yourself — that spawns a second, launchd-blind
 process. Just kill the running one; the agent restarts it. Verify exactly
-one is running after: `pgrep -fl "Pwnlingo.app/Contents/MacOS/Pwnlingo"`
+one is running after: `pgrep -fl "Cruise.app/Contents/MacOS/Cruise"`
 should print one line.
 
 Do this automatically at the end of a Swift-editing turn — don't wait to be
@@ -157,4 +157,4 @@ no separate reload step needed (edit the file, Ctrl-C, rerun).
 
 ## Recovery checkpoint (2026-09-18)
 
-Romanized word-bank tiles must use their `*-challenge-tap-token` label, not innerText. The runner now bounds repeated challenge attempts across feedback screens and counts lessons only when XP rises. All 52 tests pass; changes pushed. Sustained live XP recovery still needs confirmation. A profile backup is at `/tmp/pwnlingo-profile-backup-20260918`.
+Romanized word-bank tiles must use their `*-challenge-tap-token` label, not innerText. The runner now bounds repeated challenge attempts across feedback screens and counts lessons only when XP rises. All 52 tests pass; changes pushed. Sustained live XP recovery still needs confirmation. A profile backup is at `/tmp/cruise-profile-backup-20260918`.

@@ -30,11 +30,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.nulljosh.pwnlingo"
+    namespace = "com.nulljosh.cruise"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.nulljosh.pwnlingo.android"
+        applicationId = "com.nulljosh.cruise.android"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
@@ -44,14 +44,14 @@ android {
 
 compose.desktop {
     application {
-        mainClass = "com.nulljosh.pwnlingo.MainKt"
+        mainClass = "com.nulljosh.cruise.MainKt"
         nativeDistributions {
             targetFormats(
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi,
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb,
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,
             )
-            packageName = "Pwnlingo"
+            packageName = "Cruise"
             packageVersion = "1.0.0"
             description = "Duolingo autopilot status — live board, XP, streak, pause control."
         }

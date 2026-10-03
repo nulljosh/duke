@@ -13,7 +13,7 @@ import AudioToolbox
 // returns nil, which silently disabled every timestamp feature in the apps —
 // the "stuck" warning could never fire because the parse failed before the
 // comparison. Every client parses through this one formatter now.
-let pwnlingoDateFormatter: ISO8601DateFormatter = {
+let cruiseDateFormatter: ISO8601DateFormatter = {
     let f = ISO8601DateFormatter()
     f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
     return f
@@ -23,7 +23,7 @@ let pwnlingoDateFormatter: ISO8601DateFormatter = {
 // `started` is run.mjs's process start time, so this resets on every restart
 // (a switch doesn't touch it, only relaunching the runner does).
 func uptimeString(since started: String) -> String {
-    guard let start = pwnlingoDateFormatter.date(from: started) else { return "" }
+    guard let start = cruiseDateFormatter.date(from: started) else { return "" }
     // A clock adjustment (or a started timestamp slightly in the future) would
     // otherwise render "running -1h -3m".
     let secs = max(0, Int(Date().timeIntervalSince(start)))
@@ -36,7 +36,7 @@ func uptimeString(since started: String) -> String {
 // count/hour since `started` — nil before a minute has elapsed, matching
 // xpPerMinute's own guard against a noisy rate right after a restart.
 func perHourRate(_ count: Int, since started: String) -> Double? {
-    guard let start = pwnlingoDateFormatter.date(from: started) else { return nil }
+    guard let start = cruiseDateFormatter.date(from: started) else { return nil }
     let hours = Date().timeIntervalSince(start) / 3600
     guard hours > 1.0 / 60, count > 0 else { return nil }
     return Double(count) / hours
@@ -117,11 +117,11 @@ final class Poller: ObservableObject {
     @Published var stale = false
     @Published var unreachable = false
     @Published var switching = false
-    @AppStorage("pwnlingoHost") var host = "localhost:8737"
+    @AppStorage("cruiseHost") var host = "localhost:8737"
     // The runner's reads are open; pause/resume/switch need this, since the
     // tunnel puts those routes on the public internet. Printed by run.mjs on
     // first start and stored in scripts/api-token.txt.
-    @AppStorage("pwnlingoToken") var token = ""
+    @AppStorage("cruiseToken") var token = ""
     private var timer: Timer?
     private var lastEventId: String?
 
@@ -204,7 +204,7 @@ final class Poller: ObservableObject {
                        s.prompt != nil || s.answer != nil || !(s.choices?.isEmpty ?? true) || !(s.grid?.isEmpty ?? true) {
                         self.switching = false
                     }
-                    if let at = pwnlingoDateFormatter.date(from: s.at) {
+                    if let at = cruiseDateFormatter.date(from: s.at) {
                         self.stale = Date().timeIntervalSince(at) > 90
                     }
                 }

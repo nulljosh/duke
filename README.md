@@ -38,22 +38,22 @@ One track at a time; Duolingo keeps one active course per account. Progress land
 The status app is the only thing that starts `run.mjs`, and it's already
 wired to survive a reboot and a crash:
 
-- `~/Library/LaunchAgents/com.nulljosh.pwnlingo-status.plist` (RunAtLoad +
+- `~/Library/LaunchAgents/com.nulljosh.cruise-status.plist` (RunAtLoad +
   KeepAlive) brings the status app itself back after login or a crash.
 - The status app then starts `run.mjs` on its saved track, and restarts it
   5s after any unexpected exit (network blip, browser closed, anything but
   a genuinely missing Duolingo session, which needs a human to log back in).
 
 To wire this up on a fresh machine: build the app once
-(`cd app && xcodegen generate && xcodebuild -scheme PwnlingoStatus-macOS
+(`cd app && xcodegen generate && xcodebuild -scheme CruiseStatus-macOS
 -configuration Debug -derivedDataPath build build`), then
-`launchctl load ~/Library/LaunchAgents/com.nulljosh.pwnlingo-status.plist`
+`launchctl load ~/Library/LaunchAgents/com.nulljosh.cruise-status.plist`
 (copy that plist in first if it's not already there — see `app/`). From then
 on it survives reboots and crashes with no manual restarts.
 
 ## Status app
 
-Native everywhere: SwiftUI on iOS/macOS/watchOS, Compose Multiplatform on Android/Windows/Linux, plus a terminal client (`pwnlingo-tui`). All poll the runner over the LAN or tunnel for the same state: current track, XP gained, puzzles/misses/matches or lesson count, live chess board, and the latest log line. Switch track or pause from any client, no terminal needed.
+Native everywhere: SwiftUI on iOS/macOS/watchOS, Compose Multiplatform on Android/Windows/Linux, plus a terminal client (`cruise-tui`). All poll the runner over the LAN or tunnel for the same state: current track, XP gained, puzzles/misses/matches or lesson count, live chess board, and the latest log line. Switch track or pause from any client, no terminal needed.
 
 ## Files
 

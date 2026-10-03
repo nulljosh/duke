@@ -1,4 +1,4 @@
-package com.nulljosh.pwnlingo
+package com.nulljosh.cruise
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

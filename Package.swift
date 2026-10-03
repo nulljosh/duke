@@ -2,14 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "pwnlingo-tui",
+    name: "cruise-tui",
     platforms: [.macOS(.v13)],
     dependencies: [
         .package(url: "https://github.com/rensbreur/SwiftTUI", branch: "main")
     ],
     targets: [
         .executableTarget(
-            name: "pwnlingo-tui",
+            name: "cruise-tui",
             dependencies: ["SwiftTUI"],
             path: ".",
             sources: ["tui/main.swift"]

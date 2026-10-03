@@ -2,7 +2,7 @@
 __pycache__/
 *.bak
 state.json
-app/PwnlingoStatus.xcodeproj/
+app/CruiseStatus.xcodeproj/
 app/*.xcuserdatad/
 scripts/run.out
 

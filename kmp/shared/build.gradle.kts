@@ -24,7 +24,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.nulljosh.pwnlingo.shared"
+    namespace = "com.nulljosh.cruise.shared"
     compileSdk = 36
     defaultConfig { minSdk = 26 }
 }

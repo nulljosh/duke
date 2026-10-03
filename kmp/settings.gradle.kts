@@ -1,4 +1,4 @@
-rootProject.name = "pwnlingo"
+rootProject.name = "cruise"
 
 pluginManagement {
     repositories {

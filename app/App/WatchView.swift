@@ -68,7 +68,7 @@ struct WatchView: View {
                     ProgressView()
                 }
             }
-            .navigationTitle("Pwnlingo")
+            .navigationTitle("Cruise")
         }
         .task { poller.start() }
     }
