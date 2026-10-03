@@ -1,11 +1,11 @@
-# Pwnlingo Technical Whitepaper
+# Cruise Technical Whitepaper
 
 **v2.1.0** | September 2026
 
 Keeping a language streak, a chess league rank and a math course all moving
 takes daily time that could go somewhere else, and the app's own grading
 logic already knows the right answer before a person needs to guess it.
-Pwnlingo is a personal Duolingo autopilot. It plays language, math, chess and
+Cruise is a personal Duolingo autopilot. It plays language, math, chess and
 music tracks back to back, reading answers straight out of the client-side
 grader instead of guessing at pixels, because the grader's own object is
 ground truth and pixel matching would be slower and less reliable for no

@@ -34,6 +34,8 @@ a full disk (the runner now pauses under 2GB free), and Duolingo changing a
 screen the solver reads.
 
 ## Open
+- [ ] Finish the Cruise rename (display text done 2026-10-02). Left on purpose: launchd label, bundle ids, PRODUCT_NAME Pwnlingo (launchd path), Kotlin package, GitHub repo, CF Pages project, hostnames. heyitsmejosh.com expires Oct 13: pick a new domain (cruiseduo/getcruise/usecruise on .app/.run looked free), move landing + tunnel, then swap the launchd plist and rename the repo.
+- [ ] MONEY.md + GTM row, demo GIF on landing, README note that automating Duolingo is against their terms.
 - [ ] Verify the bare-translate fix live on the next ja round. Log data (2026-09-27)
   showed the real gap was not tapComplete (44 misses) but translate (849, mostly ja):
   zero tiles and no text box on screen, so the keyboard fallback never ran. New

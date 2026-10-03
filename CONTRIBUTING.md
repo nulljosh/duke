@@ -1,10 +1,10 @@
-# Contributing to pwnlingo
+# Contributing to Cruise
 
 ## Setup
 
 ```
 git clone https://github.com/nulljosh/pwnlingo.git
-cd pwnlingo
+cd cruise
 open Package.swift   # or the .xcodeproj/.xcworkspace, if present
 ```
 

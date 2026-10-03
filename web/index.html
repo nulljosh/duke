@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>pwnlingo: Duolingo on autopilot</title>
+<title>Cruise: Duolingo on autopilot</title>
 <meta name="description" content="A runner that plays Duolingo Math, Chess and language courses in a real browser, around the clock.">
 <meta name="theme-color" content="#f5f0e4">
-<meta property="og:title" content="pwnlingo: Duolingo on autopilot">
+<meta property="og:title" content="Cruise: Duolingo on autopilot">
 <meta property="og:description" content="Reads the live lesson, works out the answer, clicks. Chess, math and every language course.">
 <meta property="og:type" content="website">
 <link rel="icon" href="icon.svg">
@@ -111,7 +111,7 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
 </head>
 <body>
 <nav class="nav"><div class="nav-in">
-  <a class="brand" href="#top"><img src="icon.svg" alt="">pwnlingo</a>
+  <a class="brand" href="#top"><img src="icon.svg" alt="">Cruise</a>
   <div class="nav-links"><a href="#how">How it works</a><a href="#status">Where it stands</a><a href="#finish">Finish line</a><a href="#clients">Clients</a></div>
 </div></nav>
 <main id="top">
@@ -122,7 +122,7 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
   <div class="cta"><a class="btn" href="#how">See how it works</a><a class="more" href="#finish">The finish line</a></div>
   <div class="device device-mac has-chrome" aria-hidden="true"><div class="device-screen">
     <div class="app-demo">
-      <h4 id="appTrackName">pwnlingo: solving Chess</h4>
+      <h4 id="appTrackName">Cruise: solving Chess</h4>
       <div class="app-meta" id="appMeta">155 day streak · 5/5 hearts · Diamond League</div>
       <div id="demoStage"></div>
       <div class="app-label" id="appLabel">Checkmate!</div>
@@ -210,7 +210,7 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
   function playNext() {
     if (live) return;              // the real runner took over
     var p = puzzles[solved % puzzles.length];
-    trackEl.textContent = 'pwnlingo: solving ' + trackName[p.type];
+    trackEl.textContent = 'Cruise: solving ' + trackName[p.type];
     labelEl.classList.remove('on');
     players[p.type](p, function() {
       if (live) return;
@@ -279,7 +279,7 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
       if (!wasLive && captionEl) {
         captionEl.textContent = 'Live right now, from the Mac actually running it.';
       }
-      trackEl.textContent = 'pwnlingo: solving ' + (trackName[d.track] || d.track);
+      trackEl.textContent = 'Cruise: solving ' + (trackName[d.track] || d.track);
       if (d.xp != null) xpEl.textContent = '+' + d.xp + ' XP';
       var solved = d.track === 'chess' ? d.puzzles : d.lessons;
       solvedEl.textContent = solved;
@@ -312,7 +312,7 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
 <section id="how"><div class="container">
   <p class="eyebrow">How it works</p>
   <h2>It reads the answer key.</h2>
-  <p>Duolingo renders every exercise from a React component, and that component still holds the answer. pwnlingo walks the component tree from the visible widget up to the challenge props, reads the correct answer, and does what a very fast, very bored student would do. A shape it has never seen gets logged and skipped, never guessed.</p>
+  <p>Duolingo renders every exercise from a React component, and that component still holds the answer. Cruise walks the component tree from the visible widget up to the challenge props, reads the correct answer, and does what a very fast, very bored student would do. A shape it has never seen gets logged and skipped, never guessed.</p>
   <p>One Node runner drives a real Chromium window, signed in as you. A browser-side solver handles language, chess and music, a second one handles math. Drags and chess moves use a real mouse, because Duolingo ignores synthetic ones.</p>
   <p>It runs unattended for weeks, not minutes. Every course shows a completion percentage and a measured ETA, and finished tracks move on to the next. Balance mode plays whichever course is furthest behind instead of grinding one to 100% while the rest stall. Running out of hearts does not stop the run, a lesson that loops without finishing gets escaped, the runner pauses itself when the disk is nearly full, and a track that earns nothing is benched for a day.</p>
 </div></section>

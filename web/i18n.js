@@ -1,4 +1,4 @@
-// pwnlingo i18n runtime (vanilla, no framework). Loads generated locale JSON,
+// cruise i18n runtime (vanilla, no framework). Loads generated locale JSON,
 // swaps [data-i18n] text, exposes t(key, vars) for dynamic strings.
 // Mirrors quotestreak/i18n.js — same convention, same fallback behaviour.
 (function () {
@@ -7,7 +7,7 @@
   // ?lang= wins over the stored choice, which wins over the browser's — so a
   // link can carry a language (and so the translations are actually testable).
   const queried = new URLSearchParams(location.search).get("lang");
-  const stored = localStorage.getItem("pwnlingo.lang");
+  const stored = localStorage.getItem("cruise.lang");
   const detected = (navigator.language || "en").slice(0, 2);
   const lang = SUPPORTED.includes(queried) ? queried
     : SUPPORTED.includes(stored) ? stored
@@ -47,5 +47,5 @@
     apply();
   })();
 
-  window.I18N = { t, ready, lang, supported: SUPPORTED, set: (l) => { localStorage.setItem("pwnlingo.lang", l); location.reload(); } };
+  window.I18N = { t, ready, lang, supported: SUPPORTED, set: (l) => { localStorage.setItem("cruise.lang", l); location.reload(); } };
 })();

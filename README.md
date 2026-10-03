@@ -1,6 +1,6 @@
 <img src="icon.svg" width="80" style="border-radius:18px">
 
-# pwnlingo
+# Cruise
 
 [![MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 

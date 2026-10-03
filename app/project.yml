@@ -13,7 +13,7 @@ targets:
       path: App/Info-macOS.plist
       properties:
         LSUIElement: false
-        NSLocalNetworkUsageDescription: Reads live puzzle progress from the pwnlingo autopilot running on your Mac.
+        NSLocalNetworkUsageDescription: Reads live puzzle progress from the Cruise autopilot running on your Mac.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
     settings:
@@ -32,7 +32,7 @@ targets:
     info:
       path: App/Info-watchOS.plist
       properties:
-        NSLocalNetworkUsageDescription: Reads live puzzle progress from the pwnlingo autopilot running on your Mac.
+        NSLocalNetworkUsageDescription: Reads live puzzle progress from the Cruise autopilot running on your Mac.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
         WKApplication: true
@@ -52,7 +52,7 @@ targets:
     info:
       path: App/Info-iOS.plist
       properties:
-        NSLocalNetworkUsageDescription: Reads live puzzle progress from the pwnlingo autopilot running on your Mac.
+        NSLocalNetworkUsageDescription: Reads live puzzle progress from the Cruise autopilot running on your Mac.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
         UILaunchScreen: {}
@@ -83,7 +83,7 @@ targets:
     info:
       path: Widget/Info-Widget.plist
       properties:
-        CFBundleDisplayName: Pwnlingo
+        CFBundleDisplayName: Cruise
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
         NSExtension:

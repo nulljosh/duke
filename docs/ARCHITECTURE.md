@@ -1,6 +1,6 @@
 # Architecture
 
-Pwnlingo is a Duolingo solver. Automates Duolingo lessons via browser automation (Playwright). Solves three tracks: language (word-bank, translation, multiple-choice), chess (piece movement planning, promotion detection), and math (arithmetic, algebra, equations). Menu bar macOS app shows XP progress; live track switching. No account login (runs with an existing Duolingo profile, cookie-based auth).
+Cruise is a Duolingo solver. Automates Duolingo lessons via browser automation (Playwright). Solves three tracks: language (word-bank, translation, multiple-choice), chess (piece movement planning, promotion detection), and math (arithmetic, algebra, equations). Menu bar macOS app shows XP progress; live track switching. No account login (runs with an existing Duolingo profile, cookie-based auth).
 
 ## How it runs
 
@@ -69,7 +69,7 @@ node scripts/run.mjs <track>
 # macOS menu bar app (after editing app/App/*.swift)
 cd app && xcodegen generate
 xcodebuild -scheme PwnlingoStatus-macOS -configuration Debug -derivedDataPath build build
-killall Pwnlingo  # launchd restarts it from the new binary within ~10s
+killall Cruise  # launchd restarts it from the new binary within ~10s
 ```
 
 ## Gotchas
