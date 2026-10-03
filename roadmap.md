@@ -34,7 +34,7 @@ a full disk (the runner now pauses under 2GB free), and Duolingo changing a
 screen the solver reads.
 
 ## Open
-- [ ] Finish the Cruise rename (display text done 2026-10-02). Left on purpose: launchd label, bundle ids, PRODUCT_NAME Pwnlingo (launchd path), Kotlin package, GitHub repo, CF Pages project, hostnames. heyitsmejosh.com expires Oct 13: pick a new domain (cruiseduo/getcruise/usecruise on .app/.run looked free), move landing + tunnel, then swap the launchd plist and rename the repo.
+- [ ] Finish the Cruise rename (display text done 2026-10-02). Left on purpose: launchd label, bundle ids, PRODUCT_NAME Pwnlingo (launchd path), Kotlin package, GitHub repo, CF Pages project, hostnames. Hostnames follow the portfolio domain (separate decision, see the jaybulb migration): when it moves, point cruise.<portfolio> and cruise-status.<portfolio> at the landing and tunnel, then swap the launchd plist and rename the repo.
 - [ ] MONEY.md + GTM row, demo GIF on landing, README note that automating Duolingo is against their terms.
 - [ ] Verify the bare-translate fix live on the next ja round. Log data (2026-09-27)
   showed the real gap was not tapComplete (44 misses) but translate (849, mostly ja):
