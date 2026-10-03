@@ -21,3 +21,4 @@ tui/Package.resolved
 stalled.json
 scripts/voice.wav
 scripts/voice.aiff
+.wrangler/

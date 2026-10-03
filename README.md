@@ -12,6 +12,8 @@ It runs its own Chrome, signed in with your session cookie, and reads each quest
 
 <img src="progress.svg" width="460">
 
+Automating Duolingo is against their terms of service and can get your account banned. Use it on an account you can afford to lose.
+
 ## Architecture
 
 <img src="architecture.svg" width="600">
