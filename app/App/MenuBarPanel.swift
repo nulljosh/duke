@@ -37,7 +37,7 @@ struct MenuBarLabel: View {
                     .animation(.snappy, value: n)
             } else {
                 Image(systemName: "gamecontroller")
-                    .accessibilityLabel("cruise")
+                    .accessibilityLabel("Cruise")
             }
         }
         .task { poller.start() }

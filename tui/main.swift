@@ -68,7 +68,7 @@ struct StatusCard: View {
     var body: some View {
         VStack(alignment: .leading) {
             if let s = state {
-                Text("cruise — \(trackNames[s.track] ?? s.track)").bold()
+                Text("Cruise: \(trackNames[s.track] ?? s.track)").bold()
                 if let u = s.username {
                     Text("\(u)\(s.league.flatMap { leagueNames.indices.contains($0) ? "  ·  \(leagueNames[$0]) League" : nil } ?? "")")
                 }
@@ -88,7 +88,7 @@ struct StatusCard: View {
                 }
 
                 if isStale(s) {
-                    Text("STUCK — no update in 90s+").bold()
+                    Text("STUCK: no update in 90s+").bold()
                 } else if s.paused == true {
                     Text("PAUSED").bold()
                 } else {

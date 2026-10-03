@@ -313,7 +313,7 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
   <p class="eyebrow">How it works</p>
   <h2>It reads the answer key.</h2>
   <p>Duolingo renders every exercise from a React component, and that component still holds the answer. Cruise walks the component tree from the visible widget up to the challenge props, reads the correct answer, and does what a very fast, very bored student would do. A shape it has never seen gets logged and skipped, never guessed.</p>
-  <p>One Node runner drives a real Chromium window, signed in as you. A browser-side solver handles language, chess and music, a second one handles math. Drags and chess moves use a real mouse, because Duolingo ignores synthetic ones.</p>
+  <p>One Node runner drives a real Chromium window, signed in as you. A browser-side solver handles language and chess, a second one handles math. Drags and chess moves use a real mouse, because Duolingo ignores synthetic ones.</p>
   <p>It runs unattended for weeks, not minutes. Every course shows a completion percentage and a measured ETA, and finished tracks move on to the next. Balance mode plays whichever course is furthest behind instead of grinding one to 100% while the rest stall. Running out of hearts does not stop the run, a lesson that loops without finishing gets escaped, the runner pauses itself when the disk is nearly full, and a track that earns nothing is benched for a day.</p>
 </div></section>
 
