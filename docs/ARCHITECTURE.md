@@ -12,6 +12,8 @@ Menu bar status app (`app/App/ContentView.swift`) shows XP, streak, current leve
 
 Between lessons the runner also: reads daily quest progress on `/quests` and switches chess/math to a language course when it stalls (`questStalled()`), sends the friend gift if its button is there, opens path chests on `/learn` (each at most every 30 min), celebrates friends' achievements on the profile feed every 6h with real mouse clicks, and runs the streak guard (`streakAtRisk()` in `scripts/guards.mjs`: after 18:00 local with zero XP today, switch to a language course). The status app pings `127.0.0.1:8737` every 60s and restarts the runner if it is down (`SolverProcess.startRunnerIfNeeded()`).
 
+Track choice: `xpRates()` in `scripts/guards.mjs` turns the `lesson-end` events in `log.jsonl` and its archive into XP per hour per track, and `fastestTrack()` picks the best playable one when a track completes or stalls. Milestones (`crossed()`) are appended to `scripts/milestones.jsonl`. The streak guard overrides a pause when the streak is at risk and more than 300MB of disk is free.
+
 ## Files
 
 | File | What it owns |

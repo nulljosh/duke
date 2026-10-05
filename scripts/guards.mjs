@@ -138,3 +138,29 @@ export const isGiftLabel = t => GIFT_RE.test(String(t).trim());
 // current track isn't feeding them and should yield to a language course.
 export const questKey = qs => qs.map(q => `${q.done}/${q.total}`).join(',');
 export const questStalled = (qs, prevKey) => qs.some(q => q.done < q.total) && questKey(qs) === prevKey;
+
+// Milestones: every multiple of `step` passed going from prev to now, so
+// 468k -> 471k at a 10k step gives [470000]. Empty when nothing was passed.
+export const crossed = (prev, now, step) => {
+  const out = [];
+  if (!Number.isFinite(prev) || !(now > prev) || !(step > 0)) return out;   // isFinite: null >= 0 is true in JS
+  for (let v = (Math.floor(prev / step) + 1) * step; v <= now; v += step) out.push(v);
+  return out;
+};
+
+// XP per hour per track, from consecutive lesson-end events on the same track.
+// Gaps over 30 min (a restart, a pause) and jumps too big for one lesson (XP
+// earned on the phone) are skipped, and a track needs 30 min of play to count,
+// so one lucky lesson can't crown it. events: [{ at: ms, track, xp }].
+export const xpRates = (events, { maxGapMs = 30 * 60e3, minMs = 30 * 60e3, maxGain = 2000 } = {}) => {
+  const xp = {}, ms = {};
+  for (let i = 1; i < events.length; i++) {
+    const a = events[i - 1], b = events[i], dt = b.at - a.at, gain = b.xp - a.xp;
+    if (a.track !== b.track || !(dt > 0) || dt > maxGapMs || !(gain >= 0) || gain > maxGain) continue;
+    xp[b.track] = (xp[b.track] || 0) + gain; ms[b.track] = (ms[b.track] || 0) + dt;
+  }
+  return Object.fromEntries(Object.keys(ms).filter(t => ms[t] >= minMs).map(t => [t, Math.round(xp[t] / ms[t] * 3600e3)]));
+};
+// The best measured earner among the tracks `ok` allows, or null.
+export const fastestTrack = (rates, ok = () => true) =>
+  Object.entries(rates || {}).filter(([t, r]) => r > 0 && ok(t)).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;

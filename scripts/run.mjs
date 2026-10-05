@@ -23,7 +23,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { courseIdFor } from './courseId.mjs';
 import { makeEngine } from './stockfish.mjs';
-import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow, CLAIM_RE, GIFT_RE, streakAtRisk, questKey, questStalled } from './guards.mjs';
+import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow, CLAIM_RE, GIFT_RE, streakAtRisk, questKey, questStalled, crossed, xpRates, fastestTrack } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -206,6 +206,38 @@ const noteXp = (xp) => {
   S.xpToday = Math.max(0, xp - xpDay.startXp);
 };
 const saveState = () => { noteXp(S.xp); fs.writeFileSync(path.join(D, 'state.json'), JSON.stringify({ at: new Date().toISOString(), ...S }, null, 1)); };
+
+// Milestones get their own small ledger: log.jsonl rotates at 5MB and would
+// lose them. One line each: every 10k XP, every 10 streak days, each day the
+// daily quests are all done, each course finished.
+const MILESTONES_PATH = path.join(D, 'milestones.jsonl');
+// Last value per kind, seeded from the ledger so a restart neither repeats a
+// milestone nor skips one passed while the runner was down.
+const mark = { xp: null, streak: null, questsDay: null, courses: new Set() };
+try {
+  for (const l of fs.readFileSync(MILESTONES_PATH, 'utf8').split('\n')) {
+    let m; try { m = JSON.parse(l); } catch { continue; }
+    if (m.kind === 'xp') mark.xp = m.value;
+    else if (m.kind === 'streak') mark.streak = m.value;
+    else if (m.kind === 'daily-quests') mark.questsDay = m.day;
+    else if (m.kind === 'course') mark.courses.add(m.value);
+  }
+} catch {}
+const milestone = (kind, value, extra = {}) => {
+  try { fs.appendFileSync(MILESTONES_PATH, JSON.stringify({ at: new Date().toISOString(), kind, value, ...extra }) + '\n'); } catch {}
+  log({ ev: 'milestone', kind, value, ...extra });
+};
+const noteMilestones = () => {
+  if (S.xp != null) { for (const v of crossed(mark.xp ?? S.xp, S.xp, 10_000)) milestone('xp', v); mark.xp = S.xp; }
+  if (S.streak != null) { for (const v of crossed(mark.streak ?? S.streak, S.streak, 10)) milestone('streak', v); mark.streak = S.streak; }
+};
+
+// XP per hour per track, measured from the logs on disk. Used to pick where to
+// go when a track finishes or stalls. ponytail: read once at startup; rates
+// move slowly and a restart refreshes them.
+const lessonEnds = f => { try { return fs.readFileSync(f, 'utf8').split('\n').filter(l => l.includes('"lesson-end"')).map(l => { try { const o = JSON.parse(l); return o.xp != null ? { at: Date.parse(o.at), track: o.track, xp: o.xp } : null; } catch { return null; } }).filter(Boolean); } catch { return []; } };
+const trackRates = xpRates([...lessonEnds(LOG_PATH.replace(/\.jsonl$/, '.archive.jsonl')), ...lessonEnds(LOG_PATH)]);
+S.xpRates = trackRates;
 // Both ledgers rotate on the same 5MB rule as log.jsonl — they used to grow
 // forever, which at ~22 levels/hour running unattended is real disk over weeks.
 const LESSONS_PATH = path.join(D, 'lessons.jsonl');
@@ -454,6 +486,9 @@ let lastProgressAt = 0;
 // Not persisted on purpose: a restart on a finished track SHOULD re-detect the
 // completion and advance again, rather than sit there grinding a done tree.
 const completedTracks = new Set();
+// Where to go when a track finishes or stalls: the best measured XP earner
+// that is still playable, else null and the caller falls back to rotation.
+const fastestOther = (from) => fastestTrack(trackRates, t => t !== from && !completedTracks.has(t) && !stalledTracks.has(t) && (trackPct.get(t) ?? 0) < 100);
 // Largest level count ever seen per track. A real tree only grows (Duolingo
 // ships new sections); a payload that comes back smaller is partial, and
 // courseComplete() refuses to call that a finish.
@@ -520,10 +555,11 @@ const refreshProgress = async (force = false) => {
     if (!completedTracks.has(track)) {
       completedTracks.add(track);
       log({ ev: 'track-complete', track, passed: p.passed, total: p.total });
+      if (!mark.courses.has(track)) { mark.courses.add(track); milestone('course', track, { levels: p.total }); }
     }
     // Walk forward for the first track we haven't already seen finished, so a
     // fully-finished rotation parks instead of switching in a tight circle.
-    let next = nextInRotation(track);
+    let next = fastestOther(track) || nextInRotation(track);
     for (let i = 0; i < ROTATION.length && completedTracks.has(next); i++) next = nextInRotation(next);
     if (completedTracks.has(next)) log({ ev: 'all-complete' });
     else if (next !== track) { pendingTrack = next; log({ ev: 'auto-advance', from: track, track: next }); }
@@ -563,7 +599,7 @@ const setCourse = t => page.evaluate(async ({ u, id }) => fetch(`/2017-06-30/use
 await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded' });
 await sleep(4000);
 await setCourse(track);
-S.xp0 = S.xp = await xp(); S.username = await username(); Object.assign(S, (await stats()) || {}); saveState();
+S.xp0 = S.xp = await xp(); S.username = await username(); Object.assign(S, (await stats()) || {}); noteMilestones(); saveState();
 enrolledTracks = await page.evaluate(async (u) => {
   try {
     const r = await fetch(`/2017-06-30/users/${u}?fields=courses`);
@@ -667,6 +703,8 @@ let idleOpens = 0;
 let lastQuestAt = 0;
 let lastChestAt = 0;
 let lastQuestKey = null;
+let questDeadKey = null;   // progress a language course could not move either: stop chasing it
+let questDetour = null;    // { from, to } while quest focus has us on a language course
 let lastCelebrateAt = 0;
 // A language course worth switching to: enrolled, not stalled, not finished.
 const pickLanguage = () => enrolledTracks.find(t => !stalledTracks.has(t) && !completedTracks.has(t) && (trackPct.get(t) ?? 0) < 100);
@@ -683,15 +721,22 @@ while (true) {
  try {
   // ponytail: pauses (not exits) so the status app shows it; /resume after freeing space.
   // Resumes on its own at 3GB so swap spikes don't leave it idle; a manual /pause is never auto-resumed.
+  let freeBytes = Infinity;
   try {
-    const free = (f => f.bavail * f.bsize)(fs.statfsSync(D));
+    const free = freeBytes = (f => f.bavail * f.bsize)(fs.statfsSync(D));
     if (!paused && diskLow(free)) { paused = pausedByDisk = true; S.paused = true; log({ ev: 'disk-low', freeMB: Math.round(free / 2 ** 20) }); saveState(); }
     else if (paused && pausedByDisk && !diskLow(free, 3 * 1024 ** 3)) { paused = pausedByDisk = false; S.paused = false; log({ ev: 'disk-ok', freeMB: Math.round(free / 2 ** 20) }); saveState(); }
   } catch {}
-  if (paused) { saveState(); await sleep(500); continue; }
+  // The streak outranks a pause. In the evening with no XP today, play through
+  // it (manual or disk) until one lesson lands; XP today then makes the pause
+  // hold again. ponytail: under 300MB free it stays paused, a full disk is what
+  // wiped the browser profile on 09-29.
+  const streakRisk = streakAtRisk(new Date().getHours(), S.xpToday);
+  if (paused && !(streakRisk && freeBytes > 300 * 2 ** 20)) { saveState(); await sleep(500); continue; }
+  if (paused && streakWarnedDay !== localDay()) log({ ev: 'streak-override-pause', pausedByDisk });
   // Streak guard: evening and still no XP today means the streak is about to
   // break. Chess/math may not count as a lesson, so hop to a language course.
-  if (streakAtRisk(new Date().getHours(), S.xpToday) && streakWarnedDay !== localDay()) {
+  if (streakRisk && streakWarnedDay !== localDay()) {
     streakWarnedDay = localDay();
     log({ ev: 'streak-risk', track });
     const lang = pickLanguage();
@@ -1122,7 +1167,7 @@ while (true) {
     else { await sleep(1500); const stillLesson = await page.evaluate(() => location.pathname.startsWith('/lesson')).catch(() => false); if (!stillLesson) break; }
   }
 
-  S.xp = await xp(); Object.assign(S, (await stats()) || {}); S.last = track;
+  S.xp = await xp(); Object.assign(S, (await stats()) || {}); S.last = track; noteMilestones();
   const gainedXp = S.xp != null && xpBefore != null && S.xp > xpBefore;
   if (gainedXp) { S.lessons++; bumpCycleCount(); }
   saveState();
@@ -1140,7 +1185,7 @@ while (true) {
     markStalled(track);   // stop balance handing it straight back, this run or the next
     trackPct.delete(track); trackRemaining.delete(track);
     unproductiveCycles = 0;
-    pendingTrack = nextInRotation(track);   // this track is going nowhere; try another
+    pendingTrack = fastestOther(track) || nextInRotation(track);   // this track is going nowhere; try the best earner
   }
   // Quest rewards sit unclaimed until someone clicks them. Visit /quests at most
   // every 30 min and click every live CLAIM button, like a person would.
@@ -1190,11 +1235,20 @@ while (true) {
       }).catch(() => []);
       if (quests.length) {
         S.quests = quests; log({ ev: 'quests', quests });
-        if (questStalled(quests, lastQuestKey) && CORE_TRACKS.includes(track)) {
-          const lang = pickLanguage();
-          if (lang) { pendingTrack = lang; lastBalanceSwitchAt = Date.now(); log({ ev: 'quest-focus', from: track, track: lang }); }
+        const key = questKey(quests), open = quests.some(q => q.done < q.total);
+        if (!open && mark.questsDay !== localDay()) { mark.questsDay = localDay(); milestone('daily-quests', quests.length, { day: localDay() }); }
+        if (questStalled(quests, lastQuestKey)) {
+          if (!CORE_TRACKS.includes(track)) questDeadKey = key;   // a language course did not move it either
+          else if (key !== questDeadKey) {
+            const lang = pickLanguage();
+            if (lang) { questDetour = { from: track, to: lang }; pendingTrack = lang; lastBalanceSwitchAt = Date.now(); log({ ev: 'quest-focus', from: track, track: lang }); }
+          }
         }
-        lastQuestKey = questKey(quests);
+        // Detour over (quests done, or stuck for good): go back to where we were.
+        // A hand switch to some third track cancels it.
+        if (questDetour && track === questDetour.to && (!open || key === questDeadKey)) { pendingTrack = questDetour.from; log({ ev: 'quest-return', track: questDetour.from }); questDetour = null; }
+        else if (questDetour && track !== questDetour.to && track !== questDetour.from) questDetour = null;
+        lastQuestKey = key;
       }
       if (claimed) log({ ev: 'quest-claim', claimed });
       else log({ ev: 'quest-visit', buttons: await page.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.offsetParent).map(b => b.innerText.trim().slice(0, 30)).filter(Boolean).slice(0, 15)).catch(() => []) });   // no claim found: record what was on screen so a wrong label is visible

@@ -247,3 +247,29 @@ test('quests stall only when one is open and nothing moved', () => {
   assert.equal(questStalled(done, questKey(done)), false);
   assert.equal(questStalled([], ''), false);
 });
+
+const { crossed, xpRates, fastestTrack } = await import('./guards.mjs');
+test('crossed lists every step passed, and nothing otherwise', () => {
+  assert.deepEqual(crossed(468000, 471000, 10000), [470000]);
+  assert.deepEqual(crossed(470000, 492000, 10000), [480000, 490000]);
+  assert.deepEqual(crossed(499990, 500000, 10000), [500000]);
+  assert.deepEqual(crossed(470000, 470000, 10000), []);
+  assert.deepEqual(crossed(471000, 470000, 10000), []);
+  assert.deepEqual(crossed(null, 470000, 10000), []);
+  assert.deepEqual(crossed(180, 190, 10), [190]);
+});
+test('xpRates measures per track and skips gaps, phone XP and thin data', () => {
+  const m = 60e3, ev = [];
+  for (let i = 0; i <= 40; i++) ev.push({ at: i * m, track: 'pl', xp: 1000 + i * 20 });          // 40 min, 20 xp/min
+  ev.push({ at: 41 * m, track: 'chess', xp: 1800 });                                            // track change: no credit
+  for (let i = 1; i <= 40; i++) ev.push({ at: (41 + i * 3) * m, track: 'chess', xp: 1800 + i * 25 }); // 120 min, 25 xp per 3 min
+  ev.push({ at: 400 * m, track: 'chess', xp: 2900 });                                           // 4h gap: skipped
+  ev.push({ at: 401 * m, track: 'chess', xp: 9000 });                                           // phone XP: skipped
+  ev.push({ at: 402 * m, track: 'fr', xp: 9000 }, { at: 403 * m, track: 'fr', xp: 9050 });      // 1 min of data: too thin
+  const r = xpRates(ev);
+  assert.deepEqual(r, { pl: 1200, chess: 500 });
+  assert.equal(fastestTrack(r), 'pl');
+  assert.equal(fastestTrack(r, t => t !== 'pl'), 'chess');
+  assert.equal(fastestTrack(r, () => false), null);
+  assert.equal(fastestTrack({}), null);
+});

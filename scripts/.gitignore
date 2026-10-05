@@ -11,3 +11,6 @@ open-fail.png
 node_modules/
 package-lock.json
 *.archive.jsonl
+xpday.json
+milestones.jsonl
+run.log.sb-*

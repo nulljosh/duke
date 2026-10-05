@@ -53,11 +53,20 @@ Two more things keep the account healthy while it plays:
 
 - **Streak guard.** After 6pm local, if no XP has landed today, the runner
   logs `streak-risk` and hops from chess/math to a language course so a real
-  lesson finishes before midnight.
+  lesson finishes before midnight. It plays through a pause to do it (manual
+  or low disk), then the pause holds again.
+- **Fastest track next.** At startup it measures XP per hour for each track
+  from the logs (`xpRates` in `state.json`). When a track finishes or stalls
+  it moves to the best earner still playable, not just the next in order.
+- **Milestones.** `scripts/milestones.jsonl` gets one line for every 10k XP,
+  every 10 streak days, each day the daily quests are all done, and each
+  course finished. It never rotates, unlike `log.jsonl`.
 - **Quests.** Every 30 min it reads the daily quests on `/quests` (`quests`
   in the log). Their chests open on their own once a quest fills, so the job
   is finishing them: if progress sat still since the last look while on
-  chess or math, it switches to a language course (`quest-focus`).
+  chess or math, it switches to a language course (`quest-focus`) and comes
+  back when they are done (`quest-return`). A quest that a language course
+  can't move either is left alone for the day.
 - **Rewards.** On the same visit it clicks any `CLAIM` button, and opens
   any treasure chest on the `/learn` path (`chest-open` in the log; a
   `chest-visit` with 0 chests means none were on the path).

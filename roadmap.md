@@ -33,7 +33,32 @@ English and Russian yield), tracks that fail to open a lesson (ja, el),
 a full disk (the runner now pauses under 2GB free), and Duolingo changing a
 screen the solver reads.
 
+## XP per hour by track (measured 2026-10-05, logs 09-25 to 10-05)
+Languages earn more than twice what chess does. The runner sat on chess only
+from 10-03 to 10-05 (a hand switch turns auto-switching off), which cut the day
+from 18-29k XP to 7-12k. Switched to Polish 2026-10-05; the status app's start
+track is now `pl` so a restart stays there.
+
+| Track | XP per hour | Hours measured |
+|---|---|---|
+| Hindi (finished) | 1335 | 9.3 |
+| Polish | 1307 | 13.3 |
+| Korean | 1161 | 2.0 |
+| Greek (finished) | 1152 | 36.5 |
+| French | 1136 | 1.4 |
+| Turkish | 690 | 0.8 |
+| Chess | 522 | 51.3 |
+| Japanese | 356 | 67.7 |
+| Russian, Arabic | about 0 | under 1 |
+
+At about 1,300 an hour, 500k XP is roughly a day from 468k and 1M is about
+three weeks, against six on chess.
+
 ## Open
+- [ ] Power cut: `pmset autorestart` is 0, so the Mac stays off after an outage and the streak rides on the 6 banked freezes. Joshua runs `sudo pmset -a autorestart 1` once.
+- [ ] Disk: 4.2GB free on 2026-10-05, and the runner pauses under 2GB. The streak guard now plays through that pause down to 300MB, but XP stops. Free space before it gets there.
+- [ ] Balance mode flap (seen 10-02, `auto-advance pl el` every 22 min all day): a finished course with a few levels left counts as "nearly done" for balance and "complete" for auto-advance, so the two hand it back and forth. Auto-switching is off now; fix `leastComplete` to skip complete courses before turning it back on.
+- [ ] Russian and Arabic earn nothing (42 and 0 XP an hour). They stall out after 6 cycles and get skipped for a day; find why the lessons finish without XP.
 - [ ] Gift sender (2026-10-05): clicks `SEND GIFT` on `/quests`. No friends quest was active when built, so the label is unverified. When one starts, check `log.jsonl` for `gift-sent`; if absent, read the button list in `quest-visit` and fix `GIFT_RE`.
 - [ ] Chest opener (2026-10-05): matches `[data-test*="chest"]` on `/learn`, but no chest nodes were on the chess or Spanish path when probed. Watch `log.jsonl` for `chest-open`; if chests show up under another name, fix the selector.
 - [ ] Cruise rename: code, folder, repo, launchd done 2026-10-02. Left on purpose: the Cloudflare Pages project name (pwnlingo), the X-Pwnlingo-Token header, and the pwnlingo(-status).heyitsmejosh.com hostnames. They move with the portfolio domain: point cruise.<portfolio> and cruise-status.<portfolio> at the landing and tunnel, then rename the Pages project and header.
