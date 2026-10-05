@@ -55,6 +55,7 @@ At about 1,300 an hour, 500k XP is roughly a day from 468k and 1M is about
 three weeks, against six on chess.
 
 ## Open
+- [ ] Nobody is told when the runner needs a human away from the Mac. A lost session shows an alert on the Mac only; the phone and watch apps just read stale. The session cookie runs to 2169, so this is rare.
 - [ ] Power cut: `pmset autorestart` is 0, so the Mac stays off after an outage and the streak rides on the 6 banked freezes. Joshua runs `sudo pmset -a autorestart 1` once.
 - [ ] Disk: 4.2GB free on 2026-10-05, and the runner pauses under 2GB. The streak guard now plays through that pause down to 300MB, but XP stops. Free space before it gets there.
 - [ ] Balance mode flap (seen 10-02, `auto-advance pl el` every 22 min all day): a finished course with a few levels left counts as "nearly done" for balance and "complete" for auto-advance, so the two hand it back and forth. Auto-switching is off now; fix `leastComplete` to skip complete courses before turning it back on.

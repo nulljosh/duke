@@ -49,6 +49,9 @@ wired to survive a reboot and a crash:
   if nothing answers. That catches a runner that died without the app
   noticing, which is how a streak day got missed on 2026-10-04.
 
+If the runner freezes with its status port still answering, it notices that
+nothing was logged for 45 minutes and exits so the app restarts it.
+
 Two more things keep the account healthy while it plays:
 
 - **Streak guard.** After 6pm local, if no XP has landed today, the runner

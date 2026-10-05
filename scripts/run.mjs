@@ -188,6 +188,14 @@ const rotateIfNeeded = (file, keep = 5000) => {
 const rotateLogIfNeeded = () => rotateIfNeeded(LOG_PATH);
 let lastLogAt = Date.now();
 const log = o => { lastLogAt = Date.now(); fs.appendFileSync(LOG_PATH, JSON.stringify({ at: new Date().toISOString(), track, ...o }) + '\n'); rotateLogIfNeeded(); };
+// A page.evaluate that never returns freezes the loop while the HTTP server
+// keeps answering, so the status app's ping says all is well and the account
+// sits idle. Nothing logged for 45 min means wedged: exit non-zero and the app
+// restarts us. 45 min clears the longest quiet wait (the 20 min no-hearts
+// sleep); the paused branch of the loop keeps lastLogAt fresh.
+setInterval(() => {
+  if (Date.now() - lastLogAt > 45 * 60e3) { console.error('Wedged: nothing logged for 45 min. Exiting so the status app restarts the runner.'); process.exit(1); }
+}, 60e3).unref();
 const S = { started: new Date().toISOString(), track, username: null, paused: false, voiceOn, streak: null, xpGoal: null, xpGoalMetToday: null, hearts: null, maxHearts: null, league: null, lessons: 0, puzzles: 0, matches: 0, misses: 0, xp0: null, xp: null, xpToday: null, last: null, puzzleStep: null, puzzleTotal: null, progress: null };
 // ponytail: xp0 is captured at PROCESS start, so "+N XP" silently resets on
 // every restart — it read +70 while the day's real gain was +345. Duolingo's
@@ -358,7 +366,8 @@ if (!liveJwt) {
 try {
   uid = JSON.parse(Buffer.from(liveJwt.split('.')[1], 'base64').toString()).sub;
 } catch {
-  console.error('Session cookie is not a readable JWT — re-run scripts/login.mjs.');
+  // "No Duolingo session" is the phrase the status app matches to show its login alert instead of restarting us every 5s forever.
+  console.error('No Duolingo session: the cookie is not a readable JWT — re-run scripts/login.mjs.');
   await ctx.close();
   process.exit(1);
 }
@@ -707,7 +716,9 @@ let questDeadKey = null;   // progress a language course could not move either: 
 let questDetour = null;    // { from, to } while quest focus has us on a language course
 let lastCelebrateAt = 0;
 // A language course worth switching to: enrolled, not stalled, not finished.
-const pickLanguage = () => enrolledTracks.find(t => !stalledTracks.has(t) && !completedTracks.has(t) && (trackPct.get(t) ?? 0) < 100);
+const pickLanguage = () => enrolledTracks.find(t => !stalledTracks.has(t) && !completedTracks.has(t) && (trackPct.get(t) ?? 0) < 100)
+  // the course list is fetched once at startup and can come back empty; anything in the XP rates was played, so it is enrolled
+  || fastestTrack(trackRates, t => !CORE_TRACKS.includes(t) && !stalledTracks.has(t) && !completedTracks.has(t));
 let streakWarnedDay = null;
 let unproductiveCycles = 0;   // cycles that opened fine but gained nothing — see stallAction()
 // ponytail: witnessed tonight — one "page.evaluate: Target page, context or
@@ -732,7 +743,7 @@ while (true) {
   // hold again. ponytail: under 300MB free it stays paused, a full disk is what
   // wiped the browser profile on 09-29.
   const streakRisk = streakAtRisk(new Date().getHours(), S.xpToday);
-  if (paused && !(streakRisk && freeBytes > 300 * 2 ** 20)) { saveState(); await sleep(500); continue; }
+  if (paused && !(streakRisk && freeBytes > 300 * 2 ** 20)) { lastLogAt = Date.now(); saveState(); await sleep(500); continue; }
   if (paused && streakWarnedDay !== localDay()) log({ ev: 'streak-override-pause', pausedByDisk });
   // Streak guard: evening and still no XP today means the streak is about to
   // break. Chess/math may not count as a lesson, so hop to a language course.
