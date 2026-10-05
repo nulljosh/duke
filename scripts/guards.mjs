@@ -122,3 +122,7 @@ export const diskLow = (freeBytes, floorBytes = 2 * 1024 ** 3) => freeBytes < fl
 // Quest reward button on /quests: "CLAIM", "CLAIM 60 GEMS". Not "CLAIMED" (done) or other buttons.
 export const CLAIM_RE = /^CLAIM(\s+\S.*)?$/i;
 export const isClaimLabel = t => CLAIM_RE.test(String(t).trim());
+
+// Streak guard: any finished lesson keeps the streak, so the only failure is a
+// whole evening with zero XP gained. Evening + nothing today = act now.
+export const streakAtRisk = (hour, xpToday, fromHour = 18) => xpToday === 0 && hour >= fromHour;

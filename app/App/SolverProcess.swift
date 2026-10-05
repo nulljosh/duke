@@ -71,10 +71,28 @@ enum SolverProcess {
     // Piggyback a periodic check on this same always-running, launchd-kept-
     // alive process instead of adding a second launchd job for it.
     static func watchTunnel() {
-        Task { await startTunnelIfNeeded() }
+        Task { await startTunnelIfNeeded(); await startRunnerIfNeeded() }
         Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
-            Task { await startTunnelIfNeeded() }
+            Task { await startTunnelIfNeeded(); await startRunnerIfNeeded() }
         }
+    }
+
+    // ponytail: the runner must always be running (a dead one means a missed
+    // streak). The view-level onChange restarts only fire while a window exists
+    // and only on a state flip, so they missed a runner that died overnight.
+    // Any HTTP answer from the runner's port means alive; no answer = start it.
+    // Debounced 3 min so a missing Duolingo login doesn't loop the alert.
+    private static var lastRunnerStart = Date.distantPast
+    private static func startRunnerIfNeeded() async {
+        let d = UserDefaults.standard
+        guard d.object(forKey: "backgroundRun") as? Bool ?? true else { return }
+        guard Date().timeIntervalSince(lastRunnerStart) > 180 else { return }
+        var req = URLRequest(url: URL(string: "http://127.0.0.1:8737/state")!)
+        req.timeoutInterval = 3
+        if (try? await URLSession.shared.data(for: req)) != nil { return }
+        lastRunnerStart = Date()
+        let track = d.string(forKey: "startTrack") ?? "chess"
+        DispatchQueue.main.async { start(track: track) }
     }
 
     static func start(track: String) {

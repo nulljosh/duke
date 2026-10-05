@@ -23,7 +23,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { courseIdFor } from './courseId.mjs';
 import { makeEngine } from './stockfish.mjs';
-import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow, CLAIM_RE } from './guards.mjs';
+import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow, CLAIM_RE, streakAtRisk } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -665,6 +665,8 @@ const clickByText = () => page.evaluate(() => {
 
 let idleOpens = 0;
 let lastQuestAt = 0;
+let lastChestAt = 0;
+let streakWarnedDay = null;
 let unproductiveCycles = 0;   // cycles that opened fine but gained nothing — see stallAction()
 // ponytail: witnessed tonight — one "page.evaluate: Target page, context or
 // browser has been closed" propagated out of the loop and killed the runner
@@ -683,6 +685,14 @@ while (true) {
     else if (paused && pausedByDisk && !diskLow(free, 3 * 1024 ** 3)) { paused = pausedByDisk = false; S.paused = false; log({ ev: 'disk-ok', freeMB: Math.round(free / 2 ** 20) }); saveState(); }
   } catch {}
   if (paused) { saveState(); await sleep(500); continue; }
+  // Streak guard: evening and still no XP today means the streak is about to
+  // break. Chess/math may not count as a lesson, so hop to a language course.
+  if (streakAtRisk(new Date().getHours(), S.xpToday) && streakWarnedDay !== localDay()) {
+    streakWarnedDay = localDay();
+    log({ ev: 'streak-risk', track });
+    const lang = enrolledTracks.find(t => !stalledTracks.has(t));
+    if (CORE_TRACKS.includes(track) && lang) pendingTrack = lang;
+  }
   if (!pendingTrack && cycleDue()) { pendingTrack = nextInRotation(track); cycle.lastAt = Date.now(); cycle.sinceCount = 0; saveCycle(); }
   if (pendingTrack && pendingTrack !== track) {
     track = pendingTrack; pendingTrack = null;
@@ -1147,6 +1157,33 @@ while (true) {
       if (claimed) log({ ev: 'quest-claim', claimed });
       else log({ ev: 'quest-visit', buttons: await page.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.offsetParent).map(b => b.innerText.trim().slice(0, 30)).filter(Boolean).slice(0, 15)).catch(() => []) });   // no claim found: record what was on screen so a wrong label is visible
     } catch (e) { log({ ev: 'quest-error', err: String(e && e.message || e).slice(0, 200) }); }
+  }
+  // Treasure chests on the path: open every one on /learn, every 30 min.
+  // ponytail: chest selector is a best guess (data-test contains "chest"); a miss
+  // logs the buttons on screen so the real label is visible, like quest-visit.
+  if (Date.now() - lastChestAt > 30 * 60e3) {
+    lastChestAt = Date.now();
+    try {
+      await page.goto('https://www.duolingo.com/learn', { waitUntil: 'domcontentloaded' }); await sleep(4000);
+      let opened = 0;
+      for (let i = 0; i < 5; i++) {   // ponytail: 5 caps a stuck chest
+        const hit = await page.evaluate(() => {
+          const c = [...document.querySelectorAll('[data-test*="chest"]')].find(e => e.offsetParent);
+          if (c) c.click(); return !!c;
+        });
+        if (!hit) break;
+        await sleep(1500);
+        const btn = await page.evaluate(() => {
+          const b = [...document.querySelectorAll('button')].find(b => b.offsetParent && !b.disabled && /^(OPEN|CLAIM|COLLECT)\b/i.test(b.innerText.trim()));
+          if (b) b.click(); return !!b;
+        });
+        if (!btn) break;
+        opened++; await sleep(2500);
+        for (let j = 0; j < 3 && await clickByText(); j++) await sleep(1500);   // dismiss the reward screen
+      }
+      if (opened) log({ ev: 'chest-open', opened });
+      else log({ ev: 'chest-visit', chests: await page.evaluate(() => [...document.querySelectorAll('[data-test*="chest"]')].length).catch(() => 0) });
+    } catch (e) { log({ ev: 'chest-error', err: String(e && e.message || e).slice(0, 200) }); }
   }
   consecutiveCrashes = 0;   // a cycle finished end to end; the loop is healthy
  } catch (e) {

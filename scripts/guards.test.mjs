@@ -219,3 +219,11 @@ test('claim label matches reward buttons only', () => {
   assert.equal(isClaimLabel('CLAIMED'), false);
   assert.equal(isClaimLabel('START +10 XP'), false);
 });
+
+const { streakAtRisk } = await import('./guards.mjs');
+test('streak at risk only in the evening with no XP today', () => {
+  assert.equal(streakAtRisk(19, 0), true);
+  assert.equal(streakAtRisk(10, 0), false);
+  assert.equal(streakAtRisk(19, 40), false);
+  assert.equal(streakAtRisk(19, null), false);
+});
