@@ -61,6 +61,9 @@ Two more things keep the account healthy while it plays:
 - **Rewards.** On the same visit it clicks any `CLAIM` button, and opens
   any treasure chest on the `/learn` path (`chest-open` in the log; a
   `chest-visit` with 0 chests means none were on the path).
+- **Celebrate.** Every 6h it opens your profile feed and clicks `CELEBRATE`
+  on friends' achievements (`celebrate` in the log, with how many were sent
+  and how many are left). These need a real mouse click, not a DOM click.
 - **Gifts.** On the same `/quests` visit it clicks `SEND GIFT` for a friend
   when the button is there (`gift-sent` in the log). It only matches the free
   gift label, never anything that looks like a purchase.

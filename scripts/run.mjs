@@ -667,6 +667,7 @@ let idleOpens = 0;
 let lastQuestAt = 0;
 let lastChestAt = 0;
 let lastQuestKey = null;
+let lastCelebrateAt = 0;
 // A language course worth switching to: enrolled, not stalled, not finished.
 const pickLanguage = () => enrolledTracks.find(t => !stalledTracks.has(t) && !completedTracks.has(t) && (trackPct.get(t) ?? 0) < 100);
 let streakWarnedDay = null;
@@ -1225,6 +1226,31 @@ while (true) {
       if (opened) log({ ev: 'chest-open', opened });
       else log({ ev: 'chest-visit', chests: await page.evaluate(() => [...document.querySelectorAll('[data-test*="chest"]')].length).catch(() => 0) });
     } catch (e) { log({ ev: 'chest-error', err: String(e && e.message || e).slice(0, 200) }); }
+  }
+  // Friends' achievements on the profile feed get a CELEBRATE, every 6h.
+  // Real mouse clicks: a DOM .click() does not register on these (seen live,
+  // sent 2 / left 2), while a mouse click posts /card/reaction and the button
+  // goes away. A click that leaves the count unchanged stops the loop.
+  if (S.username && Date.now() - lastCelebrateAt > 6 * 3600e3) {
+    lastCelebrateAt = Date.now();
+    try {
+      await page.goto(`https://www.duolingo.com/profile/${encodeURIComponent(S.username)}`, { waitUntil: 'domcontentloaded' }); await sleep(5000);
+      const count = () => page.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.offsetParent && /^CELEBRATE$/i.test((b.innerText || '').trim())).length);
+      let sent = 0, left = await count();
+      for (let i = 0; i < 5 && left; i++) {   // ponytail: 5 a visit is plenty for a friends feed
+        const xy = await page.evaluate(() => {
+          const b = [...document.querySelectorAll('button')].find(b => b.offsetParent && !b.disabled && /^CELEBRATE$/i.test((b.innerText || '').trim()));
+          if (!b) return null;
+          b.scrollIntoView({ block: 'center' }); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2];
+        });
+        if (!xy) break;
+        await page.mouse.click(xy[0], xy[1]); await sleep(2000);
+        const now = await count();
+        if (now >= left) break;
+        sent++; left = now;
+      }
+      log({ ev: 'celebrate', sent, left });
+    } catch (e) { log({ ev: 'celebrate-error', err: String(e && e.message || e).slice(0, 200) }); }
   }
   consecutiveCrashes = 0;   // a cycle finished end to end; the loop is healthy
  } catch (e) {
