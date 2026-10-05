@@ -54,9 +54,16 @@ Two more things keep the account healthy while it plays:
 - **Streak guard.** After 6pm local, if no XP has landed today, the runner
   logs `streak-risk` and hops from chess/math to a language course so a real
   lesson finishes before midnight.
-- **Rewards.** Every 30 min it claims finished quests on `/quests` and opens
+- **Quests.** Every 30 min it reads the daily quests on `/quests` (`quests`
+  in the log). Their chests open on their own once a quest fills, so the job
+  is finishing them: if progress sat still since the last look while on
+  chess or math, it switches to a language course (`quest-focus`).
+- **Rewards.** On the same visit it clicks any `CLAIM` button, and opens
   any treasure chest on the `/learn` path (`chest-open` in the log; a
   `chest-visit` with 0 chests means none were on the path).
+- **Gifts.** On the same `/quests` visit it clicks `SEND GIFT` for a friend
+  when the button is there (`gift-sent` in the log). It only matches the free
+  gift label, never anything that looks like a purchase.
 
 To wire this up on a fresh machine: build the app once
 (`cd app && xcodegen generate && xcodebuild -scheme CruiseStatus-macOS

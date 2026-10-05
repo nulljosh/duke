@@ -23,7 +23,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { courseIdFor } from './courseId.mjs';
 import { makeEngine } from './stockfish.mjs';
-import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow, CLAIM_RE, streakAtRisk } from './guards.mjs';
+import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow, CLAIM_RE, GIFT_RE, streakAtRisk, questKey, questStalled } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -666,6 +666,9 @@ const clickByText = () => page.evaluate(() => {
 let idleOpens = 0;
 let lastQuestAt = 0;
 let lastChestAt = 0;
+let lastQuestKey = null;
+// A language course worth switching to: enrolled, not stalled, not finished.
+const pickLanguage = () => enrolledTracks.find(t => !stalledTracks.has(t) && !completedTracks.has(t) && (trackPct.get(t) ?? 0) < 100);
 let streakWarnedDay = null;
 let unproductiveCycles = 0;   // cycles that opened fine but gained nothing — see stallAction()
 // ponytail: witnessed tonight — one "page.evaluate: Target page, context or
@@ -690,7 +693,7 @@ while (true) {
   if (streakAtRisk(new Date().getHours(), S.xpToday) && streakWarnedDay !== localDay()) {
     streakWarnedDay = localDay();
     log({ ev: 'streak-risk', track });
-    const lang = enrolledTracks.find(t => !stalledTracks.has(t));
+    const lang = pickLanguage();
     if (CORE_TRACKS.includes(track) && lang) pendingTrack = lang;
   }
   if (!pendingTrack && cycleDue()) { pendingTrack = nextInRotation(track); cycle.lastAt = Date.now(); cycle.sinceCount = 0; saveCycle(); }
@@ -1153,6 +1156,44 @@ while (true) {
         }, CLAIM_RE.source);
         if (!hit) break;
         claimed++; await sleep(2000);
+      }
+      // Friend gifts live on the same page. ponytail: label is a best guess (no
+      // friends quest was active to check); quest-visit below logs the buttons
+      // on screen, so the real label shows up there if this never fires.
+      let gifts = 0;
+      for (let i = 0; i < 3; i++) {
+        const hit = await page.evaluate(src => {
+          const ok = new RegExp(src, 'i');
+          const b = [...document.querySelectorAll('button')].find(b => b.offsetParent && !b.disabled && b.getAttribute('aria-disabled') !== 'true' && ok.test(b.innerText.trim()));
+          if (b) b.click(); return !!b;
+        }, GIFT_RE.source);
+        if (!hit) break;
+        gifts++; await sleep(2000);
+        await page.evaluate(() => { const b = [...document.querySelectorAll('button')].find(b => b.offsetParent && !b.disabled && /^SEND$/i.test(b.innerText.trim())); b && b.click(); }).catch(() => {});
+        await sleep(2000);
+      }
+      if (gifts) log({ ev: 'gift-sent', gifts });
+      // Quest focus. On the web the daily quest chests have no button: they open
+      // when the quest fills. So read the progress, and if it sat still since the
+      // last visit while we were on chess/math, go play a language course.
+      // ponytail: finds the section by its English heading; the account UI is English.
+      const quests = await page.evaluate(() => {
+        const h = [...document.querySelectorAll('h2')].find(e => /daily quests/i.test(e.innerText));
+        const sec = h && h.parentElement && h.parentElement.parentElement;
+        if (!sec) return [];
+        return [...sec.querySelectorAll('[role="progressbar"]')].map(b => {
+          const m = b.innerText.match(/(\d+)\s*\/\s*(\d+)/);
+          const title = b.parentElement?.parentElement?.querySelector('span')?.innerText.trim();
+          return m && title ? { title: title.slice(0, 60), done: +m[1], total: +m[2] } : null;
+        }).filter(Boolean);
+      }).catch(() => []);
+      if (quests.length) {
+        S.quests = quests; log({ ev: 'quests', quests });
+        if (questStalled(quests, lastQuestKey) && CORE_TRACKS.includes(track)) {
+          const lang = pickLanguage();
+          if (lang) { pendingTrack = lang; lastBalanceSwitchAt = Date.now(); log({ ev: 'quest-focus', from: track, track: lang }); }
+        }
+        lastQuestKey = questKey(quests);
       }
       if (claimed) log({ ev: 'quest-claim', claimed });
       else log({ ev: 'quest-visit', buttons: await page.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.offsetParent).map(b => b.innerText.trim().slice(0, 30)).filter(Boolean).slice(0, 15)).catch(() => []) });   // no claim found: record what was on screen so a wrong label is visible

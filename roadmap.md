@@ -34,6 +34,7 @@ a full disk (the runner now pauses under 2GB free), and Duolingo changing a
 screen the solver reads.
 
 ## Open
+- [ ] Gift sender (2026-10-05): clicks `SEND GIFT` on `/quests`. No friends quest was active when built, so the label is unverified. When one starts, check `log.jsonl` for `gift-sent`; if absent, read the button list in `quest-visit` and fix `GIFT_RE`.
 - [ ] Chest opener (2026-10-05): matches `[data-test*="chest"]` on `/learn`, but no chest nodes were on the chess or Spanish path when probed. Watch `log.jsonl` for `chest-open`; if chests show up under another name, fix the selector.
 - [ ] Cruise rename: code, folder, repo, launchd done 2026-10-02. Left on purpose: the Cloudflare Pages project name (pwnlingo), the X-Pwnlingo-Token header, and the pwnlingo(-status).heyitsmejosh.com hostnames. They move with the portfolio domain: point cruise.<portfolio> and cruise-status.<portfolio> at the landing and tunnel, then rename the Pages project and header.
 - [ ] MONEY.md + GTM row, demo GIF on landing, README note that automating Duolingo is against their terms.

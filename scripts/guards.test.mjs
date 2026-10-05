@@ -227,3 +227,23 @@ test('streak at risk only in the evening with no XP today', () => {
   assert.equal(streakAtRisk(19, 40), false);
   assert.equal(streakAtRisk(19, null), false);
 });
+
+const { isGiftLabel } = await import('./guards.mjs');
+test('gift label matches the free friend gift only, never a purchase', () => {
+  assert.equal(isGiftLabel('SEND GIFT'), true);
+  assert.equal(isGiftLabel(' Send a gift '), true);
+  assert.equal(isGiftLabel('GIFT SUPER'), false);
+  assert.equal(isGiftLabel('SEND GIFT FOR $9.99'), false);
+  assert.equal(isGiftLabel('SEND'), false);
+});
+
+const { questKey, questStalled } = await import('./guards.mjs');
+test('quests stall only when one is open and nothing moved', () => {
+  const qs = [{ done: 40, total: 50 }, { done: 2, total: 5 }];
+  assert.equal(questStalled(qs, questKey(qs)), true);
+  assert.equal(questStalled(qs, '30/50,2/5'), false);   // moved since last look
+  assert.equal(questStalled(qs, null), false);          // first look, nothing to compare
+  const done = [{ done: 50, total: 50 }, { done: 5, total: 5 }];
+  assert.equal(questStalled(done, questKey(done)), false);
+  assert.equal(questStalled([], ''), false);
+});

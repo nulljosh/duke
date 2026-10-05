@@ -126,3 +126,15 @@ export const isClaimLabel = t => CLAIM_RE.test(String(t).trim());
 // Streak guard: any finished lesson keeps the streak, so the only failure is a
 // whole evening with zero XP gained. Evening + nothing today = act now.
 export const streakAtRisk = (hour, xpToday, fromHour = 18) => xpToday === 0 && hour >= fromHour;
+
+// Friends quest gift button on /quests. Strict on purpose: "GIFT SUPER" and
+// anything with a price is a purchase, and must never match.
+export const GIFT_RE = /^SEND (A )?GIFT$/i;
+export const isGiftLabel = t => GIFT_RE.test(String(t).trim());
+
+// Daily quests are lesson-shaped (XP, accuracy, streaks of correct answers), and
+// their chests open on their own once a quest fills. So the job is finishing
+// them: if a quest is still open and nothing moved since the last look, the
+// current track isn't feeding them and should yield to a language course.
+export const questKey = qs => qs.map(q => `${q.done}/${q.total}`).join(',');
+export const questStalled = (qs, prevKey) => qs.some(q => q.done < q.total) && questKey(qs) === prevKey;
