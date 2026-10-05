@@ -10,6 +10,8 @@ Lessons that require real mouse drags (math token-bank, chess pieces) fall back 
 
 Menu bar status app (`app/App/ContentView.swift`) shows XP, streak, current level, available tracks. Clicking a track calls `POST /switch?track=<x>` on the runner's HTTP server (port 8737), which updates `pendingTrack`; the runner picks it up at the top of its loop and switches via `setCourse()`.
 
+Between lessons the runner also: claims quests on `/quests` and opens path chests on `/learn` (each at most every 30 min), and runs the streak guard (`streakAtRisk()` in `scripts/guards.mjs`: after 18:00 local with zero XP today, switch to a language course). The status app pings `127.0.0.1:8737` every 60s and restarts the runner if it is down (`SolverProcess.startRunnerIfNeeded()`).
+
 ## Files
 
 | File | What it owns |

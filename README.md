@@ -45,6 +45,18 @@ wired to survive a reboot and a crash:
 - The status app then starts `run.mjs` on its saved track, and restarts it
   5s after any unexpected exit (network blip, browser closed, anything but
   a genuinely missing Duolingo session, which needs a human to log back in).
+- Every 60s the status app also pings the runner on port 8737 and starts it
+  if nothing answers. That catches a runner that died without the app
+  noticing, which is how a streak day got missed on 2026-10-04.
+
+Two more things keep the account healthy while it plays:
+
+- **Streak guard.** After 6pm local, if no XP has landed today, the runner
+  logs `streak-risk` and hops from chess/math to a language course so a real
+  lesson finishes before midnight.
+- **Rewards.** Every 30 min it claims finished quests on `/quests` and opens
+  any treasure chest on the `/learn` path (`chest-open` in the log; a
+  `chest-visit` with 0 chests means none were on the path).
 
 To wire this up on a fresh machine: build the app once
 (`cd app && xcodegen generate && xcodebuild -scheme CruiseStatus-macOS
