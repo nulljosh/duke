@@ -54,12 +54,15 @@ track is now `pl` so a restart stays there.
 At about 1,300 an hour, 500k XP is roughly a day from 468k and 1M is about
 three weeks, against six on chess.
 
+## Blocked on Joshua
+- Run `sudo pmset -a autorestart 1` once at the Mac (needs the password). Without it the Mac stays off after a power cut and the runner with it. Asked 2026-10-05, he was away from the desk.
+
 ## Open
 - [ ] Nobody is told when the runner needs a human away from the Mac. A lost session shows an alert on the Mac only; the phone and watch apps just read stale. The session cookie runs to 2169, so this is rare.
-- [ ] Power cut: `pmset autorestart` is 0, so the Mac stays off after an outage and the streak rides on the 6 banked freezes. Joshua runs `sudo pmset -a autorestart 1` once.
 - [ ] Disk: 4.2GB free on 2026-10-05, and the runner pauses under 2GB. The streak guard now plays through that pause down to 300MB, but XP stops. Free space before it gets there.
-- [ ] Balance mode flap (seen 10-02, `auto-advance pl el` every 22 min all day): a finished course with a few levels left counts as "nearly done" for balance and "complete" for auto-advance, so the two hand it back and forth. Auto-switching is off now; fix `leastComplete` to skip complete courses before turning it back on.
-- [ ] Russian and Arabic earn nothing (42 and 0 XP an hour). They stall out after 6 cycles and get skipped for a day; find why the lessons finish without XP.
+- [x] Track flap (seen 10-02, `auto-advance pl el` every 22 min all day). Real cause: balance picked Japanese, Japanese failed to open three times, the open-fail rotation walked past stalled courses and landed on Greek (finished), which auto-advanced to Polish, and round again. Fixed 2026-10-05: the walk skips finished courses, and an open-fail rotation now goes to the best measured earner, with the failed track sitting out for 2h.
+- [ ] Russian earns nothing: the last 1% is almost all speaking exercises (131 speak against 61 other challenges over 28 lessons) and they come back `unanswerable` with no skip button. Either the fake-mic path needs to work on that screen, or speaking exercises get turned off in the account settings (that changes the phone app too, so it is Joshua's call).
+- [ ] Arabic earns nothing: `characterMatch` (pair a letter with its transliteration, answer in `pairs`) is not a shape the solver knows, 208 `unknown-challenge` events. Needs one live lesson to read the pair keys, then a branch in `solver.js`.
 - [ ] Gift sender (2026-10-05): clicks `SEND GIFT` on `/quests`. No friends quest was active when built, so the label is unverified. When one starts, check `log.jsonl` for `gift-sent`; if absent, read the button list in `quest-visit` and fix `GIFT_RE`.
 - [ ] Chest opener (2026-10-05): matches `[data-test*="chest"]` on `/learn`, but no chest nodes were on the chess or Spanish path when probed. Watch `log.jsonl` for `chest-open`; if chests show up under another name, fix the selector.
 - [ ] Cruise rename: code, folder, repo, launchd done 2026-10-02. Left on purpose: the Cloudflare Pages project name (pwnlingo), the X-Pwnlingo-Token header, and the pwnlingo(-status).heyitsmejosh.com hostnames. They move with the portfolio domain: point cruise.<portfolio> and cruise-status.<portfolio> at the landing and tunnel, then rename the Pages project and header.

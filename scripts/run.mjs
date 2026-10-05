@@ -497,7 +497,10 @@ let lastProgressAt = 0;
 const completedTracks = new Set();
 // Where to go when a track finishes or stalls: the best measured XP earner
 // that is still playable, else null and the caller falls back to rotation.
-const fastestOther = (from) => fastestTrack(trackRates, t => t !== from && !completedTracks.has(t) && !stalledTracks.has(t) && (trackPct.get(t) ?? 0) < 100);
+// A track whose lessons just failed to open sits out for 2h, so a broken one
+// can't be handed straight back; a network blip costs it two hours, not a day.
+const openFailAt = new Map();
+const fastestOther = (from) => fastestTrack(trackRates, t => t !== from && !completedTracks.has(t) && !stalledTracks.has(t) && (trackPct.get(t) ?? 0) < 100 && Date.now() - (openFailAt.get(t) || 0) > 2 * 3600e3);
 // Largest level count ever seen per track. A real tree only grows (Duolingo
 // ships new sections); a payload that comes back smaller is partial, and
 // courseComplete() refuses to call that a finish.
@@ -785,9 +788,13 @@ while (true) {
   if (!(await openLesson())) {
     log({ ev: 'open-fail', url: page.url() });
     idleOpens++;
-    // Language tree exhausted (or stuck): rotate to the least-XP course and retry.
+    // Language tree exhausted (or stuck): move to the best measured earner, or
+    // failing that let the page pick the least-XP course, and retry.
     if (!isMath && !isChessTrack && idleOpens > 2) {
-      const rotated = await page.evaluate(() => __duo.nextCourse()).catch(() => null);
+      openFailAt.set(track, Date.now());
+      const best = fastestOther(track);
+      if (best) await setCourse(best);
+      const rotated = best ? { ok: true, id: courseIdFor(best), via: 'xp-rate' } : await page.evaluate(() => __duo.nextCourse()).catch(() => null);
       log({ ev: 'rotate', rotated }); idleOpens = 0; await sleep(2000);
       // ponytail: __duo.nextCourse() patches currentCourseId server-side but
       // only ever told run.mjs {ok, id} — the local `track` binding (what the
@@ -801,9 +808,12 @@ while (true) {
         // track the stall guard just blacklisted. Seen live: pt stalls 6 cycles
         // -> switch to ja -> ja's first 3 opens fail -> rotate hands pt straight
         // back -> forever. Walk past anything already marked stalled.
-        if (stalledTracks.has(newTrack)) {
+        // Finished courses are walked past too: on 10-02 this landed on Greek
+        // (complete), which auto-advanced to Polish, and the pair swapped every
+        // 22 minutes all day.
+        if (stalledTracks.has(newTrack) || completedTracks.has(newTrack)) {
           let alt = nextInRotation(newTrack);
-          for (let i = 0; i < ROTATION.length && stalledTracks.has(alt); i++) alt = nextInRotation(alt);
+          for (let i = 0; i < ROTATION.length && (stalledTracks.has(alt) || completedTracks.has(alt)); i++) alt = nextInRotation(alt);
           log({ ev: 'rotate-blocked', blocked: newTrack, track: alt });
           await setCourse(alt); await sleep(2000);
           newTrack = alt;
