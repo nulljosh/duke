@@ -4,7 +4,7 @@
 
 [![MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-**Live:** https://pwnlingo.heyitsmejosh.com
+**Live:** https://pwnlingo.jaybulb.com
 
 Plays Duolingo for you. Languages, math, chess. Music is wired up too, but Duolingo doesn't serve it on desktop web, so it has nothing to play yet.
 
@@ -99,7 +99,7 @@ Native everywhere: SwiftUI on iOS/macOS/watchOS, Compose Multiplatform on Androi
 - `scripts/js-chess-engine.js` plays the chess bot.
 - `app/` is the iOS/macOS status app (xcodegen, no checked-in `.xcodeproj`).
 - `SKILL.md` and `CLAUDE.md` hold the gotchas that cost time. Read them before touching the solver.
-- `web/` is the landing page at pwnlingo.heyitsmejosh.com.
+- `web/` is the landing page at pwnlingo.jaybulb.com.
 
 ## Honest notes
 
