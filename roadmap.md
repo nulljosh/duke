@@ -1,5 +1,7 @@
 # Roadmap
 
+> Priority tier 5 (2026-10-17): exploratory, this year. Order: live blockers, ship pushes, active features, portfolio, exploratory. See ~/Documents/Code/LOOP-HANDOFF.md.
+
 ## Benchmarks: finishing Duolingo (measured 2026-10-02)
 "Finished" means every course on the account at 100%, plus math and chess. Run
 `node scripts/bench.mjs` for the live numbers; it reads `log.jsonl` only.
