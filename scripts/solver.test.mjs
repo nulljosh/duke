@@ -226,3 +226,15 @@ test('bare translate opens the keyboard and types', async () => {
   assert.equal(await window.__duo.solveLang(), 'type:bare');
   assert.equal(typed, '私は日本に行きます');
 });
+
+// Regression: Turkish "to read" / "to drink" tiles carry data-test "read-..." / "drink-...",
+// so the pair string only matches the tile's visible label.
+test('pair tiles match by data-test key or by visible label', () => {
+  const a = ['to read', 'okumak'];
+  const hits = [
+    { dataset: { test: 'read-challenge-tap-token' }, innerText: 'to read' },
+    { dataset: { test: 'okumak-challenge-tap-token' }, innerText: 'okumak' },
+    { dataset: { test: 'sadece-challenge-tap-token' }, innerText: 'sadece' },
+  ].filter(b => a.includes(tileKey(b)) || a.includes(txt(b).replace(/^\d+\s+/, '')));
+  assert.equal(hits.length, 2);
+});

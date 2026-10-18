@@ -164,3 +164,11 @@ export const xpRates = (events, { maxGapMs = 30 * 60e3, minMs = 30 * 60e3, maxGa
 // The best measured earner among the tracks `ok` allows, or null.
 export const fastestTrack = (rates, ok = () => true) =>
   Object.entries(rates || {}).filter(([t, r]) => r > 0 && ok(t)).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+
+// XP-first balance: a track measured under `ratio` of the best earner is not worth
+// the hours, however far behind it sits. Unmeasured tracks pass so they still get
+// tried once. Real numbers 10-18: ja 358/h, chess 514/h vs pl 1303/h, tr 1226/h.
+export const slowTrack = (rates, t, ratio = 0.6) => {
+  const best = Math.max(0, ...Object.values(rates || {}));
+  return Number.isFinite(rates?.[t]) && rates[t] < best * ratio;
+};

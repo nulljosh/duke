@@ -23,7 +23,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { courseIdFor } from './courseId.mjs';
 import { makeEngine } from './stockfish.mjs';
-import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow, CLAIM_RE, GIFT_RE, streakAtRisk, questKey, questStalled, crossed, xpRates, fastestTrack } from './guards.mjs';
+import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow, CLAIM_RE, GIFT_RE, streakAtRisk, questKey, questStalled, crossed, xpRates, fastestTrack, slowTrack } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
 let track = process.argv[2];
@@ -244,8 +244,11 @@ const noteMilestones = () => {
 // go when a track finishes or stalls. ponytail: read once at startup; rates
 // move slowly and a restart refreshes them.
 const lessonEnds = f => { try { return fs.readFileSync(f, 'utf8').split('\n').filter(l => l.includes('"lesson-end"')).map(l => { try { const o = JSON.parse(l); return o.xp != null ? { at: Date.parse(o.at), track: o.track, xp: o.xp } : null; } catch { return null; } }).filter(Boolean); } catch { return []; } };
-const trackRates = xpRates([...lessonEnds(LOG_PATH.replace(/\.jsonl$/, '.archive.jsonl')), ...lessonEnds(LOG_PATH)]);
+const archiveEnds = lessonEnds(LOG_PATH.replace(/\.jsonl$/, '.archive.jsonl'));
+const trackRates = xpRates([...archiveEnds, ...lessonEnds(LOG_PATH)]);
 S.xpRates = trackRates;
+// ponytail: the archive is static, so only the live log is re-read. Assign over, never delete: a rotation can drop a track from the sample, and that must not make a slow one look unmeasured.
+const refreshRates = () => Object.assign(trackRates, xpRates([...archiveEnds, ...lessonEnds(LOG_PATH)]));
 // Both ledgers rotate on the same 5MB rule as log.jsonl — they used to grow
 // forever, which at ~22 levels/hour running unattended is real disk over weeks.
 const LESSONS_PATH = path.join(D, 'lessons.jsonl');
@@ -500,7 +503,9 @@ const completedTracks = new Set();
 // A track whose lessons just failed to open sits out for 2h, so a broken one
 // can't be handed straight back; a network blip costs it two hours, not a day.
 const openFailAt = new Map();
-const fastestOther = (from) => fastestTrack(trackRates, t => t !== from && !completedTracks.has(t) && !stalledTracks.has(t) && (trackPct.get(t) ?? 0) < 100 && Date.now() - (openFailAt.get(t) || 0) > 2 * 3600e3);
+// One test for every place that picks a track. Chess is not exempt: 514 XP/h beats idling, but not a 1,300 XP/h language.
+const playable = t => !completedTracks.has(t) && !stalledTracks.has(t) && Date.now() - (openFailAt.get(t) || 0) > 2 * 3600e3 && !slowTrack(trackRates, t);
+const fastestOther = (from) => fastestTrack(trackRates, t => t !== from && playable(t) && (trackPct.get(t) ?? 0) < 100);
 // Largest level count ever seen per track. A real tree only grows (Duolingo
 // ships new sections); a payload that comes back smaller is partial, and
 // courseComplete() refuses to call that a finish.
@@ -508,6 +513,7 @@ const progressPeak = new Map();
 const refreshProgress = async (force = false) => {
   if (!force && Date.now() - lastProgressAt < PROGRESS_EVERY_MS) return;
   lastProgressAt = Date.now();
+  refreshRates();
   const p = await progress(track);
   if (!p) { S.progress = null; return; }
   // A short payload would otherwise drag the percentage backwards and (worse)
@@ -547,7 +553,11 @@ const refreshProgress = async (force = false) => {
     if (!sweptOnce) { sweptOnce = true; await pollCandidates(balanceCandidates().length); }
     else await pollCandidates();
     S.balance = { scope: cycle.scope, pcts: Object.fromEntries(trackPct) };
-    const behind = leastComplete(S.balance.pcts, track, { now: Date.now(), lastSwitchAt: lastBalanceSwitchAt, remaining: Object.fromEntries(trackRemaining) });
+    // Only tracks worth the hours compete (the current one always stays in for the margin check).
+    const ok = ([t]) => t === track || playable(t);
+    let behind = leastComplete(Object.fromEntries(Object.entries(S.balance.pcts).filter(ok)), track, { now: Date.now(), lastSwitchAt: lastBalanceSwitchAt, remaining: Object.fromEntries([...trackRemaining].filter(ok)) });
+    // Parked on a slow track with nothing to balance toward: take the best earner.
+    if (!behind && slowTrack(trackRates, track)) behind = fastestOther(track);
     if (behind && behind !== track) {
       log({ ev: 'balance-switch', from: track, track: behind, pcts: S.balance.pcts });
       lastBalanceSwitchAt = Date.now();
@@ -719,7 +729,7 @@ let questDeadKey = null;   // progress a language course could not move either: 
 let questDetour = null;    // { from, to } while quest focus has us on a language course
 let lastCelebrateAt = 0;
 // A language course worth switching to: enrolled, not stalled, not finished.
-const pickLanguage = () => enrolledTracks.find(t => !stalledTracks.has(t) && !completedTracks.has(t) && (trackPct.get(t) ?? 0) < 100)
+const pickLanguage = () => enrolledTracks.find(t => playable(t) && (trackPct.get(t) ?? 0) < 100)
   // the course list is fetched once at startup and can come back empty; anything in the XP rates was played, so it is enrolled
   || fastestTrack(trackRates, t => !CORE_TRACKS.includes(t) && !stalledTracks.has(t) && !completedTracks.has(t));
 let streakWarnedDay = null;
@@ -811,9 +821,9 @@ while (true) {
         // Finished courses are walked past too: on 10-02 this landed on Greek
         // (complete), which auto-advanced to Polish, and the pair swapped every
         // 22 minutes all day.
-        if (stalledTracks.has(newTrack) || completedTracks.has(newTrack)) {
-          let alt = nextInRotation(newTrack);
-          for (let i = 0; i < ROTATION.length && (stalledTracks.has(alt) || completedTracks.has(alt)); i++) alt = nextInRotation(alt);
+        if (!playable(newTrack)) {
+          let alt = fastestOther(newTrack) || nextInRotation(newTrack);
+          for (let i = 0; i < ROTATION.length && !playable(alt); i++) alt = nextInRotation(alt);
           log({ ev: 'rotate-blocked', blocked: newTrack, track: alt });
           await setCourse(alt); await sleep(2000);
           newTrack = alt;

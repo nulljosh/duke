@@ -141,7 +141,8 @@ window.__duo = window.__duo || {};
       const live = () => bank().filter(b => b.getAttribute('aria-disabled') !== 'true');
       for (const p of c.pairs) {
         const a = Object.values(p).filter(v => typeof v === 'string' && !/^https?:/.test(v)).map(s => s.toLowerCase());   // characterMatch: character/transliteration
-        const hit = live().filter(b => a.includes(tileKey(b))).slice(0, 2);
+        // data-test drops the infinitive marker ("read-challenge-tap-token" for the "to read" tile), so fall back to the shown label.
+        const hit = live().filter(b => a.includes(tileKey(b)) || a.includes(txt(b).replace(/^\d+\s+/, ''))).slice(0, 2);
         if (hit.length < 2) continue;                              // never click a lone tile, it offsets every later pair
         for (const b of hit) { b.click(); await this.sleep(350); }
       }

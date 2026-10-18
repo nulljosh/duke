@@ -273,3 +273,13 @@ test('xpRates measures per track and skips gaps, phone XP and thin data', () => 
   assert.equal(fastestTrack(r, () => false), null);
   assert.equal(fastestTrack({}), null);
 });
+
+test('slowTrack drops known slow earners, keeps unmeasured ones', async () => {
+  const { slowTrack } = await import('./guards.mjs');
+  const rates = { ja: 358, chess: 514, pl: 1303, tr: 1226 };   // real numbers, 2026-10-18
+  assert.equal(slowTrack(rates, 'ja'), true);
+  assert.equal(slowTrack(rates, 'chess'), true);
+  assert.equal(slowTrack(rates, 'tr'), false);
+  assert.equal(slowTrack(rates, 'zh'), false);   // never measured: worth one try
+  assert.equal(slowTrack({}, 'ja'), false);
+});
