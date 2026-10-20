@@ -14,18 +14,27 @@
 //
 // Logs: scripts/log.jsonl (one line per event), scripts/state.json (summary),
 // scripts/lessons.jsonl (language study ledger: prompt + answer per question).
-import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
 import crypto from 'node:crypto';
-import { execFile } from 'node:child_process';
+import { execFile, execFileSync } from 'node:child_process';
 import { promisify } from 'node:util';
 import { courseIdFor } from './courseId.mjs';
 import { makeEngine } from './stockfish.mjs';
 import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow, CLAIM_RE, GIFT_RE, streakAtRisk, questKey, questStalled, crossed, xpRates, fastestTrack, slowTrack } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
+// ponytail: disk cleanups purge ~/Library/Caches/ms-playwright and node_modules,
+// which killed the runner overnight (missing module, then a 500MB re-download).
+// Keep the browser inside the repo and reinstall deps if they're gone. The
+// playwright import is dynamic so this runs before it resolves.
+process.env.PLAYWRIGHT_BROWSERS_PATH ||= path.join(D, '.pw-browsers');
+if (!fs.existsSync(path.join(D, 'node_modules/playwright'))) {
+  const bin = path.dirname(process.execPath);
+  execFileSync(path.join(bin, 'npm'), ['install', '--no-audit', '--no-fund'], { cwd: D, env: { ...process.env, PATH: `${bin}:${process.env.PATH}` } });
+}
+const { chromium } = await import('playwright');
 let track = process.argv[2];
 if (!track) { console.error('usage: node run.mjs <track>   (a language code, math, chess, or music)'); process.exit(1); }
 let isMath = track === 'math';

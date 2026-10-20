@@ -14,3 +14,4 @@ package-lock.json
 xpday.json
 milestones.jsonl
 run.log.sb-*
+.pw-browsers/
