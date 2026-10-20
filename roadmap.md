@@ -83,6 +83,7 @@ three weeks, against six on chess.
   done without blocking the page for >10s — needs a Web Worker running
   `jsChessEngine` off the main thread with a real cancellable timeout, not
   attempted yet.
+- [ ] `POST /quit` to the runner's port 8737 did not stop the runner (found 2026-10-20). Check what the handler does in `run.mjs` and make it exit the process, so a quit from the status app or a script actually stops it.
 
 ## Won't fix
 - Music track: not a solver gap. Verified live (2026-09-10) — this account's
