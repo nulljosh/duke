@@ -250,12 +250,13 @@ window.__duo = window.__duo || {};
     // characterMatch (via: 'pairs') has no sentence prompt/answer at all — say
     // the vocab it just matched instead, or voice mode goes silent for this
     // entire challenge type (it's the majority of some courses' challenge mix).
-    const pairsSpeech = via === 'pairs' && Array.isArray(c.pairs)
-      ? c.pairs.map(p => `${p.fromToken} is ${p.learningToken}`).join('. ') : '';
+    // Read from the normalized pairs below: characterMatch rows carry transliteration/character, not fromToken/learningToken.
+    const pairs = Array.isArray(c.pairs) ? c.pairs.map(p => [p.fromToken || p.transliteration, p.learningToken || p.character]).filter(([a, b]) => a && b) : null;
+    const pairsSpeech = via === 'pairs' && pairs
+      ? pairs.map(([a, b]) => `${a} is ${b}`).join('. ') : '';
     // gapFill/tapComplete/dialogue carry no c.prompt; rebuild it so the row is importable into Lexly.
     const cloze = Array.isArray(c.displayTokens) ? c.displayTokens.map(t => (t && t.isBlank) ? '___' : ((t && t.text) || '')).join('').trim() : '';
     const convo = Array.isArray(c.dialogue) ? c.dialogue.map(d => d && d.text).filter(Boolean).join(' / ') : '';
-    const pairs = Array.isArray(c.pairs) ? c.pairs.map(p => [p.fromToken || p.transliteration, p.learningToken || p.character]).filter(([a, b]) => a && b) : null;
     return { at: new Date().toISOString(), course: localStorage.duoCourse || null, type: c.type, prompt: c.prompt || pairsSpeech || cloze || convo, answer: pairsSpeech ? '' : ans, choices, pairs, via, href: location.pathname };
   };
 

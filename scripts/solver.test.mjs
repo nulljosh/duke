@@ -43,6 +43,15 @@ test('pairsSpeech reads out every matched vocab pair', () => {
   assert.equal(pairsSpeech(pairs), 'tea is 차. bread is 빵');
 });
 
+// The real ledgerRow must narrate characterMatch pairs (transliteration/character keys), not "undefined is undefined".
+test('ledgerRow narrates characterMatch pairs without undefined', () => {
+  const document = { querySelector: () => null, querySelectorAll: () => [] };
+  const window = {};
+  runInNewContext(readFileSync(new URL('./solver.js', import.meta.url), 'utf8'), { window, document, localStorage: {}, location: { pathname: '/lesson' } });
+  window.__duo.chal = () => ({ type: 'characterMatch', pairs: [{ transliteration: 'vaze', character: 'וואַזע' }] });
+  assert.equal(window.__duo.ledgerRow('pairs').prompt, 'vaze is וואַזע');
+});
+
 // --- puzzleBest: FEN-keyed lookup against a fake chal() ---
 function puzzleBest(chal, liveFen) {
   const c = chal; if (!c || !c.chessPuzzleInfo) return null;
