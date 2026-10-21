@@ -140,9 +140,12 @@ window.__duo = window.__duo || {};
     if (Array.isArray(c.pairs) && c.pairs.length) {              // match the pairs
       const live = () => bank().filter(b => b.getAttribute('aria-disabled') !== 'true');
       for (const p of c.pairs) {
-        const a = Object.values(p).filter(v => typeof v === 'string' && !/^https?:/.test(v)).map(s => s.toLowerCase());   // characterMatch: character/transliteration
+        const raw = Object.values(p).filter(v => typeof v === 'string' && !/^https?:/.test(v));   // characterMatch: character/transliteration
+        const a = raw.map(s => s.toLowerCase());
+        // Case first: transliteration is case-significant ("Hal" is ح, "hal" is ه), so folding case put both tiles in one key and paired the wrong ones.
+        const exact = live().filter(b => raw.includes((b.dataset.test || '').replace(/-challenge-tap-token$/, '')));
         // data-test drops the infinitive marker ("read-challenge-tap-token" for the "to read" tile), so fall back to the shown label.
-        const hit = live().filter(b => a.includes(tileKey(b)) || a.includes(txt(b).replace(/^\d+\s+/, ''))).slice(0, 2);
+        const hit = (exact.length >= 2 ? exact : live().filter(b => a.includes(tileKey(b)) || a.includes(txt(b).replace(/^\d+\s+/, '')))).slice(0, 2);
         if (hit.length < 2) continue;                              // never click a lone tile, it offsets every later pair
         for (const b of hit) { b.click(); await this.sleep(350); }
       }
