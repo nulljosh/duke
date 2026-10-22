@@ -1,6 +1,6 @@
 <img src="icon.svg" width="80">
 
-[![version](https://img.shields.io/badge/version-2.2.0-0074D9)](WHITEPAPER.md) [![MIT](https://img.shields.io/badge/license-MIT-001F3F)](LICENSE)
+[![version](https://img.shields.io/badge/version-2.2.0-0074D9)](WHITEPAPER.md) [![Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-001F3F)](LICENSE)
 
 Surf plays Duolingo for you. Languages, math and chess, around the clock, in a real browser. Formerly Cruise.
 
@@ -41,4 +41,4 @@ The menu bar app lives at `~/Applications/Surf.app`, and a LaunchAgent keeps it 
 
 More in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and the [whitepaper](WHITEPAPER.md). The brand kit is [brand/BRAND.md](brand/BRAND.md).
 
-MIT 2026 Joshua Trommel
+Apache 2.0, 2026 Joshua Trommel. [Privacy](PRIVACY.md).

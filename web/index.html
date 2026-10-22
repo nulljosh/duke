@@ -27,7 +27,7 @@
   <nav class="nav-links" aria-label="Main">
     <a href="#how">How it works</a>
   </nav>
-  <a class="nav-brand" href="#top" aria-label="Surf home"><img src="icon.svg" alt="" width="28" height="28"><span>Surf</span></a>
+  <a class="nav-brand" href="#top" aria-label="Surf home"><img src="icon.svg" alt="" width="28" height="28"></a>
   <nav class="nav-links nav-end" aria-label="More">
     <a href="#clients">Apps</a>
   </nav>
@@ -47,7 +47,7 @@
   <div class="stage reveal" aria-hidden="true">
     <div class="stage-art"></div>
     <div class="app-demo">
-      <h4 id="appTrackName">Surf: solving Chess</h4>
+      <h4 id="appTrackName">Solving Chess</h4>
       <div class="app-meta" id="appMeta">196 day streak · 5/5 hearts · Diamond League</div>
       <div id="demoStage"></div>
       <div class="app-label" id="appLabel">Checkmate!</div>
@@ -131,11 +131,13 @@
     { type: 'chess', label: 'Fork!', pieces: { e5:'N', g1:'K', g8:'k', c8:'q' }, from: 'e5', to: 'f7' }
   ];
   var trackName = { chess: 'Chess', math: 'Math', lang: 'Language' };
+  // Live tracks are language codes ("ro"); show the name.
+  function langName(code) { try { return new Intl.DisplayNames(['en'], { type: 'language' }).of(code); } catch (e) { return code; } }
   var players = { chess: playChess, math: playMath, lang: playLang };
   function playNext() {
     if (live) return;              // the real runner took over
     var p = puzzles[solved % puzzles.length];
-    trackEl.textContent = 'Surf: solving ' + trackName[p.type];
+    trackEl.textContent = 'Solving ' + trackName[p.type];
     labelEl.classList.remove('on');
     players[p.type](p, function() {
       if (live) return;
@@ -204,7 +206,7 @@
       if (!wasLive && captionEl) {
         captionEl.textContent = 'Live right now, from the Mac actually running it.';
       }
-      trackEl.textContent = 'Surf: solving ' + (trackName[d.track] || d.track);
+      trackEl.textContent = 'Solving ' + (trackName[d.track] || langName(d.track));
       if (d.xp != null) xpEl.textContent = '+' + d.xp + ' XP';
       var solved = d.track === 'chess' ? d.puzzles : d.lessons;
       solvedEl.textContent = solved;
@@ -279,7 +281,7 @@
     <div class="foot-brand"><img src="icon.svg" alt="" width="40" height="40"><b>Surf</b><p>Games and software on autopilot. Formerly Cruise.</p></div>
     <nav class="foot-cols" aria-label="Footer">
       <div><p class="label">Surf</p><a href="#how">How it works</a><a href="#clients">The apps</a><a href="#top">Back to top</a></div>
-      <div><p class="label">More</p><a href="mailto:trommatic@icloud.com?subject=Surf">Feedback</a><a href="https://jaybulb.com">More apps</a></div>
+      <div><p class="label">More</p><a href="mailto:trommatic@icloud.com?subject=Surf">Feedback</a><a href="https://jaybulb.com">More apps</a><a href="privacy.html">Privacy</a></div>
       <div><p class="label"><label for="langPicker" data-i18n="Language">Language</label></p>
         <select id="langPicker" aria-label="Language">
           <option value="en">English</option>
@@ -291,7 +293,7 @@
     </nav>
   </div>
   <div class="word-band" aria-hidden="true"><canvas class="word-canvas"></canvas></div>
-  <p class="legal">&copy; 2026 Joshua Trommel &middot; MIT License &middot; Art: Walter Crane, Neptune&rsquo;s Horses, 1892, public domain</p>
+  <p class="legal">&copy; 2026 Joshua Trommel &middot; Apache 2.0 &middot; <a href="privacy.html">Privacy</a> &middot; Art: Walter Crane, Neptune&rsquo;s Horses, 1892, public domain</p>
 </footer>
 <script>
   // Set after i18n.js resolves so the control shows the language actually in use.

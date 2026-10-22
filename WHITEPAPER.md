@@ -36,4 +36,4 @@ SwiftUI on macOS, iOS and watchOS, Compose Multiplatform on Android, Windows and
 
 Automated play is against Duolingo's terms, and the XP still ranks against real people. Surf is for one account and for reading, not for distribution.
 
-MIT 2026, Joshua Trommel
+Apache 2.0, 2026 Joshua Trommel
