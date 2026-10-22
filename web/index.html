@@ -2,128 +2,53 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cruise: Duolingo on autopilot</title>
-<meta name="description" content="A runner that plays Duolingo Math, Chess and language courses in a real browser, around the clock.">
-<meta name="theme-color" content="#f5f0e4">
-<meta property="og:title" content="Cruise: Duolingo on autopilot">
-<meta property="og:description" content="Reads the live lesson, works out the answer, clicks. Chess, math and every language course.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Surf. Duolingo on autopilot.</title>
+<meta name="description" content="A runner that plays Duolingo in a real browser. It reads each exercise, works out the answer and clicks. Chess, math and every language course, around the clock.">
+<meta name="theme-color" content="#fdfdfd" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0f0a" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://surf.jaybulb.com/">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <meta property="og:type" content="website">
-<link rel="icon" href="icon.svg">
-<link rel="stylesheet" href="devices.css">
-<style>
-@import url("https://heyitsmejosh.com/tokens.css");
-:root {
-  --accent: #3f9a00; --link: #2f7500; --on-accent: #fff;
-  --font-body: -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --demo-bg: #fff; --demo-tile: #eef0f3; --demo-square: #d7dae0; --demo-tile2: rgba(28,29,34,.06);
-  --demo-text: #1c1d22; --demo-text2: rgba(28,29,34,.55);
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --link: #8be04a;
-  --demo-bg: #16171b; --demo-tile: #26282e; --demo-square: #3a3d44; --demo-tile2: rgba(236,236,240,.08);
-  --demo-text: #ececf0; --demo-text2: rgba(236,236,240,.55); } }
-:root[data-theme="dark"] { --link: #8be04a;
-  --demo-bg: #16171b; --demo-tile: #26282e; --demo-square: #3a3d44; --demo-tile2: rgba(236,236,240,.08);
-  --demo-text: #ececf0; --demo-text2: rgba(236,236,240,.55); }
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
-a { color: var(--link); text-decoration: none; }
-a:hover { text-decoration: underline; }
-.container { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; }
-.wide { max-width: 980px; margin: 0 auto; padding: 0 1.5rem; }
-/* Quiet, Apple-style page: one flat colour, big type, hairline rules, a frosted nav. No gradients, no floating clutter. */
-.nav { position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
-  background: color-mix(in srgb, var(--bg) 80%, transparent); border-bottom: 1px solid var(--border); }
-.nav-in { max-width: 980px; margin: 0 auto; padding: 0 1.5rem; height: 48px; display: flex; align-items: center; justify-content: space-between; }
-.brand { display: flex; align-items: center; gap: .55rem; font-weight: 600; font-size: .95rem; color: var(--text); }
-.brand:hover { text-decoration: none; }
-.brand img { width: 22px; height: 22px; border-radius: 6px; }
-.nav-links { display: flex; gap: 1.6rem; font-size: .85rem; }
-.nav-links a { color: var(--text2); }
-.nav-links a:hover { color: var(--text); text-decoration: none; }
-@media (max-width: 560px) { .nav-links a:not(:last-child) { display: none; } }
-.hero { padding: 6.5rem 0 4.5rem; text-align: center; }
-h1 { font-size: clamp(2.6rem, 8.5vw, 5rem); line-height: 1.04; letter-spacing: -0.04em; font-weight: 700; margin-bottom: 1.4rem; }
-.lede { font-size: clamp(1.1rem, 2.6vw, 1.4rem); line-height: 1.45; color: var(--text2); max-width: 30em; margin: 0 auto 2rem; }
-.cta { display: flex; justify-content: center; align-items: center; gap: 1.6rem; flex-wrap: wrap; }
-.btn { display: inline-block; background: var(--accent); color: var(--on-accent); padding: .75rem 1.5rem; border-radius: 980px; font-weight: 600; font-size: 1.02rem; }
-.btn:hover { text-decoration: none; opacity: .92; }
-.more { font-size: 1.02rem; }
-.more::after { content: " \203A"; }
-a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.hero .device { margin: 3.5rem auto 0; }
-.hero .device-caption { text-align: center; color: var(--text2); font-size: .85rem; margin-top: .9rem; }
-section { padding: 6rem 0; border-top: 1px solid var(--border); }
-.eyebrow { font-size: .85rem; font-weight: 600; color: var(--link); margin-bottom: .6rem; }
-h2 { font-size: clamp(1.9rem, 4.6vw, 2.75rem); line-height: 1.1; margin-bottom: 1.4rem; letter-spacing: -0.03em; font-weight: 700; }
-section p { font-size: 1.1rem; color: var(--text2); }
-section p + p { margin-top: 1.1rem; }
-.status { margin-top: 2rem; border-top: 1px solid var(--border); }
-.row { display: grid; grid-template-columns: 8rem 1fr; gap: 1.5rem; padding: 1.1rem 0; border-bottom: 1px solid var(--border); }
-.row b { font-weight: 600; }
-.row span { color: var(--text2); }
-@media (max-width: 560px) { .row { grid-template-columns: 1fr; gap: .25rem; } }
-.quote { padding: .25rem 0; color: var(--text); font-size: 1.5rem; line-height: 1.3; letter-spacing: -0.02em; font-weight: 600; margin: 2rem 0 0; }
-.quote small { display: block; color: var(--text2); font-size: .9rem; font-weight: 400; letter-spacing: 0; margin-top: .6rem; }
-footer a, footer select { display: inline-block; padding: .55rem .3rem; }
-footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-align: center; border-top: 1px solid var(--border); }
-
-/* ponytail: an actually-animated demo - a real mini chessboard replaying the
-   solver's own move (slide + flash + XP), not a static screenshot of the app.
-   Positions are illustrative (the real solver reads live puzzles from
-   Duolingo's fiber tree), the moves themselves are real mate-in-1 / fork
-   patterns. Nothing leaves the page. */
-.app-demo { background: var(--demo-bg); color: var(--demo-text); border-radius: 0 0 10px 10px; padding: 1.1rem 1rem 1.3rem; text-align: center; }
-.app-demo h4 { font-size: .95rem; font-weight: 700; margin-bottom: .3rem; }
-.app-meta { font-size: .7rem; color: var(--demo-text2); margin-bottom: .8rem; }
-/* The board keeps the app's own colours in both themes rather than following
-   the page - a chessboard that inverts with a colour scheme stops reading as a
-   chessboard, and the native apps don't do it either. Exact values from
-   ChessBoardView.swift. */
-.demo-board { --board-dark: #759657; --board-light: #ededd1;
-  position: relative; width: 200px; aspect-ratio: 1; margin: 0 auto .8rem; border-radius: 6px; overflow: hidden;
-  background-image: linear-gradient(45deg,var(--board-dark) 25%,transparent 25%),linear-gradient(-45deg,var(--board-dark) 25%,transparent 25%),
-    linear-gradient(45deg,transparent 75%,var(--board-dark) 75%),linear-gradient(-45deg,transparent 75%,var(--board-dark) 75%);
-  background-size: 50px 50px; background-position: 0 0,0 25px,25px -25px,-25px 0; background-color: var(--board-light); }
-.demo-piece { position: absolute; width: 12.5%; height: 12.5%; display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem; line-height: 1; transition: left .6s cubic-bezier(.4,0,.2,1), top .6s cubic-bezier(.4,0,.2,1), opacity .3s; }
-.demo-piece.w { color: #fff; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
-.demo-piece.b { color: #1c1d22; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; }
-.demo-flash { position: absolute; width: 12.5%; height: 12.5%; border-radius: 50%; background: #58cc02;
-  opacity: 0; transform: scale(.4); pointer-events: none; transition: opacity .25s, transform .25s; }
-.demo-flash.on { opacity: .55; transform: scale(1.5); }
-.app-label { font-size: 1.05rem; font-weight: 700; color: #58cc02; height: 1.4em; opacity: 0; transition: opacity .25s; }
-.app-label.on { opacity: 1; }
-.app-xp { font-size: 1.5rem; font-weight: 700; color: #58cc02; font-variant-numeric: tabular-nums; margin-top: .3rem; }
-.app-stats { display: flex; justify-content: center; gap: 1.6rem; margin-top: .6rem; }
-.app-stats div b { display: block; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
-.app-stats div span { font-size: .7rem; color: var(--demo-text2); }
-.demo-math { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem; width: 200px; height: 200px; margin: 0 auto .8rem; border-radius: 6px; background: var(--demo-tile); }
-.demo-math .problem { font-size: 1.15rem; font-weight: 600; }
-.demo-math .answer { font-size: 1.3rem; font-weight: 700; color: #58cc02; opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s; padding: .3rem .8rem; border-radius: 8px; }
-.demo-math .answer.on { opacity: 1; transform: translateY(0); background: rgba(88,204,2,.15); }
-.demo-lang { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .9rem; width: 200px; height: 200px; margin: 0 auto .8rem; border-radius: 6px; background: var(--demo-tile); padding: 0 .8rem; }
-.demo-lang .prompt { font-size: .95rem; color: var(--demo-text2); text-align: center; }
-.demo-lang .tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; }
-.demo-lang .tile { font-size: .85rem; padding: .35rem .65rem; border-radius: 6px; background: var(--demo-tile2); color: var(--demo-text2); transition: background .25s, color .25s, transform .25s; }
-.demo-lang .tile.on { background: #58cc02; color: #fff; transform: scale(1.05); }
-</style>
+<meta property="og:site_name" content="Surf">
+<meta property="og:title" content="Surf. Duolingo on autopilot.">
+<meta property="og:description" content="Reads the live lesson, works out the answer, clicks. Chess, math and every language course.">
+<meta property="og:url" content="https://surf.jaybulb.com/">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="landing.css">
+<script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
-<nav class="nav"><div class="nav-in">
-  <a class="brand" href="#top"><img src="icon.svg" alt="">Cruise</a>
-  <div class="nav-links"><a href="#how">How it works</a><a href="#status">Where it stands</a><a href="#finish">Finish line</a><a href="#clients">Clients</a></div>
-</div></nav>
+
+<header class="nav" aria-label="Site">
+  <nav class="nav-links" aria-label="Main">
+    <a href="#how">How it works</a>
+    <a href="#status">Where it stands</a>
+  </nav>
+  <a class="nav-brand" href="#top" aria-label="Surf home"><img src="icon.svg" alt="" width="28" height="28"><span>Surf</span></a>
+  <nav class="nav-links nav-end" aria-label="More">
+    <a href="#clients">Clients</a>
+    <a href="#finish">Finish line</a>
+  </nav>
+</header>
+
 <main id="top">
-<div class="hero">
-  <div class="wide">
-  <h1 data-i18n="Duolingo on autopilot">Duolingo on autopilot.</h1>
-  <p class="lede">A runner that plays Duolingo in a real browser. It reads each exercise, works out the answer and clicks. Chess, math and every language course, around the clock.</p>
-  <div class="cta"><a class="btn" href="#how">See how it works</a><a class="more" href="#finish">The finish line</a></div>
-  <div class="device device-mac has-chrome" aria-hidden="true"><div class="device-screen">
+<section class="hero">
+  <div class="wrap center">
+    <p class="label" data-i18n="Duolingo on autopilot">Duolingo on autopilot</p>
+    <h1>Surf</h1>
+    <p class="lead">A runner that plays Duolingo in a real browser. It reads each exercise, works out the answer and clicks. Chess, math and every language course, around the clock.</p>
+    <div class="cta">
+      <a class="btn btn-solid" href="#how">See how it works</a>
+      <a class="btn btn-ghost" href="#finish">The finish line</a>
+    </div>
+  </div>
+
+  <div class="stage reveal" aria-hidden="true">
+    <figure class="stage-art"><svg viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice" fill="none" stroke="currentColor" stroke-width="2.5"><path id="w" d="M-100 200 C0 120 100 280 200 200 S400 120 500 200 S700 280 800 200 S1000 120 1100 200 S1300 280 1400 200"/><use href="#w" y="-60"/><use href="#w" y="-120"/><use href="#w" y="60"/><use href="#w" y="120"/><use href="#w" y="180"/></svg></figure>
     <div class="app-demo">
-      <h4 id="appTrackName">Cruise: solving Chess</h4>
-      <div class="app-meta" id="appMeta">155 day streak · 5/5 hearts · Diamond League</div>
+      <h4 id="appTrackName">Surf: solving Chess</h4>
+      <div class="app-meta" id="appMeta">196 day streak · 5/5 hearts · Diamond League</div>
       <div id="demoStage"></div>
       <div class="app-label" id="appLabel">Checkmate!</div>
       <div class="app-xp" id="appXp">+0 XP</div>
@@ -132,9 +57,9 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
         <div><b id="statMisses">0</b><span>Misses</span></div>
       </div>
     </div>
-  </div></div>
-  <p class="device-caption">Real solved exercises, replayed live and cycling tracks. Not a screenshot: it plays the move.</p>
-</div></div>
+  </div>
+  <p class="demo-hint device-caption">Real solved exercises, replayed live and cycling tracks. Not a screenshot: it plays the move.</p>
+</section>
 <script>
 (function(){
   // ponytail: real solved exercises from each track (mate-in-1/fork, algebra,
@@ -210,7 +135,7 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
   function playNext() {
     if (live) return;              // the real runner took over
     var p = puzzles[solved % puzzles.length];
-    trackEl.textContent = 'Cruise: solving ' + trackName[p.type];
+    trackEl.textContent = 'Surf: solving ' + trackName[p.type];
     labelEl.classList.remove('on');
     players[p.type](p, function() {
       if (live) return;
@@ -279,7 +204,7 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
       if (!wasLive && captionEl) {
         captionEl.textContent = 'Live right now, from the Mac actually running it.';
       }
-      trackEl.textContent = 'Cruise: solving ' + (trackName[d.track] || d.track);
+      trackEl.textContent = 'Surf: solving ' + (trackName[d.track] || d.track);
       if (d.xp != null) xpEl.textContent = '+' + d.xp + ' XP';
       var solved = d.track === 'chess' ? d.puzzles : d.lessons;
       solvedEl.textContent = solved;
@@ -309,91 +234,98 @@ footer { padding: 2.5rem 0 3rem; color: var(--text2); font-size: .85rem; text-al
 })();
 </script>
 
-<section id="how"><div class="container">
-  <p class="eyebrow">How it works</p>
-  <h2>It reads the answer key.</h2>
-  <p>Duolingo renders every exercise from a React component, and that component still holds the answer. Cruise walks the component tree from the visible widget up to the challenge props, reads the correct answer, and does what a very fast, very bored student would do. A shape it has never seen gets logged and skipped, never guessed.</p>
-  <p>One Node runner drives a real Chromium window, signed in as you. A browser-side solver handles language and chess, a second one handles math. Drags and chess moves use a real mouse, because Duolingo ignores synthetic ones.</p>
-  <p>It runs unattended for weeks, not minutes. Every course shows a completion percentage and a measured ETA, and finished tracks move on to the next. Balance mode plays whichever course is furthest behind instead of grinding one to 100% while the rest stall. Running out of hearts does not stop the run, a lesson that loops without finishing gets escaped, the runner pauses itself when the disk is nearly full, and a track that earns nothing is benched for a day.</p>
-</div></section>
-
-<section><div class="container">
-  <p class="eyebrow" data-i18n="Chess">Chess</p>
-  <h2>Puzzles hand over the moves.</h2>
-  <p>A puzzle carries its solution as a list of moves. The board is a canvas, so the runner converts squares to screen pixels and a real mouse plays them.</p>
-  <p>Matches against Duolingo's bot are played by Stockfish, with a bundled JavaScript engine as the fallback if Stockfish is missing.</p>
-  <div class="quote">When you see a good move, look for a better one.<small>Emanuel Lasker</small></div>
-</div></section>
-
-<section id="status"><div class="container">
-  <p class="eyebrow">Where it stands</p>
-  <h2>What works today.</h2>
-  <div class="status">
-    <div class="row"><b>Math</b><span>Solvers for every unit type. A short list of stubborn levels is still open.</span></div>
-    <div class="row"><b data-i18n="Chess">Chess</b><span>Puzzles and bot matches both solved.</span></div>
-    <div class="row"><b data-i18n="Languages">Languages</b><span>Choice, word bank, typed, cloze, pairs, bare translate and stories. Walks the whole tree unattended.</span></div>
-    <div class="row"><b data-i18n="Audio">Audio</b><span>Listen exercises are skipped, not guessed. Speaking exercises are spoken aloud on a Mac, and skipped when the screen has no record button, so a lesson is never thrown away.</span></div>
-    <div class="row"><b>Quests</b><span>Reads the daily quests every half hour. If they stop moving on chess or math, it switches to a language course until the chests are earned.</span></div>
-    <div class="row"><b>Gifts</b><span>Sends the friend gift on the quests page whenever one is ready.</span></div>
-    <div class="row"><b>Celebrate</b><span>Congratulates friends on their achievements a few times a day.</span></div>
-    <div class="row"><b>Chests</b><span>Opens the treasure chests on the path every half hour.</span></div>
-    <div class="row"><b>Streak guard</b><span>If it is evening and no XP has landed today, it jumps to a language course and finishes a lesson so the streak survives, even through a pause.</span></div>
-    <div class="row"><b>Fastest track</b><span>Measures XP per hour for every course and moves to the best earner when one finishes or stalls.</span></div>
-    <div class="row"><b>Milestones</b><span>Keeps a ledger: every 10k XP, every 10 streak days, each day of finished quests, each course completed.</span></div>
+<section class="band" id="how">
+  <div class="band-head reveal">
+    <p class="label">How it works</p>
+    <h2>It reads the answer key</h2>
+    <p>Duolingo draws every exercise from a React component, and that component still holds the answer. Surf walks the component tree from the visible widget up to the challenge, reads the right answer and clicks it. A shape it has never seen gets logged and skipped, never guessed.</p>
   </div>
-</div></section>
-
-<section id="finish"><div class="container">
-  <p class="eyebrow">Finish line</p>
-  <h2>Every course, at 100%.</h2>
-  <p>The goal is simple: every language course on the account finished, then math and chess. The route there is measured, not guessed. A progress report reads the runner's own log and prints the pace and the days left to each checkpoint: an average course at 25%, 50%, 75% and 100%, and total XP at 500k, 750k and one million.</p>
-  <p>The dates live in the project roadmap and get re-measured every week, because the last courses run slower than the first.</p>
-</div></section>
-
-<section id="clients"><div class="container">
-  <p class="eyebrow">Clients</p>
-  <h2 data-i18n="Status app">Status app</h2>
-  <p>A small app polls the runner over the LAN or the open internet. Chess renders as a real animated board with real chess pieces, sliding move to move. Language and math read the same way: the actual prompt, answer choices, and pattern tables, straight off the page's own elements. A screenshot only shows up for the rare widget type with nothing textual to read, like a geometry diagram. Track, XP, streak, hearts, league, and a real per-puzzle progress bar sit in a frosted glass panel below the board. Pause the runner from the app, switch tracks (any language course, plus math and chess) from its Track menu, no terminal needed.</p>
-  <p>Native everywhere, no web wrapper: Apple platforms in SwiftUI, Android and Windows and Linux in Compose Multiplatform, plus a terminal client. All of them read the same endpoints on the runner, so there is one source of truth and every client is just a view of it.</p>
-  <div class="status">
-    <div class="row"><b>macOS</b><span>SwiftUI. Live board, frosted panel, Track menu, pause. Menu bar extra shows live XP without opening a window.</span></div>
-    <div class="row"><b>iOS</b><span>SwiftUI, same screen, over the LAN or the tunnel. Home screen widget for XP and streak.</span></div>
-    <div class="row"><b>watchOS</b><span>A glance: XP, track, paused or stuck. Board and pause one tap deeper.</span></div>
-    <div class="row"><b>Android</b><span>Compose Multiplatform. Sideloadable APK from CI.</span></div>
-    <div class="row"><b>Windows</b><span>Compose Desktop, packaged as an .msi.</span></div>
-    <div class="row"><b>Linux</b><span>Compose Desktop, packaged as a .deb.</span></div>
-    <div class="row"><b>Terminal</b><span>cruise-tui prints the current state and exits. Point it at the tunnel and check from anywhere over SSH.</span></div>
+  <div class="cells">
+    <article class="cell reveal"><p class="label">Driver</p><h3>A real browser</h3><p>One Node runner drives Chromium, signed in as you. Drags and chess moves use a real mouse, because Duolingo ignores synthetic ones.</p></article>
+    <article class="cell reveal"><p class="label" data-i18n="Chess">Chess</p><h3>Puzzles hand over the moves</h3><p>A puzzle carries its solution. Bot matches are played by Stockfish, with a bundled engine as the fallback.</p></article>
+    <article class="cell reveal"><p class="label">Math</p><h3>Solvers for every unit</h3><p>Expressions go through math.js. A short list of stubborn levels is still open.</p></article>
+    <article class="cell reveal"><p class="label" data-i18n="Languages">Languages</p><h3>Every course, unattended</h3><p>Choice, word bank, typed, cloze, pairs, translate and stories. It walks the whole tree on its own.</p></article>
+    <article class="cell reveal"><p class="label">Streak guard</p><h3>The streak survives</h3><p>If it is evening and no XP has landed, it finishes a language lesson, even through a pause.</p></article>
+    <article class="cell reveal"><p class="label">Pace</p><h3>The fastest track wins</h3><p>It measures XP per hour for every course and moves to the best earner when one finishes or stalls.</p></article>
   </div>
-  <p>Reads are open; pausing, switching track, and the fallback screenshot need a token, because the tunnel puts all of it on the public internet.</p>
-</div></section>
+</section>
 
-<section><div class="container">
-  <p class="eyebrow">Why</p>
-  <h2>A study, not a product.</h2>
-  <p>It started as a way to keep a streak alive during a busy week and turned into a study of how much of a gamified app is actually the client grading itself. Automated play is against Duolingo's terms, and the XP still ranks you against real people, so this is a curiosity to read, not a product to run.</p>
-</div></section>
+<section class="sec" id="status">
+  <div class="wrap center reveal">
+    <p class="label">Where it stands</p>
+    <h2>What works today</h2>
+    <p class="body">It runs for weeks, not minutes. A lesson that loops gets escaped, the runner pauses when the disk is nearly full, and a track that earns nothing is benched for a day.</p>
+    <div class="rows">
+      <div class="row"><b data-i18n="Audio">Audio</b><span>Listen exercises are skipped, not guessed. Speaking exercises are spoken aloud on a Mac, and skipped when the screen has no record button.</span></div>
+      <div class="row"><b>Quests</b><span>Reads the daily quests every half hour. If they stop moving on chess or math, it switches to a language course until the chests are earned.</span></div>
+      <div class="row"><b>Gifts</b><span>Sends the friend gift on the quests page whenever one is ready.</span></div>
+      <div class="row"><b>Chests</b><span>Opens the treasure chests on the path every half hour.</span></div>
+      <div class="row"><b>Milestones</b><span>Keeps a ledger: every 10k XP, every 10 streak days, each day of finished quests, each course completed.</span></div>
+    </div>
+  </div>
+</section>
 
-<footer><div class="container"><a href="https://heyitsmejosh.com">heyitsmejosh.com</a>
-  · <label for="langPicker" data-i18n="Language">Language</label>
-  <select id="langPicker" aria-label="Language">
-    <option value="en">English</option>
-    <option value="fr">Français</option>
-    <option value="es">Español</option>
-    <option value="zh">中文</option>
-    <option value="pa">ਪੰਜਾਬੀ</option>
-  </select>
-</div></footer>
+<section class="sec" id="finish">
+  <div class="wrap center reveal">
+    <p class="label">Finish line</p>
+    <h2>Every course, at 100%</h2>
+    <p class="body">Every language course on the account finished, then math and chess. A progress report reads the runner's own log and prints the pace and the days left to 500k, 750k and one million XP. The dates are re-measured every week, because the last courses run slower than the first.</p>
+    <p class="quote">When you see a good move, look for a better one.<small>Emanuel Lasker</small></p>
+  </div>
+</section>
+
+<section class="sec" id="clients">
+  <div class="wrap center reveal">
+    <p class="label" data-i18n="Status app">Status app</p>
+    <h2>Native everywhere</h2>
+    <p class="body">A small app polls the runner over the LAN or the tunnel. Chess is a real animated board. Language and math show the actual prompt and answer. Pause it or switch tracks from the menu, no terminal needed. Reads are open. Pausing and switching need a token.</p>
+    <div class="rows">
+      <div class="row"><b>macOS</b><span>SwiftUI. Live board, Track menu, pause. The menu bar shows live XP without opening a window.</span></div>
+      <div class="row"><b>iOS</b><span>The same screen over the LAN or the tunnel, with a home screen widget for XP and streak.</span></div>
+      <div class="row"><b>watchOS</b><span>A glance: XP, track, paused or stuck.</span></div>
+      <div class="row"><b>Android</b><span>Compose Multiplatform. Sideloadable APK from CI.</span></div>
+      <div class="row"><b>Windows, Linux</b><span>Compose Desktop, packaged as an .msi and a .deb.</span></div>
+      <div class="row"><b>Terminal</b><span>surf-tui prints the current state and exits. Check from anywhere over SSH.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap center reveal">
+    <p class="label">Why</p>
+    <h2>A study, not a product</h2>
+    <p class="body">It started as a way to keep a streak alive in a busy week and turned into a study of how much of a gamified app is the client grading itself. Automated play is against Duolingo's terms, and the XP still ranks you against real people. Read it, don't run it.</p>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="foot-top">
+    <div class="foot-brand"><img src="icon.svg" alt="" width="40" height="40"><b>Surf</b><p>Duolingo on autopilot. Formerly Cruise.</p></div>
+    <nav class="foot-cols" aria-label="Footer">
+      <div><a href="#how">How it works</a><a href="#status">Where it stands</a><a href="#finish">Finish line</a><a href="#clients">Clients</a></div>
+      <div><a href="mailto:trommatic@icloud.com?subject=Surf">Feedback</a><a href="https://jaybulb.com">More apps</a><a href="#top">Back to top</a></div>
+      <div><label for="langPicker" data-i18n="Language">Language</label>
+        <select id="langPicker" aria-label="Language">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+          <option value="zh">中文</option>
+          <option value="pa">ਪੰਜਾਬੀ</option>
+        </select></div>
+    </nav>
+  </div>
+  <p class="legal">&copy; 2026 Joshua Trommel &middot; MIT License</p>
+</footer>
 <script>
   // Set after i18n.js resolves so the control shows the language actually in use.
   document.addEventListener("DOMContentLoaded", () => {
     const sel = document.getElementById("langPicker");
-    if (!sel || !window.I18N) return;
-    sel.value = window.I18N.lang;
-    sel.addEventListener("change", (e) => window.I18N.set(e.target.value));
+    if (sel && window.I18N) { sel.value = window.I18N.lang; sel.addEventListener("change", (e) => window.I18N.set(e.target.value)); }
+    const io = "IntersectionObserver" in window && new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .12 });
+    document.querySelectorAll(".reveal").forEach((el) => io ? io.observe(el) : el.classList.add("in"));
   });
 </script>
-</main>
 <script src="i18n.js"></script>
 </body>
 </html>
-
