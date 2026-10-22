@@ -15,9 +15,10 @@ struct PromptCardView: View {
     let grid: [[String]]?
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 8) {
             if let prompt {
                 Text(prompt).font(.title3.weight(.medium)).multilineTextAlignment(.center)
+                    .lineLimit(3).fixedSize(horizontal: false, vertical: true)
             }
             if let grid, !grid.isEmpty {
                 Grid(horizontalSpacing: 8, verticalSpacing: 4) {
@@ -31,18 +32,18 @@ struct PromptCardView: View {
                 }
             }
             if let choices, !choices.isEmpty {
-                FlowLayout(spacing: 6) {
+                FlowLayout(spacing: 8) {
                     ForEach(choices, id: \.self) { choice in
                         Text(choice)
                             .font(.callout)
-                            .padding(.horizontal, 10).padding(.vertical, 5)
-                            .background(choice == answer ? Color.green.opacity(0.25) : Color.black.opacity(0.06),
+                            .padding(.horizontal, 12).padding(.vertical, 4)
+                            .background(choice == answer ? Color.surf.opacity(0.25) : Color.primary.opacity(0.08),
                                         in: Capsule())
-                            .foregroundStyle(choice == answer ? .green : .primary)
+                            .foregroundStyle(choice == answer ? Color.surf : .primary)
                     }
                 }
             } else if let answer {
-                Text(answer).font(.callout).foregroundStyle(.green).multilineTextAlignment(.center)
+                Text(answer).font(.callout).foregroundStyle(Color.surf).multilineTextAlignment(.center)
             }
             if prompt == nil && (grid?.isEmpty ?? true) && (choices?.isEmpty ?? true) && answer == nil {
                 Image(systemName: "book.closed").font(.largeTitle).foregroundStyle(.secondary)

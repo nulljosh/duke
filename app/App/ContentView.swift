@@ -135,7 +135,7 @@ struct ContentView: View {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         Capsule().fill(Color.black.opacity(0.15))
-                        Capsule().fill(Color.green).frame(width: geo.size.width * progress)
+                        Capsule().fill(Color.surf).frame(width: geo.size.width * progress)
                     }
                 }
                 .frame(height: 4)
@@ -153,7 +153,7 @@ struct ContentView: View {
                 Spacer()
                 if let xp0 = s.xp0, let xp = s.xp {
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text("+\(xp - xp0) XP").font(.title2.monospacedDigit().bold()).foregroundStyle(.green)
+                        Text("+\(xp - xp0) XP").font(.title2.monospacedDigit().bold()).foregroundStyle(Color.surf)
                         if let rate = xpPerMinute(s, gained: xp - xp0) {
                             Text("\(rate, specifier: "%.1f") XP/min").font(.caption2).foregroundStyle(.secondary)
                         }
@@ -170,7 +170,7 @@ struct ContentView: View {
                 }
                 if let goal = s.xpGoal {
                     Label("\(goal)", systemImage: s.xpGoalMetToday == true ? "checkmark.circle.fill" : "target")
-                        .foregroundStyle(s.xpGoalMetToday == true ? .green : .secondary)
+                        .foregroundStyle(s.xpGoalMetToday == true ? Color.surf : .secondary)
                 }
                 Spacer()
                 if s.track == "chess" {

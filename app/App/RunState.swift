@@ -233,3 +233,8 @@ final class Poller: ObservableObject {
         #endif
     }
 }
+
+// clrs.cc Olive, the one brand colour (the landing uses the same value).
+extension Color {
+    static let surf = Color(red: 0x3D / 255, green: 0x99 / 255, blue: 0x70 / 255)
+}

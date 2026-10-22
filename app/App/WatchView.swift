@@ -17,7 +17,7 @@ struct WatchView: View {
                             if let xp0 = s.xp0, let xp = s.xp {
                                 Text("+\(xp - xp0) XP")
                                     .font(.system(.title2, design: .rounded).bold())
-                                    .foregroundStyle(.green)
+                                    .foregroundStyle(Color.surf)
                             }
                             Text(trackNames[s.track] ?? s.track.capitalized)
                                 .font(.headline)

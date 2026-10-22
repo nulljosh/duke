@@ -71,7 +71,7 @@ struct MenuBarPanel: View {
     @AppStorage("startTrack") private var startTrack = "chess"
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             if let s = poller.state {
                 // ponytail: blurReplace is a stdlib transition — the swap between
                 // board/prompt/screenshot/spinner gets a soft cross-fade instead of
@@ -85,7 +85,8 @@ struct MenuBarPanel: View {
                             .opacity(s.paused == true ? 0.5 : 1)
                     } else if s.prompt != nil || s.answer != nil || !(s.choices?.isEmpty ?? true) || !(s.grid?.isEmpty ?? true) {
                         PromptCardView(prompt: s.prompt, answer: s.answer, choices: s.choices, grid: s.grid)
-                            .frame(width: 220, height: 140)
+                            .frame(width: 220)
+                            .frame(minHeight: 140)
                             .opacity(s.paused == true ? 0.5 : 1)
                     } else {
                         AuthedImage(url: URL(string: "http://\(poller.host)/screenshot?t=\(s.at)"), token: poller.token)
@@ -107,15 +108,15 @@ struct MenuBarPanel: View {
                     if let today = s.xpToday {
                         Text("+\(today) XP today")
                             .font(.title3.monospacedDigit().bold())
-                            .foregroundStyle(.green)
+                            .foregroundStyle(Color.surf)
                     } else if let xp0 = s.xp0, let xp = s.xp {
                         Text("+\(xp - xp0) XP")
                             .font(.title3.monospacedDigit().bold())
-                            .foregroundStyle(.green)
+                            .foregroundStyle(Color.surf)
                     }
                 }
 
-                HStack(spacing: 14) {
+                HStack(spacing: 12) {
                     if s.track == "chess" {
                         Text("\(s.puzzles) puzzles")
                         Text("\(s.misses) misses").foregroundStyle(s.misses > 0 ? .red : .secondary)
@@ -138,7 +139,7 @@ struct MenuBarPanel: View {
 
                 // Two different things, deliberately not merged: the bar is the
                 // task in flight right now, the line under it is the whole course.
-                VStack(alignment: .leading, spacing: 3) {
+                VStack(alignment: .leading, spacing: 4) {
                     if let step = s.puzzleStep, let total = s.puzzleTotal, total > 0 {
                         progressBar(min(1, max(0, Double(step) / Double(total))))
                         Text("Move \(min(step + 1, total)) of \(total) in this puzzle")
@@ -206,8 +207,8 @@ struct MenuBarPanel: View {
                 ProgressView()
             }
         }
-        .padding(12)
-        .frame(width: 250)
+        .padding(16)
+        .frame(width: 252)
         .task { poller.start() }
     }
 
@@ -223,7 +224,7 @@ struct MenuBarPanel: View {
         GeometryReader { geo in
             ZStack(alignment: .leading) {
                 Capsule().fill(Color.primary.opacity(0.12))
-                Capsule().fill(Color.accentColor).frame(width: geo.size.width * fraction)
+                Capsule().fill(Color.surf).frame(width: geo.size.width * fraction)
             }
         }
         .frame(height: 4)
