@@ -97,7 +97,7 @@ a:focus-visible, .btn:focus-visible, select:focus-visible { outline: 4px solid v
 .quote { margin-top: var(--sp-7); font-family: var(--display); font-weight: 600; font-size: 28px; line-height: 32px; letter-spacing: -.02em; text-wrap: balance; }
 .quote small { display: block; margin-top: var(--sp-3); font-family: var(--font); font-weight: 400; font-size: 13px; color: var(--sub); }
 
-.foot { text-align: center; padding: var(--sp-8) var(--sp-4) var(--sp-5); border-top: 1px solid var(--line); }
+.foot { text-align: center; padding: var(--sp-8) var(--sp-4) var(--sp-5); border-top: 1px solid var(--line); overflow: hidden; }
 .foot-top { max-width: var(--wrap); margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--sp-7); text-align: left; }
 .foot-brand { display: grid; gap: var(--sp-2); align-content: start; }
 .foot-brand img { border-radius: var(--r-icon); }
@@ -107,9 +107,12 @@ a:focus-visible, .btn:focus-visible, select:focus-visible { outline: 4px solid v
 .foot-cols div { display: grid; gap: var(--sp-2); align-content: start; }
 .foot-cols a { color: var(--text); text-decoration: none; font-size: 15px; }
 .foot-cols a:hover { color: var(--link); }
-.foot label { font-size: 13px; line-height: 16px; color: var(--sub); }
 .foot select { appearance: none; -webkit-appearance: none; font: inherit; font-size: 15px; color: var(--text); height: var(--control); padding: 0 40px 0 var(--sp-4); border: 0; border-radius: var(--r-pill); background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%2386868b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 16px center; }
-.legal { margin-top: var(--sp-7); font-size: 13px; line-height: 16px; color: var(--sub); }
+.foot-cols .label { margin-bottom: var(--sp-2); }
+.word-band { color: var(--accent); position: relative; width: 100vw; margin: var(--sp-6) 0 0 calc(50% - 50vw); height: clamp(160px, 24vw, 340px); }
+.word-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
+.word-band.live .word-canvas { display: block; }
+.legal { margin-top: var(--sp-2); font-size: 13px; line-height: 16px; color: var(--sub); text-wrap: balance; }
 
 .js .reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
 .js .reveal.in { opacity: 1; transform: none; }

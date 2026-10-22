@@ -26,12 +26,10 @@
 <header class="nav" aria-label="Site">
   <nav class="nav-links" aria-label="Main">
     <a href="#how">How it works</a>
-    <a href="#status">Where it stands</a>
   </nav>
   <a class="nav-brand" href="#top" aria-label="Surf home"><img src="icon.svg" alt="" width="28" height="28"><span>Surf</span></a>
   <nav class="nav-links nav-end" aria-label="More">
-    <a href="#clients">Clients</a>
-    <a href="#finish">Finish line</a>
+    <a href="#clients">Apps</a>
   </nav>
 </header>
 
@@ -42,7 +40,7 @@
     <p class="lead"><span data-i18n="Duolingo on autopilot">Duolingo on autopilot</span>. Every course, around the clock.</p>
     <div class="cta">
       <a class="btn btn-solid" href="#how">See how it works</a>
-      <a class="btn btn-ghost" href="#finish">The finish line</a>
+      <a class="btn btn-ghost" href="#clients">The apps</a>
     </div>
   </div>
 
@@ -251,27 +249,7 @@
   </div>
 </section>
 
-<section class="sec" id="status">
-  <div class="wrap center reveal">
-        <h2>What works today</h2>
-    <p class="body">It runs for weeks, not minutes. A lesson that loops gets escaped, the runner pauses when the disk is nearly full, and a track that earns nothing is benched for a day.</p>
-    <div class="rows">
-      <div class="row"><b data-i18n="Audio">Audio</b><span>Listen exercises are skipped, not guessed. Speaking exercises are spoken aloud on a Mac, and skipped when the screen has no record button.</span></div>
-      <div class="row"><b>Quests</b><span>Reads the daily quests every half hour. If they stop moving on chess or math, it switches to a language course until the chests are earned.</span></div>
-      <div class="row"><b>Gifts</b><span>Sends the friend gift on the quests page whenever one is ready.</span></div>
-      <div class="row"><b>Chests</b><span>Opens the treasure chests on the path every half hour.</span></div>
-      <div class="row"><b>Milestones</b><span>Keeps a ledger: every 10k XP, every 10 streak days, each day of finished quests, each course completed.</span></div>
-    </div>
-  </div>
-</section>
 
-<section class="sec" id="finish">
-  <div class="wrap center reveal">
-        <h2>Every course, at 100%</h2>
-    <p class="body">Every language course on the account finished, then math and chess. A progress report reads the runner's own log and prints the pace and the days left to 500k, 750k and one million XP. The dates are re-measured every week, because the last courses run slower than the first.</p>
-    <p class="quote">When you see a good move, look for a better one.<small>Emanuel Lasker</small></p>
-  </div>
-</section>
 
 <section class="sec" id="clients">
   <div class="wrap center reveal">
@@ -300,9 +278,9 @@
   <div class="foot-top">
     <div class="foot-brand"><img src="icon.svg" alt="" width="40" height="40"><b>Surf</b><p>Duolingo on autopilot. Formerly Cruise.</p></div>
     <nav class="foot-cols" aria-label="Footer">
-      <div><a href="#how">How it works</a><a href="#status">Where it stands</a><a href="#finish">Finish line</a><a href="#clients">Clients</a></div>
-      <div><a href="mailto:trommatic@icloud.com?subject=Surf">Feedback</a><a href="https://jaybulb.com">More apps</a><a href="#top">Back to top</a></div>
-      <div><label for="langPicker" data-i18n="Language">Language</label>
+      <div><p class="label">Surf</p><a href="#how">How it works</a><a href="#clients">The apps</a><a href="#top">Back to top</a></div>
+      <div><p class="label">More</p><a href="mailto:trommatic@icloud.com?subject=Surf">Feedback</a><a href="https://jaybulb.com">More apps</a></div>
+      <div><p class="label"><label for="langPicker" data-i18n="Language">Language</label></p>
         <select id="langPicker" aria-label="Language">
           <option value="en">English</option>
           <option value="fr">Français</option>
@@ -312,6 +290,7 @@
         </select></div>
     </nav>
   </div>
+  <div class="word-band" aria-hidden="true"><canvas class="word-canvas"></canvas></div>
   <p class="legal">&copy; 2026 Joshua Trommel &middot; MIT License &middot; Art: Walter Crane, Neptune&rsquo;s Horses, 1892, public domain</p>
 </footer>
 <script>
@@ -324,5 +303,6 @@
   });
 </script>
 <script src="i18n.js"></script>
+<script src="footer-band.js" defer></script>
 </body>
 </html>
