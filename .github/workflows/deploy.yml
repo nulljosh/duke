@@ -3,13 +3,14 @@ name: Deploy landing page
 on:
   push:
     branches: [main]
-    paths: [web/**, functions/**, wrangler.toml]
+    paths: [web/**, functions/**, brand/**, fonts/**, wrangler.toml]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: sh deploy.sh --copy-only
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

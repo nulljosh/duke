@@ -6,15 +6,18 @@
 <title>Surf. Duolingo on autopilot.</title>
 <meta name="description" content="A runner that plays Duolingo in a real browser. It reads each exercise, works out the answer and clicks. Chess, math and every language course, around the clock.">
 <meta name="theme-color" content="#fdfdfd" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#000" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#141f33" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://surf.jaybulb.com/">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Surf">
 <meta property="og:title" content="Surf. Duolingo on autopilot.">
 <meta property="og:description" content="Reads the live lesson, works out the answer, clicks. Chess, math and every language course.">
 <meta property="og:url" content="https://surf.jaybulb.com/">
 <meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="landing.css">
 <script>document.documentElement.classList.add("js")</script>
 </head>
@@ -35,9 +38,8 @@
 <main id="top">
 <section class="hero">
   <div class="wrap center">
-    <p class="label" data-i18n="Duolingo on autopilot">Duolingo on autopilot</p>
     <h1>Surf</h1>
-    <p class="lead">A runner that plays Duolingo in a real browser. It reads each exercise, works out the answer and clicks. Chess, math and every language course, around the clock.</p>
+    <p class="lead"><span data-i18n="Duolingo on autopilot">Duolingo on autopilot</span>. Every course, around the clock.</p>
     <div class="cta">
       <a class="btn btn-solid" href="#how">See how it works</a>
       <a class="btn btn-ghost" href="#finish">The finish line</a>
@@ -236,8 +238,7 @@
 
 <section class="band" id="how">
   <div class="band-head reveal">
-    <p class="label">How it works</p>
-    <h2>It reads the answer key</h2>
+        <h2>It reads the answer key</h2>
     <p>Duolingo draws every exercise from a React component, and that component still holds the answer. Surf walks the component tree from the visible widget up to the challenge, reads the right answer and clicks it. A shape it has never seen gets logged and skipped, never guessed.</p>
   </div>
   <div class="cells">
@@ -252,8 +253,7 @@
 
 <section class="sec" id="status">
   <div class="wrap center reveal">
-    <p class="label">Where it stands</p>
-    <h2>What works today</h2>
+        <h2>What works today</h2>
     <p class="body">It runs for weeks, not minutes. A lesson that loops gets escaped, the runner pauses when the disk is nearly full, and a track that earns nothing is benched for a day.</p>
     <div class="rows">
       <div class="row"><b data-i18n="Audio">Audio</b><span>Listen exercises are skipped, not guessed. Speaking exercises are spoken aloud on a Mac, and skipped when the screen has no record button.</span></div>
@@ -267,8 +267,7 @@
 
 <section class="sec" id="finish">
   <div class="wrap center reveal">
-    <p class="label">Finish line</p>
-    <h2>Every course, at 100%</h2>
+        <h2>Every course, at 100%</h2>
     <p class="body">Every language course on the account finished, then math and chess. A progress report reads the runner's own log and prints the pace and the days left to 500k, 750k and one million XP. The dates are re-measured every week, because the last courses run slower than the first.</p>
     <p class="quote">When you see a good move, look for a better one.<small>Emanuel Lasker</small></p>
   </div>
@@ -276,8 +275,7 @@
 
 <section class="sec" id="clients">
   <div class="wrap center reveal">
-    <p class="label" data-i18n="Status app">Status app</p>
-    <h2>Native everywhere</h2>
+        <h2>Native everywhere</h2>
     <p class="body">A small app polls the runner over the LAN or the tunnel. Chess is a real animated board. Language and math show the actual prompt and answer. Pause it or switch tracks from the menu, no terminal needed. Reads are open. Pausing and switching need a token.</p>
     <div class="rows">
       <div class="row"><b>macOS</b><span>SwiftUI. Live board, Track menu, pause. The menu bar shows live XP without opening a window.</span></div>
@@ -292,8 +290,7 @@
 
 <section class="sec">
   <div class="wrap center reveal">
-    <p class="label">Why</p>
-    <h2>A study, not a product</h2>
+        <h2>A study, not a product</h2>
     <p class="body">It started as a way to keep a streak alive in a busy week and turned into a study of how much of a gamified app is the client grading itself. Automated play is against Duolingo's terms, and the XP still ranks you against real people. Read it, don't run it.</p>
   </div>
 </section>

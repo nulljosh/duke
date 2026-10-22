@@ -17,7 +17,7 @@ struct PromptCardView: View {
     var body: some View {
         VStack(spacing: 8) {
             if let prompt {
-                Text(prompt).font(.title3.weight(.medium)).multilineTextAlignment(.center)
+                Text(prompt).font(.surf(.title3, .medium)).multilineTextAlignment(.center)
                     .lineLimit(3).fixedSize(horizontal: false, vertical: true)
             }
             if let grid, !grid.isEmpty {
@@ -35,7 +35,7 @@ struct PromptCardView: View {
                 FlowLayout(spacing: 8) {
                     ForEach(choices, id: \.self) { choice in
                         Text(choice)
-                            .font(.callout)
+                            .font(.surf(.callout))
                             .padding(.horizontal, 12).padding(.vertical, 4)
                             .background(choice == answer ? Color.surf.opacity(0.25) : Color.primary.opacity(0.08),
                                         in: Capsule())
@@ -43,7 +43,7 @@ struct PromptCardView: View {
                     }
                 }
             } else if let answer {
-                Text(answer).font(.callout).foregroundStyle(Color.surf).multilineTextAlignment(.center)
+                Text(answer).font(.surf(.callout)).foregroundStyle(Color.surf).multilineTextAlignment(.center)
             }
             if prompt == nil && (grid?.isEmpty ?? true) && (choices?.isEmpty ?? true) && answer == nil {
                 Image(systemName: "book.closed").font(.largeTitle).foregroundStyle(.secondary)

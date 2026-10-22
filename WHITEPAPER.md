@@ -1,85 +1,39 @@
 # Surf Technical Whitepaper
 
-**v2.1.0** | September 2026
+**v2.2.0** | October 2026
 
-Keeping a language streak, a chess league rank and a math course all moving
-takes daily time that could go somewhere else, and the app's own grading
-logic already knows the right answer before a person needs to guess it.
-Surf is a personal Duolingo autopilot. It plays language, math, chess and
-music tracks back to back, reading answers straight out of the client-side
-grader instead of guessing at pixels, because the grader's own object is
-ground truth and pixel matching would be slower and less reliable for no
-benefit. One Playwright runner drives everything: its own persistent
-Chromium profile, real trusted mouse clicks (needed because Duolingo's own
-widgets reject synthetic ones), no browser extension, no operator once
-started. A native iOS/macOS app shows live progress without keeping a session
-open, since checking on the runner shouldn't require leaving a browser tab
-open all day.
+Surf is a personal Duolingo autopilot. It plays language, math and chess courses in a real Chromium window, reading answers out of the client's own grader instead of guessing. One Node runner does the playing. A native status app on every platform shows what it is doing, and a menu bar app on the Mac keeps it alive.
 
-## The grading problem
+## Reading the answer key
 
-Duolingo's challenge data lives on a React fiber, not in the DOM, so there is
-no DOM element to read the right answer off. `chal()` walks up from the
-mounted challenge element until it finds `memoizedProps.challenge` — the same
-object the grader itself reads, which is the one place the answer can't be
-wrong. Chess puzzles carry `chessPuzzleInfo.correctMoves` and, more reliably,
-`moveEvaluationsForPositions` keyed by live FEN, since `correctMoves` alone
-mixes steps and alternatives and picking the wrong one fails a puzzle that
-was actually solvable. The chess board is a Rive canvas: synthetic
-pointer events do nothing, so every click is a real, held (down/90ms/up)
-Playwright mouse click, ~550ms apart, timing that exists because faster
-clicks get dropped by the canvas.
+Duolingo draws each exercise from a React component, and that component still holds the answer. `chal()` walks up the fiber tree from the visible widget until it finds `memoizedProps.challenge`, the same object the grader reads. That object is the one place the answer can't be wrong.
 
-## Solver by track
+Chess puzzles carry their solution too. Surf reads `moveEvaluationsForPositions`, keyed by the live board, because `correctMoves` mixes steps with alternatives. The board is a Rive canvas, so every move is a real held mouse click about 550 ms apart. Faster clicks get dropped.
 
-- **Language** (`solver.js`) — one field-driven dispatch over the fiber's
-  `challenge` object: word bank, typed translate, cloze, match-the-pairs,
-  tap-complete. Listen/speak always skip, never guesses audio, because a
-  wrong guess on audio content risks marking a real listening challenge wrong
-  for no gain.
-- **Math** (`math.js`, pruned from a 21k-line legacy file by an instrumented
-  hit-trace) — driven through `autoLesson()`; drag widgets get a real
-  Playwright mouse, since Duolingo's token-bank/slider widgets never respond
-  to synthetic events.
-- **Chess** (`solver.js` + bundled `js-chess-engine`) — puzzles via
-  `moveEvaluationsForPositions`; bot matches via a one-ply-deeper "Lasker"
-  search over `liveFen()`, the only position that isn't stale, since planning
-  from a stale board state plays a move against a position that no longer
-  exists.
-- **Music** — unimplemented. No known challenge shapes yet; the runner logs
-  and skips until one shows up, rather than guessing at a shape that hasn't
-  been observed.
+## By course
 
-## Runner
+**Languages** (`solver.js`): one dispatch over the challenge fields. Word bank, typed translate, cloze, pairs, tap complete and stories. Listen exercises are skipped, not guessed.
 
-`scripts/run.mjs <track>` launches Chromium, injects the solver, and loops:
-solve, click through end screens, handle stories, skip DuoRadio, reopen.
-Writes a heartbeat to `state.json` on every loop tick, so a hung browser
-session shows a stalled timestamp instead of looking identical to normal idle
-time, since a silently frozen runner would otherwise look like it's simply
-between lessons. Also serves `state.json`/`log.jsonl` over a small stdlib HTTP
-endpoint (`:8737`) for the companion app to poll over LAN, which needs no
-extra dependency to expose that state.
+**Math** (`math.js`): driven through `autoLesson()`. Drag widgets get a real Playwright mouse, because Duolingo's token bank ignores synthetic events. Expressions go through math.js.
 
-## Status app
+**Chess**: puzzles from the evaluations above, bot matches by Stockfish with a bundled engine as the fallback, always planned from `liveFen()`, the only position that is never stale.
 
-Every client reads the same runner endpoints, so there is one source of
-truth: SwiftUI for iOS/macOS/watchOS (`app/`, xcodegen, no checked-in
-`.xcodeproj`), Compose Multiplatform for Android/Windows/Linux (`kmp/`), and
-a terminal client (`tui/`). Chess renders as a real animated board; language
-and math show the live prompt and answer choices, because watching the
-runner work is more useful than a bare status light. Balance mode plays
-whichever course is furthest behind instead of grinding one to completion
-while the rest stall, so no single course is left behind while another one
-runs unattended; finished courses auto-advance and show a measured ETA.
-Red warning if the heartbeat goes stale.
+## The runner
 
-## Ethics note
+`scripts/run.mjs <track>` launches Chromium on its own profile, injects the solver and loops: solve, click through, reopen. Every tick writes `state.json`, so a frozen browser shows a stale timestamp instead of looking idle. A tiny HTTP server on port 8737 serves that state and takes track switches, pauses and voice toggles.
 
-Automated play is against Duolingo's ToS, and the XP still ranks against real
-people in a league, which is why this exists for personal use on one account,
-not distribution.
+It runs for weeks. A lesson that loops gets escaped, the runner pauses when the disk is nearly full, a course that earns nothing is benched for a day, and after 6pm with no XP it finishes a language lesson so the streak survives. It measures XP per hour for every course and moves to the best earner when one finishes or stalls.
 
-## License
+## Staying up
+
+A LaunchAgent keeps the menu bar app running from `~/Applications/Surf.app`, outside any build folder a disk cleanup might wipe. The app starts the runner, restarts it after a crash, and pings port 8737 every minute in case it died quietly. A second runner started by mistake exits on its own when the port is taken.
+
+## Clients
+
+SwiftUI on macOS, iOS and watchOS, Compose Multiplatform on Android, Windows and Linux, and a terminal client. All of them read the same port, locally or through a Cloudflare tunnel at `surf-status.jaybulb.com`. Reads are open. Pausing and switching need a token.
+
+## Ethics
+
+Automated play is against Duolingo's terms, and the XP still ranks against real people. Surf is for one account and for reading, not for distribution.
 
 MIT 2026, Joshua Trommel

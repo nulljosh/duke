@@ -1,1 +1,4 @@
 .wrangler/
+# copied in by deploy.sh from brand/ and fonts/
+tokens.css
+fonts/

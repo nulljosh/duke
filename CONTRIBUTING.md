@@ -1,29 +1,13 @@
 # Contributing to Surf
 
-## Setup
-
-```
+```sh
 git clone https://github.com/nulljosh/surf.git
-cd surf
-open Package.swift   # or the .xcodeproj/.xcworkspace, if present
+cd surf/scripts && npm install
+node --test *.test.mjs
 ```
 
-## Run
+Read `CLAUDE.md` and `SKILL.md` before touching the solver. They hold the traps that cost the most time.
 
-Build and run from Xcode, or `swift run` for CLI targets.
+Keep the diff to the one thing you are fixing. Match the style of the file you touch. Edit a function in place, never wrap it in another one.
 
-## Test
-
-```
-swift test
-```
-
-## Making a change
-
-- Keep the diff scoped to what you're fixing or adding — no drive-by refactors.
-- Match the existing code style in the file you're touching.
-- Open a PR with a short description of the why, not just the what.
-
-## Reporting a bug
-
-Open a GitHub issue with steps to reproduce — the smaller the repro, the faster it gets fixed.
+Found a bug? Open an issue with the question that went wrong. The log line from `scripts/log.jsonl` is the best repro.

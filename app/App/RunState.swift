@@ -234,7 +234,20 @@ final class Poller: ObservableObject {
     }
 }
 
-// clrs.cc Olive, the one brand colour (the landing uses the same value).
+// clrs.cc Blue, the one brand colour (brand/tokens.css --accent), and Surf Sans, bundled on macOS.
+// Elsewhere the custom font falls back to the system face at the same size.
 extension Color {
-    static let surf = Color(red: 0x3D / 255, green: 0x99 / 255, blue: 0x70 / 255)
+    static let surf = Color(red: 0x00 / 255, green: 0x74 / 255, blue: 0xD9 / 255)
+}
+
+extension Font {
+    static func surf(_ style: Font.TextStyle, _ weight: Font.Weight = .regular) -> Font {
+        let size: CGFloat = switch style {
+        case .title3: 15
+        case .callout: 12
+        case .caption, .caption2: 10
+        default: 13
+        }
+        return .custom("Surf Sans", size: size, relativeTo: style).weight(weight)
+    }
 }

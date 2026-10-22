@@ -100,18 +100,18 @@ struct MenuBarPanel: View {
 
                 HStack {
                     if let u = s.username {
-                        Text(u).font(.caption).foregroundStyle(.secondary)
+                        Text(u).font(.surf(.caption)).foregroundStyle(.secondary)
                     }
                     Spacer()
                     // Today's gain, not the session's: xp0 resets on every
                     // restart, so the session number reads low after a crash.
                     if let today = s.xpToday {
                         Text("+\(today) XP today")
-                            .font(.title3.monospacedDigit().bold())
+                            .font(.surf(.title3, .bold).monospacedDigit())
                             .foregroundStyle(Color.surf)
                     } else if let xp0 = s.xp0, let xp = s.xp {
                         Text("+\(xp - xp0) XP")
-                            .font(.title3.monospacedDigit().bold())
+                            .font(.surf(.title3, .bold).monospacedDigit())
                             .foregroundStyle(Color.surf)
                     }
                 }
@@ -125,7 +125,7 @@ struct MenuBarPanel: View {
                     }
                     if let streak = s.streak { Text("\(streak) day streak") }
                 }
-                .font(.caption)
+                .font(.surf(.caption))
                 .foregroundStyle(.secondary)
 
                 HStack(spacing: 4) {
@@ -134,7 +134,7 @@ struct MenuBarPanel: View {
                         Text("· \(rate, specifier: "%.0f")/hr")
                     }
                 }
-                .font(.caption2)
+                .font(.surf(.caption2))
                 .foregroundStyle(.secondary)
 
                 // Two different things, deliberately not merged: the bar is the
@@ -143,7 +143,7 @@ struct MenuBarPanel: View {
                     if let step = s.puzzleStep, let total = s.puzzleTotal, total > 0 {
                         progressBar(min(1, max(0, Double(step) / Double(total))))
                         Text("Move \(min(step + 1, total)) of \(total) in this puzzle")
-                            .font(.caption2).foregroundStyle(.secondary)
+                            .font(.surf(.caption2)).foregroundStyle(.secondary)
                     } else if let p = s.progress {
                         // Nothing in flight — fall back to the course bar so the row isn't dead.
                         progressBar(min(1, max(0, p.pct / 100)))
@@ -153,7 +153,7 @@ struct MenuBarPanel: View {
                         // The countdown is about finishing the ENTIRE track, not
                         // the current puzzle — say so in words, don't make it guessable.
                         Text(courseCountdown(p, track: s.track))
-                            .font(.caption2)
+                            .font(.surf(.caption2))
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -161,7 +161,7 @@ struct MenuBarPanel: View {
 
                 if poller.stale {
                     Label("No update in 90s+", systemImage: "exclamationmark.triangle.fill")
-                        .font(.caption).foregroundStyle(.red)
+                        .font(.surf(.caption)).foregroundStyle(.red)
                 }
 
                 Divider()
