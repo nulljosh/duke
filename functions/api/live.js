@@ -7,7 +7,7 @@
 //
 // Only the fields the demo draws are passed through. The account handle is not
 // one of them; a marketing page does not need to publish a username.
-const ORIGIN = 'https://pwnlingo-status.heyitsmejosh.com';
+const ORIGIN = 'https://surf-status.jaybulb.com';
 const CACHE_SECONDS = 10;
 
 export async function onRequest(context) {

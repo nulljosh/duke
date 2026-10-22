@@ -22,7 +22,7 @@ enum SolverProcess {
     // the tunnel's own public hostname actually answers tests the thing that
     // matters — reachability — not how the process happens to be invoked.
     private static func tunnelReachable() async -> Bool {
-        guard let url = URL(string: "https://pwnlingo-status.heyitsmejosh.com/state") else { return false }
+        guard let url = URL(string: "https://surf-status.jaybulb.com/state") else { return false }
         var req = URLRequest(url: url)
         req.timeoutInterval = 4
         // ponytail: a dead origin still answers 530 through Cloudflare, so any

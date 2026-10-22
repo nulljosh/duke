@@ -7,7 +7,7 @@ import SwiftTUI
 // A redraw loop would be a bigger UI than checking on it over SSH needs.
 //
 // Host comes from SURF_HOST so this works against the tunnel from anywhere:
-//   SURF_HOST=pwnlingo-status.heyitsmejosh.com surf-tui
+//   SURF_HOST=surf-status.jaybulb.com surf-tui
 
 struct RunState: Decodable {
     let at, started, track: String

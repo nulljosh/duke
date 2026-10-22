@@ -18,6 +18,6 @@ fun main() = application {
     ) {
         // ponytail: same reasoning as MainActivity — Windows/Linux desktop is
         // never the Mac running the runner, default to the public tunnel host.
-        MaterialTheme { StatusScreen(defaultHost = "pwnlingo-status.heyitsmejosh.com") }
+        MaterialTheme { StatusScreen(defaultHost = "surf-status.jaybulb.com") }
     }
 }

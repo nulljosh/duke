@@ -13,6 +13,6 @@ class MainActivity : ComponentActivity() {
         // ponytail: Android/desktop clients are never on the same machine as the
         // Mac running the runner, unlike the SwiftUI app's localhost default —
         // default to the public Cloudflare Tunnel host instead.
-        setContent { MaterialTheme { StatusScreen(defaultHost = "pwnlingo-status.heyitsmejosh.com") } }
+        setContent { MaterialTheme { StatusScreen(defaultHost = "surf-status.jaybulb.com") } }
     }
 }
