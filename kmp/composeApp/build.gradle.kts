@@ -51,7 +51,7 @@ compose.desktop {
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb,
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,
             )
-            packageName = "Cruise"
+            packageName = "Surf"
             packageVersion = "1.0.0"
             description = "Duolingo autopilot status — live board, XP, streak, pause control."
         }

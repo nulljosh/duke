@@ -1,6 +1,6 @@
 # Architecture
 
-Cruise is a Duolingo solver. Automates Duolingo lessons via browser automation (Playwright). Solves three tracks: language (word-bank, translation, multiple-choice), chess (piece movement planning, promotion detection), and math (arithmetic, algebra, equations). Menu bar macOS app shows XP progress; live track switching. No account login (runs with an existing Duolingo profile, cookie-based auth).
+Surf is a Duolingo solver. Automates Duolingo lessons via browser automation (Playwright). Solves three tracks: language (word-bank, translation, multiple-choice), chess (piece movement planning, promotion detection), and math (arithmetic, algebra, equations). Menu bar macOS app shows XP progress; live track switching. No account login (runs with an existing Duolingo profile, cookie-based auth).
 
 ## How it runs
 
@@ -25,8 +25,8 @@ Track choice: `xpRates()` in `scripts/guards.mjs` turns the `lesson-end` events 
 | `scripts/js-chess-engine.js` | Bundled js-chess-engine 2.4.6 for bot match solving |
 | `scripts/solver.test.mjs` | Unit tests (no browser): tile normalization, FEN lookup, board geometry, promotion picker |
 | `app/App/ContentView.swift` | macOS menu bar: XP display, streak, tracks array, track switcher buttons |
-| `app/App/CruiseStatus.swift` | macOS app entry and menu bar integration |
-| `app/project.yml` | XcodeGen: scheme `CruiseStatus-macOS`, builds to fixed derivedData path for launchd |
+| `app/App/SurfStatusApp.swift` | macOS app entry and menu bar integration |
+| `app/project.yml` | XcodeGen: scheme `SurfStatus-macOS`, builds to fixed derivedData path for launchd |
 | `~/Library/LaunchAgents/com.nulljosh.cruise-status.plist` | LaunchAgent: keeps menu bar app running, restarts on edit via `killall` |
 | `Package.swift` + `tui/main.swift` | SwiftPM target for CLI player: fetches runner state via HTTP and renders current track, XP, streak, and league in a terminal card (static, one-shot render) |
 | `duo.py` | Standalone script: fetches public Duolingo profile stats via REST, logs progress snapshots to `~/.claude/data/duolingo/` for tracking (used for Lexly import) |
@@ -38,7 +38,7 @@ Track choice: `xpRates()` in `scripts/guards.mjs` turns the `lesson-end` events 
 | `kmp/composeApp/src/commonMain/kotlin/com/nulljosh/cruise/StatusScreen.kt` | Shared game/runner status UI (Compose Multiplatform) for Android and desktop |
 | `kmp/composeApp/src/androidMain/kotlin/com/nulljosh/cruise/MainActivity.kt` | Android entry point, activity setup |
 | `kmp/composeApp/src/desktopMain/kotlin/com/nulljosh/cruise/Main.kt` | Desktop (JVM) entry point, window setup |
-| `kmp/shared/src/commonMain/kotlin/com/nulljosh/cruise/StatusClient.kt` | HTTP client to fetch runner state from `CRUISE_HOST` environment variable |
+| `kmp/shared/src/commonMain/kotlin/com/nulljosh/cruise/StatusClient.kt` | HTTP client to fetch runner state from `SURF_HOST` environment variable |
 
 ## Challenge types
 
@@ -72,8 +72,8 @@ node scripts/run.mjs <track>
 
 # macOS menu bar app (after editing app/App/*.swift)
 cd app && xcodegen generate
-xcodebuild -scheme CruiseStatus-macOS -configuration Debug -derivedDataPath build build
-killall Cruise  # launchd restarts it from the new binary within ~10s
+xcodebuild -scheme SurfStatus-macOS -configuration Debug -derivedDataPath build build
+killall Surf  # launchd restarts it from the new binary within ~10s
 ```
 
 ## Gotchas

@@ -2,14 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "cruise-tui",
+    name: "surf-tui",
     platforms: [.macOS(.v13)],
     dependencies: [
         .package(url: "https://github.com/rensbreur/SwiftTUI", branch: "main")
     ],
     targets: [
         .executableTarget(
-            name: "cruise-tui",
+            name: "surf-tui",
             dependencies: ["SwiftTUI"],
             path: ".",
             sources: ["tui/main.swift"]

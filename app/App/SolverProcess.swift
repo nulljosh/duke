@@ -12,10 +12,10 @@ import AppKit
 enum SolverProcess {
     // Personal dev tool run from source, not something shipped in the app
     // bundle — the repo path is hardcoded on purpose.
-    private static let scriptURL = URL(fileURLWithPath: NSString(string: "~/Documents/Code/cruise/scripts/run.mjs").expandingTildeInPath)
-    private static let logURL = URL(fileURLWithPath: NSString(string: "~/Documents/Code/cruise/scripts/run.log").expandingTildeInPath)
+    private static let scriptURL = URL(fileURLWithPath: NSString(string: "~/Documents/Code/surf/scripts/run.mjs").expandingTildeInPath)
+    private static let logURL = URL(fileURLWithPath: NSString(string: "~/Documents/Code/surf/scripts/run.log").expandingTildeInPath)
     private static let tunnelConfigURL = URL(fileURLWithPath: NSString(string: "~/.cloudflared/cruise-config.yml").expandingTildeInPath)
-    private static let tunnelLogURL = URL(fileURLWithPath: NSString(string: "~/Documents/Code/cruise/scripts/tunnel.log").expandingTildeInPath)
+    private static let tunnelLogURL = URL(fileURLWithPath: NSString(string: "~/Documents/Code/surf/scripts/tunnel.log").expandingTildeInPath)
 
     // ponytail: a pgrep on the launch command line breaks silently the moment
     // the flags/path change (moved config, renamed binary). Checking whether
@@ -95,9 +95,16 @@ enum SolverProcess {
         DispatchQueue.main.async { start(track: track) }
     }
 
+    // ponytail: at launch the view's onAppear and watchTunnel's first tick both
+    // call start() a second apart, before either runner has bound its port, so
+    // two runners fought over one Duolingo profile. One child at a time.
+    private static var runner: Process?
+
     static func start(track: String) {
+        if let r = runner, r.isRunning { return }
         Task { await startTunnelIfNeeded() }
         let p = Process()
+        runner = p
         p.executableURL = nodeURL
         p.arguments = [scriptURL.path, track]
         p.currentDirectoryURL = scriptURL.deletingLastPathComponent()
@@ -122,8 +129,8 @@ enum SolverProcess {
             if tail.contains("No Duolingo session") {
                 DispatchQueue.main.async {
                     let alert = NSAlert()
-                    alert.messageText = "Cruise didn't start"
-                    alert.informativeText = "No signed-in session yet. Run this once in Terminal, then hit Start again:\n\nnode ~/Documents/Code/cruise/scripts/login.mjs"
+                    alert.messageText = "Surf didn't start"
+                    alert.informativeText = "No signed-in session yet. Run this once in Terminal, then hit Start again:\n\nnode ~/Documents/Code/surf/scripts/login.mjs"
                     alert.runModal()
                 }
                 return

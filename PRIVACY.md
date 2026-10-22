@@ -1,8 +1,8 @@
-# Cruise Privacy Policy
+# Surf Privacy Policy
 
 *Last updated September 2026*
 
-Cruise is a Duolingo autoplayer. It doesn't want your data, and it collects as little as it can.
+Surf is a Duolingo autoplayer. It doesn't want your data, and it collects as little as it can.
 
 ## What leaves your device
 - **Your session.** Your Duolingo cookie stays on your machine and is only sent to Duolingo.
@@ -11,7 +11,7 @@ Cruise is a Duolingo autoplayer. It doesn't want your data, and it collects as l
 No ads. No selling data. No tracking cookies.
 
 ## Kids
-Cruise isn't aimed at children under 13 and doesn't knowingly collect anything from them.
+Surf isn't aimed at children under 13 and doesn't knowingly collect anything from them.
 
 ## Contact
 Questions: trommatic@icloud.com

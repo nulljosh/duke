@@ -222,7 +222,7 @@ struct ContentView: View {
     }
 
     private func xpPerMinute(_ s: RunState, gained: Int) -> Double? {
-        guard let start = cruiseDateFormatter.date(from: s.started) else { return nil }
+        guard let start = surfDateFormatter.date(from: s.started) else { return nil }
         let mins = Date().timeIntervalSince(start) / 60
         guard mins > 1, gained > 0 else { return nil }
         return Double(gained) / mins

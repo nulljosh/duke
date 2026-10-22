@@ -1,6 +1,6 @@
 <img src="icon.svg" width="80" style="border-radius:18px">
 
-# Cruise
+# Surf
 
 [![MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -81,7 +81,7 @@ Two more things keep the account healthy while it plays:
   gift label, never anything that looks like a purchase.
 
 To wire this up on a fresh machine: build the app once
-(`cd app && xcodegen generate && xcodebuild -scheme CruiseStatus-macOS
+(`cd app && xcodegen generate && xcodebuild -scheme SurfStatus-macOS
 -configuration Debug -derivedDataPath build build`), then
 `launchctl load ~/Library/LaunchAgents/com.nulljosh.cruise-status.plist`
 (copy that plist in first if it's not already there — see `app/`). From then
@@ -89,7 +89,7 @@ on it survives reboots and crashes with no manual restarts.
 
 ## Status app
 
-Native everywhere: SwiftUI on iOS/macOS/watchOS, Compose Multiplatform on Android/Windows/Linux, plus a terminal client (`cruise-tui`). All poll the runner over the LAN or tunnel for the same state: current track, XP gained, puzzles/misses/matches or lesson count, live chess board, and the latest log line. Switch track or pause from any client, no terminal needed.
+Native everywhere: SwiftUI on iOS/macOS/watchOS, Compose Multiplatform on Android/Windows/Linux, plus a terminal client (`surf-tui`). All poll the runner over the LAN or tunnel for the same state: current track, XP gained, puzzles/misses/matches or lesson count, live chess board, and the latest log line. Switch track or pause from any client, no terminal needed.
 
 ## Files
 

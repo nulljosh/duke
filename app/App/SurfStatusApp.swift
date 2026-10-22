@@ -4,7 +4,7 @@ import AppKit
 #endif
 
 @main
-struct CruiseStatusApp: App {
+struct SurfStatusApp: App {
     #if os(macOS)
     @AppStorage("openAtLogin") private var openAtLogin = true
     @AppStorage("hideDockIcon") private var hideDockIcon = true

@@ -13,7 +13,7 @@ fun main() = application {
     LoginItem.sync(enabled = true)
     Window(
         onCloseRequest = ::exitApplication,
-        title = "Cruise",
+        title = "Surf",
         state = rememberWindowState(size = DpSize(420.dp, 640.dp)),
     ) {
         // ponytail: same reasoning as MainActivity — Windows/Linux desktop is

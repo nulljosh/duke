@@ -26,14 +26,14 @@ object LoginItem {
     private fun syncWindows(enabled: Boolean) {
         val key = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
         if (enabled) {
-            ProcessBuilder("reg", "add", key, "/v", "Cruise", "/t", "REG_SZ", "/d", "\"$exePath\"", "/f")
+            ProcessBuilder("reg", "add", key, "/v", "Surf", "/t", "REG_SZ", "/d", "\"$exePath\"", "/f")
                 .inheritIO().start().waitFor()
         } else {
-            ProcessBuilder("reg", "delete", key, "/v", "Cruise", "/f").inheritIO().start().waitFor()
+            ProcessBuilder("reg", "delete", key, "/v", "Surf", "/f").inheritIO().start().waitFor()
         }
     }
 
-    private fun linuxAutostartFile() = File(System.getProperty("user.home"), ".config/autostart/cruise.desktop")
+    private fun linuxAutostartFile() = File(System.getProperty("user.home"), ".config/autostart/surf.desktop")
 
     private fun syncLinux(enabled: Boolean) {
         val f = linuxAutostartFile()
@@ -43,7 +43,7 @@ object LoginItem {
                 """
                 [Desktop Entry]
                 Type=Application
-                Name=Cruise
+                Name=Surf
                 Exec=$exePath
                 X-GNOME-Autostart-enabled=true
                 """.trimIndent()

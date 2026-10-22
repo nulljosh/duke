@@ -1,13 +1,13 @@
 import Foundation
 import SwiftTUI
 
-// ponytail: static render, not a live dashboard. `cruise-tui` prints the
+// ponytail: static render, not a live dashboard. `surf-tui` prints the
 // runner's current state as a terminal card and exits — the house pattern for
 // apps whose logic lives server-side (same shape as cadence/wordroot/curvely).
 // A redraw loop would be a bigger UI than checking on it over SSH needs.
 //
-// Host comes from CRUISE_HOST so this works against the tunnel from anywhere:
-//   CRUISE_HOST=pwnlingo-status.heyitsmejosh.com cruise-tui
+// Host comes from SURF_HOST so this works against the tunnel from anywhere:
+//   SURF_HOST=pwnlingo-status.heyitsmejosh.com surf-tui
 
 struct RunState: Decodable {
     let at, started, track: String
@@ -24,12 +24,12 @@ let leagueNames = ["Bronze", "Silver", "Gold", "Sapphire", "Ruby",
 let trackNames = ["math": "Math", "chess": "Chess", "music": "Music",
                   "es": "Spanish", "el": "Greek", "fr": "French", "de": "German"]
 
-let host = ProcessInfo.processInfo.environment["CRUISE_HOST"] ?? "localhost:8737"
+let host = ProcessInfo.processInfo.environment["SURF_HOST"] ?? "localhost:8737"
 
 // run.mjs timestamps carry fractional seconds; a default ISO8601DateFormatter
 // returns nil for those, which silently blanks elapsed time and disables the
 // stuck check. Same formatter the GUI apps use.
-let cruiseDateFormatter: ISO8601DateFormatter = {
+let surfDateFormatter: ISO8601DateFormatter = {
     let f = ISO8601DateFormatter()
     f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
     return f
@@ -48,7 +48,7 @@ func fetchState() -> RunState? {
 }
 
 func elapsed(since started: String) -> String {
-    guard let start = cruiseDateFormatter.date(from: started) else { return "" }
+    guard let start = surfDateFormatter.date(from: started) else { return "" }
     let secs = Int(Date().timeIntervalSince(start))
     let h = secs / 3600, m = (secs % 3600) / 60
     return h > 0 ? "\(h)h \(m)m" : "\(m)m"
@@ -57,7 +57,7 @@ func elapsed(since started: String) -> String {
 /// Stale means the runner stopped writing its heartbeat — the same 90s rule the
 /// GUI apps use, which is how a hung browser session looks different from idle.
 func isStale(_ s: RunState) -> Bool {
-    guard let at = cruiseDateFormatter.date(from: s.at) else { return false }
+    guard let at = surfDateFormatter.date(from: s.at) else { return false }
     return Date().timeIntervalSince(at) > 90
 }
 
@@ -68,7 +68,7 @@ struct StatusCard: View {
     var body: some View {
         VStack(alignment: .leading) {
             if let s = state {
-                Text("Cruise: \(trackNames[s.track] ?? s.track)").bold()
+                Text("Surf: \(trackNames[s.track] ?? s.track)").bold()
                 if let u = s.username {
                     Text("\(u)\(s.league.flatMap { leagueNames.indices.contains($0) ? "  ·  \(leagueNames[$0]) League" : nil } ?? "")")
                 }
@@ -96,7 +96,7 @@ struct StatusCard: View {
                 }
             } else {
                 Text("Can't reach \(host)").bold()
-                Text("Is run.mjs up? Set CRUISE_HOST for a remote one.")
+                Text("Is run.mjs up? Set SURF_HOST for a remote one.")
             }
         }
         .padding()

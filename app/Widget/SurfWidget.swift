@@ -38,7 +38,7 @@ private struct Provider: TimelineProvider {
     }
 }
 
-private struct CruiseWidgetView: View {
+private struct SurfWidgetView: View {
     var entry: Entry
     @Environment(\.widgetFamily) private var family
 
@@ -79,13 +79,13 @@ private struct CruiseWidgetView: View {
 }
 
 @main
-struct CruiseWidget: Widget {
+struct SurfWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "CruiseWidget", provider: Provider()) { entry in
-            CruiseWidgetView(entry: entry)
+        StaticConfiguration(kind: "SurfWidget", provider: Provider()) { entry in
+            SurfWidgetView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("Cruise")
+        .configurationDisplayName("Surf")
         .description("XP earned this session, and whether the runner is still going.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }

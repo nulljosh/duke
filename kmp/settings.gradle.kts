@@ -1,4 +1,4 @@
-rootProject.name = "cruise"
+rootProject.name = "surf"
 
 pluginManagement {
     repositories {
