@@ -95,16 +95,9 @@ enum SolverProcess {
         DispatchQueue.main.async { start(track: track) }
     }
 
-    // ponytail: at launch the view's onAppear and watchTunnel's first tick both
-    // call start() a second apart, before either runner has bound its port, so
-    // two runners fought over one Duolingo profile. One child at a time.
-    private static var runner: Process?
-
     static func start(track: String) {
-        if let r = runner, r.isRunning { return }
         Task { await startTunnelIfNeeded() }
         let p = Process()
-        runner = p
         p.executableURL = nodeURL
         p.arguments = [scriptURL.path, track]
         p.currentDirectoryURL = scriptURL.deletingLastPathComponent()
