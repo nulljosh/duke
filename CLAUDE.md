@@ -160,3 +160,7 @@ no separate reload step needed (edit the file, Ctrl-C, rerun).
 ## Recovery checkpoint (2026-09-18)
 
 Romanized word-bank tiles must use their `*-challenge-tap-token` label, not innerText. The runner now bounds repeated challenge attempts across feedback screens and counts lessons only when XP rises. All 52 tests pass; changes pushed. Sustained live XP recovery still needs confirmation. A profile backup is at `/tmp/surf-profile-backup-20260918`.
+
+## The loop
+
+The live `/loop` (QA of the Surf landing and menu bar app, Jony Ive pass, repeat to A+) is handed off in `docs/LOOP-HANDOFF.md`. Read it before resuming, and keep its restart prompt current.
