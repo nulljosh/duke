@@ -16,6 +16,7 @@ import urllib.request
 
 from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.cu2quPen import Cu2QuPen
+from fontTools.pens.recordingPen import DecomposingRecordingPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.ttLib import TTFont
@@ -48,6 +49,17 @@ def redraw_quotes(font):
     glyphs = font.getGlyphSet()
     glyf, hmtx, cmap = font["glyf"], font["hmtx"], font.getBestCmap()
     names = {cmap[0x2019]: 1, cmap[0x201D]: 2, cmap[0x2018]: 1, cmap[0x201C]: 2}
+    # Inter builds the comma, semicolon and low quotes out of the quote glyphs. Flatten them first, or they turn into waves too.
+    for gname in list(glyf.keys()):
+        g = glyf[gname]
+        if gname not in names and g.isComposite() and any(c.glyphName in names for c in g.components):
+            rec = DecomposingRecordingPen(glyphs)
+            glyphs[gname].draw(rec)
+            tt = TTGlyphPen(None)
+            rec.replay(tt)
+            glyf[gname] = tt.glyph()
+            glyf[gname].recalcBounds(glyf)
+            hmtx[gname] = (hmtx[gname][0], glyf[gname].xMin)
     for name, count in names.items():
         bp = BoundsPen(glyphs)
         glyphs[name].draw(bp)
@@ -88,6 +100,9 @@ def check():
             assert f["name"].getDebugName(6) == f"SurfSans-{style}", "postscript name"
             assert f["name"].getDebugName(0), "the original copyright must stay in the name table"
             cmap, hmtx, glyf = f.getBestCmap(), f["hmtx"], f["glyf"]
+            for cp in (0x2C, 0x3B, 0x201A, 0x201E):   # comma, semicolon and low quotes stay commas
+                g = glyf[cmap[cp]]
+                assert not g.isComposite() or all(c.glyphName not in {cmap[0x2018], cmap[0x2019]} for c in g.components), f"U+{cp:04X} became a wave"
             for cp, n in ((0x2019, 1), (0x201D, 2), (0x2018, 1), (0x201C, 2)):
                 g = glyf[cmap[cp]]
                 assert g.numberOfContours == n, f"U+{cp:04X} is not the crest"
