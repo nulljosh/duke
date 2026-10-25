@@ -1,0 +1,29 @@
+{"gold": {"skill": "feed", "params": {"item_prototype": "Coal", "target_prototype": "StoneFurnace", "target_position": "x=5.0,y=-70.0", "quantity": 50}}, "got": ["peek", {"prototype": "StoneFurnace", "position": "x=5.0,y=-70.0"}]}
+{"gold": {"skill": "place", "params": {"prototype": "AssemblingMachine2", "near_position": "x=-15.0,y=-48.0", "direction": "UP"}}, "got": ["place_at", {"prototype": "StoneFurnace", "position": "x=-15.0,y=-48.0", "direction": "UP"}]}
+{"gold": {"skill": "belt", "params": {"from_prototype": "StoneFurnace", "from_position": "x=5.0,y=-70.0", "to_prototype": "BurnerInserter", "to_position": "x=8.5,y=-65.5"}}, "got": ["belt", {"from_prototype": "StoneFurnace", "from_position": "x=5.0,y=-70.0", "to_prototype": "AssemblingMachine2", "to_position": "x=8.5,y=-67.5"}]}
+{"gold": {"skill": "inspect", "params": {}}, "got": ["peek", {"prototype": "StoneFurnace", "position": "x=-15.0,y=-48.0"}]}
+{"gold": {"skill": "mine", "params": {"resource": "IronOre", "drill_prototype": "BurnerMiningDrill"}}, "got": ["place_inserter", {"target_prototype": "StoneFurnace", "target_position": "x=1.0,y=1.0"}]}
+{"gold": {"skill": "peek", "params": {"prototype": "StoneFurnace", "position": "x=5.0,y=-70.0"}}, "got": ["inspect", {}]}
+{"gold": {"skill": "harvest", "params": {"resource": "IronOre", "quantity": 100}}, "got": ["peek", {"prototype": "BurnerMiningDrill", "position": "x=-16.0,y=-51.0"}]}
+{"gold": {"skill": "inspect", "params": {}}, "got": ["peek", {"prototype": "StoneFurnace", "position": "x=-15.0,y=-48.0"}]}
+{"gold": {"skill": "belt", "params": {"from_prototype": "BurnerInserter", "from_position": "x=6.5,y=-69.5", "to_prototype": "AssemblingMachine2", "to_position": "x=8.5,y=-67.5"}}, "got": ["place_inserter", {"target_prototype": "BurnerInserter", "target_position": "x=6.5,y=-69.5"}]}
+{"gold": {"skill": "place_inserter", "params": {"target_prototype": "StoneFurnace", "target_position": "x=-15.0,y=-48.0"}}, "got": ["place", {"prototype": "BurnerInserter", "near_position": "x=-15.0,y=-48.0", "direction": "RIGHT"}]}
+{"gold": {"skill": "peek", "params": {"prototype": "StoneFurnace", "position": "x=5.0,y=-70.0"}}, "got": ["inspect", {}]}
+{"gold": {"skill": "belt", "params": {"from_prototype": "StoneFurnace", "from_position": "x=-12.0,y=-48.0", "to_prototype": "AssemblingMachine2", "to_position": "x=-8.5,y=-45.5"}}, "got": ["inspect", {}]}
+{"gold": {"skill": "peek", "params": {"prototype": "StoneFurnace", "position": "x=-15.0,y=-48.0"}}, "got": ["inspect", {}]}
+{"gold": {"skill": "peek", "params": {"prototype": "StoneFurnace", "position": "x=-15.0,y=-48.0"}}, "got": ["inspect", {}]}
+{"gold": {"skill": "belt", "params": {"from_prototype": "BurnerInserter", "from_position": "x=-12.5,y=-47.5", "to_prototype": "AssemblingMachine2", "to_position": "x=-11.5,y=-45.5"}}, "got": ["belt", {"from_prototype": "StoneFurnace", "from_position": "x=-15.0,y=-48.0", "to_prototype": "AssemblingMachine2", "to_position": "x=-11.5,y=-45.5"}]}
+{"gold": {"skill": "inspect", "params": {}}, "got": ["peek", {"prototype": "StoneFurnace", "position": "x=-15.0,y=-48.0"}]}
+{"gold": {"skill": "belt", "params": {"from_prototype": "BurnerInserter", "from_position": "x=-13.5,y=-47.5", "to_prototype": "AssemblingMachine2", "to_position": "x=-11.5,y=-45.5"}}, "got": ["belt", {"from_prototype": "StoneFurnace", "from_position": "x=-15.0,y=-48.0", "to_prototype": "AssemblingMachine2", "to_position": "x=-11.5,y=-45.5"}]}
+{"gold": {"skill": "place_at", "params": {"prototype": "StoneFurnace", "position": "x=1.0,y=1.0", "direction": "UP"}}, "got": ["find", {"resource": "IronOre"}]}
+{"gold": {"skill": "belt", "params": {"from_prototype": "BurnerInserter", "from_position": "x=-14.5,y=-50.5", "to_prototype": "AssemblingMachine2", "to_position": "x=-11.5,y=-45.5"}}, "got": ["belt", {"from_prototype": "StoneFurnace", "from_position": "x=-15.0,y=-48.0", "to_prototype": "AssemblingMachine2", "to_position": "x=-11.5,y=-45.5"}]}
+{"gold": {"skill": "inspect", "params": {}}, "got": ["peek", {"prototype": "StoneFurnace", "position": "x=-15.0,y=-48.0"}]}
+{"gold": {"skill": "peek", "params": {"prototype": "StoneFurnace", "position": "x=-15.0,y=-48.0"}}, "got": ["inspect", {}]}
+{"gold": {"skill": "peek", "params": {"prototype": "StoneFurnace", "position": "x=-15.0,y=-48.0"}}, "got": ["inspect", {}]}
+{"gold": {"skill": "peek", "params": {"prototype": "StoneFurnace", "position": "x=-15.0,y=-48.0"}}, "got": ["place_inserter", {"target_prototype": "StoneFurnace", "target_position": "x=-15.0,y=-48.0"}]}
+{"gold": {"skill": "place_inserter", "params": {"target_prototype": "AssemblingMachine2", "target_position": "x=8.5,y=-67.5"}}, "got": ["place_inserter", {"target_prototype": "StoneFurnace", "target_position": "x=5.0,y=-70.0"}]}
+{"gold": {"skill": "place_inserter", "params": {"target_prototype": "StoneFurnace", "target_position": "x=-15.0,y=-48.0"}}, "got": ["place", {"prototype": "TransportBelt", "near_position": "x=-15.0,y=-48.0", "direction": "RIGHT"}]}
+{"gold": {"skill": "inspect", "params": {}}, "got": ["feed", {"item_prototype": "Coal", "target_prototype": "StoneFurnace", "target_position": "x=-15.0,y=-48.0", "quantity": 40}]}
+{"gold": {"skill": "place_inserter", "params": {"target_prototype": "StoneFurnace", "target_position": "x=-15.0,y=-48.0"}}, "got": ["place", {"prototype": "StoneFurnace", "near_position": "x=0,y=0", "direction": "RIGHT"}]}
+{"gold": {"skill": "belt", "params": {"from_prototype": "BurnerInserter", "from_position": "x=-16.5,y=-47.5", "to_prototype": "AssemblingMachine2", "to_position": "x=-11.5,y=-45.5"}}, "got": ["belt", {"from_prototype": "StoneFurnace", "from_position": "x=-15.0,y=-48.0", "to_prototype": "AssemblingMachine2", "to_position": "x=-11.5,y=-45.5"}]}
+{"gold": {"skill": "peek", "params": {"prototype": "StoneFurnace", "position": "x=-15.0,y=-48.0"}}, "got": ["inspect", {}]}

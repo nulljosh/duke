@@ -1,0 +1,286 @@
+#!/usr/bin/env python3
+"""
+Claude plays Factorio through FLE's gym environment.
+
+Each turn: Claude gets the last action's stdout/stderr as an observation and
+returns a Python snippet. That snippet is executed inside the FLE gym env
+(which runs it against the Lua/RCON bridge in the Factorio server container),
+and the result becomes the next observation. Repeats until the task
+terminates, truncates, or --max-steps is hit.
+
+Requires a running FLE cluster (`fle cluster start`) and Ollama running locally.
+"""
+
+import argparse
+import json
+import re
+import sys
+import time
+from pathlib import Path
+
+import gym
+import httpx
+
+from fle.env.gym_env.action import Action
+from fle.env.gym_env.registry import list_available_environments, get_environment_info
+from fle.commons.models.game_state import GameState
+
+import skills
+
+SYSTEM_PROMPT = f"""You are an AI agent playing Factorio. You do NOT write Python. Each turn, \
+pick exactly one skill from the list below and reply with a short plan in plain text, then \
+exactly one ```json fence containing {{"skill": "<name>", "params": {{...}}}}.
+
+Example reply:
+I'll check what I'm holding first.
+```json
+{{"skill": "inspect", "params": {{}}}}
+```
+
+Available skills:
+{skills.catalog_text()}
+
+Notes on params:
+- Positions are strings like "x=1.0,y=2.0" (no `Position(...)` wrapper, no parens).
+- Prototype/Resource/Direction names are bare strings matching FLE's enums, e.g. "IronOre", \
+"BurnerMiningDrill", "StoneFurnace", "IronGearWheel", "UP".
+- Every skill re-fetches entities by the position you give it — it does not remember entities \
+from earlier turns. Reuse the positions printed in past observations (a `SKILL_OK` line \
+always prints the real position of what it placed).
+- If a skill fails, its observation says why (assert message or traceback). Fix the param that \
+caused it and retry the same skill — don't switch to a different skill to work around a bug.
+- Use "inspect" whenever you're unsure what you already have.
+"""
+
+# ponytail: persistent base memory. Skills re-fetch entities by position every turn (see
+# SYSTEM_PROMPT), so a small local model tends to forget where things are and blind-guesses
+# positions (e.g. re-querying `nearby` five times to relocate its own furnace). Track the
+# last known position of each placed prototype from observation text and remind the model
+# every turn instead of making it re-discover its own base.
+ENTITY_POSITION_RE = re.compile(r"\b([A-Z][A-Za-z0-9]*)\s+at\s+x=(-?[\d.]+)\s*,?\s*y=(-?[\d.]+)")
+
+# ponytail: automatic curriculum. Small models tend to free-associate the next build step
+# instead of following a coherent plan (see roadmap.md's local-model postmortem). A fixed
+# ordered nudge list, triggered by substrings already present in skill observations, costs
+# nothing to maintain and keeps the model on the one path that actually finishes this task.
+CURRICULUM = [
+    ("SKILL_OK mine", "Drill is on ore. Next: `smelt` from it into a furnace for automatic plate production."),
+    ("SKILL_OK smelt", "Furnace is being fed. Next: place an AssemblingMachine2 and `belt` plates into it, then `craft` IronGearWheel inside it — a real production line, not a one-off manual craft."),
+    ("SKILL_OK place: AssemblingMachine", "Assembler placed. Next: `belt` the furnace's plates into it, then craft IronGearWheel there so it runs continuously."),
+    ("SKILL_OK research: set to Automation", "Automation research selected. Next: craft AutomationSciencePacks and `feed` them into a Lab to actually progress the research — don't leave it just selected."),
+]
+
+PICKER_SYSTEM = "You play Factorio. Pick one skill and its parameters as JSON. Never write code."  # same text scripts/export_training.py trained on
+
+JSON_FENCE = re.compile(r"```json\s*(.*?)```", re.DOTALL)
+# ponytail: small models ignore the "reply with JSON" instruction and instead
+# echo the catalog's own `skill(param=val, ...)` call-signature notation. Parse
+# that shape too instead of just erroring and burning a turn.
+CALL_SYNTAX = re.compile(r"^\s*(\w+)\(([^)]*)\)\s*$", re.DOTALL)
+
+
+def extract_skill_call(text: str) -> dict:
+    match = JSON_FENCE.search(text)
+    if match:
+        return json.loads(match.group(1).strip())
+
+    call = CALL_SYNTAX.match(text.strip().splitlines()[-1] if text.strip() else "")
+    if call:
+        name, arg_str = call.group(1), call.group(2).strip()
+        params = {}
+        if arg_str:
+            for part in arg_str.split(","):
+                if "=" not in part:
+                    raise ValueError(f"can't parse call arg {part!r}, expected key=value")
+                k, v = part.split("=", 1)
+                params[k.strip()] = v.strip().strip("'\"")
+        return {"skill": name, "params": params}
+
+    return json.loads(text.strip())
+
+
+def pick_default_env() -> str:
+    env_ids = list_available_environments()
+    if not env_ids:
+        raise SystemExit("No FLE environments registered — is FLE installed correctly?")
+    for env_id in env_ids:
+        if "iron" in env_id.lower():
+            return env_id
+    return env_ids[0]
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--env-id", help="FLE gym environment id (default: an iron-themed task, or the first registered one)")
+    parser.add_argument("--model", default="qwen3:8b", help="Ollama model tag (ollama list to see available)")
+    parser.add_argument("--picker", action="store_true", help="Turing's trained picker (e.g. --model conveyer-picker): short system prompt, last observation only, raw JSON back")
+    parser.add_argument("--picker-url", help="with --picker: an mlx_lm.server URL (e.g. http://127.0.0.1:8081) instead of Ollama")
+    parser.add_argument("--ollama-host", default="http://localhost:11434/v1", help="Ollama's OpenAI-compatible endpoint")
+    parser.add_argument("--max-steps", type=int, default=50)
+    parser.add_argument("--max-tokens", type=int, default=1024)
+    parser.add_argument("--list-envs", action="store_true", help="List available environments and exit")
+    parser.add_argument("--log-dir", default="runs", help="Where to write the per-run JSONL transcript")
+    args = parser.parse_args()
+
+    if args.list_envs:
+        for env_id in list_available_environments():
+            info = get_environment_info(env_id)
+            print(f"{env_id}\n    {info['description']}")
+        return
+
+    env_id = args.env_id or pick_default_env()
+    print(f"[conveyer] environment: {env_id}")
+    print(f"[conveyer] model: {args.model}")
+
+    log_dir = Path(args.log_dir)
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = log_dir / f"{int(time.time())}-{env_id}.jsonl"
+    log_file = log_path.open("w")
+
+    ollama_url = args.ollama_host.replace("/v1", "") + "/api/chat"
+    env = gym.make(env_id, run_idx=0)
+
+    try:
+        obs, info = env.reset(options={"game_state": None})
+        goal = (obs.get("task_info") or {}).get("goal_description", "")
+        observation_text = obs.get("raw_text", "")
+        messages = [
+            {
+                "role": "user",
+                "content": f"Goal: {goal}\n\nInitial state:\n{observation_text}",
+            }
+        ]
+
+        last_code = None
+        last_obs = "Start of run."; last_call_line = ""; hist = []  # --picker feeds exactly this, as in training
+        repeat_count = 0
+        base_memory: dict[str, str] = {}
+        triggered_stages: set[int] = set()
+        curriculum_hint = ""
+        for step in range(1, args.max_steps + 1):
+            try:
+                if args.picker_url:  # mlx_lm.server from Turing's venv: OpenAI-style, same weights as the eval
+                    r = httpx.post(args.picker_url.rstrip("/") + "/v1/chat/completions", timeout=300, json={
+                        "model": args.model, "max_tokens": 120, "temperature": 0.8 if repeat_count else 0,
+                        "messages": [{"role": "system", "content": PICKER_SYSTEM}, {"role": "user", "content": ("Recent skills: " + ", ".join(hist[-3:]) + "\nKnown: " + "; ".join(f"{k}@{v}" for k, v in list(base_memory.items())[-4:]) + "\n" + last_call_line + last_obs[:700])[:1500]}]}).json()
+                    response = {"message": r["choices"][0]["message"]}
+                else: response = httpx.post(
+                    ollama_url,
+                    json={
+                        "model": args.model,
+                        "think": False,  # qwen3 etc. burn the whole token budget on hidden
+                        # reasoning otherwise, leaving nothing in the response
+                        "stream": False,
+                        "options": {"num_predict": args.max_tokens, "temperature": 0.8 if repeat_count else 0},  # ponytail: greedy picker loops on one skill; a repeat gets one warm retry before the stop rule
+                        "messages": ([{"role": "system", "content": PICKER_SYSTEM}, {"role": "user", "content": ("Recent skills: " + ", ".join(hist[-3:]) + "\n" + last_call_line + last_obs[:700])[:1500]}]
+                                     if args.picker or args.picker_url else [{"role": "system", "content": SYSTEM_PROMPT}, *messages]),
+                    },
+                    timeout=300,
+                ).json()
+            except httpx.ConnectError:
+                raise SystemExit(
+                    f"Could not reach Ollama at {ollama_url} — is `ollama serve` running?"
+                )
+            except httpx.TimeoutException:
+                # ponytail: a huge/growing context can make CPU prefill take arbitrarily
+                # long; trimming history is cheaper than a bigger timeout. Drop the oldest
+                # turn (keep the first, which carries the goal) and retry once.
+                print("[conveyer] Ollama timed out, trimming history and retrying")
+                if len(messages) > 3:
+                    messages = [messages[0]] + messages[3:]
+                continue
+            if "message" not in response:
+                raise SystemExit(f"Ollama error: {response.get('error', response)}")
+            reply_text = response["message"]["content"]
+            messages.append({"role": "assistant", "content": reply_text})
+
+            try:
+                call = extract_skill_call(reply_text)
+                code = skills.render(call["skill"], call.get("params", {}))
+            except (json.JSONDecodeError, KeyError, ValueError) as e:
+                print(f"[conveyer] bad skill call, feeding error back: {e}")
+                messages.append({"role": "user", "content": f"SKILL_FAIL: {e}"})
+                # picker mode sees only last_obs: without this it re-reads the same prompt and answers the same bad call forever
+                last_obs = f"SKILL_FAIL: {e}"; last_call_line = f"Last skill: {reply_text[:150]}\n"
+                repeat_count += 1  # next try runs warm (temperature 0.8)
+                if repeat_count >= 3:
+                    print("[conveyer] three bad calls in a row, stopping episode")
+                    break
+                continue
+
+            # ponytail: local models sometimes ignore the "don't repeat" prompt rule and
+            # resubmit the exact same skill call after a failure, forever. Enforce it in
+            # code instead of hoping the model follows the instruction.
+            if call == last_code:
+                repeat_count += 1
+            else:
+                repeat_count = 0
+            last_code = call
+            if repeat_count >= 2:
+                print(f"[conveyer] same skill call repeated {repeat_count + 1}x, stopping episode")
+                break
+
+            print(f"\n--- step {step}: {call['skill']}({call.get('params', {})}) ---")
+
+            game_state = GameState.from_instance(env.instance)
+            action = Action(agent_idx=0, game_state=game_state, code=code)
+            obs, reward, terminated, truncated, info = env.step(action)
+            observation_text = obs.get("raw_text", "")
+            last_obs = observation_text
+            hist.append(str(call["skill"]))
+            last_call_line = f"Last skill: {call['skill']} {json.dumps(call.get('params', {}))}\n"
+
+            print(f"[reward={reward} terminated={terminated} truncated={truncated}]")
+            print(observation_text[-2000:])
+
+            log_file.write(
+                json.dumps(
+                    {
+                        "step": step,
+                        "skill": call["skill"],
+                        "params": call.get("params", {}),
+                        "code": code,
+                        "observation": observation_text,
+                        "reward": reward,
+                        "terminated": terminated,
+                        "truncated": truncated,
+                    }
+                )
+                + "\n"
+            )
+            log_file.flush()
+
+            for prototype, x, y in ENTITY_POSITION_RE.findall(observation_text):
+                base_memory[prototype] = f"x={x},y={y}"
+
+            for i, (trigger, hint) in enumerate(CURRICULUM):
+                if i not in triggered_stages and trigger in observation_text:
+                    triggered_stages.add(i)
+                    curriculum_hint = hint
+
+            extra = ""
+            if base_memory:
+                extra += "\n\n[Known base] " + "; ".join(f"{k}@{v}" for k, v in base_memory.items())
+            if curriculum_hint:
+                extra += f"\n\n[Next up] {curriculum_hint}"
+
+            messages.append(
+                {
+                    "role": "user",
+                    "content": f"Reward: {reward}\n\n{observation_text}{extra}",
+                }
+            )
+
+            if terminated or truncated:
+                print(f"[conveyer] episode ended at step {step}")
+                break
+    except KeyboardInterrupt:
+        print("\n[conveyer] interrupted")
+    finally:
+        log_file.close()
+        env.close()
+        print(f"[conveyer] transcript: {log_path}")
+
+
+if __name__ == "__main__":
+    sys.exit(main())

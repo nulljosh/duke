@@ -1,0 +1,4 @@
+runs/
+.gdt/
+.gdt-save-backup/
+__pycache__/

@@ -164,3 +164,13 @@ Romanized word-bank tiles must use their `*-challenge-tap-token` label, not inne
 ## The loop
 
 The live `/loop` (QA of the Surf landing and menu bar app, Jony Ive pass, repeat to A+) is handed off in `docs/LOOP-HANDOFF.md`. Read it before resuming, and keep its restart prompt current.
+
+## Games (merged 2026-10-25)
+
+Surf is the one autopilot for games and software. Duolingo lives in `scripts/` and `app/`. Conveyer was folded in on 2026-10-25 as a clean copy (its history stays in the archived `nulljosh/conveyer`): `games/factorio/` (Factorio via FLE, its own CLAUDE.md and docs/LOOP-HANDOFF.md still apply), `games/gdt/` (Game Dev Tycoon bridge mod and driver), `games/fez/`. Ignored local state (`.env`, `.fle`, `models`, `.gdt-save-backup`, `runs`) moved with them and stays gitignored.
+
+Hard rules that came along:
+- Never touch Game Dev Tycoon save slot 3, it is Joshua's real 2014 save. Our studio plays in slot 5.
+- Never let Factorio autosave, and never join its server with the real client. Either one crashes the server and rolls the world back.
+- Never commit sprites copied from a Steam install.
+- Back up a game's save folder before the first run, and play only in an empty slot.
