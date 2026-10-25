@@ -33,10 +33,10 @@ def key(name, ms=80, delay=0):
 
 
 def cmd(text):
-    key("tilde"); time.sleep(0.4)
+    key("tilde"); time.sleep(1.0)   # ponytail: typed text is dropped if it arrives under ~0.8 s after the console opens or a submit
     subprocess.run([str(HERE / "key"), pid(), "text", text], check=True); time.sleep(0.2)
-    key("enter"); time.sleep(0.5)
-    key("tilde"); time.sleep(0.3)
+    key("enter"); time.sleep(1.0)
+    key("tilde"); time.sleep(0.5)
 
 
 def shot(name):

@@ -35,3 +35,7 @@ The real inventory is 15 gold cubes, 5 of 8 bits, 6 anti-cubes and 1 key. Anti-c
 ![Real inventory](progress/03-real-inventory.png)
 
 A first attempt set the cube count with the console and warped to Zu City. Joshua called it out as skipping the game, so it was reverted and slot 3 was restored from the backup. Regions never visited in the save are Industrial City, the sewers, the mines and the lava caves. Most of the 11 missing cubes are there.
+
+**2026-10-25, 13:45.** FEZ runs windowed behind the terminal now, with keys sent straight to the game process. Cubes are still 21 of 32 (15 gold, 6 anti, 5 of 8 bits). Gomez is in Zu Library, trying to get down to the Clock Tower door under the building. One try ended in a black hole. FEZUG's volume overlay now draws the black holes and doors, and the black holes seem to switch on and off. ETA: unknown. Navigation is the bottleneck, at about one room an hour so far, with roughly 20 unvisited rooms to cover.
+
+![FEZ in a background window](progress/04-background-window.png)
