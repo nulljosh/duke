@@ -1,41 +1,40 @@
 #!/usr/bin/env python3
-"""fez.py: drive modded FEZ (HAT + FEZUG) from the shell.
-Every input goes through front(), which refuses to send unless FEZ is the frontmost app,
-so a key never lands in another window.
-  fez.py cmd "warp NATURE_HUB"   type a FEZUG console command
+"""fez.py: drive modded FEZ (HAT + FEZUG) from the shell, in the background.
+Keys go straight to the FEZ process (CGEvent postToPid) and screenshots come from its window id,
+so FEZ never needs focus and the terminal stays usable. FEZ's Settings has pauseOnLostFocus false.
+  fez.py cmd "hud_position 1"    type a FEZUG console command
   fez.py key right 600           hold a key for N ms
   fez.py key right+space 600 150 run right, jump 150 ms in
-  fez.py shot name               screenshot to shots/name.png"""
+  fez.py shot name               screenshot of the FEZ window to shots/name.png"""
 import subprocess, sys, time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-PROC = "HAT.bin.osx"
 CODES = {"enter": 36, "space": 49, "left": 123, "right": 124, "down": 125, "up": 126, "esc": 53,
-         "tab": 48, "tilde": 50, "a": 0, "d": 2, "w": 13, "s": 1, "ctrl": 59, "shift": 56}
+         "tab": 48, "tilde": 50, "a": 0, "d": 2, "w": 13, "s": 1, "ctrl": 59, "shift": 56,
+         "i": 34, "j": 38, "k": 40, "l": 37}
 
 
-def osa(script):
-    return subprocess.run(["osascript", "-e", script], capture_output=True, text=True).stdout.strip()
+def pid():
+    p = subprocess.run(["pgrep", "-f", "HAT.bin.osx"], capture_output=True, text=True).stdout.split()
+    if not p: sys.exit("FEZ is not running")
+    return p[0]
 
 
-def front():
-    if osa('tell application "System Events" to get name of first process whose frontmost is true') != PROC:
-        osa(f'tell application "System Events" to set frontmost of process "{PROC}" to true')
-        time.sleep(0.6)
-    if osa('tell application "System Events" to get name of first process whose frontmost is true') != PROC:
-        sys.exit(f"{PROC} is not frontmost; refusing to send input")
+def window():
+    for line in subprocess.run([str(HERE / "win"), "list", pid()], capture_output=True, text=True).stdout.splitlines():
+        if line.rstrip().endswith("FEZ"): return line.split()[0]
+    sys.exit("no FEZ window")
 
 
 def key(name, ms=80, delay=0):
     """name can combine keys with '+': 'right+space' runs right and jumps `delay` ms in."""
-    front()
-    subprocess.run([str(HERE / "key"), ",".join(str(CODES[n]) for n in name.split("+")), str(ms), str(delay)], check=True)
+    subprocess.run([str(HERE / "key"), pid(), ",".join(str(CODES[n]) for n in name.split("+")), str(ms), str(delay)], check=True)
 
 
 def cmd(text):
     key("tilde"); time.sleep(0.4)
-    front(); osa(f'tell application "System Events" to keystroke "{text}"'); time.sleep(0.3)
+    subprocess.run([str(HERE / "key"), pid(), "text", text], check=True); time.sleep(0.2)
     key("enter"); time.sleep(0.5)
     key("tilde"); time.sleep(0.3)
 
@@ -43,8 +42,8 @@ def cmd(text):
 def shot(name):
     (HERE / "shots").mkdir(exist_ok=True)
     p = HERE / "shots" / f"{name}.png"
-    subprocess.run(["screencapture", "-x", str(p)], check=True)
-    subprocess.run(["sips", "-Z", "1280", str(p)], capture_output=True)   # ponytail: 1280 wide is enough to read the HUD
+    subprocess.run(["screencapture", "-x", "-o", "-l", window(), str(p)], check=True)
+    subprocess.run(["sips", "-Z", "960", str(p)], capture_output=True)   # ponytail: 960 wide is enough to read the HUD
     return p
 
 

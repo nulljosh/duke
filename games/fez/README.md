@@ -4,7 +4,9 @@ FEZ on Surf. The goal is the 32-cube ending, played for real from Joshua's own s
 
 FEZ runs with two community mods. [HAT](https://github.com/FEZModding/HAT) is the mod loader. It patches the game once, and the vanilla copy stays in `FEZ.app/Contents/MacOS/Original/`. [FEZUG](https://github.com/FEZModding/FEZUG) is a speedrun practice tool that adds a console on the `~` key.
 
-`fez.py` drives the game. Every key goes through a check that FEZ is the frontmost app, so nothing lands in another window. `key` is a tiny Swift helper that holds real keys, which the game needs for movement.
+`fez.py` drives the game in the background. Keys go straight to the FEZ process (`CGEvent.postToPid` in `key.swift`) and screenshots come from the FEZ window id (`win`, built from `games/factorio/scripts/win.swift`), so FEZ runs windowed behind the terminal and never needs focus. FEZ's Settings has `pauseOnLostFocus false` and a 1280x720 window.
+
+`fezsave.py` reads a save and lists what is left to collect in every room, by comparing it with the game's own map tree. `fezmap.py` reads the level files: the doors in a level, the room route between two levels, and an ASCII side view of a level from any of the four angles. Both need the game data unpacked with [FEZRepacker](https://github.com/FEZModding/FEZRepacker) (`--unpack Other.pak`), which lives on the LaCie with its .NET SDK.
 
 ```bash
 python3 fez.py key right+space 600 150   # run right, jump 150 ms in
