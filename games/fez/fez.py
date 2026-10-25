@@ -8,7 +8,7 @@ so FEZ never needs focus and the terminal stays usable. FEZ's Settings has pause
   fez.py shot name               screenshot of the FEZ window to shots/name.png
   fez.py start                   launch FEZ in the background and load slot 3
   fez.py state                   Gomez's live state from the SurfBridge mod (bridge/)"""
-import json, subprocess, sys, time
+import json, os, re, subprocess, sys, time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -103,15 +103,30 @@ def drop(off, steer=None, timeout=6):
     time.sleep(0.2); return state()
 
 
-def hop(target, jump_ms=200, timeout=2.5):
+def hop(target, jump_ms=200, timeout=2.5, lead=0.6):
     """Jump toward screen-horizontal `target`, holding the direction until Gomez is over it, then land."""
     s = state(); d = "right" if target > h(s) else "left"; sign = 1 if d == "right" else -1
     edge(d, True); time.sleep(0.04); edge("space", True); t0 = time.time(); held = True
     while time.time() - t0 < timeout:
         el = time.time() - t0; s = state()
         if el > jump_ms / 1000: edge("space", False)
-        if held and (h(s) - target) * sign >= -0.1: edge(d, False); held = False
+        if held and (h(s) - target) * sign >= -lead: edge(d, False); held = False
         if el > 0.3 and (s["grounded"] or s["action"].startswith("Grab")): break
+        time.sleep(0.02)
+    if held: edge(d, False)
+    edge("space", False); time.sleep(0.4); return state()
+
+
+def runjump(edge_h, target, jump_ms=450, timeout=3):
+    """Run toward `target`, jump when Gomez reaches `edge_h` (the ledge end), hold until over target, land."""
+    s = state(); d = "right" if target > h(s) else "left"; sign = 1 if d == "right" else -1
+    edge(d, True); t0 = time.time(); jumped = None; held = True
+    while time.time() - t0 < timeout:
+        s = state(); x = h(s)
+        if jumped is None and (x - edge_h) * sign >= -0.3: edge("space", True); jumped = time.time()
+        if jumped and time.time() - jumped > jump_ms / 1000: edge("space", False)
+        if held and jumped and (x - target) * sign >= -0.1: edge(d, False); held = False
+        if jumped and time.time() - jumped > 0.3 and (s["grounded"] or s["action"].startswith("Grab")): break
         time.sleep(0.02)
     if held: edge(d, False)
     edge("space", False); time.sleep(0.4); return state()
@@ -120,20 +135,34 @@ def hop(target, jump_ms=200, timeout=2.5):
 SAVES = Path.home() / "Library/Application Support/FEZ"
 
 
+def picker_slot():
+    p = shot("picker")
+    subprocess.run(["sips", "-c", "80", "400", "--cropOffset", "295", "280", str(p), "--out", str(p)], capture_output=True)
+    out = subprocess.run([str(HERE / "ocr"), str(p), "fast"], capture_output=True, text=True).stdout
+    m = re.search(r"SLOT\s*(\d)", out.replace("\\/", "/"))
+    return int(m.group(1)) if m else None
+
+
 def start(slot=3):
-    keep = {p: p.read_bytes() for p in SAVES.glob("SaveSlot[01]")}   # Joshua's own slots, restored if a misstep loads one
+    keep = {p: (p.read_bytes(), p.stat().st_mtime) for p in SAVES.glob("SaveSlot[01]")}   # Joshua's slots, restored on a misstep
+    mine = SAVES / f"SaveSlot{slot - 1}"; mine.touch()   # the picker opens on the newest save, so make ours the newest
     if not subprocess.run(["pgrep", "-x", "HAT.bin.osx"], capture_output=True).stdout:
         subprocess.run(["open", "-g", "/Volumes/LaCie/Steam/steamapps/common/FEZ/FEZ.app"]); time.sleep(30)
     STATE.unlink(missing_ok=True)
-    key("enter"); time.sleep(7)   # title to slot picker; early presses are lost while it animates
-    for _ in range(slot - 1): key("right", 120); time.sleep(1.2)
+    for _ in range(10):   # the title swallows Enter until it has finished loading: press until the slot picker shows
+        key("enter"); time.sleep(4)
+        if (n := picker_slot()) is not None: break
+    for _ in range(8):   # the picker opens on the last slot played, so read its "SLOT n / 4" label and step to ours
+        if n == slot: break
+        key("right", 120); time.sleep(1.2); n = picker_slot()
+    if n != slot: sys.exit(f"slot picker shows {n}, wanted {slot}")
     key("enter"); time.sleep(3)
     for _ in range(30):   # the main menu ignores Enter while it animates in, so keep pressing until a level loads
         key("enter"); time.sleep(3)
         if (s := state()) and not s["loading"]:
             if s.get("slot") != slot - 1:   # never play Joshua's own slots
                 subprocess.run(["pkill", "-x", "HAT.bin.osx"]); time.sleep(2)
-                for p, b in keep.items(): p.write_bytes(b)
+                for p, (b, m) in keep.items(): p.write_bytes(b); os.utime(p, (m, m))
                 sys.exit(f"loaded slot {s.get('slot', '?')}, wanted {slot - 1}; quit")
             return s
 

@@ -47,6 +47,17 @@ namespace SurfBridge
                     sb.Append(first ? "" : ",").Append($"{{\"type\":\"{type}\",\"pos\":{V(t.Position)}}}");
                     first = false;
                 }
+                sb.Append("],\"movers\":[");   // moving platforms: live bounding box of every trile group that has a path
+                first = true;
+                foreach (var kv in LevelManager.Groups)
+                {
+                    var g = kv.Value;
+                    if (g.Path == null || g.Triles.Count == 0) continue;
+                    var lo = g.Triles[0].Position; var hi = lo;
+                    foreach (var t in g.Triles) { lo = Vector3.Min(lo, t.Position); hi = Vector3.Max(hi, t.Position); }
+                    sb.Append(first ? "" : ",").Append($"{{\"id\":{kv.Key},\"from\":{V(lo)},\"to\":{V(hi + Vector3.One)}}}");
+                    first = false;
+                }
                 sb.Append("],\"holes\":[");
                 first = true;
                 foreach (var v in LevelManager.Volumes.Values)

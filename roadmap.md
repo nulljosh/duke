@@ -61,7 +61,8 @@ three weeks, against six on chess.
 
 ## Open
 - [ ] FEZ: beat the 32-cube ending for real from Joshua's 67.6% save (slot 3 copy). Status lives in games/fez/README.md. Then add FEZ to the landing next to Duolingo and Factorio.
-- [ ] Oxygen Not Included is the next game after FEZ.
+- [ ] Oxygen Not Included is the next game after FEZ, then Don't Starve (Steam marked it damaged on 2026-10-05; reinstall first).
+- [ ] Landing refresh once FEZ is beaten: Hermes' layout, styled for video games instead of Greek gods. Photos from FEZ and Factorio, and Duolingo too. Supported games listed: Duolingo, FEZ, Factorio.
 - [ ] `surf play <game>`: one entry point for duolingo, factorio, gdt and fez.
 - [x] Conveyer merged into Surf on 2026-10-25 (games/factorio, games/gdt); nulljosh/conveyer archived.
 - [x] 2026-10-25: Duolingo's lesson page served a 500 to the runner for 8 hours (5,000 open-fails, nothing earned). A restart fixed it; the runner now exits after 40 open-fails in a row so the status app brings up a fresh browser.

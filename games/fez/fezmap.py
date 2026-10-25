@@ -51,7 +51,7 @@ def view(name, v, at=None):
         # scenery he walks in front of, so they never block or hold him (only tops and walls count).
         face = e["Faces"].get(v, "None")
         ch = MARK.get(e["Type"]) or {"AllSides": "#", "TopOnly": "=", "TopNoStraightLedge": "="}.get(face)
-        if ch: put(t["Position"], ch)
+        if ch: put([c + 0.5 for c in t["Position"]], ch)   # centre, so mirrored views land in the right column
     for vol in d["Volumes"].values():
         if v not in vol["Orientations"] and not (vol.get("ActorSettings") or {}).get("IsBlackHole"): continue
         ch = "O" if (vol.get("ActorSettings") or {}).get("IsBlackHole") else None
