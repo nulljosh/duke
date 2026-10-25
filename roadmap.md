@@ -60,7 +60,6 @@ three weeks, against six on chess.
 - Run `sudo pmset -a autorestart 1` once at the Mac (needs the password). Without it the Mac stays off after a power cut and the runner with it. Asked 2026-10-05, he was away from the desk.
 
 ## Open
-- [ ] Merge Conveyer into Surf (planned 2026-10-23): Factorio becomes Surf's second autopilot, so Surf is the one autopilot for games and software. Duolingo first, Factorio from Conveyer next.
 - [ ] Hermes Sans (~/Documents/Code/hermes) likely has the same comma bug (feathers in every comma). Same fix as Surf Sans: tools/gen_font.py, with a check. Hermes has no roadmap.md yet, so the item lives here.
 - [ ] Confirm live (2026-10-18): Turkish "to read" and "to drink" match questions now solve (fix in 333d537, tr was stalled 24 hours before it). Also watch that balance mode stops picking Japanese and chess, and that XP per hour holds near 1,200 on the track it picks.
 - [ ] Nobody is told when the runner needs a human away from the Mac. A lost session shows an alert on the Mac only; the phone and watch apps just read stale. The session cookie runs to 2169, so this is rare.
@@ -153,5 +152,4 @@ three weeks, against six on chess.
   evaluator.
 
 ## Ingested 2026-10-25
-- [ ] Merge Conveyer into Surf: the Duolingo solver and the Factorio game player should be one app (adds to the 2026-10-23 plan above).
 - [ ] Conveyer keeps starting on login but errors out. Its menu bar panel shows red "Stopped. It restarts on its own while the game is running..." with roadmap 5 left. Screenshot: ~/Documents/Code/notes/attachments/2026-10-25/conveyer-1.png (also conveyer-2.png). Check launchd/login item and who relaunches it before merging.
