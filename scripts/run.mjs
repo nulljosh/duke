@@ -36,6 +36,7 @@ if (!fs.existsSync(path.join(D, 'node_modules/playwright'))) {
 }
 const { chromium } = await import('playwright');
 let track = process.argv[2];
+let openFailStreak = 0;
 if (!track) { console.error('usage: node run.mjs <track>   (a language code, math, chess, or music)'); process.exit(1); }
 let isMath = track === 'math';
 let isChessTrack = track === 'chess';
@@ -807,6 +808,9 @@ while (true) {
   if (!(await openLesson())) {
     log({ ev: 'open-fail', url: page.url() });
     idleOpens++;
+    // ponytail: 2026-10-25 a 500 page stuck the browser for 8h (5,000 open-fails) and the
+    // wedge watchdog never fired because every fail logs. A fresh browser fixed it at once.
+    if (++openFailStreak >= 40) { console.error('40 open-fails in a row. Exiting so the status app restarts the runner.'); process.exit(1); }
     // Language tree exhausted (or stuck): move to the best measured earner, or
     // failing that let the page pick the least-XP course, and retry.
     if (!isMath && !isChessTrack && idleOpens > 2) {
@@ -847,7 +851,7 @@ while (true) {
     } else if (idleOpens > 6) { await sleep(60e3); idleOpens = 0; }
     continue;
   }
-  idleOpens = 0;
+  idleOpens = 0; openFailStreak = 0;
   // ponytail: idleOpens only counts open FAILURES. A cycle that opens a lesson
   // fine and then finishes nothing (seen live: a stale session resumed for over
   // an hour, one lesson-end every 20 min, zero moves in between) was invisible.
