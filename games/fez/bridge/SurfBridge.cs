@@ -35,7 +35,7 @@ namespace SurfBridge
             {
                 var sb = new StringBuilder();
                 var sd = GameState.SaveData;
-                sb.Append($"{{\"t\":{F((float)gameTime.TotalGameTime.TotalSeconds)},\"level\":\"{LevelManager.Name}\",\"loading\":{(GameState.Loading ? "true" : "false")}");
+                sb.Append($"{{\"t\":{F((float)gameTime.TotalGameTime.TotalSeconds)},\"slot\":{GameState.SaveSlot},\"level\":\"{LevelManager.Name}\",\"loading\":{(GameState.Loading ? "true" : "false")}");
                 sb.Append($",\"pos\":{V(PlayerManager.Position)},\"vel\":{V(PlayerManager.Velocity)},\"action\":\"{PlayerManager.Action}\",\"grounded\":{(PlayerManager.Grounded ? "true" : "false")}");
                 sb.Append($",\"view\":\"{CameraManager.Viewpoint}\",\"cubes\":{sd.CubeShards},\"anti\":{sd.SecretCubes},\"bits\":{sd.CollectedParts},\"keys\":{sd.Keys}");
                 sb.Append(",\"items\":[");

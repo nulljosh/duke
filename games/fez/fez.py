@@ -58,8 +58,15 @@ def h(s):
     i, sign = AXIS[s["view"]]; return s["pos"][i] * sign
 
 
+_server = None
+
+
 def edge(name, down):
-    subprocess.run([str(HERE / "key"), pid(), "down" if down else "up", str(CODES[name])], check=True)
+    """Press or release one key through a long-lived key process (separate processes do not hold a key)."""
+    global _server
+    if _server is None or _server.poll() is not None:
+        _server = subprocess.Popen([str(HERE / "key"), pid(), "serve"], stdin=subprocess.PIPE, text=True)
+    _server.stdin.write(f"{'d' if down else 'u'} {CODES[name]}\n"); _server.stdin.flush()
 
 
 def walk(target, tol=0.2, timeout=8):
@@ -69,10 +76,15 @@ def walk(target, tol=0.2, timeout=8):
         d = target - h(s)
         if abs(d) <= tol: break
         want = "right" if d > 0 else "left"
-        if want != held:
-            if held: edge(held, False)
-            edge(want, True); held = want
-        time.sleep(0.05); s = state()
+        if abs(d) < 1.2:   # close in with short taps: Gomez carries about half a unit of momentum at full walk
+            if held: edge(held, False); held = None; time.sleep(0.25)
+            edge(want, True); time.sleep(0.04); edge(want, False); time.sleep(0.15); s = state()
+        else:
+            if want != held:
+                if held: edge(held, False)
+                edge(want, True); held = want
+            time.sleep(0.05); s = state()
+        if not s["grounded"]: break
         still = still + 1 if last is not None and abs(h(s) - last) < 0.01 else 0
         last = h(s)
         if still > 12: break   # blocked by a wall or teetering at an edge
@@ -80,16 +92,50 @@ def walk(target, tol=0.2, timeout=8):
     time.sleep(0.1); return state()
 
 
+def drop(off, steer=None, timeout=6):
+    """Walk off an edge toward `off` ('left'/'right'); once airborne, hold `steer` to drift back under the ledge."""
+    s = state(); t0 = time.time(); edge(off, True)
+    while s and s["grounded"] and time.time() - t0 < 3: time.sleep(0.03); s = state()
+    edge(off, False)
+    if steer: edge(steer, True)
+    while s and not s["grounded"] and time.time() - t0 < timeout: time.sleep(0.03); s = state()
+    if steer: edge(steer, False)
+    time.sleep(0.2); return state()
+
+
+def hop(target, jump_ms=200, timeout=2.5):
+    """Jump toward screen-horizontal `target`, holding the direction until Gomez is over it, then land."""
+    s = state(); d = "right" if target > h(s) else "left"; sign = 1 if d == "right" else -1
+    edge(d, True); time.sleep(0.04); edge("space", True); t0 = time.time(); held = True
+    while time.time() - t0 < timeout:
+        el = time.time() - t0; s = state()
+        if el > jump_ms / 1000: edge("space", False)
+        if held and (h(s) - target) * sign >= -0.1: edge(d, False); held = False
+        if el > 0.3 and (s["grounded"] or s["action"].startswith("Grab")): break
+        time.sleep(0.02)
+    if held: edge(d, False)
+    edge("space", False); time.sleep(0.4); return state()
+
+
+SAVES = Path.home() / "Library/Application Support/FEZ"
+
+
 def start(slot=3):
+    keep = {p: p.read_bytes() for p in SAVES.glob("SaveSlot[01]")}   # Joshua's own slots, restored if a misstep loads one
     if not subprocess.run(["pgrep", "-x", "HAT.bin.osx"], capture_output=True).stdout:
-        subprocess.run(["open", "-g", "/Volumes/LaCie/Steam/steamapps/common/FEZ/FEZ.app"]); time.sleep(25)
+        subprocess.run(["open", "-g", "/Volumes/LaCie/Steam/steamapps/common/FEZ/FEZ.app"]); time.sleep(30)
     STATE.unlink(missing_ok=True)
-    key("enter"); time.sleep(4)
-    for _ in range(slot - 1): key("right"); time.sleep(0.7)
-    key("enter"); time.sleep(3); key("enter")
-    for _ in range(60):
-        time.sleep(1)
-        if (s := state()) and not s["loading"]: return s
+    key("enter"); time.sleep(7)   # title to slot picker; early presses are lost while it animates
+    for _ in range(slot - 1): key("right", 120); time.sleep(1.2)
+    key("enter"); time.sleep(3)
+    for _ in range(30):   # the main menu ignores Enter while it animates in, so keep pressing until a level loads
+        key("enter"); time.sleep(3)
+        if (s := state()) and not s["loading"]:
+            if s.get("slot") != slot - 1:   # never play Joshua's own slots
+                subprocess.run(["pkill", "-x", "HAT.bin.osx"]); time.sleep(2)
+                for p, b in keep.items(): p.write_bytes(b)
+                sys.exit(f"loaded slot {s.get('slot', '?')}, wanted {slot - 1}; quit")
+            return s
 
 
 def shot(name):
@@ -107,4 +153,6 @@ if __name__ == "__main__":
     elif a[0] == "shot": print(shot(a[1]))
     elif a[0] == "start": print(json.dumps(start()))
     elif a[0] == "state": print(json.dumps(state()))
+    elif a[0] == "drop": s = drop(a[1], a[2] if len(a) > 2 else None); print(s["view"], round(h(s), 2), s["pos"], s["action"])
+    elif a[0] == "hop": s = hop(float(a[1])); print(s["view"], round(h(s), 2), s["pos"], s["action"])
     elif a[0] == "walk": s = walk(float(a[1])); print(s["view"], round(h(s), 2), s["pos"], s["action"])

@@ -47,8 +47,11 @@ def view(name, v, at=None):
     for t in d["Triles"]:
         e = ts.get(t["Id"])
         if not e or e.get("Immaterial"): continue
-        ch = MARK.get(e["Type"]) or ("#" if "AllSides" in e["Faces"].values() else "=")
-        put(t["Position"], ch)
+        # Collision is per view: Faces[view] is what Gomez feels from this camera angle. "None" faces are
+        # scenery he walks in front of, so they never block or hold him (only tops and walls count).
+        face = e["Faces"].get(v, "None")
+        ch = MARK.get(e["Type"]) or {"AllSides": "#", "TopOnly": "=", "TopNoStraightLedge": "="}.get(face)
+        if ch: put(t["Position"], ch)
     for vol in d["Volumes"].values():
         if v not in vol["Orientations"] and not (vol.get("ActorSettings") or {}).get("IsBlackHole"): continue
         ch = "O" if (vol.get("ActorSettings") or {}).get("IsBlackHole") else None

@@ -12,6 +12,13 @@ func post(_ c: CGKeyCode, _ down: Bool, _ text: String? = nil) {
     if let t = text { let u = Array(t.utf16); e.keyboardSetUnicodeString(stringLength: u.count, unicodeString: u) }
     e.postToPid(pid)
 }
+if a[2] == "serve" {   // key PID serve: read "d CODE" / "u CODE" lines from stdin; one long-lived source so holds stick
+    while let line = readLine() {
+        let p = line.split(separator: " ")
+        if p.count == 2, let c = CGKeyCode(p[1]) { post(c, p[0] == "d") }
+    }
+    exit(0)
+}
 if a[2] == "down" || a[2] == "up" {   // key PID down|up CODE: one edge, for closed-loop holds driven by the bridge state
     post(CGKeyCode(a[3])!, a[2] == "down"); exit(0)
 }
