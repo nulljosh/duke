@@ -61,7 +61,7 @@ def step(kind, v, c, y):
         letgo(); s = fez.state()
     here = node(s); target = c + 0.5
     if kind.startswith("turn"): return turn_to(v)
-    if kind == "walk": return fez.walk(target)
+    if kind in ("walk", "swim"): return fez.walk(target)
     if kind == "climb":   # along a vine: up/down until the height matches, sideways until the column does
         if y != here[2]:
             k = "up" if y > here[2] else "down"; fez.edge(k, True); t0 = time.time()
@@ -148,7 +148,7 @@ def go(goal, goal_view=None, tries=8, item=None):
     for attempt in range(tries):
         s = fez.state()
         t0 = time.time()   # wait out falls and respawns; hanging on a vine or ledge counts as settled
-        while (s["action"] in ("Dying", "FreeFalling") or not (s["grounded"] or s["action"] == "Bouncing" or "Climb" in s["action"] or s["action"].startswith("Grab"))) and time.time() - t0 < 10:
+        while (s["action"] in ("Dying", "FreeFalling") or not (s["grounded"] or s["action"] in ("Bouncing", "Treading", "Swimming") or "Climb" in s["action"] or s["action"].startswith("Grab"))) and time.time() - t0 < 10:
             time.sleep(0.3); s = fez.state()
         plan.HOLES[s["level"]] = [(h["from"], h["to"]) for h in s.get("holes", []) if h["on"]]
         v, c, y, dep = node(s)
@@ -218,8 +218,20 @@ def travel(to):
     return None
 
 
+def sweep(level):
+    """Travel to `level` and collect every pickup the bridge shows there."""
+    if travel(level) is None: return None
+    for _ in range(12):
+        s = fez.state()
+        if not s["items"]: print("room clear:", level, s["cubes"], s["anti"], s["bits"], flush=True); return s
+        if collect() is None: print("could not reach", s["items"][0], flush=True); return s
+    return fez.state()
+
+
 if __name__ == "__main__":
-    if sys.argv[1] == "travel": s = travel(sys.argv[2])
+    if sys.argv[1] == "sweep":
+        for lv in sys.argv[2:]: s = sweep(lv)
+    elif sys.argv[1] == "travel": s = travel(sys.argv[2])
     elif sys.argv[1] == "collect": s = collect()
     elif sys.argv[1] == "door": s = door(sys.argv[2])
     else: s = go((int(sys.argv[1]), int(sys.argv[2])), sys.argv[3] if len(sys.argv) > 3 else None)

@@ -86,7 +86,7 @@ def walk(target, tol=0.2, timeout=8):
                 if held: edge(held, False)
                 edge(want, True); held = want
             time.sleep(0.05); s = state()
-        if not s["grounded"]: break
+        if not s["grounded"] and s["action"] not in ("Treading", "Swimming"): break
         still = still + 1 if last is not None and abs(h(s) - last) < 0.01 else 0
         last = h(s)
         if still > 12: break   # blocked by a wall or teetering at an edge

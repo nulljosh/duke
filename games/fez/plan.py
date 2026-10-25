@@ -32,6 +32,10 @@ ROTATED = {}   # level -> {group id: quarter turns} applied by a switch the exec
 HOLES = {}     # level -> [(from, to)] black holes the bridge reports as on; their cells (plus a margin) count as walls
 
 
+class Grid(dict):
+    water = None   # node row of the water surface, if the level has water
+
+
 def triles(name):
     """The level's triles, with any switched RotatingGroup turned about its SpinCenter (vertical axis)."""
     d = fezmap.level(name); rot = ROTATED.get(name, {})
@@ -56,7 +60,7 @@ def grid(name, view):
     d = fezmap.level(name); ts = fezmap.tileset(d["TrileSetName"]); hi, hs, di, ds = fezmap.VIEWS[view]
     key = (name, view, tuple(sorted(ROTATED.get(name, {}).items())))
     DEPTHS[(name, view)] = {}; CLIMB[(name, view)] = {}; FLAT[(name, view)] = {}
-    g = {}; deps = DEPTHS[(name, view)]; cl = CLIMB[(name, view)]
+    g = Grid(); deps = DEPTHS[(name, view)]; cl = CLIMB[(name, view)]
     front = {}   # cell -> (closeness to camera, trile, entry): FEZ collides with the front-most block the camera sees
     vines = {}
     for t in triles(name):
@@ -87,7 +91,14 @@ def grid(name, view):
         if f == "AllSides": g[cell] = "wall"
         elif f in SOLID: g[cell] = "top"
         if f in SOLID: deps.setdefault(cell, set()).add(int(t["Position"][di] // 1))
+    d = fezmap.level(name)
+    if d.get("WaterType") not in (None, "None") and d.get("WaterHeight"):
+        g.water = iround(d["WaterHeight"] - 0.5 - 0.4)   # the node row Gomez floats at (measured: y 8.5 under water at 9)
     return g
+
+
+def swimming(g, c, y):
+    return getattr(g, "water", None) == y and g.get((c, y)) != "wall"
 
 
 def standable(g, c, y):
@@ -108,11 +119,12 @@ def land(g, c, y, lo):
     Landing on a bouncer counts (it never kills); callers check bouncy() to skip the fall-height limit."""
     for yy in range(y, lo, -1):
         if g.get((c, yy)) == "wall": return None
-        if standable(g, c, yy) or bouncy(g, c, yy): return yy
+        if standable(g, c, yy) or bouncy(g, c, yy) or swimming(g, c, yy): return yy
     return None
 
 
 def safe(g, c, y, ly, limit):
+    if ly is not None and swimming(g, c, ly): return True   # water breaks any fall
     # Landing on a bouncer while FreeFalling kills like any floor (Tree, 2026-10-25), so the same limit applies.
     return ly is not None and (y - ly <= limit or (bouncy(g, c, ly) and y - ly <= limit))
 
@@ -130,6 +142,13 @@ FLATNOW = {}   # set by find() to FLAT for the view being expanded
 def moves(g, c, y, lo, cl=None, dep=0):
     """Yields ((kind, col, y, depth or None), cost). Depth None means 'settle on whatever is landed on'."""
     cl = cl or {}
+    if swimming(g, c, y):   # in the water: swim along the surface, or jump out onto a ledge
+        for dc in (-1, 1):
+            if swimming(g, c + dc, y): yield ("swim", c + dc, y, None), 1
+        for dc in range(-3, 4):
+            for up in (2, 1):   # a jump out of water peaks about 2.9 up, so a 3-high ledge is out of reach
+                if standable(g, c + dc, y + up): yield ("hop", c + dc, y + up, None), 3 + abs(dc); break
+        return
     if bouncy(g, c, y):   # bouncing on a mushroom: steer up to 4 columns while coming down from the apex
         for dc in range(-5, 6):
             if dc == 0: continue
