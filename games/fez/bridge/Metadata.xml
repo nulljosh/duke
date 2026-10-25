@@ -1,0 +1,10 @@
+<Metadata>
+   <Name>SurfBridge</Name>
+   <Description>Writes Gomez's live state to a JSON file for Surf. Read only, changes nothing in the game.</Description>
+   <Author>Surf</Author>
+   <Version>0.1.0</Version>
+   <LibraryName>SurfBridge.dll</LibraryName>
+   <Dependencies>
+      <DependencyInfo Name="HAT" MinimumVersion="3.0"/>
+   </Dependencies>
+</Metadata>

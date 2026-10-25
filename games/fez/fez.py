@@ -5,8 +5,10 @@ so FEZ never needs focus and the terminal stays usable. FEZ's Settings has pause
   fez.py cmd "hud_position 1"    type a FEZUG console command
   fez.py key right 600           hold a key for N ms
   fez.py key right+space 600 150 run right, jump 150 ms in
-  fez.py shot name               screenshot of the FEZ window to shots/name.png"""
-import subprocess, sys, time
+  fez.py shot name               screenshot of the FEZ window to shots/name.png
+  fez.py start                   launch FEZ in the background and load slot 3
+  fez.py state                   Gomez's live state from the SurfBridge mod (bridge/)"""
+import json, subprocess, sys, time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -16,7 +18,7 @@ CODES = {"enter": 36, "space": 49, "left": 123, "right": 124, "down": 125, "up":
 
 
 def pid():
-    p = subprocess.run(["pgrep", "-f", "HAT.bin.osx"], capture_output=True, text=True).stdout.split()
+    p = subprocess.run(["pgrep", "-x", "HAT.bin.osx"], capture_output=True, text=True).stdout.split()
     if not p: sys.exit("FEZ is not running")
     return p[0]
 
@@ -39,6 +41,57 @@ def cmd(text):
     key("tilde"); time.sleep(0.5)
 
 
+STATE = Path.home() / "Library/Application Support/FEZ/surfbridge.json"
+
+
+def state():
+    """Live state written by the SurfBridge mod a few times a second (level, pos, view, cubes, items, holes)."""
+    try: return json.loads(STATE.read_text())
+    except (OSError, ValueError): return None
+
+
+# Screen-horizontal coordinate per camera view (Right view: walking right lowers z, measured 2026-10-25).
+AXIS = {"Front": (0, 1), "Right": (2, -1), "Back": (0, -1), "Left": (2, 1)}
+
+
+def h(s):
+    i, sign = AXIS[s["view"]]; return s["pos"][i] * sign
+
+
+def edge(name, down):
+    subprocess.run([str(HERE / "key"), pid(), "down" if down else "up", str(CODES[name])], check=True)
+
+
+def walk(target, tol=0.2, timeout=8):
+    """Walk until Gomez's screen-horizontal coordinate reaches target. Returns the final state."""
+    s = state(); t0 = time.time(); held = None; last, still = None, 0
+    while s and time.time() - t0 < timeout:
+        d = target - h(s)
+        if abs(d) <= tol: break
+        want = "right" if d > 0 else "left"
+        if want != held:
+            if held: edge(held, False)
+            edge(want, True); held = want
+        time.sleep(0.05); s = state()
+        still = still + 1 if last is not None and abs(h(s) - last) < 0.01 else 0
+        last = h(s)
+        if still > 12: break   # blocked by a wall or teetering at an edge
+    if held: edge(held, False)
+    time.sleep(0.1); return state()
+
+
+def start(slot=3):
+    if not subprocess.run(["pgrep", "-x", "HAT.bin.osx"], capture_output=True).stdout:
+        subprocess.run(["open", "-g", "/Volumes/LaCie/Steam/steamapps/common/FEZ/FEZ.app"]); time.sleep(25)
+    STATE.unlink(missing_ok=True)
+    key("enter"); time.sleep(4)
+    for _ in range(slot - 1): key("right"); time.sleep(0.7)
+    key("enter"); time.sleep(3); key("enter")
+    for _ in range(60):
+        time.sleep(1)
+        if (s := state()) and not s["loading"]: return s
+
+
 def shot(name):
     (HERE / "shots").mkdir(exist_ok=True)
     p = HERE / "shots" / f"{name}.png"
@@ -52,3 +105,6 @@ if __name__ == "__main__":
     if a[0] == "cmd": cmd(" ".join(a[1:]))
     elif a[0] == "key": key(a[1], int(a[2]) if len(a) > 2 else 80, int(a[3]) if len(a) > 3 else 0)
     elif a[0] == "shot": print(shot(a[1]))
+    elif a[0] == "start": print(json.dumps(start()))
+    elif a[0] == "state": print(json.dumps(state()))
+    elif a[0] == "walk": s = walk(float(a[1])); print(s["view"], round(h(s), 2), s["pos"], s["action"])
