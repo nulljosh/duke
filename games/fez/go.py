@@ -4,15 +4,20 @@
   go.py door LEVEL          the door in this level that leads to LEVEL, then go through it"""
 import sys, time
 import fez, fezmap, plan
+from plan import iround
 
 
 def node(s):
     """Planner node for Gomez now. Teetering at an edge puts his centre past the last floor cell, so snap back to it."""
-    di = fezmap.VIEWS[s["view"]][2]; x = fez.h(s); y = round(s["pos"][1] - 0.47)
+    di = fezmap.VIEWS[s["view"]][2]; x = fez.h(s); y = iround(s["pos"][1] - 0.4)
     c = int(x // 1)
     try:
         g = plan.grid(s["level"], s["view"])
-        if not plan.standable(g, c, y):
+        if "Climb" in s["action"]:   # on a vine: use the nearest vine cell the planner knows about
+            cl = plan.CLIMB[(s["level"], s["view"])]
+            best = min(cl, key=lambda q: (q[0] + 0.5 - x) ** 2 + (q[1] - y) ** 2, default=None)
+            if best and abs(best[0] + 0.5 - x) <= 1.6 and abs(best[1] - y) <= 2: c, y = best
+        elif not plan.standable(g, c, y):
             for cc in (int((x - 0.5) // 1), int((x + 0.5) // 1)):
                 if plan.standable(g, cc, y): c = cc; break
     except FileNotFoundError: pass
@@ -36,19 +41,80 @@ def landed(timeout=4):
     time.sleep(0.3); return fez.state()
 
 
+def letgo():
+    """Down + Jump drops Gomez off a vine (measured in Tree Sky, 2026-10-25)."""
+    fez.edge("down", True); time.sleep(0.1); fez.key("space", 60); time.sleep(0.2); fez.edge("down", False)
+    return landed()
+
+
 def settle(s):
     if s["action"].startswith("Grab"): fez.key("up", 150); time.sleep(1.3); s = fez.state()
     return s
 
 
 def step(kind, v, c, y):
-    s = fez.state(); here = node(s); target = c + 0.5
+    s = fez.state()
+    if "Climb" in s["action"] and kind not in ("climb", "release", "vinejump") and not kind.startswith("turn"):   # standing moves need ground
+        letgo(); s = fez.state()
+    here = node(s); target = c + 0.5
     if kind.startswith("turn"): return turn_to(v)
     if kind == "walk": return fez.walk(target)
-    if kind == "climb":
-        k = "up" if y > here[2] else "down"; fez.edge(k, True); t0 = time.time()
-        while time.time() - t0 < 3 and round(fez.state()["pos"][1] - 0.47) != y: time.sleep(0.03)
-        fez.edge(k, False); time.sleep(0.3); return fez.state()
+    if kind == "climb":   # along a vine: up/down until the height matches, sideways until the column does
+        if y != here[2]:
+            k = "up" if y > here[2] else "down"; fez.edge(k, True); t0 = time.time()
+            while time.time() - t0 < 3 and iround(fez.state()["pos"][1] - 0.4) != y: time.sleep(0.03)
+        else:
+            k = "right" if target > fez.h(s) else "left"; sign = 1 if k == "right" else -1; fez.edge(k, True); t0 = time.time()
+            while time.time() - t0 < 3 and (fez.h(fez.state()) - target) * sign < -0.3: time.sleep(0.03)
+        fez.edge(k, False); time.sleep(0.3); return settle(fez.state())
+    if kind == "grab":    # jump at a vine holding Up so Gomez catches it
+        d = "right" if target > fez.h(s) else "left" if target < fez.h(s) - 0.3 else None; sign = 1 if d == "right" else -1
+        fez.edge("up", True)
+        if d: fez.edge(d, True)
+        time.sleep(0.04); fez.edge("space", True); t0 = time.time()
+        while time.time() - t0 < 2:
+            s = fez.state()
+            if time.time() - t0 > 0.3: fez.edge("space", False)
+            if d and (fez.h(s) - target) * sign >= -0.4: fez.edge(d, False)
+            if "Climb" in s["action"] or (time.time() - t0 > 0.3 and s["grounded"]): break
+            time.sleep(0.02)
+        for k in ("space", "up", "left", "right"): fez.edge(k, False)
+        time.sleep(0.2); return fez.state()
+    if kind.startswith("dropback"):   # walk off the edge, then steer back under it to the target column
+        out = kind.split("-")[1]; back = "left" if out == "right" else "right"; sign = 1 if back == "right" else -1
+        t0 = time.time()   # creep: full speed carries Gomez too far out to steer back under the ledge
+        while fez.state()["grounded"] and time.time() - t0 < 4:
+            fez.edge(out, True); time.sleep(0.05); fez.edge(out, False); time.sleep(0.12)
+        time.sleep(0.25)
+        if fez.state()["action"].startswith("Grab"):   # a slow step off hangs from the ledge: let go with Down
+            fez.key("down", 80); time.sleep(0.05)
+        fez.edge(back, True)
+        while time.time() - t0 < 4:
+            s = fez.state()
+            if (fez.h(s) - target) * sign >= -0.3: fez.edge(back, False)
+            if s["grounded"] or s["action"].startswith(("Grab", "Dying")): break
+            time.sleep(0.02)
+        fez.edge(back, False); return settle(landed())
+    if kind == "dropgrab":   # walk off the edge holding Up, steer over the vine column, catch it
+        d = "right" if target > fez.h(s) else "left"; sign = 1 if d == "right" else -1
+        y0 = s["pos"][1]; fez.edge(d, True); t0 = time.time(); up = False
+        while time.time() - t0 < 3:
+            s = fez.state()
+            if (fez.h(s) - target) * sign >= -0.3: fez.edge(d, False)
+            if not up and s["pos"][1] < min(y0 - 1.5, y + 1.5): fez.edge("up", True); up = True   # holding Up too early re-grabs the vine above
+            if "Climb" in s["action"] or (time.time() - t0 > 0.4 and s["grounded"]) or s["action"] == "Dying": break
+            time.sleep(0.02)
+        fez.edge(d, False); fez.edge("up", False); time.sleep(0.2); return fez.state()
+    if kind == "vinejump":   # jump off the vine toward a ledge above, hold Up to catch it
+        d = "right" if target > fez.h(s) + 0.3 else "left" if target < fez.h(s) - 0.3 else None
+        fez.edge("up", True)
+        if d: fez.edge(d, True)
+        fez.edge("space", True); time.sleep(0.45); fez.edge("space", False)
+        s = landed(3)
+        for k in ("up", "left", "right"): fez.edge(k, False)
+        return settle(s)
+    if kind == "release":   # let go of the vine and land below
+        letgo(); return settle(fez.state())
     if kind == "drop":   # step off toward the target column and let go once over it
         d = "right" if target > fez.h(s) else "left"; sign = 1 if d == "right" else -1
         fez.edge(d, True); t0 = time.time()
@@ -63,21 +129,32 @@ def step(kind, v, c, y):
         return settle(fez.hop(target, jump_ms=450 if up > 0 else 250 if up == 0 else 120, lead=0.5))
 
 
-def go(goal, goal_view=None, tries=12, item=None):
+def go(goal, goal_view=None, tries=8, item=None):
     for attempt in range(tries):
         s = fez.state()
-        while s["action"] in ("Dying", "FreeFalling") or not s["grounded"]: time.sleep(0.3); s = fez.state()
+        t0 = time.time()   # wait out falls and respawns; hanging on a vine or ledge counts as settled
+        while (s["action"] in ("Dying", "FreeFalling") or not (s["grounded"] or "Climb" in s["action"] or s["action"].startswith("Grab"))) and time.time() - t0 < 10:
+            time.sleep(0.3); s = fez.state()
         v, c, y, dep = node(s)
+        if "Climb" in s["action"] and plan.standable(plan.grid(s["level"], v), c, y):   # on a vine right above a floor: step down onto it
+            letgo(); s = fez.state(); v, c, y, dep = node(s)
         if goal is not None and (c, y) == goal and goal_view in (None, v): return s
         p = plan.find_item(s["level"], v, (c, y, dep), item) if item else plan.find(s["level"], v, (c, y, dep), goal, goal_view)
         if p == []: return s
         if p is None: print("no path from", node(s), "to", goal); return None
+        first = plan.compress(p)[0][0] if p else ""
+        if "Climb" in s["action"] and first not in ("climb", "release", "vinejump") and not first.startswith("turn"):
+            letgo(); continue
         print(f"plan {attempt}: " + " | ".join(f"{k} {vv} {cc},{yy}" for k, (vv, cc, yy, _) in plan.compress(p)))
+        prev = (v, c, y, dep)
         for kind, (vv, cc, yy, _) in plan.compress(p):
             s = step(kind, vv, cc, yy)
             got = node(s)
-            if (got[0], got[1], got[2]) != (vv, cc, yy):
-                print(f"  {kind} to {vv} {cc},{yy} landed {got} ({s['action']}), replanning"); break
+            close = kind in ("grab", "climb") and "Climb" in s["action"] and got[0] == vv and abs(got[1] - cc) <= 1 and abs(got[2] - yy) <= 1
+            if (got[0], got[1], got[2]) != (vv, cc, yy) and not close:
+                plan.BANNED.add((s["level"], prev, kind, (vv, cc, yy)))   # never plan this exact move from here again
+                print(f"  {kind} to {vv} {cc},{yy} landed {got} ({s['action']}), banned, replanning"); break
+            prev = got
         else:
             return fez.state()
     return None
@@ -88,7 +165,7 @@ def door(to):
     for dest, f, t, views in fezmap.doors(lvl):
         if dest != to: continue
         v = views[0]; hi, hs, _, _ = fezmap.VIEWS[v]
-        col = int(((f[hi] + t[hi]) / 2) * hs // 1); y = round(f[1])
+        col = int(((f[hi] + t[hi]) / 2) * hs // 1); y = iround(f[1])
         if go((col, y), v) is None: return None
         fez.key("up", 150); time.sleep(6); return fez.state()
 
@@ -108,8 +185,21 @@ def collect():
     return s
 
 
+def travel(to):
+    """Door to door along the map-tree route until Gomez is in `to`."""
+    for _ in range(20):
+        here = fez.state()["level"]
+        if here == to: return fez.state()
+        nxt = fezmap.route(here, to)[1]
+        print(f"{here} -> {nxt}", flush=True)
+        s = door(nxt)
+        if s is None or s["level"] != nxt: print("stuck going", here, "->", nxt); return None
+    return None
+
+
 if __name__ == "__main__":
-    if sys.argv[1] == "collect": s = collect()
+    if sys.argv[1] == "travel": s = travel(sys.argv[2])
+    elif sys.argv[1] == "collect": s = collect()
     elif sys.argv[1] == "door": s = door(sys.argv[2])
     else: s = go((int(sys.argv[1]), int(sys.argv[2])), sys.argv[3] if len(sys.argv) > 3 else None)
     print(s and (s["level"], s["view"], s["action"], s["pos"]))

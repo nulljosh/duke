@@ -9,7 +9,8 @@ def reach(name, view, start):
     s0 = (view, *start); seen = {s0}; q = [s0]
     while q:
         v, c, y, dep = q.pop()
-        nxt = [(v, c2, y2, plan.settle_depth(name, v, c2, y2, dep)) for (k, c2, y2), _ in plan.moves(grids[v], c, y, lo, plan.CLIMB[(name, v)])]
+        plan.FLATNOW = plan.FLAT[(name, v)]
+        nxt = [(v, c2, y2, d2 if d2 is not None else plan.settle_depth(name, v, c2, y2, dep)) for (k, c2, y2, d2), _ in plan.moves(grids[v], c, y, lo, plan.CLIMB[(name, v)], dep)]
         if plan.standable(grids[v], c, y):
             hi, hs, di, _ = fezmap.VIEWS[v]; pos = [0, 0, 0]; pos[hi] = (c + .5) * hs; pos[di] = dep + .5
             for st in (1, -1):

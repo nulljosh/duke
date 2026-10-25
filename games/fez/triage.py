@@ -25,7 +25,8 @@ def starts(name):
 if __name__ == "__main__":
     sd = fezsave.read(sys.argv[1]); tree = json.load(open(fezsave.MAPTREE))
     for name, seen, gap, _ in fezsave.missing(sd, tree):
-        try: its = items(name, set())   # ponytail: per-room collected triles are not decoded yet, so visited rooms list everything
+        done = set(sd["World"][name]["destroyed"]) if name in sd["World"] else set()
+        try: its = items(name, done)
         except FileNotFoundError: continue
         if not its: continue
         got = []

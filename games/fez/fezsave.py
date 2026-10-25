@@ -28,7 +28,7 @@ class R:
 
 
 def level(r):
-    for _ in range(r.i32()): r.i32(); r.i32(); r.i32()   # DestroyedTriles
+    destroyed = [(r.i32(), r.i32(), r.i32()) for _ in range(r.i32())]   # DestroyedTriles: collected pickups among them
     for _ in range(r.i32()): r.i32(); r.i32(); r.i32()   # InactiveTriles
     for _ in range(5):                                    # art objects, events, groups, volumes, NPCs
         for _ in range(r.i32()): r.i32()
@@ -37,6 +37,7 @@ def level(r):
     wc = {k: r.i32() for k in ["LockedDoorCount", "UnlockedDoorCount", "ChestCount", "CubeShardCount", "OtherCollectibleCount", "SplitUpCount"]}
     wc["ScriptIds"] = [r.i32() for _ in range(r.i32())]
     wc["SecretCount"] = r.i32()
+    wc["destroyed"] = destroyed
     return wc
 
 

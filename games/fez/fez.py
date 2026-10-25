@@ -46,8 +46,10 @@ STATE = Path.home() / "Library/Application Support/FEZ/surfbridge.json"
 
 def state():
     """Live state written by the SurfBridge mod a few times a second (level, pos, view, cubes, items, holes)."""
-    try: return json.loads(STATE.read_text())
-    except (OSError, ValueError): return None
+    for _ in range(20):   # the mod rewrites the file several times a second; a read can land mid-swap
+        try: return json.loads(STATE.read_text())
+        except (OSError, ValueError): time.sleep(0.02)
+    return None
 
 
 # Screen-horizontal coordinate per camera view (Right view: walking right lowers z, measured 2026-10-25).

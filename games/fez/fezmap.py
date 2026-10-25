@@ -20,7 +20,7 @@ def doors(name):
         for a in s["Actions"]:
             m = re.match(r"Level\.(ChangeLevel\w*|ChangeToFarAwayLevel)\((\w+)", a)
             v = next((re.match(r"Volume\[(\d+)\]\.Enter", t) for t in s["Triggers"] if t.startswith("Volume[")), None)
-            if m and v:
+            if m and v and v.group(1) in d["Volumes"]:
                 vol = d["Volumes"][v.group(1)]
                 out.append((m.group(2), vol["From"], vol["To"], vol["Orientations"]))
     return out
