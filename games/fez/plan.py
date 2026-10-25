@@ -7,7 +7,7 @@ Grid columns are screen-horizontal units (fez.h), rows are the y of the floor Go
 import collections, heapq, math, sys
 import fezmap
 
-MAX_DROP = 5        # 6.1 from standing survived once, but 6 with walking momentum killed (Zu City Ruins); keep 5
+MAX_DROP = 6        # stepping off from rest turns into deadly FreeFalling after ~7 (Zu Library trace); jumps first eat into it
 JUMP_UP = 2         # full jump peak is about +2.3
 JUMP_ACROSS = 5     # a standing full jump cleared 5 (Clock, 2026-10-25); ledge grabs add reach
 
@@ -29,6 +29,7 @@ OPPOSITE = {"Front": "Back", "Back": "Front", "Left": "Right", "Right": "Left"}
 
 
 ROTATED = {}   # level -> {group id: quarter turns} applied by a switch the executor just pulled (180 degrees only)
+HOLES = {}     # level -> [(from, to)] black holes the bridge reports as on; their cells (plus a margin) count as walls
 
 
 def triles(name):
@@ -56,20 +57,35 @@ def grid(name, view):
     key = (name, view, tuple(sorted(ROTATED.get(name, {}).items())))
     DEPTHS[(name, view)] = {}; CLIMB[(name, view)] = {}; FLAT[(name, view)] = {}
     g = {}; deps = DEPTHS[(name, view)]; cl = CLIMB[(name, view)]
+    front = {}   # cell -> (closeness to camera, trile, entry): FEZ collides with the front-most block the camera sees
+    vines = {}
     for t in triles(name):
         e = ts.get(t["Id"])
         if not e or e.get("Immaterial"): continue
         # a trile at P spans [P, P+1]; take its centre so mirrored views (sign -1) land in the right column
         cell = (int((t["Position"][hi] + 0.5) * hs // 1), iround(t["Position"][1]))   # some triles sit off-grid (y 13.9375)
-        if e["Type"] in ("Vine", "Ladder"):
-            # Gomez climbs a vine from any camera angle: facing it, edge-on (side-climb) or through the wall (back-climb).
-            cl.setdefault(cell, set()).add(int(t["Position"][di] // 1))
-            if FACING[t["Phi"] % 4] in (view, OPPOSITE[view]) or e["Type"] == "Ladder":
-                FLAT[(name, view)].setdefault(cell, set()).add(int(t["Position"][di] // 1))
-            continue
+        k = t["Position"][di] * ds
+        if e["Type"] in ("Vine", "Ladder"):   # vines don't hide what's behind them; keep the nearest one separately
+            if cell not in vines or k > vines[cell][0]: vines[cell] = (k, t, e)
+        elif cell not in front or k > front[cell][0]: front[cell] = (k, t, e)
+    # Measured in the Tree 2026-10-25: a TopOnly shelf hidden behind scenery (trunk, None faces) does not hold Gomez.
+    for cell, (k, t, e) in vines.items():
+        # Only a vine with no block in front of it can be climbed (one behind the trunk can't, measured in the Tree).
+        # From that angle Gomez climbs it facing, edge-on (side-climb) or from behind (back-climb).
+        if cell in front and front[cell][0] > k: continue
+        cl.setdefault(cell, set()).add(int(t["Position"][di] // 1))
+        if FACING[t["Phi"] % 4] in (view, OPPOSITE[view]) or e["Type"] == "Ladder":
+            FLAT[(name, view)].setdefault(cell, set()).add(int(t["Position"][di] // 1))
+    for lo3, hi3 in HOLES.get(name, []):   # a black hole pulls Gomez in from about a cell away
+        for c in range(int(min(lo3[hi] * hs, hi3[hi] * hs) // 1) - 1, int(max(lo3[hi] * hs, hi3[hi] * hs) // 1) + 2):
+            for yy in range(int(lo3[1] // 1) - 1, int(hi3[1] // 1) + 2):
+                g[(c, yy)] = "wall"
+    for cell, (k, t, e) in front.items():
+        if g.get(cell) == "wall": continue
         f = e["Faces"].get(view, "None")
+        if e["Type"] == "Bouncer" and f in SOLID: g[cell] = "bounce"; deps.setdefault(cell, set()).add(int(t["Position"][di] // 1)); continue
         if f == "AllSides": g[cell] = "wall"
-        elif f in SOLID and g.get(cell) != "wall": g[cell] = "top"
+        elif f in SOLID: g[cell] = "top"
         if f in SOLID: deps.setdefault(cell, set()).add(int(t["Position"][di] // 1))
     return g
 
@@ -79,20 +95,33 @@ def standable(g, c, y):
     return g.get((c, y - 1)) in ("top", "wall") and g.get((c, y)) != "wall" and g.get((c, y + 1)) != "wall"
 
 
+BOUNCE = 7          # a bouncer mushroom throws Gomez about 7 up (Tree trace, 2026-10-25)
+BOUNCE_FALL = 15    # after a bounce, FreeFalling only began 18 below the apex (Tree trace); 11 down onto a mushroom was fine
+
+
+def bouncy(g, c, y):
+    return g.get((c, y - 1)) == "bounce"
+
+
 def land(g, c, y, lo):
-    """Where a fall in column c starting at feet height y lands (feet y), or None if it falls past lo."""
+    """Where a fall in column c starting at feet height y lands (feet y), or None if it falls past lo.
+    Landing on a bouncer counts (it never kills); callers check bouncy() to skip the fall-height limit."""
     for yy in range(y, lo, -1):
         if g.get((c, yy)) == "wall": return None
-        if standable(g, c, yy): return yy
+        if standable(g, c, yy) or bouncy(g, c, yy): return yy
     return None
+
+
+def safe(g, c, y, ly, limit):
+    # Landing on a bouncer while FreeFalling kills like any floor (Tree, 2026-10-25), so the same limit applies.
+    return ly is not None and (y - ly <= limit or (bouncy(g, c, ly) and y - ly <= limit))
 
 
 def vine_dep(cl, cell, dep):
-    """Depth of the vine in `cell` that continues the one at `dep` (same or next depth), else None."""
+    """Depth of the climbable vine in `cell` (the front-most one), or None. Climbing is 2D: depth may jump."""
     D = cl.get(cell, ())
-    for d in (dep, dep - 1, dep + 1):
-        if d in D: return d
-    return None
+    if dep in D: return dep
+    return min(D, key=lambda d: abs(d - dep)) if D else None
 
 
 FLATNOW = {}   # set by find() to FLAT for the view being expanded
@@ -101,6 +130,12 @@ FLATNOW = {}   # set by find() to FLAT for the view being expanded
 def moves(g, c, y, lo, cl=None, dep=0):
     """Yields ((kind, col, y, depth or None), cost). Depth None means 'settle on whatever is landed on'."""
     cl = cl or {}
+    if bouncy(g, c, y):   # bouncing on a mushroom: steer up to 4 columns while coming down from the apex
+        for dc in range(-5, 6):
+            if dc == 0: continue
+            ly = land(g, c + dc, y + BOUNCE, lo)
+            if ly is not None and y + BOUNCE - ly <= (BOUNCE_FALL if bouncy(g, c + dc, ly) else MAX_DROP + 2): yield ("bounce", c + dc, ly, None), 3 + abs(dc)
+        return
     on = vine_dep(cl, (c, y), dep) is not None or vine_dep(cl, (c, y + 1), dep) is not None
     stand = standable(g, c, y)
     if stand:
@@ -111,11 +146,11 @@ def moves(g, c, y, lo, cl=None, dep=0):
                     cc = c + dc * k
                     if not any(g.get((cc, yy)) == "wall" for yy in range(y - 1, y + 2)):
                         ly = land(g, cc, y, lo)
-                        if ly is not None and y - ly <= MAX_DROP and (k == 1 or y - ly >= k): yield ("drop", cc, ly, None), 2 + k
+                        if safe(g, cc, y, ly, MAX_DROP) and (k == 1 or y - ly >= k): yield ("drop", cc, ly, None), 2 + k
                 for j in range(1, 4):   # step off, then steer back in under the ledge just left
                     cc = c + dc - dc * j
                     ly = land(g, cc, y - 2, lo)
-                    if ly is not None and 2 + j <= y - ly <= MAX_DROP:
+                    if ly is not None and 2 + j <= y - ly and safe(g, cc, y, ly, MAX_DROP):
                         yield ("dropback-" + ("right" if dc > 0 else "left"), cc, ly, None), 3 + j
             for across in range(1, JUMP_ACROSS + 1):
                 cc = c + dc * across
@@ -132,8 +167,10 @@ def moves(g, c, y, lo, cl=None, dep=0):
                         cell = (c + dc + k, y - dy)
                         if cell in cl and land(g, c + dc + k, y, lo) is None or (cell in cl and (land(g, c + dc + k, y, lo) or -999) < y - dy):
                             for d in cl[cell]: yield ("dropgrab", cell[0], cell[1], d), 4
-        for dc in (-3, -2, -1, 0, 1, 2, 3):   # jump onto a vine within reach and hold on
-            for dy in (0, 1, 2, 3):
+        for dc in (-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5):   # jump onto a vine within reach (up to 3 above, 4 below) and hold on
+            for dy in (3, 2, 1, 0, -1, -2, -3, -4):
+                if abs(dc) > 3 and dy > 1: continue
+                if dy < 0 and any(g.get((c + dc, yy)) in ("top", "wall", "bounce") for yy in range(y + dy, y)): continue   # floors only pass from below
                 cell = (c + dc, y + dy)
                 if cell in cl and not standable(g, *cell):
                     for d in cl[cell]: yield ("grab", cell[0], cell[1], d), 4
@@ -141,14 +178,14 @@ def moves(g, c, y, lo, cl=None, dep=0):
         for dc, dy in ((0, 1), (0, -1), (1, 0), (-1, 0)):
             cc, yy = c + dc, y + dy
             if g.get((cc, yy)) == "wall" or g.get((cc, yy + 1)) == "wall": continue
-            src = FLATNOW if dy == 0 else cl   # sideways only along a vine that faces the camera; side-climbs go up and down
-            nd = vine_dep(src, (cc, yy), dep) if dy == 0 and vine_dep(FLATNOW, (c, y), dep) is not None else (vine_dep(cl, (cc, yy), dep) if dy else None)
+            # sideways only from a vine that faces the camera (side-climbs go up and down); onto any climbable cell
+            nd = vine_dep(cl, (cc, yy), dep) if dy or vine_dep(FLATNOW, (c, y), dep) is not None else None
             if nd is None and dy == 1: nd = vine_dep(cl, (cc, yy + 1), dep)
             if nd is not None: yield ("climb", cc, yy, nd), 2
             elif standable(g, cc, yy): yield ("climb", cc, yy, None), 2   # step off the vine onto a floor
         if not stand:
             ly = land(g, c, y - 1, lo)
-            if ly is not None and y - ly <= MAX_DROP: yield ("release", c, ly, None), 3
+            if safe(g, c, y, ly, MAX_DROP - 1): yield ("release", c, ly, None), 3   # letting go starts with a small hop
             for dc in (-2, -1, 0, 1, 2):   # jump off the vine up onto a ledge (catching it if needed)
                 for up in (2, 1):   # measured: a jump off a vine gains about 2 (Zu City Ruins, 2026-10-25)
                     if standable(g, c + dc, y + up): yield ("vinejump", c + dc, y + up, None), 4; break
@@ -198,6 +235,7 @@ def find(name, view, start, goal, goal_view=None, done=None):
             nv = ORDER[(ORDER.index(v) + step) % 4]; nhi, nhs, ndi, _ = fezmap.VIEWS[nv]
             nc, nd_ = int(pos[nhi] * nhs // 1), int(pos[ndi] // 1)
             if standable(grids[nv], nc, y) and standable(grids[v], c, y): nxt.append(((nv, nc, y, nd_), "turn-" + nv, 3))
+            elif bouncy(grids[v], c, y) and bouncy(grids[nv], nc, y): nxt.append(((nv, nc, y, nd_), "turn-" + nv, 3))   # turning mid-bounce
             elif vine_dep(CLIMB[(name, v)], (c, y), dep) is not None:   # turning while hanging on a vine
                 vd = vine_dep(CLIMB[(name, nv)], (nc, y), nd_)
                 if vd is not None: nxt.append(((nv, nc, y, vd), "turn-" + nv, 3))

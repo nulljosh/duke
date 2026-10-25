@@ -2,7 +2,7 @@
 """go.py: walk Gomez to a spot in the current level with the planner, replanning after every surprise.
   go.py COL Y [VIEW]        target column (screen units in VIEW) and floor height
   go.py door LEVEL          the door in this level that leads to LEVEL, then go through it"""
-import sys, time
+import subprocess, sys, time
 import fez, fezmap, plan
 from plan import iround
 
@@ -13,7 +13,10 @@ def node(s):
     c = int(x // 1)
     try:
         g = plan.grid(s["level"], s["view"])
-        if "Climb" in s["action"]:   # on a vine: use the nearest vine cell the planner knows about
+        if s["action"] == "Bouncing":   # mid-bounce: he belongs to the mushroom under him
+            for yy in range(y, y - 12, -1):
+                if plan.bouncy(g, c, yy): y = yy; break
+        elif "Climb" in s["action"]:   # on a vine: use the nearest vine cell the planner knows about
             cl = plan.CLIMB[(s["level"], s["view"])]
             best = min(cl, key=lambda q: (q[0] + 0.5 - x) ** 2 + (q[1] - y) ** 2, default=None)
             if best and abs(best[0] + 0.5 - x) <= 1.6 and abs(best[1] - y) <= 2: c, y = best
@@ -69,11 +72,13 @@ def step(kind, v, c, y):
         fez.edge(k, False); time.sleep(0.3); return settle(fez.state())
     if kind == "grab":    # jump at a vine holding Up so Gomez catches it
         d = "right" if target > fez.h(s) else "left" if target < fez.h(s) - 0.3 else None; sign = 1 if d == "right" else -1
-        fez.edge("up", True)
+        below = y < here[2]; up_held = not below
+        if up_held: fez.edge("up", True)   # for a vine below, hold Up only once level with it, or he grabs the one beside him
         if d: fez.edge(d, True)
         time.sleep(0.04); fez.edge("space", True); t0 = time.time()
         while time.time() - t0 < 2:
             s = fez.state()
+            if not up_held and s["pos"][1] < y + 1.5: fez.edge("up", True); up_held = True
             if time.time() - t0 > 0.3: fez.edge("space", False)
             if d and (fez.h(s) - target) * sign >= -0.4: fez.edge(d, False)
             if "Climb" in s["action"] or (time.time() - t0 > 0.3 and s["grounded"]): break
@@ -85,16 +90,24 @@ def step(kind, v, c, y):
         t0 = time.time()   # creep: full speed carries Gomez too far out to steer back under the ledge
         while fez.state()["grounded"] and time.time() - t0 < 4:
             fez.edge(out, True); time.sleep(0.05); fez.edge(out, False); time.sleep(0.12)
-        time.sleep(0.25)
-        if fez.state()["action"].startswith("Grab"):   # a slow step off hangs from the ledge: let go with Down
-            fez.key("down", 80); time.sleep(0.05)
-        fez.edge(back, True)
-        while time.time() - t0 < 4:
+        fez.edge(back, True); let_go = False   # steer back at once: a 5-unit drop leaves under half a second
+        while time.time() - t0 < 6:
             s = fez.state()
+            if s["action"].startswith("Grab") and not let_go:   # a slow step off hangs from the ledge: let go with Down
+                fez.key("down", 80); let_go = True; continue
             if (fez.h(s) - target) * sign >= -0.3: fez.edge(back, False)
             if s["grounded"] or s["action"].startswith(("Grab", "Dying")): break
             time.sleep(0.02)
         fez.edge(back, False); return settle(landed())
+    if kind == "bounce":   # Gomez is bouncing on a mushroom: on the way down, steer to the target column
+        d = "right" if target > fez.h(s) else "left"; sign = 1 if d == "right" else -1; t0 = time.time(); held = False
+        while time.time() - t0 < 5:
+            s = fez.state()
+            if not held and not s["grounded"]: fez.edge(d, True); held = True   # steer from the launch, as in the hand trace
+            if held and (fez.h(s) - target) * sign >= -0.8: fez.edge(d, False)   # momentum carries the last ~0.8
+            if held and time.time() - t0 > 0.4 and (s["grounded"] or s["action"] in ("Bouncing", "Dying")) and abs(fez.h(s) - target) < 1.2: break
+            time.sleep(0.02)
+        fez.edge(d, False); time.sleep(0.2); return fez.state()
     if kind == "dropgrab":   # walk off the edge holding Up, steer over the vine column, catch it
         d = "right" if target > fez.h(s) else "left"; sign = 1 if d == "right" else -1
         y0 = s["pos"][1]; fez.edge(d, True); t0 = time.time(); up = False
@@ -117,13 +130,15 @@ def step(kind, v, c, y):
         letgo(); return settle(fez.state())
     if kind == "drop":   # step off toward the target column and let go once over it
         d = "right" if target > fez.h(s) else "left"; sign = 1 if d == "right" else -1
-        fez.edge(d, True); t0 = time.time()
-        while time.time() - t0 < 3:
+        fez.edge(d, True); t0 = time.time(); air = False
+        while time.time() - t0 < 4:
             s = fez.state()
+            air = air or not s["grounded"]
             if (fez.h(s) - target) * sign >= -0.35: fez.edge(d, False)
-            if time.time() - t0 > 0.3 and (s["grounded"] or s["action"].startswith(("Grab", "Dying"))): break
+            if air and (s["grounded"] or s["action"] == "Bouncing" or s["action"].startswith(("Grab", "Dying"))): break   # left the ground, then landed
             time.sleep(0.02)
-        fez.edge(d, False); return settle(landed())
+        fez.edge(d, False)
+        return fez.state() if fez.state()["action"] == "Bouncing" else settle(landed())
     if kind == "hop":
         up = y - here[2]
         return settle(fez.hop(target, jump_ms=450 if up > 0 else 250 if up == 0 else 120, lead=0.5))
@@ -133,15 +148,20 @@ def go(goal, goal_view=None, tries=8, item=None):
     for attempt in range(tries):
         s = fez.state()
         t0 = time.time()   # wait out falls and respawns; hanging on a vine or ledge counts as settled
-        while (s["action"] in ("Dying", "FreeFalling") or not (s["grounded"] or "Climb" in s["action"] or s["action"].startswith("Grab"))) and time.time() - t0 < 10:
+        while (s["action"] in ("Dying", "FreeFalling") or not (s["grounded"] or s["action"] == "Bouncing" or "Climb" in s["action"] or s["action"].startswith("Grab"))) and time.time() - t0 < 10:
             time.sleep(0.3); s = fez.state()
+        plan.HOLES[s["level"]] = [(h["from"], h["to"]) for h in s.get("holes", []) if h["on"]]
         v, c, y, dep = node(s)
         if "Climb" in s["action"] and plan.standable(plan.grid(s["level"], v), c, y):   # on a vine right above a floor: step down onto it
             letgo(); s = fez.state(); v, c, y, dep = node(s)
         if goal is not None and (c, y) == goal and goal_view in (None, v): return s
         p = plan.find_item(s["level"], v, (c, y, dep), item) if item else plan.find(s["level"], v, (c, y, dep), goal, goal_view)
         if p == []: return s
-        if p is None: print("no path from", node(s), "to", goal); return None
+        if p is None:
+            if any(h["on"] for h in s.get("holes", [])) and attempt < tries - 1:   # black holes re-roll on every level load
+                print("no path while black holes are on: restarting FEZ to re-roll them", flush=True)
+                subprocess.run(["pkill", "-x", "HAT.bin.osx"]); time.sleep(2); fez.start(); continue
+            print("no path from", node(s), "to", goal); return None
         first = plan.compress(p)[0][0] if p else ""
         if "Climb" in s["action"] and first not in ("climb", "release", "vinejump") and not first.startswith("turn"):
             letgo(); continue
@@ -150,7 +170,8 @@ def go(goal, goal_view=None, tries=8, item=None):
         for kind, (vv, cc, yy, _) in plan.compress(p):
             s = step(kind, vv, cc, yy)
             got = node(s)
-            close = kind in ("grab", "climb") and "Climb" in s["action"] and got[0] == vv and abs(got[1] - cc) <= 1 and abs(got[2] - yy) <= 1
+            close = (kind in ("grab", "climb", "dropgrab") and "Climb" in s["action"] and got[0] == vv and abs(got[1] - cc) <= 1 and abs(got[2] - yy) <= 1) \
+                or (s["action"] == "Bouncing" and got[0] == vv and abs(got[1] - cc) <= 1)
             if (got[0], got[1], got[2]) != (vv, cc, yy) and not close:
                 plan.BANNED.add((s["level"], prev, kind, (vv, cc, yy)))   # never plan this exact move from here again
                 print(f"  {kind} to {vv} {cc},{yy} landed {got} ({s['action']}), banned, replanning"); break
