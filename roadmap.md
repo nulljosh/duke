@@ -151,3 +151,7 @@ three weeks, against six on chess.
   Language solver verified live (Spanish, Greek). Math pruned from 21.6k to
   19.1k lines by hit-trace, `mathjs.min.js` replaces the hand-rolled LaTeX
   evaluator.
+
+## Ingested 2026-10-25
+- [ ] Merge Conveyer into Surf: the Duolingo solver and the Factorio game player should be one app (adds to the 2026-10-23 plan above).
+- [ ] Conveyer keeps starting on login but errors out. Its menu bar panel shows red "Stopped. It restarts on its own while the game is running..." with roadmap 5 left. Screenshot: ~/Documents/Code/notes/attachments/2026-10-25/conveyer-1.png (also conveyer-2.png). Check launchd/login item and who relaunches it before merging.
