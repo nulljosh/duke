@@ -60,6 +60,11 @@ three weeks, against six on chess.
 - Run `sudo pmset -a autorestart 1` once at the Mac (needs the password). Without it the Mac stays off after a power cut and the runner with it. Asked 2026-10-05, he was away from the desk.
 
 ## Open
+- [ ] FEZ: beat the 32-cube ending for real from Joshua's 67.6% save (slot 3 copy). Status lives in games/fez/README.md. Then add FEZ to the landing next to Duolingo and Factorio.
+- [ ] Oxygen Not Included is the next game after FEZ.
+- [ ] `surf play <game>`: one entry point for duolingo, factorio, gdt and fez.
+- [x] Conveyer merged into Surf on 2026-10-25 (games/factorio, games/gdt); nulljosh/conveyer archived.
+- [x] 2026-10-25: Duolingo's lesson page served a 500 to the runner for 8 hours (5,000 open-fails, nothing earned). A restart fixed it; the runner now exits after 40 open-fails in a row so the status app brings up a fresh browser.
 - [ ] Hermes Sans (~/Documents/Code/hermes) likely has the same comma bug (feathers in every comma). Same fix as Surf Sans: tools/gen_font.py, with a check. Hermes has no roadmap.md yet, so the item lives here.
 - [ ] Confirm live (2026-10-18): Turkish "to read" and "to drink" match questions now solve (fix in 333d537, tr was stalled 24 hours before it). Also watch that balance mode stops picking Japanese and chess, and that XP per hour holds near 1,200 on the track it picks.
 - [ ] Nobody is told when the runner needs a human away from the Mac. A lost session shows an alert on the Mac only; the phone and watch apps just read stale. The session cookie runs to 2169, so this is rare.
