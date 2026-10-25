@@ -1,0 +1,467 @@
+"""
+Deterministic skill layer between agent.py and FLE.
+
+The LLM no longer writes Python. It picks a skill name + JSON params each turn.
+Each skill here is a small Python source TEMPLATE (not a real function you can
+import and call) because the code has to run inside FLE's remote exec sandbox
+against the live game, not in this process. `render(name, params)` fills in a
+template and returns the code string agent.py sends to `Action`.
+
+Every template re-fetches entities by literal position instead of relying on
+Python variables persisting across snippets (they don't, see agent.py's old
+system prompt) and ends with an assert/print so failure is visible in the
+observation instead of a silent no-op.
+
+ponytail: covers exactly the first goal (iron ore + coal -> plate -> gear)
+plus power, not the full FLE surface (oil, research, chemical plants). Add a
+template here when a new skill is actually needed, not before.
+"""
+
+import re
+
+SKILLS = {
+    "harvest": {
+        "params": ["resource", "quantity"],
+        "doc": "Hand-harvest `quantity` of `resource` (a Resource.* name, e.g. 'Wood', "
+        "'Stone', 'Coal', 'IronOre') from the nearest patch/tree into your own inventory. "
+        "This is the only way to get raw materials on a vanilla start — there's no free "
+        "starting inventory.",
+        "template": '''
+before = inspect_inventory().get(Resource.{resource}, 0)
+patch = nearest(Resource.{resource})
+move_to(patch)
+harvest_resource(patch, quantity={quantity})
+after = inspect_inventory().get(Resource.{resource}, 0)
+assert after > before, f"SKILL_FAIL harvest: {resource} count did not increase ({{before}} -> {{after}})"
+print(f"SKILL_OK harvest: {resource} now at {{after}} in inventory")
+''',
+    },
+    "research": {
+        "params": ["technology"],
+        "doc": "Set the current research technology (a Technology.* name, e.g. "
+        "'Automation'). Requires science packs in a lab to actually progress.",
+        "template": '''
+ingredients = set_research(Technology.{technology})
+print(f"SKILL_OK research: set to {technology}, needs {{ingredients}}")
+''',
+    },
+    "mine": {
+        "params": ["resource", "drill_prototype"],
+        "doc": "Place a mining drill on the nearest patch of `resource` (a Resource.* name, "
+        "e.g. 'IronOre') using `drill_prototype` (a Prototype.* name, e.g. 'BurnerMiningDrill'), "
+        "fuel it with coal if it's a burner drill, and return its position.",
+        "template": '''
+patch = nearest(Resource.{resource})
+box = BuildingBox(width=Prototype.{drill_prototype}.WIDTH, height=Prototype.{drill_prototype}.HEIGHT)
+spot = nearest_buildable(Prototype.{drill_prototype}, box, patch)
+move_to(spot.center)
+drill = place_entity(Prototype.{drill_prototype}, position=spot.center, direction=Direction.DOWN)
+if "Burner" in "{drill_prototype}":
+    drill = insert_item(Prototype.Coal, drill, quantity=20)
+print(f"SKILL_OK mine: placed {drill_prototype} at {{drill.position}} on {resource}")
+''',
+    },
+    "smelt": {
+        "params": ["source_position", "drill_prototype", "furnace_prototype"],
+        "doc": "Place a furnace near the mining drill (`drill_prototype`, e.g. "
+        "'BurnerMiningDrill') at `source_position` (e.g. 'x=1.0,y=2.0'), with a burner "
+        "inserter and belt actually carrying ore from the drill into it, and smelt its "
+        "output into plates.",
+        "template": '''
+source = get_entity(Prototype.{drill_prototype}, position=Position({source_position}))
+if source is None:
+    raise Exception("No {drill_prototype} found at {source_position} — check the position with `inspect` or `find` first")
+box = BuildingBox(width=Prototype.{furnace_prototype}.WIDTH + 4, height=Prototype.{furnace_prototype}.HEIGHT + 4)
+# Idempotent: a retry after a partial run reuses the furnace/inserter it already placed.
+furnaces = get_entities({{Prototype.{furnace_prototype}}}, position=source.position, radius=10)
+if furnaces:
+    furnace = furnaces[0]
+    move_to(furnace.position)
+else:
+    spot = nearest_buildable(Prototype.{furnace_prototype}, box, source.position)
+    move_to(spot.center)
+    furnace = place_entity(Prototype.{furnace_prototype}, position=spot.center, direction=Direction.UP)
+coal = inspect_inventory()[Prototype.Coal]
+if coal < 10:
+    raise Exception(f"need coal, have {{coal}}: try harvest Coal first")
+furnace = insert_item(Prototype.Coal, furnace, quantity=min(20, coal - 5))
+inserters = get_entities({{Prototype.BurnerInserter}}, position=furnace.position, radius=2)
+if inserters:
+    inserter = inserters[0]
+else:
+    inserter = place_entity_next_to(Prototype.BurnerInserter, reference_position=furnace.position, direction=Direction.DOWN, spacing=0)
+    inserter = rotate_entity(inserter, Direction.UP)
+inserter = insert_item(Prototype.Coal, inserter, quantity=5)
+belts = connect_entities(source.drop_position, inserter.pickup_position, Prototype.TransportBelt)
+print(f"SKILL_OK smelt: furnace at {{furnace.position}} fed via inserter at {{inserter.position}} from drill at {{source.position}}")
+''',
+    },
+    "belt": {
+        "params": ["from_prototype", "from_position", "to_prototype", "to_position"],
+        "doc": "Connect two existing entities with transport belts. If `to_prototype` has "
+        "no pickup_position (a furnace/assembler, not an inserter/drill), places a "
+        "BurnerInserter to feed it and belts into that instead. Same for `from_prototype` "
+        "lacking a drop_position (a furnace/assembler output) — places an extraction "
+        "inserter and belts from that instead.",
+        "template": '''
+a = get_entity(Prototype.{from_prototype}, position=Position({from_position}))
+b = get_entity(Prototype.{to_prototype}, position=Position({to_position}))
+if a is None:
+    raise Exception("No {from_prototype} found at {from_position} — check the position with `inspect` or `find` first")
+if b is None:
+    raise Exception("No {to_prototype} found at {to_position} — check the position with `inspect` or `find` first")
+def _dist2(p, q):
+    return (p.x - q.x) ** 2 + (p.y - q.y) ** 2
+
+source = a
+if not hasattr(a, "drop_position"):
+    existing = get_entities({{Prototype.BurnerInserter}}, position=a.position, radius=3)
+    existing = [e for e in existing if _dist2(e.pickup_position, a.position) < _dist2(e.drop_position, a.position)]
+    if existing:
+        source = existing[0]
+    else:
+        source = place_entity_next_to(Prototype.BurnerInserter, reference_position=a.position, direction=Direction.UP, spacing=0)
+        source = rotate_entity(source, Direction.DOWN)
+target = b
+if not hasattr(b, "pickup_position"):
+    existing = get_entities({{Prototype.BurnerInserter}}, position=b.position, radius=3)
+    existing = [e for e in existing if _dist2(e.drop_position, b.position) < _dist2(e.pickup_position, b.position)]
+    if existing:
+        target = existing[0]
+    else:
+        target = place_entity_next_to(Prototype.BurnerInserter, reference_position=b.position, direction=Direction.DOWN, spacing=0)
+        target = rotate_entity(target, Direction.UP)
+source_pos = source.drop_position if hasattr(source, "drop_position") else source.position
+belts = connect_entities(source_pos, target.pickup_position, Prototype.TransportBelt)
+print(f"SKILL_OK belt: connected {from_prototype} at {{a.position}} to {to_prototype} at {{b.position}}")
+''',
+    },
+    "research_progress": {
+        "params": ["technology"],
+        "doc": "Print remaining research progress/ingredients for a technology.",
+        "template": '''
+progress = get_research_progress(Technology.{technology})
+print(f"SKILL_OK research_progress: {technology} needs {{progress}}")
+''',
+    },
+    "place_inserter": {
+        "params": ["target_prototype", "target_position"],
+        "doc": "Place a BurnerInserter (from inventory) next to `target_prototype` at "
+        "`target_position`, rotated to feed INTO it — the correct pattern for a furnace/"
+        "assembler input, not the generic `place` skill.",
+        "template": '''
+target = get_entity(Prototype.{target_prototype}, position=Position({target_position}))
+if target is None:
+    raise Exception("No {target_prototype} found at {target_position} — check the position with `inspect` or `find` first")
+existing = get_entities({{Prototype.BurnerInserter}}, position=target.position, radius=3)
+existing = [e for e in existing if (e.drop_position.x - target.position.x) ** 2 + (e.drop_position.y - target.position.y) ** 2 < (e.pickup_position.x - target.position.x) ** 2 + (e.pickup_position.y - target.position.y) ** 2]
+if existing:
+    inserter = existing[0]
+else:
+    inserter = place_entity_next_to(Prototype.BurnerInserter, reference_position=target.position, direction=Direction.DOWN, spacing=0)
+    inserter = rotate_entity(inserter, Direction.UP)
+print(f"SKILL_OK place_inserter: placed at {{inserter.position}}, feeding {target_prototype} at {{target.position}}")
+''',
+    },
+    "find": {
+        "params": ["resource"],
+        "doc": "Print the position of the nearest patch of `resource` (a Resource.* name, "
+        "e.g. 'Water') without moving or harvesting anything.",
+        "template": '''
+pos = nearest(Resource.{resource})
+print(f"SKILL_OK find: nearest {resource} at {{pos}}")
+''',
+    },
+    "recipe": {
+        "params": ["item_prototype"],
+        "doc": "Print the crafting recipe (ingredients) for an item, so you know what to "
+        "gather before attempting `craft`.",
+        "template": '''
+r = get_prototype_recipe(Prototype.{item_prototype})
+print(f"SKILL_OK recipe: {item_prototype} = {{r}}")
+''',
+    },
+    "place_at": {
+        "params": ["prototype", "position", "direction"],
+        "doc": "Place `prototype` with its own footprint centered EXACTLY at `position` "
+        "(no nearest_buildable padding/offset search) — use this when `place` puts things "
+        "too far from a specific tile you already know is correct, e.g. a drill's real "
+        "drop_position.",
+        "template": '''
+move_to(Position({position}))
+entity = place_entity(Prototype.{prototype}, position=Position({position}), direction=Direction.{direction}, exact=False)
+print(f"SKILL_OK place_at: {prototype} at {{entity.position}}")
+''',
+    },
+    "pickup": {
+        "params": ["prototype", "position"],
+        "doc": "Pick an entity back up into your own inventory (e.g. to reposition a "
+        "misplaced furnace).",
+        "template": '''
+e = get_entity(Prototype.{prototype}, position=Position({position}))
+pickup_entity(e)
+print(f"SKILL_OK pickup: picked up {prototype} from x={{e.position.x}} y={{e.position.y}}")
+''',
+    },
+    "dropcheck": {
+        "params": ["prototype", "position"],
+        "doc": "Debug: print an entity's drop_position vs its own position, to diagnose "
+        "auto-feed misalignment.",
+        "template": '''
+e = get_entity(Prototype.{prototype}, position=Position({position}))
+print(f"SKILL_OK dropcheck: {prototype} at {{e.position}} direction={{e.direction}} drop_position={{e.drop_position}}")
+''',
+    },
+    "nearby": {
+        "params": ["position", "radius"],
+        "doc": "List entities within `radius` of `position`. Use this to find something you "
+        "placed but lost the exact position for (e.g. a furnace after a partial failure).",
+        "template": '''
+found = get_entities(position=Position({position}), radius={radius})
+print(f"SKILL_OK nearby: {{[(e.name, e.position) for e in found]}}")
+''',
+    },
+    "peek": {
+        "params": ["prototype", "position"],
+        "doc": "Print an entity's own inventory/status (e.g. a furnace's fuel+output) without "
+        "moving anything. Use this to check whether a furnace/drill is actually producing "
+        "before assuming collect/smelt failed for a real reason.",
+        "template": '''
+e = get_entity(Prototype.{prototype}, position=Position({position}))
+fuel = e.fuel_inventory if hasattr(e, "fuel_inventory") else "n/a (electric)"
+inv = e.input_inventory if hasattr(e, "input_inventory") else e.inventory
+print(f"SKILL_OK peek: {prototype} at {{e.position}} status={{e.status}} fuel={{fuel}} in={{inv}}")
+''',
+    },
+    "feed": {
+        "params": ["item_prototype", "target_prototype", "target_position", "quantity"],
+        "doc": "Insert `quantity` of `item_prototype` from your own inventory into a "
+        "`target_prototype` entity at `target_position` (e.g. feed coal/ore into a furnace "
+        "by hand).",
+        "template": '''
+target = get_entity(Prototype.{target_prototype}, position=Position({target_position}))
+insert_item(Prototype.{item_prototype}, target, quantity={quantity})
+print(f"SKILL_OK feed: inserted {quantity} {item_prototype} into {target_prototype} at {{target.position}}")
+''',
+    },
+    "collect": {
+        "params": ["item_prototype", "source_position", "quantity"],
+        "doc": "Extract `quantity` of `item_prototype` (e.g. 'IronPlate') from an entity "
+        "(furnace/chest/etc) at `source_position` into your own inventory.",
+        "template": '''
+before = inspect_inventory().get(Prototype.{item_prototype}, 0)
+extract_item(Prototype.{item_prototype}, Position({source_position}), quantity={quantity})
+after = inspect_inventory().get(Prototype.{item_prototype}, 0)
+print(f"SKILL_OK collect: {item_prototype} in inventory {{before}} -> {{after}}")
+''',
+    },
+    "craft": {
+        "params": ["item_prototype", "count"],
+        "doc": "Craft `count` of `item_prototype` (e.g. 'IronGearWheel') by hand from current "
+        "inventory. Fails loudly if the required ingredients aren't in inventory yet.",
+        "template": '''
+before = inspect_inventory().get(Prototype.{item_prototype}, 0)
+craft_item(Prototype.{item_prototype}, quantity={count})
+after = inspect_inventory().get(Prototype.{item_prototype}, 0)
+assert after > before, f"SKILL_FAIL craft: {{Prototype.{item_prototype}}} count did not increase ({{before}} -> {{after}}), check ingredients via inspect_inventory()"
+print(f"SKILL_OK craft: {item_prototype} now at {{after}} in inventory")
+''',
+    },
+    "place": {
+        "params": ["prototype", "near_position", "direction"],
+        "doc": "Place a single `prototype` entity (e.g. 'WoodenChest') on open ground near "
+        "`near_position`, facing `direction` (UP/DOWN/LEFT/RIGHT). For anything that needs "
+        "fuel or connections, use a dedicated skill (mine/smelt/build_power) instead.",
+        "template": '''
+box = BuildingBox(width=Prototype.{prototype}.WIDTH + 2, height=Prototype.{prototype}.HEIGHT + 2)
+spot = nearest_buildable(Prototype.{prototype}, box, Position({near_position}))
+move_to(spot.center)
+entity = place_entity(Prototype.{prototype}, position=spot.center, direction=Direction.{direction})
+print(f"SKILL_OK place: {prototype} at {{entity.position}}")
+''',
+    },
+    "build_power": {
+        "params": ["water_position"],
+        "doc": "Build a full offshore pump -> boiler -> steam engine chain starting from "
+        "`water_position` (a tile on water, find one first if you don't have one) and confirm "
+        "the steam engine is generating energy.",
+        "template": '''
+move_to(Position({water_position}))
+pump = place_entity(Prototype.OffshorePump, position=Position({water_position}))
+
+box = BuildingBox(width=Prototype.Boiler.WIDTH + 4, height=Prototype.Boiler.HEIGHT + 4)
+spot = nearest_buildable(Prototype.Boiler, box, pump.position)
+move_to(spot.center)
+boiler = place_entity(Prototype.Boiler, position=spot.center, direction=Direction.LEFT)
+boiler = insert_item(Prototype.Coal, boiler, quantity=20)
+
+box = BuildingBox(width=Prototype.SteamEngine.WIDTH + 4, height=Prototype.SteamEngine.HEIGHT + 4)
+spot = nearest_buildable(Prototype.SteamEngine, box, boiler.position)
+move_to(spot.center)
+engine = place_entity(Prototype.SteamEngine, position=spot.center, direction=Direction.LEFT)
+
+connect_entities(pump, boiler, Prototype.Pipe)
+connect_entities(boiler, engine, Prototype.Pipe)
+sleep(5)
+engine = get_entity(Prototype.SteamEngine, position=engine.position)
+assert engine.energy > 0, "SKILL_FAIL build_power: steam engine has no energy after 5s"
+print(f"SKILL_OK build_power: steam engine at {{engine.position}} generating {{engine.energy}}")
+''',
+    },
+    "connect": {
+        "params": ["from_prototype", "from_position", "to_prototype", "to_position", "connection"],
+        "doc": "Lay `connection` (Pipe, UndergroundPipe, TransportBelt) between two existing entities so fluid or items flow.",
+        "template": '''
+a = get_entity(Prototype.{from_prototype}, Position({from_position}))
+b = get_entity(Prototype.{to_prototype}, Position({to_position}))
+group = connect_entities(a, b, Prototype.{connection})
+print(f"SKILL_OK connect: {from_prototype} to {to_prototype} with {connection}: {{group}}")
+''',
+    },
+    "set_recipe": {
+        "params": ["prototype", "position", "recipe"],
+        "doc": "Set what an assembler, refinery or chemical plant makes. `recipe` is a Prototype or RecipeName member, e.g. BasicOilProcessing, PlasticBar, Sulfur.",
+        "template": '''
+e = get_entity(Prototype.{prototype}, Position({position}))
+try:
+    rec = getattr(RecipeName, "{recipe}")
+except AttributeError:
+    rec = getattr(Prototype, "{recipe}")
+e = set_entity_recipe(e, rec)
+print(f"SKILL_OK set_recipe: {prototype} at {{e.position}} now makes {recipe}")
+''',
+    },
+    "goto": {
+        "params": ["position"],
+        "doc": "Walk to `position` (x,y). Do this before collect/feed/place on anything far away.",
+        "template": '''
+p = move_to(Position({position}))
+print(f"SKILL_OK goto: now at {{p}}")
+''',
+    },
+    "route_belt": {
+        "params": ["from_position", "to_position"],
+        "doc": "Lay one transport belt line from the free tile at `from_position` to the free tile at `to_position`, "
+        "routed around obstacles with A* (router.py). Undergrounds are off: FLE cannot observe them. "
+        "Use this instead of placing belt tiles one by one. Both tiles must be open ground. Console placed (the game's create_entity, like the planner's tiles): "
+        "it costs no belts, so it is not a from-scratch build.",
+        "template": '''
+import re, router
+fx, fy = [float(v) for v in re.findall(r"-?\\d+(?:\\.\\d+)?", "{from_position}")[:2]]
+tx, ty = [float(v) for v in re.findall(r"-?\\d+(?:\\.\\d+)?", "{to_position}")[:2]]
+a, b = (int(fx // 1), int(fy // 1)), (int(tx // 1), int(ty // 1))
+pad = 8
+box = (min(a[0], b[0]) - pad, min(a[1], b[1]) - pad, max(a[0], b[0]) + pad, max(a[1], b[1]) + pad)
+import factorio_rcon
+rc = factorio_rcon.RCONClient("127.0.0.1", 27000, "factorio", timeout=60)
+blocked = router.parse_blocked(rc.send_command(router.scan_lua(box)))
+total = (box[2] - box[0] + 1) * (box[3] - box[1] + 1)
+path = router.route(a, b, blocked, bounds=box, max_gap=0)   # belts only: FLE cannot parse underground belts, every observation errors while one exists
+if path is None:
+    raise Exception(f"route_belt: no route from {from_position} to {to_position}; {{len(blocked)}} of {{total}} tiles look blocked, the start or end tile is blocked, or walls are too thick for an underground pair")
+reply = rc.send_command(router.place_lua(path))
+if " failed 0" not in reply:
+    raise Exception(f"route_belt: could not place every tile ({{reply}})")
+pairs = sum(1 for k, _, _ in path if k == "ug_in")
+print(f"SKILL_OK route_belt: {{len(path)}} tiles, {{pairs}} underground pairs, from {{a}} to {{b}}")
+''',
+    },
+    "inspect": {
+        "params": [],
+        "doc": "Print current inventory and nearby entities. Use this when unsure what state "
+        "you're in instead of guessing.",
+        "template": '''
+print(f"SKILL_OK inspect: inventory={{inspect_inventory()}}")
+''',
+    },
+}
+
+
+def _normalize_prototype(value):
+    """The model routinely types Factorio's internal kebab-case names
+    ('iron-plate', 'transport-belt') instead of FLE's Prototype enum
+    ('IronPlate', 'TransportBelt'). Both refer to the same thing, so fix it
+    here instead of crashing the episode on a naming convention mismatch."""
+    if not isinstance(value, str):
+        return value
+    if "-" in value or "_" in value or value[:1].islower():
+        return "".join(word.capitalize() for word in re.split(r"[-_]", value))
+    return value
+
+
+def render(name: str, params: dict) -> str:
+    if name not in SKILLS:
+        known = ", ".join(SKILLS)
+        raise ValueError(f"unknown skill {name!r}, known skills: {known}")
+    spec = SKILLS[name]
+    missing = [p for p in spec["params"] if p not in params]
+    if missing:
+        raise ValueError(f"skill {name!r} missing params: {missing}")
+    params = {
+        k: (_normalize_prototype(v) if "prototype" in k else v)
+        for k, v in params.items()
+    }
+    try:
+        return spec["template"].format(**params)
+    except (KeyError, IndexError) as e:
+        raise ValueError(f"skill {name!r} template substitution failed: {e}") from e
+
+
+def catalog_text() -> str:
+    lines = []
+    for name, spec in SKILLS.items():
+        lines.append(f"- {name}({', '.join(spec['params'])}): {spec['doc']}")
+    return "\n".join(lines)
+
+
+def _demo() -> None:
+    """Self-check: every skill renders without leftover `{param}` placeholders or
+    unresolved doubled braces, and unknown skills/missing params raise cleanly."""
+    sample_params = {
+        "resource": "IronOre",
+        "drill_prototype": "BurnerMiningDrill",
+        "source_position": "x=1.0,y=2.0",
+        "furnace_prototype": "StoneFurnace",
+        "item_prototype": "IronGearWheel",
+        "count": 1,
+        "prototype": "WoodenChest",
+        "near_position": "x=0,y=0",
+        "direction": "UP",
+        "water_position": "x=0,y=0",
+        "quantity": 5,
+        "technology": "Automation",
+        "position": "x=1.0,y=2.0",
+        "target_prototype": "StoneFurnace",
+        "target_position": "x=1.0,y=2.0",
+        "radius": 5,
+    }
+    sample_params["connection"] = "TransportBelt"
+    sample_params["recipe"] = "IronGearWheel"
+    sample_params["prototype"] = "BurnerMiningDrill"
+    sample_params["from_prototype"] = "BurnerMiningDrill"
+    sample_params["from_position"] = "x=0,y=0"
+    sample_params["to_prototype"] = "BurnerInserter"
+    sample_params["to_position"] = "x=1.0,y=2.0"
+    for name, spec in SKILLS.items():
+        params = {p: sample_params[p] for p in spec["params"]}
+        code = render(name, params)
+        leftover = [p for p in spec["params"] if "{" + p + "}" in code]
+        assert not leftover, f"{name}: unsubstituted placeholders {leftover} in:\n{code}"
+
+    try:
+        render("nope", {})
+        raise AssertionError("expected ValueError for unknown skill")
+    except ValueError:
+        pass
+
+    try:
+        render("mine", {})
+        raise AssertionError("expected ValueError for missing params")
+    except ValueError:
+        pass
+
+    print("skills self-check OK")
+
+
+if __name__ == "__main__":
+    _demo()

@@ -1,0 +1,251 @@
+# Roadmap
+
+> Priority tier 5 (2026-10-17): exploratory, this year. Order: live blockers, ship pushes, active features, portfolio, exploratory. See ~/Documents/Code/LOOP-HANDOFF.md.
+
+Organized by when it's realistic to do, not by feature area, see priority buckets below.
+History of what already shipped is at the bottom.
+
+## In-game milestones (the single source of truth for progress)
+Realistic timeframe per milestone, these get much harder to reach in order, not linearly.
+Sub-bullets are the real, current blow-by-blow status.
+1. [x] Character exists and can be spectated live, **done**
+2. [x] Character moves under its own commands (`move_to` succeeding), **done**
+3. [x] First entity placed successfully (drill on real ore), **done**, reliable now after
+       fixing coordinate-guessing and prototype-name bugs
+4. [x] First two entities connected (drill → furnace placed together), **done**, stable and reliable (5+ consecutive successful runs, best run placed 7 total entities)
+5. [x] **Skill-layer refactor: LLM stops writing Python**, done 2026-09-12.
+   - [ ] Not yet run against a live cluster to confirm iron ore + coal → plate → gear end to
+         end with the new dispatch (`fle cluster start` wasn't up during this edit) — first
+         thing to verify next session
+6. [x] First smelted item produced (real iron plate in inventory), **done 2026-09-12**
+   - [ ] Assembler-based crafting (vs. hand-craft) not yet attempted this session
+   - [ ] Power the assembler via `build_power()` (untested end to end this session; the
+         skill exists but hasn't been re-verified since the smelt-skill rewrite)
+8. [x] **First automated drill→furnace chain with zero hand-feeding**, done 2026-09-12,
+       vanilla `open_play` run.
+   - [~] Rebuilt the full chain 4 times by hand in one session (each `runner.py` code
+         change forces a world reset — `skills.py` hot-reloads without one, but the runner
+         process itself doesn't). Every hand-driven rebuild succeeded, ~3-5 min each once
+         the recipe is known. Real evidence, but not the same as unattended.
+   - [ ] Power grid automated end to end (boiler → steam engine → poles) — **harder than
+         assumed**, see the research-gate note below. Revised timeframe: **days, not
+         hours**, pending that investigation.
+   - [ ] **New finding, unresolved**: `craft_item(Prototype.Pipe)` fails with "requires
+         steam-power technology" even though `get_research_progress(Technology.SteamPower)`
+         reports an empty remaining-ingredients list (which should mean already researched).
+         `set_research(Technology.SteamPower)` also fails outright ("Failed to start
+         research"). `open_play` apparently starts with a genuinely empty tech tree — even
+         Pipe, unlocked from tick zero in normal vanilla Factorio, requires research here.
+         This blocked the power-grid milestone (`build_power` needs Pipe for every stage).
+         Next step: read `fle/env/tools/agent/set_research/server.lua` and
+         `get_research_progress`'s Lua counterpart directly rather than guessing from the
+         Python client wrapper — the inconsistency between the two calls suggests a real bug
+         or a missing precondition (a lab? a starting research queue call?) neither skill
+         surfaces.
+   - [ ] Automation science packs produced continuously (needs 5-7 working first)
+   - [ ] Lab placed, powered, and fed packs via belt/inserter
+10. [ ] First monster encounter/kill (open_world only), **weeks**
+   - Noted in passing: `open_play`'s map seed is deterministic across resets — the same
+     drill/harvest coordinates came up identically every one of the 4 world resets tonight.
+     Useful for scripting a fast rebuild (fixed coordinates work every time), irrelevant to
+     combat directly but worth knowing before assuming biter positions will vary.
+   - [ ] Base expands far enough to reach biter territory (lab scenario has none; open_world
+         does, but spawn area is typically peaceful)
+   - [ ] Agent has a weapon crafted/equipped, nothing in the current prompt teaches combat
+         API calls at all, this needs its own system-prompt section from scratch
+11. [ ] First rocket launched, **months+**, not a session goal, ever
+    - [ ] Would require automating every prior milestone plus oil processing, plastics,
+          rocket parts, and a satellite, realistically needs a bigger model or many more
+          sessions of prompt-tightening than an 8B local model + one Claude session can do
+
+## Route to the silo (computed from the game's tech tree, 2026-10-02)
+
+Remaining on the rocket-silo path: 4,350 red, 4,350 green, 3,350 blue (chemical), 1,600 purple (production), 1,000 yellow (utility). 22 techs. Blue is the biggest wall, so the order is:
+1. Red and green only techs first (battery, modules, speed and productivity module, concrete, accumulators, solar: about 1,000 units). Hand-fed science covers these while blue gets built.
+2. Build blue science: sulfur plant on the existing petroleum, engine units, advanced circuits (assembler exists). Then blue-only techs (advanced oil, rocket fuel, robotics, processing unit, low density structure).
+3. Purple: production science pack, then the two module-3 techs. Yellow: utility science pack.
+4. rocket-silo: 1,000 units of all five packs. Then 100 rocket parts and the launch.
+Hand-crafting 4,350 of anything is 30 refill cycles, so automating red and green assemblers is the first build, ahead of blue.
+
+## Real save run (2026-10-02)
+Conveyer now runs on a copy of Joshua's own Factorio save (`scripts/world.sh`), not a vanilla start.
+Baseline: 2316 entities, 39 techs, 3 labs, 36 assembler-2, 27 electric drills, 41 steel furnaces,
+10 steam engines, a train and two cars. Goal: oil, then a rocket launch.
+- [ ] (processing units done, v1.1.0) Yellow (utility) science on tiles: sulfuric acid, processing units, flying robot frames, low density structures
+- [ ] Crash proofing for every new build: a replay script the same hour
+- [ ] route_belt skill: A* belt routing with undergrounds, so belts stop being hand-placed (idea from factorioctl). ETA 1 day
+- [ ] Drive a car over RCON (riding_state) to haul science and fight; 2 cars exist. ETA hours
+- [ ] Join the west outpost grid (net 181, 2 engines, 32 consumers) to the main grid with big poles. ETA hours
+
+## Tooling shipped
+
+**2026-09-12 (late night): automated drill→belt→inserter→furnace chain confirmed + menu-bar monitor built.**
+- Closed milestone 8 (see above) — the real proof-of-automation moment, chased across
+  several dead ends: direct drop-catch works on thin patches, silently fails on dense ones
+  (Factorio's buildable-clearance around resource tiles), fixed by generalizing to the
+  documented belt+inserter pattern instead.
+- Built `runner.py` (persistent FLE gym process, file-based request/response protocol with a
+  sequence-number handshake in `runner_seq.txt` so callers never read a stale result) and
+  `step.sh` (blocking single-command sender) as the standard way to drive skills — replaces
+  restarting a gym env per call, which was the slow part.
+- Added a `reload` special command so `skills.py` edits hot-reload into the live runner
+  without resetting the game world; only `runner.py` itself changing still needs a real
+  restart (world reset).
+- Built a native SwiftUI menu-bar app (`menubar/ConveyerMonitor.app`, no Xcode project, raw
+  `swiftc` + hand-written `Info.plist`) that polls `status.json`/`status_log.json`/`map.json`
+  for live progress without needing a running Claude session or a live game client:
+  step history, server controls (restart runner / restart server+runner / stop, each a small
+  shell script), true-liveness auto-restart (checks `kill(pid, 0)` against `runner.pid`, not
+  just "no update in N seconds" — a long smelt/harvest wait is a real gap, not a crash), and
+  milestone sound effects (`afplay` on mine/smelt/craft/auto_feed/belt success).
+- Real in-game screenshots: FLE has a `fle.env.tools.admin.render.client.Render` tool that
+  composites a PNG from live entity/tile data via downloaded sprites (`fle sprites`, ~21MB/
+  1802 files from HuggingFace) — not a game-client screenshot, a from-scratch render, so it's
+  cheap and doesn't need a connected Factorio client. Found and fixed a real bug in FLE
+  itself: the downloaded sprite package only ships inventory-style icons
+  (`icon_<name>.png`), not full world-render spritesheets, so the renderer's entity lookups
+  came back `None` and it silently drew nothing. Patched `ImageResolver.__call__` with an
+  `icon_` fallback at runtime (monkeypatch, not a fork) — entities now render as their
+  inventory icon, tiny but real and correctly positioned. Wired periodic capture into
+  `runner.py`'s loop (~8s throttle, skipped mid-step) rather than continuous video.
+- Known rough edge, not fixed yet: resource-patch tiles (e.g. a dense iron-ore field) render
+  as one repeated icon per tile via the same fallback, which looks like visual noise/spam
+  rather than natural terrain — needs the render call scoped to skip `resources` or capped to
+  entities-only, next time the runner is restarted for something else.
+- Fixed a recurring Gatekeeper prompt on every app rebuild: ad-hoc `codesign` alone wasn't
+  enough (each rebuild changes the binary hash, so ad-hoc signing doesn't establish a stable
+  identity Gatekeeper remembers) — switched `menubar/build.sh` to launch the compiled binary
+  directly (`./ConveyerMonitor.app/Contents/MacOS/ConveyerMonitor &`) instead of `open`, which
+  skips the LaunchServices Gatekeeper check entirely since it's a direct exec, not a
+  double-click-equivalent launch.
+- Also vendored `ai-player-v3` for comparison (see below) — its own MCP server route is more
+  hands-off than this whole runner/skills stack, worth reconsidering once the harness allows
+  running third-party bridge code autonomously.
+
+**2026-09-12 (evening): switched to a genuinely vanilla start, full hand-bootstrap chain works.**
+- FLE's benchmark gym task ids (`iron_ore_throughput`, `iron_gear_wheel_throughput`, etc.)
+  force-give a full warehouse of parts on `reset()` **regardless of the underlying Docker
+  scenario** (`default_lab_scenario` vs `open_world`) — switching the scenario alone doesn't
+  get you a vanilla start, the task wrapper still overrides inventory. Found `open_play`
+  (`fle/env/gym_env/registry`), FLE's actual open-ended env with no forced loadout, and
+  confirmed via `inspect_inventory()` returning empty on reset.
+- Added `harvest` (`harvest_resource`) and `research` (`set_research`) skills to `skills.py`,
+  plus `feed` (generic `insert_item` from own inventory into any entity) and `peek` (debug:
+  print an entity's live status/inventory without moving anything) — added after reading
+  every FLE tool's real signature in `fle/env/tools/agent/*/client.py` in one pass instead of
+  discovering mismatches one at a time.
+- Fixed two real API bugs found this way: `craft_item` takes `quantity=`, not `count=`; the
+  smelt skill's furnace placement was using a nonexistent `Furnace.pickup_position` — fixed to
+  `place_entity_next_to(furnace, reference_position=drill.drop_position, direction=Direction.DOWN, spacing=0)`,
+  matching FLE's own documented pattern (`agent.md` tip: "a furnace with
+  `place_entity_next_to(drill.drop_position)`, where the furnace will be fed the ore").
+- Built `runner.py` + `step.sh`: a persistent FLE gym process driven by a file-based
+  request/response protocol with a sequence-number handshake (`runner_seq.txt`), so a caller
+  blocks until *their* command's result actually lands instead of racing a fixed sleep against
+  a shared JSON file. Avoids re-registering ~30 Lua actions (the slow part of `env.reset()`)
+  on every single skill call, and let Claude drive skill calls directly this session (bypassing
+  the local-model loop entirely) to validate the skill layer itself.
+- **Confirmed end to end, vanilla, no freebies**: harvest wood/stone/coal/iron ore by hand →
+  hand-craft a StoneFurnace → place it → feed it coal + ore by hand → furnace status
+  `WORKING` → collect real IronPlate output → hand-craft IronGearWheel from those plates.
+  This is the first fully-verified vanilla bootstrap chain.
+- Also vendored `ai-player-v3` (github.com/thedemon117/ai-player-v3), a more mature prior-art
+  mod with the same skill-router architecture plus an MCP server. Installed into FLE's mods
+  dir and confirmed the mod loads/spawns via RCON, but its Python bridge is third-party code
+  the harness's auto-mode classifier blocks from running autonomously in this session —
+  parked; would need the user to run `python -m bridge.main` themselves outside Claude Code,
+  or use the MCP server as a Claude Code MCP connection instead of a background process.
+
+**2026-09-12 session: local-model attempt hit a hard wall, not a code bug.**
+- Fixed two real bugs in `agent.py`: (1) system prompt didn't warn about `place_entity_next_to(entity, source.position, spacing=0)` placing ON the source's own footprint, guaranteed collision; (2) no repeat-guard, so a bad model could resubmit byte-identical code forever after an error — added a 2-repeat abort.
+- Tried qwen3:8b, qwen2.5-coder:14b, qwen2.5-coder:1.5b-base, llama3.1:8b via Ollama, all on
+  this 16GB Mac alongside the Factorio Docker cluster (which is itself tiny, ~450MB/2% CPU,
+  never the problem):
+  - qwen3:8b and qwen2.5-coder:14b: correct format but got stuck in dead loops re-guessing ore
+    coordinates for a conceptually broken snippet instead of fixing the actual bug; 14b also
+    caused a real prefill hang (30+ min single response) that crashed available RAM to ~80MB.
+  - qwen2.5-coder:1.5b-base: wrong model variant (base, not instruct) — doesn't follow the
+    chat/tool format at all, just hallucinates JSON.
+  - llama3.1:8b: only one that ran without hanging, but left just ~200-500MB RAM headroom
+    the whole time, too risky to leave unattended.
+- **Conclusion: FLE's own docs assume a capable model (Claude/GPT-tier), not an 8B local
+  one.** The raw-code-generation interface (write arbitrary Python every turn) needs real
+  reasoning to debug its own mistakes; small local models keep repeating the same wrong
+  fix. This matches the "Gap analysis vs. AI Player v3" note below — a skill-library
+  router needs much less from the model than raw code synthesis does.
+- Next real options, in order of effort: (a) run one short Claude-driven episode (needs an
+  `ANTHROPIC_API_KEY` — none found on this machine, would need to be added) to validate the
+  goal is reachable at all before investing in the skill-library rewrite; (b) build the
+  skill-library layer from the AI Player v3 gap analysis so a small local model only has to
+  route, not write code.
+
+## This weekend
+- [ ] Move conveyer (and pwnlingo) to real server space (DigitalOcean-style VPS) so they run
+      when the Mac is off, native Linux also sidesteps colima entirely.
+- [ ] Live mirror on the landing page (conveyer.heyitsmejosh.com): the actual running game
+      state, not a static demo video. Reuse pwnlingo's pattern (status app + Playwright runner
+      + public tunnel, e.g. pwnlingo-status.heyitsmejosh.com) rather than building this from
+      scratch, it already solves "expose a locally-running agent's live state to the web."
+- [ ] Bidirectional control: let a viewer send an instruction into the running agent loop
+      between steps, not just watch. Small addition once the status-app pattern above is
+      wired up, an endpoint that queues a user message into the next turn's context.
+- [ ] Pick a first bounded FLE task deliberately (e.g. `iron_ore_throughput`) rather than
+      whatever `pick_default_env()` guesses, once the base-building loop is reliable.
+
+## Next few weeks
+- [ ] Try a bigger/better model now that the plumbing and prompt are proven, either a bigger
+      local model if hosted with real GPU, or a cheap hosted API (OpenRouter) for comparison.
+- [ ] Expand past one throughput task to FLE's broader task suite / benchmark comparison.
+- [ ] Guardrails on run length / spend per session once this isn't fully local-and-free anymore
+      (matters the moment it's not just a local Ollama model).
+
+## Months+ / open-ended
+- [ ] General "plays well unsupervised" ambition, FLE's own benchmark shows even frontier
+      models are weak at long-horizon factory optimization. Not a near-term goal; scope any
+      further work as bounded subgoals (a specific throughput target), not "beat the game."
+
+## Ingested 2026-10-01
+- [ ] Server keeps going down; not running in the background properly, especially once the Claude session closes. Start it back up and watch closely.
+
+## After the launch
+- [ ] Achievement run list (Steam, base 2.0): the real ones need the Steam client and a save with no console commands, so our RCON saves cannot earn them. Track the earnable ones in-game anyway: research with every pack, craft speed/efficiency/productivity module 3, Mass production 1, Circuit veteran 1, Computer age 1, Iron throne 1, Tech maniac
+- [ ] Reuse the skill layer, planner and live view on other games (Oxygen Not Included first), then build our own versions of them
+
+## Gaps to v2.0 (a legit launch, no console help, survives a crash)
+- [ ] Yellow (utility) science tile chain: processing unit (needs sulfuric acid), flying robot frame (electric engine, battery, steel, circuits), low density structure (copper, steel, plastic). Sulfuric acid plant and battery plant are new
+- [ ] Planner supports fluid inputs (sulfuric acid, lubricant) so tiles are not item-only
+- [ ] Throughput for 1000 units of each of 5 packs: more copper (only far patches left), more plastic, a second refinery with advanced oil, more labs or lab modules
+- [ ] Real silo build: 1000 concrete, steel, processing units, electric engines, pipes, placed by the agent, not create_entity
+- [ ] Satellite built and loaded (1000 solar panels? no: 100 each of rocket control unit, low density structure, solar panel, accumulator, radar)
+- [ ] Remove .assist and assist.py from the loop; research must run on tile packs alone
+- [ ] Crash proofing: the world reverts on any crash. Replay scripts for yellow tiles, silo and power; health.sh --fix covers them end to end
+- [ ] Copper wall: new copper farm on a far patch plus a long pole bridge, or train
+- [ ] Live view: refresh the map picture when new tiles are built, or draw our own tile sprites
+- [ ] QA: landing numbers generated from the game (rockets, techs, packs per minute), no typed numbers
+
+## Next games
+Ranked 2026-10-05, easiest to drive first, ties broken by how close the game is to Factorio (build, automate, survive). All flagged for Mac on Steam. "How we drive it" is a plan from what is known about each game's mod support, checked only where it says checked.
+- [ ] 1. Don't Starve (installed on the LaCie). Lua mods and a console, the same shape as Factorio's Lua. Survival and crafting, real monsters.
+- [ ] 2. Oxygen Not Included (installed). Checked: Unity with Mono, Harmony ships with the game, dev mods folder. An MCP colony mod already exists (LIghtJUNction/OniMods), untested on Mac.
+- [ ] 3. Stardew Valley. C# with the SMAPI mod loader. Farming loop, daily planning.
+- [ ] 4. Terraria. C# with tModLoader. Mining, building, bosses.
+- [ ] 5. Starbound. Lua mods.
+- [ ] 6. Project Zomboid. Lua mods on a Java game. Survival, long horizon.
+- [ ] 7. Game Dev Tycoon. A JavaScript game, mods are plain JS. Menu choices only, a cheap first test of the picker on a second game.
+- [ ] 8. Cities: Skylines. Unity with Mono and an official C# mod API. Heavy on this Mac.
+- [ ] 9. Civilization V. Lua mods, turn based. The Mac port may not launch on this macOS.
+- [ ] 10. Reus, Thronefall, Plague Inc: Evolved. Small strategy games, mod route unknown.
+- [ ] 11. FEZ (installed). Checked: C# on Mono (FEZ.exe), so it can be hooked. Hard to play: 3D rotation puzzles in real time.
+- [ ] 12. FTL. Native code, no Mac mod loader, so screenshots and clicks. Pausable, which helps.
+- [ ] 13. Europa Universalis IV. No runtime API, console only.
+- [ ] 14. Papers, Please (installed). Checked: Unity IL2CPP, no code hooks, so screenshots and clicks. Reading documents by eye is the whole game.
+- [ ] Not checked yet (Steam rate limit): Satisfactory, Don't Starve Together, Undertale, INSIDE. Skipped: Rust and Unturned (multiplayer servers).
+- [ ] Oxygen Not Included, then Pikmin and Pokemon: reuse the skill layer (pick one skill and JSON params, never code), the planner pattern, the status dots and the follow camera. Train Turing on the logged runs (docs/TRAINING.md)
+- [ ] Build our own versions of these games once the agent can play them
+- [ ] When the legit launch happens: a full video of the final stretch at 1x to 2x (screencapture -v of the live window from the first silo part to liftoff, ffmpeg to mp4), shown on the landing
+
+## Ingested 2026-10-03
+- [ ] QA the landing page. Content is hidden behind the parallax.
+
+## Ingested 2026-10-25
+- [ ] Merge into the Surf app (tracked in surf/roadmap.md). Login-start error: see surf/roadmap.md Ingested 2026-10-25, screenshot ~/Documents/Code/notes/attachments/2026-10-25/conveyer-1.png
