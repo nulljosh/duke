@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """go.py: walk Gomez to a spot in the current level with the planner, replanning after every surprise.
   go.py COL Y [VIEW]        target column (screen units in VIEW) and floor height
-  go.py door LEVEL          the door in this level that leads to LEVEL, then go through it"""
-import subprocess, sys, time
+  Doors, routes between rooms and item pickup live in trip.py."""
+import sys, time
 import fez, fezmap, plan
 from plan import iround
 
@@ -76,11 +76,24 @@ def ride_to_peak(timeout=5):
         time.sleep(0.03)
 
 
+def step_out(s, toward):
+    """Step out of a door volume onto floor the planner knows, toward the move first, then the other way."""
+    g = plan.grid(s["level"], s["view"]); _, c, y, _ = node(s)
+    for d in (toward, -toward):
+        for n in (1, 2):
+            if not all(plan.standable(g, c + d * k, y) for k in range(1, n + 1)): break
+            s = fez.walk(c + d * n + 0.5, tol=0.3)
+            if not s["grounded"] or s.get("door") is None: return s
+    return s
+
+
 def step(kind, v, c, y):
     s = fez.state()
     if "Climb" in s["action"] and kind not in ("climb", "release", "vinejump") and not kind.startswith("turn"):   # standing moves need ground
         letgo(); s = fez.state()
     here = node(s); target = c + 0.5
+    if s["grounded"] and s.get("door") is not None and (kind in ("climb", "grab") or kind == "hop" and y - here[2] >= 3):
+        s = step_out(s, 1 if target > fez.h(s) else -1); here = node(s)   # these press Up, which in a doorway walks him through the door
     if kind.startswith("turn"): return turn_to(v)
     if kind in ("walk", "swim"): return fez.walk(target)
     if kind == "climb":   # along a vine: up/down until the height matches, sideways until the column does
@@ -143,8 +156,15 @@ def step(kind, v, c, y):
         d = "right" if target > fez.h(s) + 0.3 else "left" if target < fez.h(s) - 0.3 else None
         fez.edge("up", True)
         if d: fez.edge(d, True)
-        fez.edge("space", True); time.sleep(0.45); fez.edge("space", False)
-        s = landed(3)
+        fez.edge("space", True); t0 = time.time(); sign = 1 if d == "right" else -1; left_vine = False
+        while time.time() - t0 < 3:   # let go of the direction once over the target: held all the way, he overshoots
+            s = fez.state(); el = time.time() - t0
+            if el > 0.45: fez.edge("space", False)
+            if d and (fez.h(s) - target) * sign >= -0.4: fez.edge(d, False); d = None
+            if "Climb" not in s["action"]: left_vine = True
+            if el > 0.45 and (s["grounded"] or s["action"].startswith("Grab") or left_vine and "Climb" in s["action"]): break
+            time.sleep(0.02)
+        fez.edge("space", False); s = landed(3)
         for k in ("up", "left", "right"): fez.edge(k, False)
         return settle(s)
     if kind == "release":   # let go of the vine and land below
@@ -244,74 +264,7 @@ def go(goal, goal_view=None, tries=14, item=None):
     return None
 
 
-def door(to):
-    lvl = fez.state()["level"]
-    for dest, f, t, views in fezmap.doors(lvl):
-        if dest != to: continue
-        v = views[0]; hi, hs, _, _ = fezmap.VIEWS[v]
-        col = int(((f[hi] + t[hi]) / 2) * hs // 1); y = iround(f[1])
-        if go((col, y), v) is None: return None
-        fez.walk(((f[hi] + t[hi]) / 2) * hs, tol=0.15)   # the door's centre, not its grid column: thin doors sit on a cell edge
-        fez.key("up", 150); time.sleep(6); s = fez.state()
-        if s["level"] == lvl:   # behind the door in depth (Mine A, 2026-10-25): step to its depth from a side view, then retry
-            side = plan.ORDER[(plan.ORDER.index(v) + 1) % 4]; shi, shs, _, _ = fezmap.VIEWS[side]
-            turn_to(side); fez.walk(((f[shi] + t[shi]) / 2) * shs, tol=0.2)
-            turn_to(v); fez.walk(col + 0.5, tol=0.2); fez.key("up", 150); time.sleep(6); s = fez.state()
-        return s
-
-
-def collect():
-    """Go to the nearest uncollected item the bridge reports and jump for it."""
-    s = fez.state(); before = (s["cubes"], s["anti"], s["bits"])
-    items = s["items"]
-    if not items: return None
-    for it in sorted(items, key=lambda i: sum((a - b) ** 2 for a, b in zip(i["pos"], s["pos"]))):   # nearest first, skip the unreachable
-        print("going for", it, flush=True)
-        s = go(None, item=it["pos"])
-        if s is not None: break
-    else: return None
-    for i in range(4):
-        hi, hs, _, _ = fezmap.VIEWS[s["view"]]
-        fez.walk((it["pos"][hi] + 0.5) * hs + (0, 0.3, -0.3, 0)[i], tol=0.1)   # stand right under it: a jump off-centre can miss
-        fez.key("space", 300); time.sleep(1.2); s = fez.state()
-        if (s["cubes"], s["anti"], s["bits"]) != before: print("collected!", s["cubes"], s["anti"], s["bits"]); fez.snapshot(); return s
-    return s
-
-
-def travel(to):
-    """Door to door along the map-tree route until Gomez is in `to`."""
-    for _ in range(20):
-        here = fez.state()["level"]
-        if here == to: return fez.state()
-        try: nxt = fezmap.route(here, to)[1]
-        except (KeyError, IndexError): print("no known route", here, "->", to, flush=True); return None
-        print(f"{here} -> {nxt}", flush=True)
-        fez.revive()
-        s = door(nxt)
-        if s is None or s["level"] != nxt:
-            print("stuck going", here, "->", nxt, flush=True)
-            if not fez.responsive(): fez.revive(); continue   # dead input, not a locked door
-            if s is not None and s["level"] == here: fezmap.block(here, nxt)   # reached it but it would not open (s is None: never got there): route around next time
-            return None
-    return None
-
-
-def sweep(level):
-    """Travel to `level` and collect every pickup the bridge shows there."""
-    if travel(level) is None: return None
-    for _ in range(12):
-        s = fez.state()
-        if not s["items"]: print("room clear:", level, s["cubes"], s["anti"], s["bits"], flush=True); return s
-        if collect() is None: print("could not reach", s["items"][0], flush=True); return s
-    return fez.state()
-
-
 if __name__ == "__main__":
     for k in fez.CODES: fez.edge(k, False)   # a killed run leaves keys held; Gomez then runs off ledges after every respawn
-    if sys.argv[1] == "sweep":
-        for lv in sys.argv[2:]: s = sweep(lv)
-    elif sys.argv[1] == "travel": s = travel(sys.argv[2])
-    elif sys.argv[1] == "collect": s = collect()
-    elif sys.argv[1] == "door": s = door(sys.argv[2])
-    else: s = go((int(sys.argv[1]), int(sys.argv[2])), sys.argv[3] if len(sys.argv) > 3 else None)
+    s = go((int(sys.argv[1]), int(sys.argv[2])), sys.argv[3] if len(sys.argv) > 3 else None)
     print(s and (s["level"], s["view"], s["action"], s["pos"]))

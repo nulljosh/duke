@@ -2,7 +2,7 @@
 """codes.py: walk to each room with a code anti-cube, enter its code (CodePattern from the level data), collect the cube.
   codes.py ROOM [ROOM ...]"""
 import json, re, sys, time
-import fez, fezmap, go
+import fez, fezmap, go, trip
 
 
 def volume(room):
@@ -18,11 +18,12 @@ def inside(s, v): return all(f <= p <= t for p, f, t in zip(s["pos"], v["From"],
 
 for room in sys.argv[1:]:
     print("==", room, flush=True)
-    if go.travel(room) is None: print("could not reach", room, flush=True); continue
+    if trip.travel(room) is None: print("could not reach", room, flush=True); continue
     vid, v = volume(room); s = fez.state()
+    h0 = fez.h(s)
     for d in (2, -2):   # Gomez arrives in a doorway, and an Up in the code would walk him straight back out
-        s = fez.walk(fez.h(s) + d, tol=0.3); time.sleep(0.5); s = fez.state()
-        if s["grounded"] and s["door"] in (None, 0) and s["level"] == room: break
+        s = fez.walk(h0 + d, tol=0.3); time.sleep(0.5); s = fez.state()
+        if s["grounded"] and s["door"] is None and s["level"] == room: break
     if not inside(s, v):   # step toward the volume's middle from the current camera
         hi, hs, _, _ = fezmap.VIEWS[s["view"]]
         fez.walk((v["From"][hi] + v["To"][hi]) / 2 * hs, tol=0.3); s = fez.state()
@@ -32,6 +33,6 @@ for room in sys.argv[1:]:
     print("in volume" if vid in s["volumes"] else "NOT in volume", vid, s["view"], s["pos"], flush=True)
     if vid not in s["volumes"]: continue
     before = s["anti"]; s = fez.code(v["ActorSettings"]["CodePattern"])
-    if s["items"]: go.collect(); s = fez.state()
+    if s["items"]: trip.collect(); s = fez.state()
     print(room, "anti", before, "->", s["anti"], flush=True)
     if s["anti"] > before: fez.snapshot()

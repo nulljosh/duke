@@ -5,7 +5,7 @@ second pillar and drop onto the y28 floor. Restarting FEZ in Zu City puts Gomez 
 import sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import fez, go
+import fez, go, trip
 
 
 def down():
@@ -24,7 +24,7 @@ def down():
     fez.edge("down", True); time.sleep(0.1); fez.key("space", 60); time.sleep(0.05); fez.edge("down", False)
     time.sleep(1.5)
     fez.hop(23.4); fez.hop(26.8)   # second pillar, then the y28 floor
-    return go.door("MEMORY_CORE")
+    return trip.door("MEMORY_CORE")
 
 
 if __name__ == "__main__":
