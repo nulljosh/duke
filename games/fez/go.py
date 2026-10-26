@@ -3,7 +3,7 @@
   go.py COL Y [VIEW]        target column (screen units in VIEW) and floor height
   Doors, routes between rooms and item pickup live in trip.py."""
 import sys, time
-import fez, fezmap, plan
+import fez, fezlive, fezmap, plan
 from plan import iround
 
 
@@ -62,7 +62,7 @@ def mover_under(s):
     """The bobbing platform Gomez stands on, as (bridge mover, its peak top y), or None."""
     bob = plan.bobbers(s["level"]); x, fy, z = s["pos"]
     for m in s.get("movers", []):
-        if m["id"] in bob and m["from"][0] - 0.3 <= x <= m["to"][0] + 0.3 and m["from"][2] - 0.3 <= z <= m["to"][2] + 0.3 and abs(m["to"][1] - fy) < 0.8:
+        if m["id"] in bob and bob[m["id"]][0] and m["from"][0] - 0.3 <= x <= m["to"][0] + 0.3 and m["from"][2] - 0.3 <= z <= m["to"][2] + 0.3 and abs(m["to"][1] - fy) < 0.8:
             cells, rise = bob[m["id"]]; return m, max(y for _, y, _ in cells) + 1 + rise
     return None
 
@@ -249,10 +249,10 @@ def go(goal, goal_view=None, tries=14, item=None):
         if goal is not None and (c, y) == goal and goal_view in (None, v): return s
         p = plan.find_item(s["level"], v, (c, y, dep), item) if item else plan.find(s["level"], v, (c, y, dep), goal, goal_view)
         if p == []: return s
-        if p is None and plan.USE_LIVE and plan.bridge_grid(s["level"], v) is not None:   # a bad live dump must not strand a known leg
-            plan.USE_LIVE = False
+        if p is None and fezlive.USE_LIVE and plan.bridge_grid(s["level"], v) is not None:   # a bad live dump must not strand a known leg
+            fezlive.USE_LIVE = False
             p = plan.find_item(s["level"], v, (c, y, dep), item) if item else plan.find(s["level"], v, (c, y, dep), goal, goal_view)
-            plan.USE_LIVE = True
+            fezlive.USE_LIVE = True
             if p is not None: print("planned on the level-data grid", flush=True)
         if p is None and s["level"] not in FORGIVEN and any(b[0] == s["level"] for b in plan.BANNED):   # bans can be timing flukes (bobbing pillars): forgive them once
             FORGIVEN.add(s["level"])
