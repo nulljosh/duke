@@ -237,3 +237,23 @@ def pillar_door_chain(stand=34.6, take_off=40.4, boom=4.33):   # jump early: a c
     while time.time() - t < 1.5 and fez.state()["view"] != "Left": time.sleep(0.02)
     log(tp, "turned")
     time.sleep(3); fez.shot("hut"); return log(tp, "after")
+
+
+def pillar_bit():
+    """Bomb Pillar's bit (22, 55, 29) rests on one brick (22, 54, 29) that faces the Left camera. Lift the roof bomb
+    in Front view, turn to Left, step off the roof (a 6 drop) to the hut floor under the brick and let it blow."""
+    go.go((23, 60), "Front"); tp = pickup(23.3, "right")
+    if tp is None: return log(tp or time.time(), "no bomb")
+    while fez.state()["action"] == "Lifting" and time.time() - tp < 2: time.sleep(0.03)
+    fez.key("a", 60); t = time.time()
+    while time.time() - t < 1.5 and fez.state()["view"] != "Left": time.sleep(0.02)
+    log(tp, "left")
+    fez.edge("left", True); held = "left"   # off the bomb ledge and the roof, then steer back under the hut
+    while time.time() - tp < 3.6:
+        s = fez.state(); x = fez.h(s)
+        if held == "left" and s["pos"][1] < 58.2: fez.edge("left", False); fez.edge("right", True); held = "right"
+        if held == "right" and s["grounded"] and s["pos"][1] < 55 and x >= 28.6: break
+        time.sleep(0.02)
+    fez.edge(held, False); log(tp, "dropped")
+    fez.walk(29.0, tol=0.15, timeout=1.5); log(tp, "under brick")
+    time.sleep(3.5); return log(tp, "after")
