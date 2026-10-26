@@ -194,7 +194,12 @@ def door(to):
         v = views[0]; hi, hs, _, _ = fezmap.VIEWS[v]
         col = int(((f[hi] + t[hi]) / 2) * hs // 1); y = iround(f[1])
         if go((col, y), v) is None: return None
-        fez.key("up", 150); time.sleep(6); return fez.state()
+        fez.key("up", 150); time.sleep(6); s = fez.state()
+        if s["level"] == lvl:   # behind the door in depth (Mine A, 2026-10-25): step to its depth from a side view, then retry
+            side = plan.ORDER[(plan.ORDER.index(v) + 1) % 4]; shi, shs, _, _ = fezmap.VIEWS[side]
+            turn_to(side); fez.walk(((f[shi] + t[shi]) / 2) * shs, tol=0.2)
+            turn_to(v); fez.walk(col + 0.5, tol=0.2); fez.key("up", 150); time.sleep(6); s = fez.state()
+        return s
 
 
 def collect():
@@ -202,10 +207,11 @@ def collect():
     s = fez.state(); before = (s["cubes"], s["anti"], s["bits"])
     items = s["items"]
     if not items: return None
-    it = min(items, key=lambda i: sum((a - b) ** 2 for a, b in zip(i["pos"], s["pos"])))
-    print("going for", it)
-    s = go(None, item=it["pos"])
-    if s is None: return None
+    for it in sorted(items, key=lambda i: sum((a - b) ** 2 for a, b in zip(i["pos"], s["pos"]))):   # nearest first, skip the unreachable
+        print("going for", it, flush=True)
+        s = go(None, item=it["pos"])
+        if s is not None: break
+    else: return None
     for _ in range(3):
         fez.key("space", 300); time.sleep(1.2); s = fez.state()
         if (s["cubes"], s["anti"], s["bits"]) != before: print("collected!", s["cubes"], s["anti"], s["bits"]); return s
