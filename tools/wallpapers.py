@@ -2,10 +2,11 @@
 """Draw the Surf and FEZ wallpapers into brand/wallpapers/ (desktop 5120x2880, phone 1320x2868).
   python3 tools/wallpapers.py
 FEZ is original pixel art in the game's spirit (no sprites from the install): a floating island at night,
-the golden cube and its eight bits. Surf is the brand mark riding Neptune's Horses with one glyph per game it plays."""
+the golden cube and its eight bits, ordered-dithered with scanlines and grain. Surf is dressed like the Hermes landing
+(after Nous Research): Neptune's Horses in scanlines on the band, grain, a thin frame, tiny caps and the games it plays."""
 import io, math, random, re, subprocess
 from pathlib import Path
-from PIL import Image, ImageChops, ImageDraw
+from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "brand" / "wallpapers"
@@ -221,6 +222,22 @@ def grain(img, block=2, amount=.16):
     return Image.blend(img, ImageChops.overlay(img, Image.merge("RGB", (n, n, n))), amount)
 
 
+BAYER8 = [[0, 32, 8, 40, 2, 34, 10, 42], [48, 16, 56, 24, 50, 18, 58, 26], [12, 44, 4, 36, 14, 46, 6, 38],
+          [60, 28, 52, 20, 62, 30, 54, 22], [3, 35, 11, 43, 1, 33, 9, 41], [51, 19, 59, 27, 49, 17, 57, 25],
+          [15, 47, 7, 39, 13, 45, 5, 37], [63, 31, 55, 23, 61, 29, 53, 21]]
+
+
+def dither(img, levels=5):
+    """Ordered (Bayer 8x8) dither to a few levels per channel: every gradient and flat tint breaks into a dot pattern."""
+    img = img.copy(); px = img.load(); step = 255 / (levels - 1)
+    lut = [[min(255, int(int(v / step + (t + .5) / 64) * step)) for v in range(256)] for t in range(64)]
+    for y in range(img.height):
+        row = BAYER8[y % 8]
+        for x in range(img.width):
+            l = lut[row[x % 8]]; r, g, b = px[x, y]; px[x, y] = (l[r], l[g], l[b])
+    return img
+
+
 def fez(kind):
     W, H = SIZES[kind]; scale = 8 if kind == "desktop" else 4; w, h = W // scale, H // scale
     img = Image.new("RGB", (w, h)); d = ImageDraw.Draw(img); rng = random.Random(32)
@@ -244,6 +261,7 @@ def fez(kind):
     hx, hy = at(ox, oy, 0, 1, top, s); fez_hat(d, hx + 4, hy - 4)
     gold_cube(d, *gold, 34, .5, rng)
     vignette(img, 6 if kind == "desktop" else 4)
+    img = dither(img.resize((w * 2, h * 2), Image.NEAREST), 6)   # dots at half a pixel: the art stays readable
     return grain(scanlines(img.resize((W, H), Image.NEAREST), scale))
 
 
@@ -279,41 +297,53 @@ def mark():
     return re.sub(r"^<svg[^>]*>|</svg>\s*$", "", src.strip()).replace("currentColor", "#fff")
 
 
-def backdrop(W, H):
-    """The icon's gradient, clrs.cc Blue to Navy, with Neptune's Horses tinted in the band colour along the bottom."""
-    top, bot = hexc("#0074d9"), hexc("#001f3f")
-    col = Image.new("RGB", (1, H))
-    for y in range(H):
-        f = (y / (H - 1)) ** .9
-        col.putpixel((0, y), tuple(int(a + (b - a) * f) for a, b in zip(top, bot)))
-    img = col.resize((W, H)).convert("RGBA")
-    art = Image.open(ROOT / "web" / "art" / "neptune.png").convert("LA")
-    nh = int(art.height * W / art.width)
-    fade = Image.linear_gradient("L").resize(art.size)   # the horses fade in toward the bottom edge
-    mask = ImageChops.multiply(art.split()[1], fade).point(lambda v: int(v * .2))
-    tint = Image.new("RGBA", art.size, (127, 189, 242, 0)); tint.putalpha(mask)
-    img.alpha_composite(tint.resize((W, nh), Image.LANCZOS), (0, H - nh))
-    return img
+FONTS = ROOT / "fonts"
+BAND, ART, SUB = (0, 99, 186), (127, 189, 242), (214, 232, 251)   # tokens.css: --band, --band-art, --band-sub
+
+
+def svg_png(body, w, h):
+    svg = f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">{body}</svg>'
+    return Image.open(io.BytesIO(subprocess.run(["rsvg-convert", "-"], input=svg.encode(), capture_output=True, check=True).stdout)).convert("RGBA")
+
+
+def caps(d, xy, text, size, fill, track=.22):
+    f = ImageFont.truetype(str(FONTS / "SurfSans-Medium.ttf"), size); x, y = xy
+    for ch in text:   # tiny caps with wide tracking, the Nous label
+        d.text((x, y), ch, font=f, fill=fill); x += f.getlength(ch) + size * track
+    return x
 
 
 def surf(kind):
-    W, H = SIZES[kind]
-    names = list(GLYPHS)
-    if kind == "desktop":
-        hero = f'<g transform="translate({W * .08:.0f} {H * .5 - 900:.0f}) scale({1800 / 1024:.4f})">'
-        cols, x0, dx, y0, dy, gr = 4, W * .58, 420, H * .4, 440, 160
-    else:
-        hero = f'<g transform="translate({W * .5 - 450:.0f} {H * .27:.0f}) scale({900 / 1024:.4f})">'
-        cols, x0, dx, y0, dy, gr = 4, W * .5 - 1.5 * 280, 280, H * .64, 300, 110
-    spots = [(x0 + dx * (n % cols) + (dx / 2 if n >= cols else 0), y0 + dy * (n // cols)) for n in range(len(names))]
-    svg = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">', hero + mark() + "</g>"]
-    for (x, y), name in zip(spots, names):
-        svg.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{gr}" fill="#fff" fill-opacity=".12"/>')
-        s = gr * 1.1 / 100
-        svg.append(f'<g transform="translate({x - 50 * s:.1f} {y - 50 * s:.1f}) scale({s:.3f})" fill="#fff">{GLYPHS[name]}</g>')
-    svg.append("</svg>")
-    png = subprocess.run(["rsvg-convert", "-"], input="".join(svg).encode(), capture_output=True, check=True).stdout
-    img = backdrop(W, H); img.alpha_composite(Image.open(io.BytesIO(png)).convert("RGBA"))
+    """Dressed like the Hermes landing (after Nous Research): the band blue, Neptune's Horses in scanlines,
+    film grain, a thin frame, tiny caps, a giant wordmark and a row of the games Surf plays."""
+    W, H = SIZES[kind]; desk = kind == "desktop"
+    img = Image.new("RGBA", (W, H), BAND + (255,))
+    art = Image.open(ROOT / "web" / "art" / "neptune.png").convert("LA").split()[1]
+    s = (W * 1.05 / art.width) if desk else (H * .5 / art.height)
+    art = art.resize((int(art.width * s), int(art.height * s)), Image.LANCZOS)
+    layer = Image.new("L", (W, H)); layer.paste(art, ((W - art.width) // 2, int(H * (.46 if desk else .52))))
+    col = Image.new("L", (1, H)); p = 6 if desk else 4
+    col.putdata([0 if y % p >= p // 2 else 255 for y in range(H)])   # the landing's --scan
+    layer = ImageChops.multiply(layer, col.resize((W, H), Image.NEAREST)).point(lambda v: int(v * .85))
+    tint = Image.new("RGBA", (W, H), ART + (0,)); tint.putalpha(layer); img.alpha_composite(tint)
+    n = Image.effect_noise((W // 2, H // 2), 60).resize((W, H), Image.NEAREST)   # white film grain
+    white = Image.new("RGBA", (W, H), (255, 255, 255, 0)); white.putalpha(n.point(lambda v: int(max(0, v - 128) * .14))); img.alpha_composite(white)
+    d = ImageDraw.Draw(img)
+    m = 64 if desk else 40
+    d.rectangle([m, m, W - 1 - m, H - 1 - m], outline=ART + (110,), width=3 if desk else 2)
+    x0, top, mk, small, big, g = (240, 300, 220, 46, 560, 92) if desk else (96, int(H * .22), 120, 26, 250, 60)
+    img.alpha_composite(svg_png(f'<g transform="scale({mk / 1024})">{mark()}</g>', mk, mk), (x0 - mk // 10, top))
+    y = top + mk + small * 2
+    caps(d, (x0, y), "PLAYS WHILE YOU SLEEP", small, SUB + (255,))
+    f = ImageFont.truetype(str(FONTS / "SurfSans-Bold.ttf"), big)
+    d.text((x0 - big * .05, y + small * 1.2), "Surf", font=f, fill=(255, 255, 255, 255))
+    y += small * 1.2 + big * 1.12
+    caps(d, (x0, y), "DUOLINGO  FACTORIO  GAME DEV TYCOON  FEZ", small, SUB + (230,))
+    row = "".join(f'<g transform="translate({n * g * 1.7} 0) scale({g / 100})" fill="#fff">{GLYPHS[k]}</g>' for n, k in enumerate(GLYPHS))
+    img.alpha_composite(svg_png(row, int(g * 1.7 * len(GLYPHS)), g), (x0, int(y + small * 2.4)))
+    cred = "WALTER CRANE, NEPTUNE'S HORSES, 1892. PUBLIC DOMAIN"; cs = int(small * .7)
+    fw = caps(ImageDraw.Draw(Image.new("RGBA", (1, 1))), (0, 0), cred, cs, SUB)
+    caps(d, (W - m - 48 - fw, H - m - 48 - cs), cred, cs, SUB + (170,))
     return img.convert("RGB")
 
 
