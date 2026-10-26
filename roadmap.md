@@ -77,8 +77,6 @@ Compared against the App Store screens of Duolingo, Babbel, Busuu, Memrise, Drop
 - [ ] Oxygen Not Included is the next game after FEZ, then Don't Starve (Steam marked it damaged on 2026-10-05; reinstall first).
 - [ ] Landing refresh once FEZ is beaten: Hermes' layout, styled for video games instead of Greek gods. Photos from FEZ and Factorio, and Duolingo too. Supported games listed: Duolingo, FEZ, Factorio.
 - [ ] `surf play <game>`: one entry point for duolingo, factorio, gdt and fez.
-- [x] Conveyer merged into Surf on 2026-10-25 (games/factorio, games/gdt); nulljosh/conveyer archived.
-- [x] 2026-10-25: Duolingo's lesson page served a 500 to the runner for 8 hours (5,000 open-fails, nothing earned). A restart fixed it; the runner now exits after 40 open-fails in a row so the status app brings up a fresh browser.
 - [ ] Hermes Sans (~/Documents/Code/hermes) likely has the same comma bug (feathers in every comma). Same fix as Surf Sans: tools/gen_font.py, with a check. Hermes has no roadmap.md yet, so the item lives here.
 - [ ] Confirm live (2026-10-18): Turkish "to read" and "to drink" match questions now solve (fix in 333d537, tr was stalled 24 hours before it). Also watch that balance mode stops picking Japanese and chess, and that XP per hour holds near 1,200 on the track it picks.
 - [ ] Nobody is told when the runner needs a human away from the Mac. A lost session shows an alert on the Mac only; the phone and watch apps just read stale. The session cookie runs to 2169, so this is rare.
