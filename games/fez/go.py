@@ -23,6 +23,8 @@ def node(s):
         elif not plan.standable(g, c, y):
             for cc in (int((x - 0.5) // 1), int((x + 0.5) // 1)):
                 if plan.standable(g, cc, y): c = cc; break
+            else:
+                if s["grounded"] and plan.standable(g, c, y - 1): y -= 1   # standing on an art object (a warp gate's step) one above the floor
     except FileNotFoundError: pass
     return (s["view"], c, y, int(s["pos"][di] // 1))
 
