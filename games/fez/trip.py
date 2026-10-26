@@ -74,7 +74,7 @@ def travel(to):
         if s is None or s["level"] != nxt:
             print("stuck going", here, "->", nxt, flush=True)
             if not fez.responsive(): fez.revive(); continue   # dead input, not a locked door
-            if s is not None and s["level"] == here: fezmap.block(here, nxt)   # reached it but it would not open (s is None: never got there): route around next time
+            if s is not None and s["level"] == here and s.get("door") is not None: fezmap.block(here, nxt)   # stood in it and it would not open: route around next time
             return None
     return None
 
