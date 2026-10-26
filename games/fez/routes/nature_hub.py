@@ -23,7 +23,8 @@ def reroll_holes(tries=6):
     for _ in range(tries):
         if not any(h["on"] for h in s["holes"]): return s
         if s.get("door") is None: return None   # only works from inside a door volume
-        fez.key("up", 150); time.sleep(2)
+        fez.key("up", 150); t0 = time.time()
+        while fez.state()["level"] == home and time.time() - t0 < 10: time.sleep(0.3)   # the door spin takes a few seconds
         other = fez.state()["level"]
         if other == home or wait_level(other) is None: return None
         fez.key("up", 150)
