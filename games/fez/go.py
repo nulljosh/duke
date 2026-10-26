@@ -164,7 +164,7 @@ def step(kind, v, c, y):
         up = y - here[2]
         if up > 0: ride_to_peak(); s = fez.state()
         sign = 1 if target > fez.h(s) else -1
-        if abs(target - fez.h(s)) >= 4 and up >= 1 and plan.standable(plan.grid(s["level"], v), here[1] - sign, here[2]):   # long jump: take a run-up
+        if (abs(target - fez.h(s)) >= 4 and up >= 1 or abs(target - fez.h(s)) >= 2.5 and up >= 2) and plan.standable(plan.grid(s["level"], v), here[1] - sign, here[2]):   # long jump: take a run-up
             fez.walk(here[1] + 0.5 - sign * 0.9, tol=0.2)
             return settle(fez.runjump(here[1] + 0.5 + sign * 0.4, target, jump_ms=500))
         if s["action"] in ("Treading", "Swimming") or up >= 3:   # +3 (and out of water) only by catching the ledge: hold Up, long jump (Nature Hub, 2026-10-25)
@@ -236,7 +236,9 @@ def go(goal, goal_view=None, tries=14, item=None):
             if close and kind.startswith("turn") and got[1] != cc:   # the camera turned but FEZ moved Gomez in depth: replan from where he is
                 print(f"  turned to {vv}, Gomez at {got[1]} not {cc}: replanning", flush=True); break
             if (got[0], got[1], got[2]) != (vv, cc, yy) and not close:
-                plan.ban((s["level"], prev[:3], kind, (vv, cc, yy)))   # never plan this exact move from here again
+                if kind == "walk" and got[0] == vv and got[2] == yy and got[1] != cc:   # a merged walk: ban the single step he could not take
+                    step1 = 1 if cc > got[1] else -1; plan.ban((s["level"], got[:3], "walk", (vv, got[1] + step1, yy)))
+                else: plan.ban((s["level"], prev[:3], kind, (vv, cc, yy)))   # never plan this exact move from here again
                 print(f"  {kind} to {vv} {cc},{yy} landed {got} ({s['action']}), banned, replanning"); break
             prev = got
         else:

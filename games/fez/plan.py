@@ -92,8 +92,9 @@ def grid(name, view):
                 g[(c, yy)] = "wall"
     live = None if ROTATED.get(name) or not fezlive.USE_LIVE else bridge_grid(name, view)
     if live is not None:   # the game's own collision answer (SurfBridge surfgrid.json): trust it over the level data
+        fd = FRONT[(name, view)] = {}
         for w, y, f, depth, typ in live:
-            cell = (int((w + 0.5) * hs // 1), y)
+            cell = (int((w + 0.5) * hs // 1), y); fd[cell] = depth * ds
             if g.get(cell) == "wall" or f not in SOLID: continue
             g[cell] = "bounce" if typ == "Bouncer" else "wall" if f == "AllSides" else "top"
             deps.setdefault(cell, set()).add(int(depth // 1))
@@ -127,12 +128,18 @@ def swimming(g, c, y):
 
 
 ALLNOW, DEPNOW = {}, None   # set by find(): the view's solid triles by depth, and Gomez's depth while expanding a node
+FRONT, FRONTNOW, DSNOW = {}, None, 1   # live grid: how close the game's collision trile is, per cell
+
+
+def hidden(cell):
+    """Gomez at DEPNOW is behind the game's front trile in this cell, so FEZ collides him with blocks at his own depth."""
+    return FRONTNOW is None or (cell in FRONTNOW and FRONTNOW[cell] > DEPNOW * DSNOW + 0.5)
 
 
 def standable(g, c, y):
     """Gomez can stand at column c with feet at y. Blocks at his own depth count even behind the front layer (Zu City)."""
-    floor = g.get((c, y - 1)) in ("top", "wall") or (DEPNOW is not None and DEPNOW in ALLNOW.get((c, y - 1), ()))
-    body = DEPNOW is None or not (DEPNOW in ALLNOW.get((c, y), ()) or DEPNOW in ALLNOW.get((c, y + 1), ()))
+    floor = g.get((c, y - 1)) in ("top", "wall") or (DEPNOW is not None and DEPNOW in ALLNOW.get((c, y - 1), ()) and hidden((c, y - 1)))
+    body = DEPNOW is None or not any(DEPNOW in ALLNOW.get(k, ()) and hidden(k) for k in ((c, y), (c, y + 1)))
     return floor and body and g.get((c, y)) != "wall" and g.get((c, y + 1)) != "wall"
 
 
@@ -285,6 +292,7 @@ def find(name, view, start, goal, goal_view=None, done=None):
         if (done(cur) if done else (c, y) == goal and goal_view in (None, v)): end = cur; break
         if d0 > dist[cur]: continue
         global FLATNOW, ALLNOW, DEPNOW; FLATNOW = FLAT[(name, v)]; ALLNOW, DEPNOW = ALLDEPTHS[(name, v)], dep
+        global FRONTNOW, DSNOW; FRONTNOW, DSNOW = FRONT.get((name, v)) if fezlive.USE_LIVE else None, fezmap.VIEWS[v][3]
         nxt = [((v, c2, y2, d2 if d2 is not None else settle_depth(name, v, c2, y2, dep)), kind, cost)
                for (kind, c2, y2, d2), cost in moves(grids[v], c, y, lo, CLIMB[(name, v)], dep)]
         DEPNOW = None
