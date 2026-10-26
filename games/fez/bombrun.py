@@ -273,3 +273,52 @@ def pillar_bricks(edge=19.8, go_at=3.25):
         s = fez.state(); trace.append((round(time.time() - tp, 2), round(fez.h(s), 2), round(s["pos"][1], 2), s["action"])); time.sleep(0.03)
     fez.edge("left", False); fez.edge("space", False); print(trace[::2])
     time.sleep(2.5); fez.shot("pillar"); return log(tp, "after")
+
+
+def hut_front(stand=34.0, take_off=40.4):
+    """Mine Wrap's upper hut (32-35, 44-62, 11-14) is walls round a core of bricks, with a second bomb resting on
+    them at (33, 53, 13) and the level's gold cube on its roof. Carry the right post's bomb in Front view to the
+    hut's brick front (33-35, 45-46, 14) and let it blow while carried (bomb one row above Gomez's head row)."""
+    t0 = time.time()
+    go.go((26, 44), "Left"); tp = pickup(27.3, "left")
+    if tp is None: return log(t0, "no bomb")
+    while fez.state()["action"] == "Lifting" and time.time() - tp < 2: time.sleep(0.03)
+    fez.key("d", 60); t = time.time()
+    while time.time() - t < 1.5 and fez.state()["view"] != "Front": time.sleep(0.02)
+    fez.walk(43.2, tol=0.2, timeout=0.6)
+    fez.edge("left", True); jumped = None
+    while time.time() - tp < 4.2:
+        s = fez.state(); x = fez.h(s)
+        if jumped is None and x < take_off: fez.edge("space", True); jumped = time.time()
+        if jumped and time.time() - jumped > 0.5: fez.edge("space", False)
+        if x <= stand + 0.3 and s["grounded"]: break
+        if s["action"] == "Suffering": break
+        time.sleep(0.02)
+    fez.edge("left", False); fez.edge("space", False); log(tp, "at hut")
+    while time.time() - tp < 6 and fez.state()["action"] != "Suffering": time.sleep(0.01)
+    log(tp, "boom"); time.sleep(2.0); fez.shot("hut_front"); return log(tp, "after")
+
+
+def hut_right(stand=-13.0, take_off=-25.4):
+    """The hut's right face (x35, y45-50) is all bricks. Lift the post's bomb in Back view (Gomez stands at z<27,
+    in front of it from that side), one turn to Right, jump the 3-wide gap early and run to the face."""
+    t0 = time.time()
+    go.go((26, 44), "Left"); go.turn_to("Back"); tp = None
+    for at in (-42.3, -41.7, -42.0):
+        tp = pickup(at, "right", tries=1)
+        if tp: break
+    if tp is None: return log(t0, "no bomb")
+    while fez.state()["action"] == "Lifting" and time.time() - tp < 2: time.sleep(0.03)
+    fez.key("a", 60); t = time.time()
+    while time.time() - t < 1.5 and fez.state()["view"] != "Right": time.sleep(0.02)
+    log(tp, "right")
+    fez.edge("right", True); jumped = None
+    while time.time() - tp < 4.6:
+        s = fez.state(); x = fez.h(s)
+        if jumped is None and x > take_off: fez.edge("space", True); jumped = time.time()
+        if jumped and time.time() - jumped > 0.5: fez.edge("space", False)
+        if x >= stand - 0.3 or s["action"] == "Suffering": break
+        time.sleep(0.02)
+    fez.edge("right", False); fez.edge("space", False); log(tp, "at face")
+    while time.time() - tp < 6 and fez.state()["action"] != "Suffering": time.sleep(0.01)
+    log(tp, "boom"); time.sleep(2.0); fez.shot("hut_right"); return log(tp, "after")

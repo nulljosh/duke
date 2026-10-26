@@ -79,3 +79,7 @@ Still locked behind puzzles the planner can't solve yet: the Lighthouse climb, Q
 `bombrun.wrap_chain()` replays the whole thing. Next is Mine Wrap's top floor, which leads to the Bomb Pillar room (a bit and a chest) and a cube high above it.
 
 ![Mine Wrap's last bit, uncovered](progress/09-mine-wrap-bit.png)
+
+**2026-10-26, 01:45.** Bits: 6 of 8. Mine Wrap's top floor fell to a corner grab from the hole bit 5 left behind. The Bomb Pillar door then opened to the right post's bomb, carried in Left view with the gap jump pressed early, because a jump pressed at the lip while carrying registers too late. Inside, the bit sat on one brick that only the Left camera can see, and the bomb on the hut roof blew it loose. A second bomb, thrown off the roof in a jump, cleared the 36-brick block inside the left pillar and opened its ladder. Still open: the chest on top of that pillar, which sits 2 tiles above what a jump off a ladder reaches, and Mine Wrap's gold cube. The live collision grid says nothing between the top floor and the cube's platform is solid, so the climb there is a puzzle not cracked yet. FEZ also stopped taking movement keys twice tonight. A restart fixes it, and progress survives as long as Gomez has gone through a door since.
+
+![Bomb Pillar's brick block cleared](progress/10-bomb-pillar.png)
