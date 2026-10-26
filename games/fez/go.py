@@ -283,7 +283,8 @@ def travel(to):
     for _ in range(20):
         here = fez.state()["level"]
         if here == to: return fez.state()
-        nxt = fezmap.route(here, to)[1]
+        try: nxt = fezmap.route(here, to)[1]
+        except (KeyError, IndexError): print("no known route", here, "->", to, flush=True); return None
         print(f"{here} -> {nxt}", flush=True)
         s = door(nxt)
         if s is None or s["level"] != nxt:
