@@ -234,7 +234,8 @@ def go(goal, goal_view=None, tries=14, item=None):
                 or (mover_under(s) is not None and got[0] == vv and got[1] == cc and abs(got[2] - yy) <= 1) \
                 or (kind.startswith("turn") and got[0] == vv and got[2] == yy)
             if close and kind.startswith("turn") and got[1] != cc:   # the camera turned but FEZ moved Gomez in depth: replan from where he is
-                print(f"  turned to {vv}, Gomez at {got[1]} not {cc}: replanning", flush=True); break
+                plan.ban((s["level"], prev[:3], kind, (vv, cc, yy)))   # the same turn lands him in the same wrong spot every time
+                print(f"  turned to {vv}, Gomez at {got[1]} not {cc}: banned, replanning", flush=True); break
             if (got[0], got[1], got[2]) != (vv, cc, yy) and not close:
                 if kind == "walk" and got[0] == vv and got[2] == yy and got[1] != cc:   # a merged walk: ban the single step he could not take
                     step1 = 1 if cc > got[1] else -1; plan.ban((s["level"], got[:3], "walk", (vv, got[1] + step1, yy)))
