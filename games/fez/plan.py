@@ -31,6 +31,7 @@ OPPOSITE = {"Front": "Back", "Back": "Front", "Left": "Right", "Right": "Left"}
 
 ROTATED = {}   # level -> {group id: quarter turns} applied by a switch the executor just pulled (180 degrees only)
 HOLES = {}     # level -> [(from, to)] black holes the bridge reports as on; their cells (plus a margin) count as walls
+SEEN = {}      # level -> {(view, col, y)} floors Gomez was seen standing on that the front-most grid hides (a ledge at his depth)
 
 
 class Grid(dict):
@@ -117,6 +118,8 @@ def grid(name, view):
     for cell in [k for k, v in g.items() if v == "top"]:
         x, y, z = front[cell][1]["Position"]
         if (x, y + 1, z) in filled: del g[cell]   # a top covered at the same depth is no floor: Mine A's stacked walls (2026-10-25)
+    for v, c, y in SEEN.get(name, ()):
+        if v == view and g.get((c, y)) is None: g[(c, y)] = "top"
     for gid, (cells, rise) in bobbers(name).items():   # a platform that bobs on a path also holds at the top of its swing
         for x, y, z in cells:
             cell = (int((((x, y, z)[hi]) + 0.5) * hs // 1), y + rise)
