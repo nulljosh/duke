@@ -55,3 +55,15 @@ A first attempt set the cube count with the console and warped to Zu City. Joshu
 Cubes: still 21 of 32. The Mines (a gold cube and 3 bits) are next. The run was stopped when the Mac ran critically low on memory.
 
 ![Nature Hub](progress/07-nature-hub.png)
+
+**2026-10-26, overnight.** Cubes: 22 of 32, with 2 of 8 bits toward the next. Eight bits merged into cube 22 in Zu City's empty house. Gomez also bombed open both Mines doors, climbed Zu City's bobbing pillars, and opened Memory Core's 8-bit door into Industrial City.
+
+The biggest change is that the planner now asks the game itself. The SurfBridge mod dumps FEZ's own collision answer for every camera angle to `surfgrid.json`, so plans no longer guess which block Gomez touches. It also exports whether Gomez is in the background and which door or volume he's in. Other rules learned overnight:
+- Bomb blasts are screen-space 3x3 and chain through connected bricks. The fuse is 6 s from pickup, and the camera angle at the moment it blows decides which bricks break.
+- Holding Up while jumping catches ledges, which is the only way out of water.
+- Floating pillars bob up and down by one unit, so the jump waits for the top of the swing.
+- A door only opens when nothing stands between it and the camera. Some doors open from one side only, and `blocked.txt` records them so routes go around.
+
+Still locked behind puzzles the planner can't solve yet: the Lighthouse climb, Quantum (under the Bell Tower's water), CMY, Weightswitch, Fractal, and the Tree climb to the Graveyard.
+
+![Cube 22](progress/08-cube-22.png)
