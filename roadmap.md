@@ -73,6 +73,7 @@ Compared against the App Store screens of Duolingo, Babbel, Busuu, Memrise, Drop
 - Run `sudo pmset -a autorestart 1` once at the Mac (needs the password). Without it the Mac stays off after a power cut and the runner with it. Asked 2026-10-05, he was away from the desk.
 
 ## Open
+- [ ] Brand 2 (board on a breaking wave, 2026-10-26) is live on the landing and the Mac menu bar app. The iPhone and Watch apps need a new build to carry the new icon.
 - [ ] FEZ: beat the 32-cube ending for real from Joshua's 67.6% save (slot 3 copy). Status lives in games/fez/README.md. Then add FEZ to the landing next to Duolingo and Factorio.
 - [ ] Oxygen Not Included is the next game after FEZ, then Don't Starve (Steam marked it damaged on 2026-10-05; reinstall first).
 - [ ] Landing refresh once FEZ is beaten: Hermes' layout, styled for video games instead of Greek gods. Photos from FEZ and Factorio, and Duolingo too. Supported games listed: Duolingo, FEZ, Factorio.
