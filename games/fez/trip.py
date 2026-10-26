@@ -2,6 +2,7 @@
 """trip.py: room to room on top of go.py: through a door, along the map route, and to the items in a room.
   trip.py travel LEVEL | door LEVEL | collect | sweep LEVEL..."""
 import sys, time
+from pathlib import Path
 import fez, fezmap, plan
 from go import go, turn_to
 from plan import iround
@@ -41,6 +42,21 @@ def collect():
     return s
 
 
+HAND = {("ZU_CITY", "MEMORY_CORE"): ("zu_city", "down"), ("THRONE", "TREE_SKY"): ("throne", "to_tree_sky"),   # legs the planner fails, done by hand
+        ("TREE_SKY", "TREE"): ("tree_sky", "to_tree"), ("TELESCOPE", "OBSERVATORY"): ("telescope", "out"),
+        ("TREE_ROOTS", "TREE"): ("tree_roots", "up"), ("NATURE_HUB", "WATERFALL"): ("nature_hub", "to_waterfall")}
+
+
+def hand(here, nxt):
+    import importlib
+    sys.path.insert(0, str(Path(__file__).resolve().parent / "routes"))
+    mod, fn = HAND[(here, nxt)]
+    try: getattr(importlib.import_module(mod), fn)()
+    except Exception as e: print("hand route failed:", e, flush=True)
+    for k in fez.CODES: fez.edge(k, False)
+    return fez.state()
+
+
 def travel(to):
     """Door to door along the map-tree route until Gomez is in `to`."""
     for _ in range(20):
@@ -50,7 +66,8 @@ def travel(to):
         except (KeyError, IndexError): print("no known route", here, "->", to, flush=True); return None
         print(f"{here} -> {nxt}", flush=True)
         fez.revive()
-        s = door(nxt)
+        s = hand(here, nxt) if (here, nxt) in HAND else None
+        if s is None or s["level"] != nxt: s = door(nxt)
         if s is None or s["level"] != nxt:
             print("stuck going", here, "->", nxt, flush=True)
             if not fez.responsive(): fez.revive(); continue   # dead input, not a locked door
