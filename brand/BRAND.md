@@ -1,14 +1,14 @@
 # Surf brand kit and design system
 
-A surfboard catching the wave. Surf rides Duolingo so you don't have to.
+A wave about to break. Surf rides it so you don't have to: Duolingo, Factorio, Game Dev Tycoon and FEZ.
 
 ## The mark
-A bold white surfboard, tilted into the wave, stringer cut down the middle, fin at the tail. One glyph on a gradient tile. No text, no outline.
+A bold white breaking wave: the swell rises from the sea line and curls over into the barrel. One glyph on a gradient tile. No text, no outline. It replaced the tilted surfboard on 2026-10-26, which read as a feather at small sizes; the wave reads at 29 px.
 
 - `../Surf.icon` is the source of truth (Icon Composer), used by the Mac and iPhone apps.
 - `../icon.svg` is the flat copy for the README and the landing. `icon-1024.png` is the App Store size, no alpha.
-- `mark.svg` is the board alone in `currentColor`. `icon-tile.svg` is the square tile with no corner mask.
-- Clear space is the width of the fin. Smallest size 16 px.
+- `mark.svg` is the wave alone in `currentColor`. `icon-tile.svg` is the square tile with no corner mask.
+- Clear space is the width of the curl's lip. Smallest size 16 px.
 
 ## Colour
 One colour, from clrs.cc.
@@ -25,7 +25,7 @@ One colour, from clrs.cc.
 Dark mode is the deep blue of a FEZ night, the sea after dark. Never brown, beige, purple or teal.
 
 ## Type
-Surf Sans: Inter by Rasmus Andersson (SIL Open Font License 1.1), renamed, with its curly quotes redrawn as curling wave crests. Proportionally spaced, drawn in the spirit of San Francisco and Helvetica. Regular, Medium, Semibold and Bold live in `../fonts/` (ttf for the app, woff2 for the web, `OFL.txt` beside them). `../tools/gen_font.py` rebuilds them from the pinned Inter release, byte for byte.
+Surf Sans: Inter 5.3 by Rasmus Andersson (SIL Open Font License 1.1, bumped from 5.2.5 on 2026-10-26), renamed, with its curly quotes redrawn as curling wave crests. Proportionally spaced, drawn in the spirit of San Francisco and Helvetica. Regular, Medium, Semibold and Bold live in `../fonts/` (ttf for the app, woff2 for the web, `OFL.txt` beside them). `../tools/gen_font.py` rebuilds them from the pinned Inter release, byte for byte.
 
 Scale: 34/41 large title, 22/28 title, 17/24 body, 15/20 subhead, 13/16 footnote. Headlines tighten to -0.022em. The fallback is the system face: `-apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif`.
 

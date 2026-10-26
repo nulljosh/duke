@@ -23,7 +23,7 @@ from fontTools.ttLib import TTFont
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(HERE, "fonts")
-SOURCE = "https://cdn.jsdelivr.net/npm/@fontsource/inter@5.2.5/"
+SOURCE = "https://cdn.jsdelivr.net/npm/@fontsource/inter@5.3.0/"
 WEIGHTS = {"Regular": 400, "Medium": 500, "Semibold": 600, "Bold": 700}
 
 
