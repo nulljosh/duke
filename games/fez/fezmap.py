@@ -67,6 +67,15 @@ def view(name, v, at=None):
     print("    " + "".join(f"{c * hs:<5}" for c in range(lo, hi + 1) if (c * hs) % 5 == 0)[:hi - lo + 6], f"({'xyz'[h]} at each |, left to right)")
 
 
+BLOCKFILE = Path(__file__).with_name("blocked.txt")   # door links that would not open from this side: "A B" per line
+BLOCKED = {tuple(l.split()) for l in BLOCKFILE.read_text().splitlines() if l.strip()} if BLOCKFILE.exists() else set()
+
+
+def block(a, b):
+    BLOCKED.add((a, b))
+    with BLOCKFILE.open("a") as f: f.write(f"{a} {b}\n")
+
+
 def route(a, b):
     t = json.load(open(DATA / "maptree.fezmap.json")); g = collections.defaultdict(set)
     for n in t.values():
@@ -77,6 +86,7 @@ def route(a, b):
         try: g[x] |= {dest for dest, *_ in doors(x)}   # level doors the map tree leaves out (Memory Core to Industrial City)
         except (OSError, ValueError, KeyError): pass
         for y in g[x]:
+            if (x, y) in BLOCKED: continue
             if y not in prev: prev[y] = x; q.append(y)
     p = [b]
     while prev[p[-1]]: p.append(prev[p[-1]])
