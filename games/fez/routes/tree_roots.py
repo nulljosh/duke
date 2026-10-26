@@ -22,6 +22,11 @@ def down():
     """The way back: from the Tree door (Left, z15.2) round the ring and drop-grab the vine (Back -18,42); the planner takes it from
     there. The plank ends short of the vine, so walking on in the Right view falls to the y35 floor and dies.
     Black holes sit over the vine top when they roll on: nature_hub.reroll_holes() from the door first."""
+    go.turn_to("Left"); fez.walk(14.5, tol=0.15)   # in the Tree door: re-roll the black holes if any are on
+    if any(h["on"] for h in fez.state()["holes"]):
+        import nature_hub
+        if nature_hub.reroll_holes(8) is None: return None
+    go.turn_to("Left"); fez.walk(15.2, tol=0.15)   # the door's spot on the ring: from here Back walks onto the z12 plank
     go.turn_to("Back"); fez.walk(-16.6, tol=0.15)
     fez.edge("up", True); fez.edge("left", True); t0 = time.time()   # step off the plank's end holding Up: the vine is right under it
     while time.time() - t0 < 2:

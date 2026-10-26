@@ -44,7 +44,7 @@ def collect():
 
 HAND = {("ZU_CITY", "MEMORY_CORE"): ("zu_city", "down"), ("THRONE", "TREE_SKY"): ("throne", "to_tree_sky"),   # legs the planner fails, done by hand
         ("TREE_SKY", "TREE"): ("tree_sky", "to_tree"), ("TELESCOPE", "OBSERVATORY"): ("telescope", "out"),
-        ("TREE_ROOTS", "TREE"): ("tree_roots", "up"), ("NATURE_HUB", "WATERFALL"): ("nature_hub", "to_waterfall")}
+        ("TREE_ROOTS", "TREE"): ("tree_roots", "up"), ("TREE_ROOTS", "NATURE_HUB"): ("tree_roots", "down"), ("NATURE_HUB", "WATERFALL"): ("nature_hub", "to_waterfall")}
 
 
 def hand(here, nxt):
