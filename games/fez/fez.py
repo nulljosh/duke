@@ -66,7 +66,8 @@ _server = None
 def edge(name, down):
     """Press or release one key through a long-lived key process (separate processes do not hold a key)."""
     global _server
-    if _server is None or _server.poll() is not None:
+    if _server is None or _server.poll() is not None or _server.args[1] != pid():   # a restarted FEZ has a new pid: the old server types into nothing
+        if _server is not None and _server.poll() is None: _server.kill()
         _server = subprocess.Popen([str(HERE / "key"), pid(), "serve"], stdin=subprocess.PIPE, text=True)
     _server.stdin.write(f"{'d' if down else 'u'} {CODES[name]}\n"); _server.stdin.flush()
 
@@ -148,6 +149,7 @@ def picker_slot():
 def start(slot=3):
     keep = {p: (p.read_bytes(), p.stat().st_mtime) for p in SAVES.glob("SaveSlot[01]")}   # Joshua's slots, restored on a misstep
     mine = SAVES / f"SaveSlot{slot - 1}"; mine.touch()   # the picker opens on the newest save, so make ours the newest
+    ours = mine.read_bytes()   # a stray Enter on the menu once started a new game over it (2026-10-26): restored below if so
     if not subprocess.run(["pgrep", "-x", "HAT.bin.osx"], capture_output=True).stdout:
         subprocess.run(["open", "-g", "/Volumes/LaCie/Steam/steamapps/common/FEZ/FEZ.app"])
         for _ in range(45):   # the LaCie is a spinning disk: launch can take well over 30 s
@@ -171,6 +173,9 @@ def start(slot=3):
                 subprocess.run(["pkill", "-x", "HAT.bin.osx"]); time.sleep(2)
                 for p, (b, m) in keep.items(): p.write_bytes(b); os.utime(p, (m, m))
                 sys.exit(f"loaded slot {s.get('slot', '?')}, wanted {slot - 1}; quit")
+            if s.get("level") == "GOMEZ_HOUSE_2D" and s.get("cubes", 0) + s.get("anti", 0) == 0:   # a new game, not ours
+                subprocess.run(["pkill", "-x", "HAT.bin.osx"]); time.sleep(2); mine.write_bytes(ours)
+                sys.exit("start opened a new game; killed FEZ and put the save back")
             return s
 
 
@@ -184,16 +189,31 @@ def code(pattern):
     time.sleep(2); return state()
 
 
+def snapshot():
+    """Copy slot 3 aside, named by its counts, after every cube: a menu slip once overwrote it (2026-10-26)."""
+    time.sleep(3); s = state()   # FEZ writes the save a moment after the pickup
+    p = HERE / ".save-backup" / f"SaveSlot2.{s['cubes']}g{s['anti']}a{s['bits']}b"
+    if not p.exists(): p.write_bytes((SAVES / "SaveSlot2").read_bytes()); print("saved copy", p.name, flush=True)
+
+
 def responsive():
     """FEZ sometimes stops taking movement keys while the console key still works (twice on 2026-10-26).
     Nudge left and right: if Gomez can stand and nothing moves him, input is dead."""
+    t0 = state()["t"]; time.sleep(0.5)
+    if state()["t"] == t0: return True   # bridge clock frozen: menu, loading or a stall, never a reason to restart
     a = state(); key("left", 250); time.sleep(0.2); b = state(); key("right", 250); time.sleep(0.2); c = state()
     return not (a["grounded"] and a["pos"] == b["pos"] == c["pos"])
 
 
+_revived = 0
+
+
 def revive():
     """Restart FEZ when it has stopped taking input. Progress since the last door is lost."""
+    global _revived
     if responsive(): return state()
+    if _revived >= 1: sys.exit("FEZ stopped taking input again after a restart: stopping, not looping restarts")
+    _revived += 1
     print("FEZ stopped taking input: restarting", flush=True)
     subprocess.run(["pkill", "-x", "HAT.bin.osx"]); time.sleep(4); return start()
 

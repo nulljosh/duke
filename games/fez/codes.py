@@ -27,3 +27,4 @@ for room in sys.argv[1:]:
     before = s["anti"]; s = fez.code(v["ActorSettings"]["CodePattern"])
     if s["items"]: go.collect(); s = fez.state()
     print(room, "anti", before, "->", s["anti"], flush=True)
+    if s["anti"] > before: fez.snapshot()

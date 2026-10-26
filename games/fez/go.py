@@ -212,9 +212,6 @@ def go(goal, goal_view=None, tries=14, item=None):
             plan.BANNED -= {b for b in plan.BANNED if b[0] == s["level"]}; plan.BANS.write_text("".join(repr(b) + "\n" for b in plan.BANNED))
             print("no path with bans: cleared this level's bans", flush=True); continue
         if p is None:
-            if any(h["on"] for h in s.get("holes", [])) and attempt < tries - 1:   # black holes re-roll on every level load
-                print("no path while black holes are on: restarting FEZ to re-roll them", flush=True)
-                subprocess.run(["pkill", "-x", "HAT.bin.osx"]); time.sleep(2); fez.start(); continue
             print("no path from", node(s), "to", goal); return None
         first = plan.compress(p)[0][0] if p else ""
         if "Climb" in s["action"] and first not in ("climb", "release", "vinejump") and not first.startswith("turn"):
@@ -277,7 +274,7 @@ def collect():
         hi, hs, _, _ = fezmap.VIEWS[s["view"]]
         fez.walk((it["pos"][hi] + 0.5) * hs + (0, 0.3, -0.3, 0)[i], tol=0.1)   # stand right under it: a jump off-centre can miss
         fez.key("space", 300); time.sleep(1.2); s = fez.state()
-        if (s["cubes"], s["anti"], s["bits"]) != before: print("collected!", s["cubes"], s["anti"], s["bits"]); return s
+        if (s["cubes"], s["anti"], s["bits"]) != before: print("collected!", s["cubes"], s["anti"], s["bits"]); fez.snapshot(); return s
     return s
 
 
