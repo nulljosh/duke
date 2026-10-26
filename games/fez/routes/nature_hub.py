@@ -34,6 +34,7 @@ def reroll_holes(tries=6):
 
 
 def to_waterfall():
+    if any(h["on"] for h in fez.state()["holes"]) and reroll_holes(8) is None: return None   # holes wall the route off
     if go.go((2, 19), "Left") is None: return None
     s = go.turn_to("Back")
     if s["view"] != "Back": return None
