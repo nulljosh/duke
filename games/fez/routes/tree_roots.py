@@ -23,6 +23,13 @@ def down():
     there. The plank ends short of the vine, so walking on in the Right view falls to the y35 floor and dies.
     Black holes sit over the vine top when they roll on: nature_hub.reroll_holes() from the door first."""
     go.turn_to("Back"); fez.walk(-16.6, tol=0.15)
+    fez.edge("up", True); fez.edge("left", True); t0 = time.time()   # step off the plank's end holding Up: the vine is right under it
+    while time.time() - t0 < 2:
+        s = fez.state()
+        if not s["grounded"]: fez.edge("left", False)
+        if "Climb" in s["action"] or not s["grounded"] and s["pos"][1] < 38: break
+        time.sleep(0.02)
+    fez.edge("up", False); fez.edge("left", False)
     return go.go((-16, 42), "Right", tries=4)
 
 
