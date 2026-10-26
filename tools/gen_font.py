@@ -1,12 +1,12 @@
-"""Surf Sans: Inter (Rasmus Andersson, SIL Open Font License 1.1, no reserved name), renamed, with its curly
+"""Duke Sans: Inter (Rasmus Andersson, SIL Open Font License 1.1, no reserved name), renamed, with its curly
 quote marks redrawn as curling wave crests, so every quote on the page wears the mark.
 Inter is drawn in the spirit of San Francisco and Helvetica: open shapes, even proportional spacing, built for screens.
 
-Same method as Surf Sans, coda's Quip Sans and turing's Samantha Sans: pinned release, renamed, OFL shipped beside the fonts,
+Same method as Duke Sans, coda's Quip Sans and turing's Samantha Sans: pinned release, renamed, OFL shipped beside the fonts,
 original copyright kept in the name table, fixed timestamps so every build is the same bytes.
 
-    python3 tools/gen_font.py              # writes fonts/SurfSans-{Regular,Medium,Semibold,Bold}.{ttf,woff2} + OFL.txt
-    python3 tools/gen_font.py --check      # named Surf Sans, OFL present, original copyright kept
+    python3 tools/gen_font.py              # writes fonts/DukeSans-{Regular,Medium,Semibold,Bold}.{ttf,woff2} + OFL.txt
+    python3 tools/gen_font.py --check      # named Duke Sans, OFL present, original copyright kept
 Needs fonttools and brotli (uv run --with fonttools --with brotli).
 """
 import io
@@ -78,16 +78,16 @@ def redraw_quotes(font):
 
 
 def rename(font, style):
-    """Give the outlines the Surf Sans name; copyright (0) and license (13, 14) stay as the authors wrote them."""
-    names = {1: "Surf Sans", 2: style, 3: f"SurfSans-{style}", 4: f"Surf Sans {style}", 5: "Version 1.000",
-             6: f"SurfSans-{style}", 16: "Surf Sans", 17: style}
+    """Give the outlines the Duke Sans name; copyright (0) and license (13, 14) stay as the authors wrote them."""
+    names = {1: "Duke Sans", 2: style, 3: f"DukeSans-{style}", 4: f"Duke Sans {style}", 5: "Version 1.000",
+             6: f"DukeSans-{style}", 16: "Duke Sans", 17: style}
     table = font["name"]
     table.names = [n for n in table.names if n.nameID in (0, 13, 14)]
     for nid, text in names.items():
         table.setName(text, nid, 3, 1, 0x409)
         table.setName(text, nid, 1, 0, 0)
     font["head"].created = font["head"].modified = 3_700_000_000
-    font["OS/2"].achVendID = "SURF"
+    font["OS/2"].achVendID = "DUKE"
 
 
 def check():
@@ -95,9 +95,9 @@ def check():
     assert os.path.exists(os.path.join(OUT, "OFL.txt")), "the OFL must ship with the fonts"
     for style in WEIGHTS:
         for ext in ("ttf", "woff2"):
-            f = TTFont(os.path.join(OUT, f"SurfSans-{style}.{ext}"))
-            assert f["name"].getDebugName(1) == "Surf Sans", "family name"
-            assert f["name"].getDebugName(6) == f"SurfSans-{style}", "postscript name"
+            f = TTFont(os.path.join(OUT, f"DukeSans-{style}.{ext}"))
+            assert f["name"].getDebugName(1) == "Duke Sans", "family name"
+            assert f["name"].getDebugName(6) == f"DukeSans-{style}", "postscript name"
             assert f["name"].getDebugName(0), "the original copyright must stay in the name table"
             cmap, hmtx, glyf = f.getBestCmap(), f["hmtx"], f["glyf"]
             for cp in (0x2C, 0x3B, 0x201A, 0x201E):   # comma, semicolon and low quotes stay commas
@@ -107,7 +107,7 @@ def check():
                 g = glyf[cmap[cp]]
                 assert g.numberOfContours == n, f"U+{cp:04X} is not the crest"
                 assert 0 <= g.xMin and g.xMax <= hmtx[cmap[cp]][0], f"U+{cp:04X} spills out of its advance"
-    print(f"font ok: Surf Sans (Inter, OFL), {len(WEIGHTS)} weights, quotes are wave crests")
+    print(f"font ok: Duke Sans (Inter, OFL), {len(WEIGHTS)} weights, quotes are wave crests")
 
 
 def main():
@@ -122,8 +122,8 @@ def main():
         rename(font, style)
         for ext, flavor in (("ttf", None), ("woff2", "woff2")):
             font.flavor = flavor
-            font.save(os.path.join(OUT, f"SurfSans-{style}.{ext}"), reorderTables=False)
-        print(f"SurfSans-{style}: Inter {weight}")
+            font.save(os.path.join(OUT, f"DukeSans-{style}.{ext}"), reorderTables=False)
+        print(f"DukeSans-{style}: Inter {weight}")
 
 
 if __name__ == "__main__":

@@ -10,12 +10,12 @@ struct GoalRing: View {
     var body: some View {
         let p = goal > 0 ? min(1, Double(today) / Double(goal)) : 0
         ZStack {
-            Circle().stroke(Color.surf.opacity(0.2), lineWidth: size / 8)
+            Circle().stroke(Color.duke.opacity(0.2), lineWidth: size / 8)
             Circle().trim(from: 0, to: p)
-                .stroke(Color.surf, style: StrokeStyle(lineWidth: size / 8, lineCap: .round))
+                .stroke(Color.duke, style: StrokeStyle(lineWidth: size / 8, lineCap: .round))
                 .rotationEffect(.degrees(-90))
             if p >= 1 {   // ponytail: no percent inside, at 24pt it read as a second XP number
-                Image(systemName: "checkmark").font(.system(size: size * 0.38, weight: .bold)).foregroundStyle(Color.surf)
+                Image(systemName: "checkmark").font(.system(size: size * 0.38, weight: .bold)).foregroundStyle(Color.duke)
             }
         }
         .frame(width: size, height: size)

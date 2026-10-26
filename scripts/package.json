@@ -1,7 +1,7 @@
 {
   "name": "scripts",
   "version": "2.2.0",
-  "description": "surf: one Playwright runner for every Duolingo track",
+  "description": "duke: one Playwright runner for every Duolingo track",
   "main": "run.mjs",
   "scripts": {
     "test": "node --test solver.test.mjs stockfish.test.mjs"

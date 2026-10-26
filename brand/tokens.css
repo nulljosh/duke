@@ -1,10 +1,10 @@
-/* Surf design system. One source for the landing (copied to web/ by deploy.sh) and the values the app mirrors in RunState.swift.
+/* Duke design system. One source for the landing (copied to web/ by deploy.sh) and the values the app mirrors in RunState.swift.
    One colour: clrs.cc Blue, fading to clrs.cc Navy in the icon like deep water. Dark mode is the deep blue of a FEZ night, the sea after dark.
-   Type: Surf Sans (Inter, OFL, quotes redrawn as wave crests). 8 point grid, one radius set, 48 point capsule controls. */
-@font-face { font-family: "Surf Sans"; src: url("fonts/SurfSans-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-@font-face { font-family: "Surf Sans"; src: url("fonts/SurfSans-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
-@font-face { font-family: "Surf Sans"; src: url("fonts/SurfSans-Semibold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
-@font-face { font-family: "Surf Sans"; src: url("fonts/SurfSans-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+   Type: Duke Sans (Inter, OFL, quotes redrawn as wave crests). 8 point grid, one radius set, 48 point capsule controls. */
+@font-face { font-family: "Duke Sans"; src: url("fonts/DukeSans-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Duke Sans"; src: url("fonts/DukeSans-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Duke Sans"; src: url("fonts/DukeSans-Semibold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Duke Sans"; src: url("fonts/DukeSans-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 
 :root {
   /* colour */
@@ -25,7 +25,7 @@
   --sub: rgba(29, 29, 31, .6);
 
   /* type */
-  --font: "Surf Sans", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font: "Duke Sans", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --size-display: 34px;       /* 41 line */
   --size-title: 22px;         /* 28 line */
   --size-body: 17px;          /* 24 line */

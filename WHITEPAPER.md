@@ -1,14 +1,14 @@
-# Surf Technical Whitepaper
+# Duke Technical Whitepaper
 
 **v2.2.0** | October 2026
 
-Surf is a personal Duolingo autopilot. It plays language, math and chess courses in a real Chromium window, reading answers out of the client's own grader instead of guessing. One Node runner does the playing. A native status app on every platform shows what it is doing, and a menu bar app on the Mac keeps it alive.
+Duke is a personal Duolingo autopilot. It plays language, math and chess courses in a real Chromium window, reading answers out of the client's own grader instead of guessing. One Node runner does the playing. A native status app on every platform shows what it is doing, and a menu bar app on the Mac keeps it alive.
 
 ## Reading the answer key
 
 Duolingo draws each exercise from a React component, and that component still holds the answer. `chal()` walks up the fiber tree from the visible widget until it finds `memoizedProps.challenge`, the same object the grader reads. That object is the one place the answer can't be wrong.
 
-Chess puzzles carry their solution too. Surf reads `moveEvaluationsForPositions`, keyed by the live board, because `correctMoves` mixes steps with alternatives. The board is a Rive canvas, so every move is a real held mouse click about 550 ms apart. Faster clicks get dropped.
+Chess puzzles carry their solution too. Duke reads `moveEvaluationsForPositions`, keyed by the live board, because `correctMoves` mixes steps with alternatives. The board is a Rive canvas, so every move is a real held mouse click about 550 ms apart. Faster clicks get dropped.
 
 ## By course
 
@@ -26,7 +26,7 @@ It runs for weeks. A lesson that loops gets escaped, the runner pauses when the 
 
 ## Staying up
 
-A LaunchAgent keeps the menu bar app running from `~/Applications/Surf.app`, outside any build folder a disk cleanup might wipe. The app starts the runner, restarts it after a crash, and pings port 8737 every minute in case it died quietly. A second runner started by mistake exits on its own when the port is taken.
+A LaunchAgent keeps the menu bar app running from `~/Applications/Duke.app`, outside any build folder a disk cleanup might wipe. The app starts the runner, restarts it after a crash, and pings port 8737 every minute in case it died quietly. A second runner started by mistake exits on its own when the port is taken.
 
 ## Clients
 
@@ -34,6 +34,6 @@ SwiftUI on macOS, iOS and watchOS, Compose Multiplatform on Android, Windows and
 
 ## Ethics
 
-Automated play is against Duolingo's terms, and the XP still ranks against real people. Surf is for one account and for reading, not for distribution.
+Automated play is against Duolingo's terms, and the XP still ranks against real people. Duke is for one account and for reading, not for distribution.
 
 Apache 2.0, 2026 Joshua Trommel

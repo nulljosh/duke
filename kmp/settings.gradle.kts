@@ -1,4 +1,4 @@
-rootProject.name = "surf"
+rootProject.name = "duke"
 
 pluginManagement {
     repositories {

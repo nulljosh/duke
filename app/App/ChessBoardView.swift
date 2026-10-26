@@ -180,7 +180,7 @@ struct ChessBoardView: View {
 // ponytail: assert-based self-check for the pure FEN logic, run once at debug
 // launch — this app has no XCTest target, and adding one for three functions
 // isn't worth the scaffolding. `swift App/ChessBoardView.swift` also runs this
-// standalone if SurfStatusApp.swift's @main is temporarily commented out.
+// standalone if DukeStatusApp.swift's @main is temporarily commented out.
 func chessBoardSelfCheck() {
     // startpos parses to 8x8, back ranks placed, pawn ranks placed, middle empty
     let start = parseBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")

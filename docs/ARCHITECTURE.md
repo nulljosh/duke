@@ -1,6 +1,6 @@
 # Architecture
 
-![Surf architecture](../architecture.svg)
+![Duke architecture](../architecture.svg)
 
 One Node runner plays Duolingo in its own Chromium window. A menu bar app keeps the runner alive. Every client reads the runner's port.
 
@@ -24,10 +24,10 @@ The runner serves its state on port 8737 and takes `POST /switch`, `/pause` and 
 | `app/` | SwiftUI status app for macOS, iOS and watchOS (xcodegen) |
 | `app/App/SolverProcess.swift` | Starts the runner and the tunnel, restarts both when they go quiet |
 | `kmp/` | Compose Multiplatform client for Android, Windows and Linux |
-| `tui/` | `surf-tui`, a one-shot terminal status card |
+| `tui/` | `duke-tui`, a one-shot terminal status card |
 | `functions/api/live.js` | Edge-cached live state for the landing |
 | `web/` | The landing at surf.jaybulb.com |
-| `brand/` | Design system: tokens, mark, icon, Surf Sans notes |
+| `brand/` | Design system: tokens, mark, icon, Duke Sans notes |
 
 ## Build and test
 
@@ -37,4 +37,4 @@ node --test scripts/*.test.mjs
 sh deploy.sh                      # landing: copies tokens and fonts, deploys Pages
 ```
 
-The menu bar app's rebuild steps are in `CLAUDE.md`. It must be copied to `~/Applications/Surf.app`, where the LaunchAgent runs it.
+The menu bar app's rebuild steps are in `CLAUDE.md`. It must be copied to `~/Applications/Duke.app`, where the LaunchAgent runs it.

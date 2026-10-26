@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Draw the Surf and FEZ wallpapers into brand/wallpapers/ (desktop 5120x2880, phone 1320x2868).
+"""Draw the Duke and FEZ wallpapers into brand/wallpapers/ (desktop 5120x2880, phone 1320x2868).
   python3 tools/wallpapers.py
 FEZ is original pixel art in the game's spirit (no sprites from the install): a floating island at night,
-the golden cube and its eight bits, ordered-dithered with scanlines and grain. Surf is dressed like the Hermes landing
+the golden cube and its eight bits, ordered-dithered with scanlines and grain. Duke is dressed like the Hermes landing
 (after Nous Research): Neptune's Horses in scanlines on the band, grain, a thin frame, tiny caps and the games it plays."""
 import io, math, re, subprocess
 from pathlib import Path
@@ -15,7 +15,7 @@ OUT = ROOT / "brand" / "wallpapers"
 from fezart import SIZES, dither, fez, hexc   # noqa: E402  the FEZ art lives in its own file
 
 
-# ---------- Surf: the brand tile, Neptune's Horses and one glyph per game ----------
+# ---------- Duke: the brand tile, Neptune's Horses and one glyph per game ----------
 
 def gear(cx, cy, r, teeth=8):
     pts = []
@@ -57,7 +57,7 @@ def svg_png(body, w, h):
 
 
 def caps(d, xy, text, size, fill, track=.22):
-    f = ImageFont.truetype(str(FONTS / "SurfSans-Medium.ttf"), size); x, y = xy
+    f = ImageFont.truetype(str(FONTS / "DukeSans-Medium.ttf"), size); x, y = xy
     for ch in text:   # tiny caps with wide tracking, the Nous label
         d.text((x, y), ch, font=f, fill=fill); x += f.getlength(ch) + size * track
     return x
@@ -102,7 +102,7 @@ def place(img, mask, box, tint, alpha, period):
     t = Image.new("RGBA", (W, H), tint + (0,)); t.putalpha(layer); img.alpha_composite(t)
 
 
-def surf(kind):
+def duke(kind):
     """Dressed like the Hermes landing (after Nous Research): the band blue, Hokusai's Great Wave and Duke Kahanamoku
     with his board as dot masks in scanlines, film grain, a thin frame, tiny caps, a giant wordmark and the games."""
     W, H = SIZES[kind]; desk = kind == "desktop"
@@ -124,8 +124,8 @@ def surf(kind):
     img.alpha_composite(svg_png(f'<g transform="scale({mk / 1024})">{mark()}</g>', mk, mk), (x0 - mk // 10, top))
     y = top + mk + small * 2
     caps(d, (x0, y), "PLAYS WHILE YOU SLEEP", small, SUB + (255,))
-    f = ImageFont.truetype(str(FONTS / "SurfSans-Bold.ttf"), big)
-    d.text((x0 - big * .05, y + small * 1.2), "Surf", font=f, fill=(255, 255, 255, 255))
+    f = ImageFont.truetype(str(FONTS / "DukeSans-Bold.ttf"), big)
+    d.text((x0 - big * .05, y + small * 1.2), "Duke", font=f, fill=(255, 255, 255, 255))
     y += small * 1.2 + big * 1.12
     caps(d, (x0, y), "DUOLINGO  FACTORIO  GAME DEV TYCOON  FEZ", small, SUB + (230,))
     row = "".join(f'<g transform="translate({n * g * 1.7} 0) scale({g / 100})" fill="#fff">{GLYPHS[k]}</g>' for n, k in enumerate(GLYPHS))
@@ -140,5 +140,5 @@ if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     for kind in SIZES:
         fez(kind).save(OUT / f"fez-{kind}.png", optimize=True)
-        surf(kind).save(OUT / f"surf-{kind}.png", optimize=True)
+        duke(kind).save(OUT / f"duke-{kind}.png", optimize=True)
     print("\n".join(str(p) for p in sorted(OUT.glob("*.png"))))

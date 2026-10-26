@@ -24,7 +24,7 @@
 		<true/>
 	</dict>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Reads live puzzle progress from the Surf autopilot running on your Mac.</string>
+	<string>Reads live puzzle progress from the Duke autopilot running on your Mac.</string>
 	<key>UILaunchScreen</key>
 	<dict/>
 </dict>

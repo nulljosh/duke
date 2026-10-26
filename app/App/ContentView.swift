@@ -135,7 +135,7 @@ struct ContentView: View {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         Capsule().fill(Color.black.opacity(0.15))
-                        Capsule().fill(Color.surf).frame(width: geo.size.width * progress)
+                        Capsule().fill(Color.duke).frame(width: geo.size.width * progress)
                     }
                 }
                 .frame(height: 4)
@@ -153,7 +153,7 @@ struct ContentView: View {
                 Spacer()
                 if let xp0 = s.xp0, let xp = s.xp {
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text("+\(xp - xp0) XP").font(.title2.monospacedDigit().bold()).foregroundStyle(Color.surf)
+                        Text("+\(xp - xp0) XP").font(.title2.monospacedDigit().bold()).foregroundStyle(Color.duke)
                         if let rate = xpPerMinute(s, gained: xp - xp0) {
                             Text("\(rate, specifier: "%.1f") XP/min").font(.caption2).foregroundStyle(.secondary)
                         }
@@ -173,7 +173,7 @@ struct ContentView: View {
                         HStack(spacing: 4) { GoalRing(today: today, goal: goal, size: 18); Text("\(goal)") }
                     } else {
                         Label("\(goal)", systemImage: s.xpGoalMetToday == true ? "checkmark.circle.fill" : "target")
-                            .foregroundStyle(s.xpGoalMetToday == true ? Color.surf : .secondary)
+                            .foregroundStyle(s.xpGoalMetToday == true ? Color.duke : .secondary)
                     }
                 }
                 Spacer()
@@ -226,7 +226,7 @@ struct ContentView: View {
     }
 
     private func xpPerMinute(_ s: RunState, gained: Int) -> Double? {
-        guard let start = surfDateFormatter.date(from: s.started) else { return nil }
+        guard let start = dukeDateFormatter.date(from: s.started) else { return nil }
         let mins = Date().timeIntervalSince(start) / 60
         guard mins > 1, gained > 0 else { return nil }
         return Double(gained) / mins

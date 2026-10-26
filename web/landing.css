@@ -1,4 +1,4 @@
-/* Surf landing, after Hermes and the Apple rules. Colour, type, space and radii come from tokens.css (brand/, copied
+/* Duke landing, after Hermes and the Apple rules. Colour, type, space and radii come from tokens.css (brand/, copied
    in by deploy.sh). This file only adds the page: the grain band, Walter Crane's Neptune's Horses (1892, public domain)
    as a halftone mask, and the demo's own colours. */
 :root {

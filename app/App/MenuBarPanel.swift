@@ -37,7 +37,7 @@ struct MenuBarLabel: View {
                     .animation(.snappy, value: n)
             } else {
                 Image(systemName: "gamecontroller")
-                    .accessibilityLabel("Surf")
+                    .accessibilityLabel("Duke")
             }
         }
         .task { poller.start() }
@@ -100,7 +100,7 @@ struct MenuBarPanel: View {
 
                 HStack {
                     if let u = s.username {
-                        Text(u).font(.surf(.caption)).foregroundStyle(.secondary)
+                        Text(u).font(.duke(.caption)).foregroundStyle(.secondary)
                     }
                     Spacer()
                     // Today's gain, not the session's: xp0 resets on every
@@ -108,12 +108,12 @@ struct MenuBarPanel: View {
                     if let today = s.xpToday {
                         if let goal = s.xpGoal { GoalRing(today: today, goal: goal, size: 24) }
                         Text("+\(today) XP today")
-                            .font(.surf(.title3, .bold).monospacedDigit())
-                            .foregroundStyle(Color.surf)
+                            .font(.duke(.title3, .bold).monospacedDigit())
+                            .foregroundStyle(Color.duke)
                     } else if let xp0 = s.xp0, let xp = s.xp {
                         Text("+\(xp - xp0) XP")
-                            .font(.surf(.title3, .bold).monospacedDigit())
-                            .foregroundStyle(Color.surf)
+                            .font(.duke(.title3, .bold).monospacedDigit())
+                            .foregroundStyle(Color.duke)
                     }
                 }
 
@@ -126,7 +126,7 @@ struct MenuBarPanel: View {
                     }
                     if let streak = s.streak { Text("\(streak) day streak") }
                 }
-                .font(.surf(.caption))
+                .font(.duke(.caption))
                 .foregroundStyle(.secondary)
 
                 HStack(spacing: 4) {
@@ -135,7 +135,7 @@ struct MenuBarPanel: View {
                         Text("· \(rate, specifier: "%.0f")/hr")
                     }
                 }
-                .font(.surf(.caption2))
+                .font(.duke(.caption2))
                 .foregroundStyle(.secondary)
 
                 // Two different things, deliberately not merged: the bar is the
@@ -144,7 +144,7 @@ struct MenuBarPanel: View {
                     if let step = s.puzzleStep, let total = s.puzzleTotal, total > 0 {
                         progressBar(min(1, max(0, Double(step) / Double(total))))
                         Text("Move \(min(step + 1, total)) of \(total) in this puzzle")
-                            .font(.surf(.caption2)).foregroundStyle(.secondary)
+                            .font(.duke(.caption2)).foregroundStyle(.secondary)
                     } else if let p = s.progress {
                         // Nothing in flight — fall back to the course bar so the row isn't dead.
                         progressBar(min(1, max(0, p.pct / 100)))
@@ -154,7 +154,7 @@ struct MenuBarPanel: View {
                         // The countdown is about finishing the ENTIRE track, not
                         // the current puzzle — say so in words, don't make it guessable.
                         Text(courseCountdown(p, track: s.track))
-                            .font(.surf(.caption2))
+                            .font(.duke(.caption2))
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -162,7 +162,7 @@ struct MenuBarPanel: View {
 
                 if poller.stale {
                     Label("No update in 90s+", systemImage: "exclamationmark.triangle.fill")
-                        .font(.surf(.caption)).foregroundStyle(.red)
+                        .font(.duke(.caption)).foregroundStyle(.red)
                 }
 
                 Divider()
@@ -225,7 +225,7 @@ struct MenuBarPanel: View {
         GeometryReader { geo in
             ZStack(alignment: .leading) {
                 Capsule().fill(Color.primary.opacity(0.12))
-                Capsule().fill(Color.surf).frame(width: geo.size.width * fraction)
+                Capsule().fill(Color.duke).frame(width: geo.size.width * fraction)
             }
         }
         .frame(height: 4)

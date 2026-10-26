@@ -2,11 +2,11 @@
 
 [![version](https://img.shields.io/badge/version-2.2.0-0074D9)](WHITEPAPER.md) [![Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-001F3F)](LICENSE)
 
-Surf plays Duolingo for you. Languages, math and chess, around the clock, in a real browser. Formerly Cruise.
+Duke plays Duolingo for you. Languages, math and chess, around the clock, in a real browser. Formerly Cruise.
 
 **Live:** https://surf.jaybulb.com
 
-It reads each question's answer out of the page's own React state and clicks it. Math has no answer on the page, so Surf solves those itself. Nothing is guessed. A shape it has never seen gets logged and skipped.
+It reads each question's answer out of the page's own React state and clicks it. Math has no answer on the page, so Duke solves those itself. Nothing is guessed. A shape it has never seen gets logged and skipped.
 
 Automating Duolingo is against their terms and can get an account banned. This is a personal study, not a product.
 
@@ -33,7 +33,7 @@ Progress lands in `state.json`, events in `log.jsonl`. Port 8737 serves the live
 
 ## Starts at login
 
-The menu bar app lives at `~/Applications/Surf.app`, and a LaunchAgent keeps it running. The app starts the runner, and starts it again whenever port 8737 stops answering. Build steps are in [CLAUDE.md](CLAUDE.md).
+The menu bar app lives at `~/Applications/Duke.app`, and a LaunchAgent keeps it running. The app starts the runner, and starts it again whenever port 8737 stops answering. Build steps are in [CLAUDE.md](CLAUDE.md).
 
 ## Architecture
 

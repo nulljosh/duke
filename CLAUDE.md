@@ -5,7 +5,7 @@
 The menu bar app doesn't hot-reload — a source edit does nothing until a new
 binary replaces the running one. A LaunchAgent
 (`~/Library/LaunchAgents/com.nulljosh.cruise-status.plist`, RunAtLoad +
-KeepAlive) keeps it running from `~/Applications/Surf.app`, a copy outside
+KeepAlive) keeps it running from `~/Applications/Duke.app`, a copy outside
 `app/build` because disk cleanups wipe build dirs and the login agent then
 points at nothing (that is how the runner died on 2026-10-22). Never launch
 a copy from anywhere else, or you get two copies fighting for the same menu
@@ -13,24 +13,24 @@ bar slot. After editing anything under `app/App/`:
 
 ```bash
 cd app && xcodegen generate
-xcodebuild -scheme SurfStatus-macOS -configuration Debug \
+xcodebuild -scheme DukeStatus-macOS -configuration Debug \
   -derivedDataPath build build
-ditto build/Build/Products/Debug/Surf.app ~/Applications/.Surf-new.app
-mv ~/Applications/Surf.app ~/Applications/.Surf-old.app && mv ~/Applications/.Surf-new.app ~/Applications/Surf.app
-/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f ~/Applications/Surf.app
+ditto build/Build/Products/Debug/Duke.app ~/Applications/.Duke-new.app
+mv ~/Applications/Duke.app ~/Applications/.Duke-old.app && mv ~/Applications/.Duke-new.app ~/Applications/Duke.app
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f ~/Applications/Duke.app
 launchctl kickstart -k gui/$(id -u)/com.nulljosh.cruise-status
-rm -rf ~/Applications/.Surf-old.app
+rm -rf ~/Applications/.Duke-old.app
 ```
 
 Swap, register, kickstart. Copying over the running bundle, or `killall` right
 after a swap, gets the first relaunch SIGKILLed ("Launch Constraint
-Violation") and puts a "Surf quit unexpectedly" dialog on Joshua's screen
+Violation") and puts a "Duke quit unexpectedly" dialog on Joshua's screen
 (2026-10-25). The Mac target signs with Developer ID, not ad-hoc, so macOS
 keeps one identity across rebuilds and doesn't re-ask for Documents access.
 
 Don't `open` the built .app yourself — that spawns a second, launchd-blind
 process. Just kill the running one; the agent restarts it. Verify exactly
-one is running after: `pgrep -fl "Surf.app/Contents/MacOS/Surf"`
+one is running after: `pgrep -fl "Duke.app/Contents/MacOS/Duke"`
 should print one line.
 
 Do this automatically at the end of a Swift-editing turn — don't wait to be
@@ -168,15 +168,15 @@ no separate reload step needed (edit the file, Ctrl-C, rerun).
 
 ## Recovery checkpoint (2026-09-18)
 
-Romanized word-bank tiles must use their `*-challenge-tap-token` label, not innerText. The runner now bounds repeated challenge attempts across feedback screens and counts lessons only when XP rises. All 52 tests pass; changes pushed. Sustained live XP recovery still needs confirmation. A profile backup is at `/tmp/surf-profile-backup-20260918`.
+Romanized word-bank tiles must use their `*-challenge-tap-token` label, not innerText. The runner now bounds repeated challenge attempts across feedback screens and counts lessons only when XP rises. All 52 tests pass; changes pushed. Sustained live XP recovery still needs confirmation. A profile backup is at `/tmp/duke-profile-backup-20260918`.
 
 ## The loop
 
-The live `/loop` (QA of the Surf landing and menu bar app, Jony Ive pass, repeat to A+) is handed off in `docs/LOOP-HANDOFF.md`. Read it before resuming, and keep its restart prompt current.
+The live `/loop` (QA of the Duke landing and menu bar app, Jony Ive pass, repeat to A+) is handed off in `docs/LOOP-HANDOFF.md`. Read it before resuming, and keep its restart prompt current.
 
 ## Games (merged 2026-10-25)
 
-Surf is the one autopilot for games and software. Duolingo lives in `scripts/` and `app/`. Conveyer was folded in on 2026-10-25 as a clean copy (its history stays in the archived `nulljosh/conveyer`): `games/factorio/` (Factorio via FLE, its own CLAUDE.md and docs/LOOP-HANDOFF.md still apply), `games/gdt/` (Game Dev Tycoon bridge mod and driver), `games/fez/`. Ignored local state (`.env`, `.fle`, `models`, `.gdt-save-backup`, `runs`) moved with them and stays gitignored.
+Duke is the one autopilot for games and software. Duolingo lives in `scripts/` and `app/`. Conveyer was folded in on 2026-10-25 as a clean copy (its history stays in the archived `nulljosh/conveyer`): `games/factorio/` (Factorio via FLE, its own CLAUDE.md and docs/LOOP-HANDOFF.md still apply), `games/gdt/` (Game Dev Tycoon bridge mod and driver), `games/fez/`. Ignored local state (`.env`, `.fle`, `models`, `.gdt-save-backup`, `runs`) moved with them and stays gitignored.
 
 Hard rules that came along:
 - Never touch Game Dev Tycoon save slot 3, it is Joshua's real 2014 save. Our studio plays in slot 5.

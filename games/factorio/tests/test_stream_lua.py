@@ -26,7 +26,7 @@ local function inv(counts) return {get_item_count=function(n) return counts[n] o
 local function ent(t) t.valid=true local c=t.counts or {} t.get_inventory=function(i) return inv(c) end return t end
 local char=ent{name='character',type='character',position={x=1.5,y=-2.25}}
 local silo=ent{name='rocket-silo',position={x=-64.5,y=10.5},rocket_parts=42,status=1,rocket_silo_status=3}
-local surf={find_entities_filtered=function(f)
+local duke={find_entities_filtered=function(f)
   if f.type=='character' then return CHARS end
   if f.name=='rocket-silo' then return SILOS end
   if f.name=='rocket-silo-rocket' then return {} end
@@ -36,7 +36,7 @@ local surf={find_entities_filtered=function(f)
   if f.type=='container' then return {ent{counts={coal=5,['iron-plate']=2}},ent{counts={coal=1}}} end
   return {ent{position={x=1,y=2},status=MS[1]},ent{position={x=3,y=4},status=MS[2]},ent{position={x=5,y=6},status=MS[3]}}
 end}
-game={surfaces={surf},tick=1234,forces={player={rockets_launched=2}}}
+game={surfaces={duke},tick=1234,forces={player={rockets_launched=2}}}
 rcon={print=function(s) io.write(s) end}
 """
 

@@ -1,8 +1,8 @@
-# Contributing to Surf
+# Contributing to Duke
 
 ```sh
-git clone https://github.com/nulljosh/surf.git
-cd surf/scripts && npm install
+git clone https://github.com/nulljosh/duke.git
+cd duke/scripts && npm install
 node --test *.test.mjs
 ```
 

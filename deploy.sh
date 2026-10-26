@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copy the design system and Surf Sans into the landing, then deploy the Pages project (functions/ rides along).
+# Copy the design system and Duke Sans into the landing, then deploy the Pages project (functions/ rides along).
 set -e
 cd "$(dirname "$0")"
 mkdir -p web/fonts

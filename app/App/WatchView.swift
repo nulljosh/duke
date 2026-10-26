@@ -19,12 +19,12 @@ struct WatchView: View {
                                     GoalRing(today: today, goal: goal, size: 32)
                                     Text("+\(today) XP")
                                         .font(.system(.title2, design: .rounded).bold())
-                                        .foregroundStyle(Color.surf)
+                                        .foregroundStyle(Color.duke)
                                 }
                             } else if let xp0 = s.xp0, let xp = s.xp {
                                 Text("+\(xp - xp0) XP")
                                     .font(.system(.title2, design: .rounded).bold())
-                                    .foregroundStyle(Color.surf)
+                                    .foregroundStyle(Color.duke)
                             }
                             Text(trackNames[s.track] ?? s.track.capitalized)
                                 .font(.headline)
@@ -75,7 +75,7 @@ struct WatchView: View {
                     ProgressView()
                 }
             }
-            .navigationTitle("Surf")
+            .navigationTitle("Duke")
         }
         .task { poller.start() }
     }

@@ -1,4 +1,4 @@
-// surf i18n runtime (vanilla, no framework). Loads generated locale JSON,
+// duke i18n runtime (vanilla, no framework). Loads generated locale JSON,
 // swaps [data-i18n] text, exposes t(key, vars) for dynamic strings.
 // Mirrors quotestreak/i18n.js — same convention, same fallback behaviour.
 (function () {

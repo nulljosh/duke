@@ -248,4 +248,4 @@ Ranked 2026-10-05, easiest to drive first, ties broken by how close the game is 
 - [ ] QA the landing page. Content is hidden behind the parallax.
 
 ## Ingested 2026-10-25
-- [ ] Merge into the Surf app (tracked in surf/roadmap.md). Login-start error: see surf/roadmap.md Ingested 2026-10-25, screenshot ~/Documents/Code/notes/attachments/2026-10-25/conveyer-1.png
+- [ ] Merge into the Duke app (tracked in duke/roadmap.md). Login-start error: see duke/roadmap.md Ingested 2026-10-25, screenshot ~/Documents/Code/notes/attachments/2026-10-25/conveyer-1.png

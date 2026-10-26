@@ -1,15 +1,15 @@
-name: SurfStatus
+name: DukeStatus
 options:
   bundleIdPrefix: com.nulljosh
 targets:
-  SurfStatus-macOS:
+  DukeStatus-macOS:
     type: application
     platform: macOS
     deploymentTarget: "14.0"
     sources:
       - path: App
         excludes: ["Info-iOS.plist", "Info-watchOS.plist"]
-      - path: ../Surf.icon
+      - path: ../Duke.icon
       - path: ../fonts
         includes: ["*.ttf"]
     info:
@@ -18,78 +18,78 @@ targets:
         CFBundleShortVersionString: $(MARKETING_VERSION)
         LSUIElement: false
         ATSApplicationFontsPath: "."
-        NSLocalNetworkUsageDescription: Reads live puzzle progress from the Surf autopilot running on your Mac.
+        NSLocalNetworkUsageDescription: Reads live puzzle progress from the Duke autopilot running on your Mac.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
     settings:
       base:
-        PRODUCT_NAME: Surf
+        PRODUCT_NAME: Duke
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.cruise-status
         # Stable identity: ad-hoc builds look like a new app to macOS every rebuild (Documents prompt, launch kills).
         CODE_SIGN_STYLE: Manual
         CODE_SIGN_IDENTITY: "Developer ID Application"
         DEVELOPMENT_TEAM: QMM486NPYC
         MARKETING_VERSION: "1.1"
-        ASSETCATALOG_COMPILER_APPICON_NAME: Surf
-  SurfStatus-watchOS:
+        ASSETCATALOG_COMPILER_APPICON_NAME: Duke
+  DukeStatus-watchOS:
     type: application
     platform: watchOS
     deploymentTarget: "10.0"
     sources:
       - path: App
         excludes: ["Info-macOS.plist", "Info-iOS.plist"]
-      - path: ../Surf.icon
+      - path: ../Duke.icon
     info:
       path: App/Info-watchOS.plist
       properties:
         CFBundleShortVersionString: $(MARKETING_VERSION)
-        NSLocalNetworkUsageDescription: Reads live puzzle progress from the Surf autopilot running on your Mac.
+        NSLocalNetworkUsageDescription: Reads live puzzle progress from the Duke autopilot running on your Mac.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
         WKApplication: true
         WKWatchOnly: true
     settings:
       base:
-        PRODUCT_NAME: Surf
+        PRODUCT_NAME: Duke
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.cruise-status.watch
         MARKETING_VERSION: "1.1"
-        ASSETCATALOG_COMPILER_APPICON_NAME: Surf
-  SurfStatus-iOS:
+        ASSETCATALOG_COMPILER_APPICON_NAME: Duke
+  DukeStatus-iOS:
     type: application
     platform: iOS
     deploymentTarget: "17.0"
     sources:
       - path: App
         excludes: ["Info-macOS.plist", "Info-watchOS.plist"]
-      - path: ../Surf.icon
+      - path: ../Duke.icon
     info:
       path: App/Info-iOS.plist
       properties:
         CFBundleShortVersionString: $(MARKETING_VERSION)
-        NSLocalNetworkUsageDescription: Reads live puzzle progress from the Surf autopilot running on your Mac.
+        NSLocalNetworkUsageDescription: Reads live puzzle progress from the Duke autopilot running on your Mac.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
         UILaunchScreen: {}
     settings:
       base:
-        PRODUCT_NAME: Surf
+        PRODUCT_NAME: Duke
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.cruise-status
         MARKETING_VERSION: "1.1"
-        ASSETCATALOG_COMPILER_APPICON_NAME: Surf
+        ASSETCATALOG_COMPILER_APPICON_NAME: Duke
     dependencies:
-      - target: SurfWidget-iOS
+      - target: DukeWidget-iOS
         embed: true
   # The widget is its own process, so it reuses the app's sources rather than
-  # keeping a second copy of the model. SurfStatusApp.swift is excluded —
+  # keeping a second copy of the model. DukeStatusApp.swift is excluded —
   # two @main attributes in one module do not compile.
-  SurfWidget-iOS:
+  DukeWidget-iOS:
     type: app-extension
     platform: iOS
     deploymentTarget: "17.0"
     sources:
       - path: App
         excludes:
-          - "SurfStatusApp.swift"
+          - "DukeStatusApp.swift"
           - "Info-macOS.plist"
           - "Info-iOS.plist"
           - "Info-watchOS.plist"
@@ -98,13 +98,13 @@ targets:
       path: Widget/Info-Widget.plist
       properties:
         CFBundleShortVersionString: $(MARKETING_VERSION)
-        CFBundleDisplayName: Surf
+        CFBundleDisplayName: Duke
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
       base:
-        PRODUCT_NAME: SurfWidget
+        PRODUCT_NAME: DukeWidget
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.cruise-status.widget
         MARKETING_VERSION: "1.1"

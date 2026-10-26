@@ -3,7 +3,7 @@ name: duolingo
 description: Drive duolingo.com to complete lessons back to back across any course - a language, Math, Chess, or Music - via a standalone Playwright runner. Use when the user says /duolingo, "do my Duolingo", "finish my Duolingo lessons", "do my chess", "do my Spanish", or asks to keep a streak going.
 ---
 
-# Duolingo autopilot (surf)
+# Duolingo autopilot (duke)
 
 Automated play is against Duolingo's ToS, and reading answers out of the
 client-side grader is answer extraction, not learning — the XP still ranks

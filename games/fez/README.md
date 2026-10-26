@@ -1,4 +1,4 @@
-FEZ on Surf. The goal is the 32-cube ending, played for real from Joshua's own save.
+FEZ on Duke. The goal is the 32-cube ending, played for real from Joshua's own save.
 
 ## How it plays
 
@@ -18,7 +18,7 @@ The console is used only to read state (the level, position and state HUD, and c
 
 ## Saves
 
-Steam Cloud holds two saves: `saveslot0` (Feb 2025, 67.6%) and `saveslot1` (2016). Both are backed up in `.save-backup/` (gitignored). Surf plays slot 3 (`SaveSlot2`), a copy of slot 0, so Joshua's own slot stays his.
+Steam Cloud holds two saves: `saveslot0` (Feb 2025, 67.6%) and `saveslot1` (2016). Both are backed up in `.save-backup/` (gitignored). Duke plays slot 3 (`SaveSlot2`), a copy of slot 0, so Joshua's own slot stays his.
 
 ## Progress log
 
@@ -40,11 +40,11 @@ A first attempt set the cube count with the console and warped to Zu City. Joshu
 
 ![FEZ in a background window](progress/04-background-window.png)
 
-**2026-10-25, 15:30.** Surf plays FEZ on its own now. `SurfBridge` (in `bridge/`, Surf's own HAT mod) writes Gomez's live position, the level's collectibles, moving platforms and black holes to a JSON file several times a second. `plan.py` flattens a level the way each camera angle sees it, then finds a route of walks, drops, hops, ledge grabs, vine climbs and camera turns, tracking Gomez's depth across turns. `go.py` plays the route and replans whenever he lands somewhere unexpected. That took Gomez from Zu Library through the Clock Tower and Zu City Ruins into the Observatory. Lessons from play: jumping before a drop adds enough fall height to kill him, so the safe drop is 5. Time switches are grabbed from the side and unscrewed by turning the camera. The Observatory's gold cube sits behind a chain of three timed switches that flip vine-covered blocks. Cubes: still 21 of 32. ETA: unknown until the puzzle rooms are counted. `triage.py` is sorting the remaining rooms into ones the planner can clear outright and ones that need a puzzle solved first.
+**2026-10-25, 15:30.** Duke plays FEZ on its own now. `SurfBridge` (in `bridge/`, Duke's own HAT mod) writes Gomez's live position, the level's collectibles, moving platforms and black holes to a JSON file several times a second. `plan.py` flattens a level the way each camera angle sees it, then finds a route of walks, drops, hops, ledge grabs, vine climbs and camera turns, tracking Gomez's depth across turns. `go.py` plays the route and replans whenever he lands somewhere unexpected. That took Gomez from Zu Library through the Clock Tower and Zu City Ruins into the Observatory. Lessons from play: jumping before a drop adds enough fall height to kill him, so the safe drop is 5. Time switches are grabbed from the side and unscrewed by turning the camera. The Observatory's gold cube sits behind a chain of three timed switches that flip vine-covered blocks. Cubes: still 21 of 32. ETA: unknown until the puzzle rooms are counted. `triage.py` is sorting the remaining rooms into ones the planner can clear outright and ones that need a puzzle solved first.
 
 ![Observatory time switch unscrewed](progress/06-observatory-switch.png)
 
-**2026-10-25, 16:00.** Surf's own planner walked Gomez from Zu City Ruins through Zu Bridge, the Throne room, Tree Sky, the whole Tree and Tree Roots to the Nature Hub, with nobody steering. Rules learned from play and now in `plan.py`:
+**2026-10-25, 16:00.** Duke's own planner walked Gomez from Zu City Ruins through Zu Bridge, the Throne room, Tree Sky, the whole Tree and Tree Roots to the Nature Hub, with nobody steering. Rules learned from play and now in `plan.py`:
 - Gomez only collides with the block nearest the camera, so a shelf or vine hidden behind the trunk doesn't count.
 - Vines can be climbed from every angle. Ones seen edge-on only go up and down.
 - Mushrooms are bouncers that throw him about 7 up.

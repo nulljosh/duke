@@ -57,7 +57,7 @@ At about 1,300 an hour, 500k XP is roughly a day from 468k and 1M is about
 three weeks, against six on chess.
 
 ## Mobbin gap matrix (2026-10-26)
-Compared against the App Store screens of Duolingo, Babbel, Busuu, Memrise, Drops, Speak, Brilliant, Chess.com, AnkiMobile and Mondly. Surf only shows what the runner earns, so lesson content, AI chat, community and paywalls are out. One row per minor version, every platform (Mac panel and window, iPhone, watch).
+Compared against the App Store screens of Duolingo, Babbel, Busuu, Memrise, Drops, Speak, Brilliant, Chess.com, AnkiMobile and Mondly. Duke only shows what the runner earns, so lesson content, AI chat, community and paywalls are out. One row per minor version, every platform (Mac panel and window, iPhone, watch).
 
 | Gap | Who has it | Size | Status |
 |---|---|---|---|
@@ -77,8 +77,8 @@ Compared against the App Store screens of Duolingo, Babbel, Busuu, Memrise, Drop
 - [ ] FEZ: beat the 32-cube ending for real from Joshua's 67.6% save (slot 3 copy). Status lives in games/fez/README.md. Then add FEZ to the landing next to Duolingo and Factorio.
 - [ ] Oxygen Not Included is the next game after FEZ, then Don't Starve (Steam marked it damaged on 2026-10-05; reinstall first).
 - [ ] Landing refresh once FEZ is beaten: Hermes' layout, styled for video games instead of Greek gods. Photos from FEZ and Factorio, and Duolingo too. Supported games listed: Duolingo, FEZ, Factorio.
-- [ ] `surf play <game>`: one entry point for duolingo, factorio, gdt and fez.
-- [ ] Hermes Sans (~/Documents/Code/hermes) likely has the same comma bug (feathers in every comma). Same fix as Surf Sans: tools/gen_font.py, with a check. Hermes has no roadmap.md yet, so the item lives here.
+- [ ] `duke play <game>`: one entry point for duolingo, factorio, gdt and fez.
+- [ ] Hermes Sans (~/Documents/Code/hermes) likely has the same comma bug (feathers in every comma). Same fix as Duke Sans: tools/gen_font.py, with a check. Hermes has no roadmap.md yet, so the item lives here.
 - [ ] Confirm live (2026-10-18): Turkish "to read" and "to drink" match questions now solve (fix in 333d537, tr was stalled 24 hours before it). Also watch that balance mode stops picking Japanese and chess, and that XP per hour holds near 1,200 on the track it picks.
 - [ ] Nobody is told when the runner needs a human away from the Mac. A lost session shows an alert on the Mac only; the phone and watch apps just read stale. The session cookie runs to 2169, so this is rare.
 - [ ] Disk: 4.2GB free on 2026-10-05, and the runner pauses under 2GB. The streak guard now plays through that pause down to 300MB, but XP stops. Free space before it gets there.

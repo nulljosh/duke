@@ -38,7 +38,7 @@ private struct Provider: TimelineProvider {
     }
 }
 
-private struct SurfWidgetView: View {
+private struct DukeWidgetView: View {
     var entry: Entry
     @Environment(\.widgetFamily) private var family
 
@@ -79,13 +79,13 @@ private struct SurfWidgetView: View {
 }
 
 @main
-struct SurfWidget: Widget {
+struct DukeWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "SurfWidget", provider: Provider()) { entry in
-            SurfWidgetView(entry: entry)
+        StaticConfiguration(kind: "DukeWidget", provider: Provider()) { entry in
+            DukeWidgetView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("Surf")
+        .configurationDisplayName("Duke")
         .description("XP earned this session, and whether the runner is still going.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
