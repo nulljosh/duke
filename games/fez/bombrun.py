@@ -146,3 +146,43 @@ def wrap_chain(turns=(1.0, 2.2, 3.2), take_off=24.1):
         fez.key("d", 60); t = time.time()
         while time.time() - t < 1.5 and fez.state()["view"] != want: time.sleep(0.02)
     time.sleep(2.5); fez.shot("chain"); return log(tp, "after")
+
+
+def _jump(d=None, dir_ms=None, hold=1.4):
+    if d: fez.edge(d, True)
+    fez.edge("space", True); t0 = time.time()
+    while time.time() - t0 < hold:
+        if d and dir_ms and time.time() - t0 > dir_ms / 1000: fez.edge(d, False)
+        s = fez.state()
+        if time.time() - t0 > 0.3 and (s["grounded"] or s["action"].startswith("Grab")): break
+        time.sleep(0.02)
+    if d: fez.edge(d, False)
+    fez.edge("space", False); time.sleep(0.5); return fez.state()
+
+
+def wrap_top():
+    """Mine Wrap's top floor (y43), once wrap_chain() has cleared the tower bricks. Floor -> minecart (x36) ->
+    door lintel by a corner grab in Right view -> the bit's empty niche (stand y41) -> jump out left past the
+    floor's left edge (x25.5) and turn back right on the way down, which is the only way a corner grab catches."""
+    s = fez.state()
+    if s["pos"][1] < 40.2 and s["pos"][0] < 25:   # respawned on the left post
+        go.turn_to("Front"); fez.walk(21.5, tol=0.2); fez.runjump(24.1, 28.5)
+    go.turn_to("Right")
+    for _ in range(5):
+        s = fez.state()
+        if s["pos"][1] > 40: break
+        if s["pos"][1] < 37.5: fez.walk(-22.0); _jump()
+        s = _jump("right", dir_ms=260)
+        if s["action"].startswith("Grab"): fez.key("up", 150); time.sleep(1.5)
+    go.turn_to("Front")
+    if fez.state()["pos"][1] < 41: fez.walk(30.5, tol=0.1); _jump()
+    fez.walk(27.25, tol=0.08)
+    fez.edge("left", True); fez.edge("space", True); t0 = time.time(); turned = False
+    while time.time() - t0 < 1.4:
+        s = fez.state()
+        if not turned and fez.h(s) <= 26.0: fez.edge("left", False); fez.edge("right", True); turned = True
+        if s["action"].startswith("Grab") or (time.time() - t0 > 0.3 and s["grounded"]): break
+        time.sleep(0.01)
+    for k in ("left", "right", "space"): fez.edge(k, False)
+    if fez.state()["action"].startswith("Grab"): fez.key("up", 150); time.sleep(1.5)
+    return fez.state()
