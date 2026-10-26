@@ -149,7 +149,11 @@ def start(slot=3):
     keep = {p: (p.read_bytes(), p.stat().st_mtime) for p in SAVES.glob("SaveSlot[01]")}   # Joshua's slots, restored on a misstep
     mine = SAVES / f"SaveSlot{slot - 1}"; mine.touch()   # the picker opens on the newest save, so make ours the newest
     if not subprocess.run(["pgrep", "-x", "HAT.bin.osx"], capture_output=True).stdout:
-        subprocess.run(["open", "-g", "/Volumes/LaCie/Steam/steamapps/common/FEZ/FEZ.app"]); time.sleep(30)
+        subprocess.run(["open", "-g", "/Volumes/LaCie/Steam/steamapps/common/FEZ/FEZ.app"])
+        for _ in range(45):   # the LaCie is a spinning disk: launch can take well over 30 s
+            time.sleep(2)
+            if subprocess.run(["pgrep", "-x", "HAT.bin.osx"], capture_output=True).stdout: break
+        time.sleep(25)
     STATE.unlink(missing_ok=True)
     for _ in range(10):   # the title swallows Enter until it has finished loading: press until the slot picker shows
         key("enter"); time.sleep(4)
