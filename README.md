@@ -2,7 +2,7 @@
 
 [![version](https://img.shields.io/badge/version-2.2.0-0074D9)](WHITEPAPER.md) [![Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-001F3F)](LICENSE)
 
-Duke plays Duolingo for you. Languages, math and chess, around the clock, in a real browser. Formerly Cruise.
+Duke plays while you sleep: Duolingo (languages, math, chess), Factorio, Game Dev Tycoon and FEZ, around the clock. Named for Duke Kahanamoku. Formerly Surf, and Cruise before that.
 
 **Live:** https://duke.jaybulb.com
 
