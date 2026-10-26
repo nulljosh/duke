@@ -345,6 +345,7 @@ const launchOpts = {
   headless: true, viewport: { width: 1400, height: 900 },
   args: [
     '--disable-background-timer-throttling',
+    '--mute-audio',   // lessons read words aloud; the runner never needs to be heard (Joshua, 2026-10-25)
     ...(canSpeak ? [
       '--use-fake-ui-for-media-stream',
       '--use-fake-device-for-media-stream',
