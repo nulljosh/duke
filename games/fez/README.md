@@ -67,3 +67,15 @@ The biggest change is that the planner now asks the game itself. The SurfBridge 
 Still locked behind puzzles the planner can't solve yet: the Lighthouse climb, Quantum (under the Bell Tower's water), CMY, Weightswitch, Fractal, and the Tree climb to the Graveyard.
 
 ![Cube 22](progress/08-cube-22.png)
+
+**2026-10-26, 00:00.** Bits: 5 of 8 toward cube 23. Bit 3 in Mine A came from turning the camera in mid-air while falling with a bomb, which drops Gomez onto a ledge he couldn't climb to with his hands full. Bit 4 in Mine Wrap only needed the right angle. Bit 5 took most of the night, and reading the game's own source cracked it:
+- A blast checks each screen cell from the camera inward and stops at the first solid block that isn't a brick (`BombsHost.DestroyNeighborhood`), so a wall in front shields the bricks behind it.
+- A brick group only stays gone if every brick in it breaks. Otherwise the whole group grows back 1.5 s after the last one breaks.
+- Mine Wrap's tower has one group of 56 bricks wrapped around all four faces. The way through is to set the chain off at floor level on the right face, then turn the camera Back, Left and Front as it climbs, so each face burns while the camera faces it. The room's name was the hint.
+- The fuse is 4.0 s from the lift. Each camera turn pauses the game and adds about 0.33 s.
+- A bomb only lifts when Gomez stands right on it, and only from in front of it.
+- Corner ledges grab only when Gomez comes at the edge from outside it, moving toward it, with his middle within 0.35 of the top corner (`GrabCornerLedge`).
+
+`bombrun.wrap_chain()` replays the whole thing. Next is Mine Wrap's top floor, which leads to the Bomb Pillar room (a bit and a chest) and a cube high above it.
+
+![Mine Wrap's last bit, uncovered](progress/09-mine-wrap-bit.png)
