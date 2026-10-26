@@ -189,6 +189,10 @@ def go(goal, goal_view=None, tries=14, item=None):
             v, c, y, dep = node(s)
             if not plan.standable(plan.grid(s["level"], v), c, y):   # standing on a ledge the front-most grid hides: remember it as floor
                 plan.SEEN.setdefault(s["level"], set()).add((v, c, y - 1))
+        if "Climb" in s["action"] and plan.vine_dep(plan.CLIMB.get((s["level"], v), {}), (c, y), dep) is None:   # on a vine this camera can't use
+            for alt in plan.ORDER:
+                if alt != v and (s := turn_to(alt)) and (plan.grid(s["level"], alt) is not None) and plan.vine_dep(plan.CLIMB[(s["level"], alt)], node(s)[1:3], node(s)[3]) is not None: break
+            v, c, y, dep = node(s)
         if "Climb" in s["action"] and plan.standable(plan.grid(s["level"], v), c, y):   # on a vine right above a floor: step down onto it
             letgo(); s = fez.state(); v, c, y, dep = node(s)
         if goal is not None and (c, y) == goal and goal_view in (None, v): return s
