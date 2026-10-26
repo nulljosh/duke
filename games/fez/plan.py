@@ -136,9 +136,14 @@ def swimming(g, c, y):
     return g.water == y and g.cols[0] - 4 <= c <= g.cols[1] + 4 and g.get((c, y)) != "wall"
 
 
+ALLNOW, DEPNOW = {}, None   # set by find(): the view's solid triles by depth, and Gomez's depth while expanding a node
+
+
 def standable(g, c, y):
-    """Gomez can stand at column c with feet at y: something solid under him, no wall where his body is."""
-    return g.get((c, y - 1)) in ("top", "wall") and g.get((c, y)) != "wall" and g.get((c, y + 1)) != "wall"
+    """Gomez can stand at column c with feet at y: something solid under him, no wall where his body is.
+    A floor hidden behind the front layer still holds him when he is at its depth (Zu City's back terraces, 2026-10-25)."""
+    floor = g.get((c, y - 1)) in ("top", "wall") or (DEPNOW is not None and DEPNOW in ALLNOW.get((c, y - 1), ()))
+    return floor and g.get((c, y)) != "wall" and g.get((c, y + 1)) != "wall"
 
 
 BOUNCE = 7          # a bouncer mushroom throws Gomez about 7 up (Tree trace, 2026-10-25)
@@ -290,9 +295,10 @@ def find(name, view, start, goal, goal_view=None, done=None):
         v, c, y, dep = cur
         if (done(cur) if done else (c, y) == goal and goal_view in (None, v)): end = cur; break
         if d0 > dist[cur]: continue
-        global FLATNOW; FLATNOW = FLAT[(name, v)]
+        global FLATNOW, ALLNOW, DEPNOW; FLATNOW = FLAT[(name, v)]; ALLNOW, DEPNOW = ALLDEPTHS[(name, v)], dep
         nxt = [((v, c2, y2, d2 if d2 is not None else settle_depth(name, v, c2, y2, dep)), kind, cost)
                for (kind, c2, y2, d2), cost in moves(grids[v], c, y, lo, CLIMB[(name, v)], dep)]
+        DEPNOW = None
         hi, hs, di, _ = fezmap.VIEWS[v]
         pos = [0.0, 0.0, 0.0]; pos[hi] = (c + 0.5) * hs; pos[di] = dep + 0.5
         for step in (1, -1):
