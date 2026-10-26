@@ -28,7 +28,7 @@ DEPTHS = {}   # (level, view) -> {(col, y): depth of the front-most solid trile 
 ALLDEPTHS = {}   # (level, view) -> {(col, y): depths of its solid triles (Gomez keeps his depth if one is there)}
 CLIMB = {}    # (level, view) -> {(col, y): {depths}} cells with a vine or ladder Gomez can climb from this camera
 FLAT = {}     # (level, view) -> {(col, y): {depths}} those facing to or from the camera: they allow shimmying
-# A vine's Face is rotated by Phi quarter turns; measured in the Observatory 2026-10-25 (phi 1 sits on -x sides).
+# A vine's Face turns by Phi quarter turns (Observatory: phi 1 sits on -x sides).
 FACING = {0: "Front", 1: "Left", 2: "Back", 3: "Right"}
 OPPOSITE = {"Front": "Back", "Back": "Front", "Left": "Right", "Right": "Left"}
 
@@ -80,7 +80,7 @@ def grid(name, view):
         if e["Type"] in ("Vine", "Ladder"):   # vines don't hide what's behind them; keep the nearest one separately
             if cell not in vines or k > vines[cell][0]: vines[cell] = (k, t, e)
         elif cell not in front or k > front[cell][0]: front[cell] = (k, t, e)
-    # Tree 2026-10-25: a TopOnly shelf hidden behind scenery does not hold Gomez.
+    # A TopOnly shelf hidden behind scenery does not hold Gomez (Tree).
     for cell, (k, t, e) in vines.items():
         # Only a vine with no block in front of it can be climbed (Tree).
         # From that angle Gomez climbs it facing, edge-on (side-climb) or from behind (back-climb).
@@ -164,7 +164,7 @@ def land(g, c, y, lo):
 
 def safe(g, c, y, ly, limit):
     if ly is not None and swimming(g, c, ly): return True   # water breaks any fall
-    # FreeFalling onto a bouncer kills like any floor (Tree, 2026-10-25).
+    # FreeFalling onto a bouncer kills like any floor (Tree).
     return ly is not None and (y - ly <= limit or (bouncy(g, c, ly) and y - ly <= limit))
 
 
@@ -286,7 +286,7 @@ def find(name, view, start, goal, goal_view=None, done=None):
     his depth only changes when he lands on a trile at another depth."""
     grids = {v: grid(name, v) for v in ORDER}
     lo = min(y for g in grids.values() for _, y in g) - 1
-    global REACHNOW; REACHNOW = LOWREACH.get(name)
+    global REACHNOW, FLATLVL; REACHNOW, FLATLVL = LOWREACH.get(name), fezmap.level(name)["Flat"]
     s0 = (view, *start)
     dist, prev, q = {s0: 0}, {}, [(0, s0)]
     end = None
@@ -302,7 +302,7 @@ def find(name, view, start, goal, goal_view=None, done=None):
         DEPNOW = None
         hi, hs, di, _ = fezmap.VIEWS[v]
         pos = [0.0, 0.0, 0.0]; pos[hi] = (c + 0.5) * hs; pos[di] = dep + 0.5
-        for step in (1, -1):
+        for step in (() if FLATLVL else (1, -1)):   # 2D intro: no turns
             nv = ORDER[(ORDER.index(v) + step) % 4]; nhi, nhs, ndi, _ = fezmap.VIEWS[nv]
             nc, nd_ = int(pos[nhi] * nhs // 1), int(pos[ndi] // 1)
             if standable(grids[nv], nc, y) and standable(grids[v], c, y): nxt.append(((nv, nc, y, nd_), "turn-" + nv, 3))
