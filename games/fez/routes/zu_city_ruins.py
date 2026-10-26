@@ -22,5 +22,22 @@ def down():
     return s if abs(s["pos"][1] - 43.47) < 0.3 else None
 
 
+def to_y28():
+    """From the y36 slab down to the y28 floor (found by hand 2026-10-26), the way to Zu Bridge and the Observatory.
+    The planner sees no way off the slab. In the Left view run off the slab's left end (z23.5), let go and press Down:
+    he catches the corner of the x20 pillar. Up climbs onto it, and walking right off the pillar (it sits at another
+    depth, so the slab doesn't catch him) falls about 8 to the y28 floor at z25, which he survives."""
+    go.turn_to("Left"); fez.walk(24.5, tol=0.2)
+    fez.edge("left", True); t = time.time()
+    while fez.state()["grounded"] and time.time() - t < 3: time.sleep(0.02)
+    fez.edge("left", False)
+    fez.edge("down", True); time.sleep(0.3); fez.edge("down", False); time.sleep(0.6)
+    if not fez.state()["action"].startswith("Grab"): return None
+    fez.edge("up", True); time.sleep(0.3); fez.edge("up", False); time.sleep(1.2)
+    fez.walk(24.6, tol=0.15)
+    s = go.landed(timeout=8)
+    return s if abs(s["pos"][1] - 28.47) < 0.3 else None
+
+
 if __name__ == "__main__":
     s = down(); print(s and (s["level"], s["pos"]))
