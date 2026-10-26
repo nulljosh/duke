@@ -174,6 +174,20 @@ def start(slot=3):
             return s
 
 
+def responsive():
+    """FEZ sometimes stops taking movement keys while the console key still works (twice on 2026-10-26).
+    Nudge left and right: if Gomez can stand and nothing moves him, input is dead."""
+    a = state(); key("left", 250); time.sleep(0.2); b = state(); key("right", 250); time.sleep(0.2); c = state()
+    return not (a["grounded"] and a["pos"] == b["pos"] == c["pos"])
+
+
+def revive():
+    """Restart FEZ when it has stopped taking input. Progress since the last door is lost."""
+    if responsive(): return state()
+    print("FEZ stopped taking input: restarting", flush=True)
+    subprocess.run(["pkill", "-x", "HAT.bin.osx"]); time.sleep(4); return start()
+
+
 def shot(name):
     (HERE / "shots").mkdir(exist_ok=True)
     p = HERE / "shots" / f"{name}.png"

@@ -288,9 +288,11 @@ def travel(to):
         try: nxt = fezmap.route(here, to)[1]
         except (KeyError, IndexError): print("no known route", here, "->", to, flush=True); return None
         print(f"{here} -> {nxt}", flush=True)
+        fez.revive()
         s = door(nxt)
         if s is None or s["level"] != nxt:
             print("stuck going", here, "->", nxt, flush=True)
+            if not fez.responsive(): fez.revive(); continue   # dead input, not a locked door
             if (s or fez.state() or {}).get("level") == here: fezmap.block(here, nxt)   # reached it but it would not open: route around next time
             return None
     return None
