@@ -25,6 +25,10 @@ targets:
       base:
         PRODUCT_NAME: Surf
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.cruise-status
+        # Stable identity: ad-hoc builds look like a new app to macOS every rebuild (Documents prompt, launch kills).
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_IDENTITY: "Developer ID Application"
+        DEVELOPMENT_TEAM: QMM486NPYC
         MARKETING_VERSION: "1.1"
         ASSETCATALOG_COMPILER_APPICON_NAME: Surf
   SurfStatus-watchOS:

@@ -17,13 +17,16 @@ xcodebuild -scheme SurfStatus-macOS -configuration Debug \
   -derivedDataPath build build
 ditto build/Build/Products/Debug/Surf.app ~/Applications/.Surf-new.app
 mv ~/Applications/Surf.app ~/Applications/.Surf-old.app && mv ~/Applications/.Surf-new.app ~/Applications/Surf.app
-killall Surf 2>/dev/null   # launchd's KeepAlive relaunches it from the new binary within ~10s (ThrottleInterval)
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f ~/Applications/Surf.app
+launchctl kickstart -k gui/$(id -u)/com.nulljosh.cruise-status
 rm -rf ~/Applications/.Surf-old.app
 ```
 
-Swap, then kill. Copying over the running bundle, or killing before the swap,
-gets a relaunch SIGKILLed for "Code Signature Invalid" and puts a "Surf quit
-unexpectedly" dialog on Joshua's screen (2026-10-25).
+Swap, register, kickstart. Copying over the running bundle, or `killall` right
+after a swap, gets the first relaunch SIGKILLed ("Launch Constraint
+Violation") and puts a "Surf quit unexpectedly" dialog on Joshua's screen
+(2026-10-25). The Mac target signs with Developer ID, not ad-hoc, so macOS
+keeps one identity across rebuilds and doesn't re-ask for Documents access.
 
 Don't `open` the built .app yourself — that spawns a second, launchd-blind
 process. Just kill the running one; the agent restarts it. Verify exactly
