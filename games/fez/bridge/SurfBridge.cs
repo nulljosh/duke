@@ -73,6 +73,9 @@ namespace SurfBridge
 
         public override void Update(GameTime gameTime)
         {
+            // FEZ drops movement keys once its window loses focus (the console still types), and the script plays it
+            // in the background. Keep the game counting as active so posted keys keep moving Gomez.
+            if (!Game.IsActive) try { typeof(Game).GetProperty("IsActive")!.GetSetMethod(true)!.Invoke(Game, new object[] { true }); } catch (Exception) { }
             if (++frame % 6 != 0 || PlayerManager == null || LevelManager?.Name == null) return;
             try { if (!GameState.Loading && CameraManager.Viewpoint.IsOrthographic() && CameraManager.ActionRunning) DumpGrids(); } catch (Exception) { }
             try
