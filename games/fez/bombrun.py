@@ -186,3 +186,54 @@ def wrap_top():
     for k in ("left", "right", "space"): fez.edge(k, False)
     if fez.state()["action"].startswith("Grab"): fez.key("up", 150); time.sleep(1.5)
     return fez.state()
+
+
+def pillar_door(stand=13.6, take_off=25.4):   # jump well before the lip, a carry jump pressed at it registers too late
+    """The Bomb Pillar door (32, 44, 12.5) hides behind a permanent brick at (32, 45, 13). Lift the right post's bomb
+    in Left view (Gomez in front of it at x40.5), jump the 3-wide gap to the top floor and run to the door: about
+    14 tiles, inside the 4 s fuse with no camera turn. Standing, the bomb rides one row up, level with the brick."""
+    t0 = time.time()
+    go.go((26, 44), "Left"); tp = pickup(27.3, "left")   # 27.0 is too far onto the post's inner edge to lift
+    if tp is None: return log(t0, "no bomb")
+    while fez.state()["action"] == "Lifting" and time.time() - tp < 2: time.sleep(0.03)
+    fez.edge("left", True); jumped = None
+    while time.time() - tp < 3.8:
+        s = fez.state(); x = fez.h(s)
+        if jumped is None and x < take_off: fez.edge("space", True); jumped = time.time()
+        if jumped and time.time() - jumped > 0.5: fez.edge("space", False)
+        if x <= stand + 0.5: break
+        time.sleep(0.02)
+    fez.edge("left", False); fez.edge("space", False); log(tp, "at door")
+    fez.walk(stand, tol=0.15, timeout=0.5)
+    time.sleep(3); return log(tp, "after")
+
+
+def pillar_door_chain(stand=34.6, take_off=40.4, boom=4.33):   # jump early: a carry jump pressed at the lip registers too late
+    """The Bomb Pillar door bricks (32, 44-45, 13) face only the Left camera, and the right post's bomb can't be
+    carried to them in Left view inside the fuse (a 3-wide gap off a short runway). The hut around the door has
+    a brick front (33-34, 45-46, 14) that the Front camera reaches over a 2-wide gap. Set the bomb down there and
+    step clear (a blast next to Gomez makes him flinch, and he can't turn mid-flinch), then turn to Left the moment
+    it goes: the turn pauses the game, so the next link of the chain goes off in Left view and reaches the door.
+    Fuse 4.0 s from the lift plus the one turn to Front."""
+    t0 = time.time()
+    go.go((26, 44), "Left"); tp = pickup(27.3, "left")   # from Front, Gomez on the post stands behind the bomb
+    if tp is None: return log(t0, "no bomb")
+    while fez.state()["action"] == "Lifting" and time.time() - tp < 2: time.sleep(0.03)
+    fez.key("d", 60); t = time.time()
+    while time.time() - t < 1.5 and fez.state()["view"] != "Front": time.sleep(0.02)
+    fez.walk(43.2, tol=0.2, timeout=0.6); log(tp, "run-up")
+    fez.edge("left", True); jumped = None; trace = []
+    while time.time() - tp < 3.4:
+        s = fez.state(); x = fez.h(s); trace.append((round(time.time() - tp, 2), round(x, 2), round(s["pos"][1], 2), s["action"]))
+        if jumped is None and x < take_off: fez.edge("space", True); jumped = time.time()
+        if jumped and time.time() - jumped > 0.5: fez.edge("space", False)
+        if x <= stand and s["grounded"]: break
+        time.sleep(0.02)
+    fez.edge("left", False); fez.edge("space", False); print(trace[::3]); log(tp, "at hut")
+    fez.key("ctrl", 120); time.sleep(0.6); log(tp, "set down")
+    fez.walk(36.8, tol=0.3, timeout=0.8); log(tp, "clear")
+    while time.time() - tp < boom: time.sleep(0.005)
+    fez.key("a", 60); t = time.time()
+    while time.time() - t < 1.5 and fez.state()["view"] != "Left": time.sleep(0.02)
+    log(tp, "turned")
+    time.sleep(3); fez.shot("hut"); return log(tp, "after")
