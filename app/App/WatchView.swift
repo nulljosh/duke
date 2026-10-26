@@ -14,7 +14,14 @@ struct WatchView: View {
                 if let s = poller.state {
                     List {
                         Section {
-                            if let xp0 = s.xp0, let xp = s.xp {
+                            if let today = s.xpToday, let goal = s.xpGoal {
+                                HStack {
+                                    GoalRing(today: today, goal: goal, size: 32)
+                                    Text("+\(today) XP")
+                                        .font(.system(.title2, design: .rounded).bold())
+                                        .foregroundStyle(Color.surf)
+                                }
+                            } else if let xp0 = s.xp0, let xp = s.xp {
                                 Text("+\(xp - xp0) XP")
                                     .font(.system(.title2, design: .rounded).bold())
                                     .foregroundStyle(Color.surf)

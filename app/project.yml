@@ -24,7 +24,7 @@ targets:
       base:
         PRODUCT_NAME: Surf
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.cruise-status
-        MARKETING_VERSION: "1.0"
+        MARKETING_VERSION: "1.1"
         ASSETCATALOG_COMPILER_APPICON_NAME: Surf
   SurfStatus-watchOS:
     type: application
@@ -33,6 +33,7 @@ targets:
     sources:
       - path: App
         excludes: ["Info-macOS.plist", "Info-iOS.plist"]
+      - path: ../Surf.icon
     info:
       path: App/Info-watchOS.plist
       properties:
@@ -45,7 +46,8 @@ targets:
       base:
         PRODUCT_NAME: Surf
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.cruise-status.watch
-        MARKETING_VERSION: "1.0"
+        MARKETING_VERSION: "1.1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: Surf
   SurfStatus-iOS:
     type: application
     platform: iOS
@@ -65,7 +67,7 @@ targets:
       base:
         PRODUCT_NAME: Surf
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.cruise-status
-        MARKETING_VERSION: "1.0"
+        MARKETING_VERSION: "1.1"
         ASSETCATALOG_COMPILER_APPICON_NAME: Surf
     dependencies:
       - target: SurfWidget-iOS
@@ -97,4 +99,4 @@ targets:
       base:
         PRODUCT_NAME: SurfWidget
         PRODUCT_BUNDLE_IDENTIFIER: com.nulljosh.cruise-status.widget
-        MARKETING_VERSION: "1.0"
+        MARKETING_VERSION: "1.1"

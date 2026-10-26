@@ -169,8 +169,12 @@ struct ContentView: View {
                     Label("\(hearts)/\(maxHearts)", systemImage: "heart.fill").foregroundStyle(.red)
                 }
                 if let goal = s.xpGoal {
-                    Label("\(goal)", systemImage: s.xpGoalMetToday == true ? "checkmark.circle.fill" : "target")
-                        .foregroundStyle(s.xpGoalMetToday == true ? Color.surf : .secondary)
+                    if let today = s.xpToday {
+                        HStack(spacing: 4) { GoalRing(today: today, goal: goal, size: 18); Text("\(goal)") }
+                    } else {
+                        Label("\(goal)", systemImage: s.xpGoalMetToday == true ? "checkmark.circle.fill" : "target")
+                            .foregroundStyle(s.xpGoalMetToday == true ? Color.surf : .secondary)
+                    }
                 }
                 Spacer()
                 if s.track == "chess" {

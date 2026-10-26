@@ -56,6 +56,19 @@ track is now `pl` so a restart stays there.
 At about 1,300 an hour, 500k XP is roughly a day from 468k and 1M is about
 three weeks, against six on chess.
 
+## Mobbin gap matrix (2026-10-26)
+Compared against the App Store screens of Duolingo, Babbel, Busuu, Memrise, Drops, Speak, Brilliant, Chess.com, AnkiMobile and Mondly. Surf only shows what the runner earns, so lesson content, AI chat, community and paywalls are out. One row per minor version, every platform (Mac panel and window, iPhone, watch).
+
+| Gap | Who has it | Size | Status |
+|---|---|---|---|
+| Daily goal ring: XP today against the account's goal | Busuu, Duolingo, Speak | S | done in 1.1 |
+| Week strip: the last seven days, met or missed | Duolingo, Drops, Busuu | S | open |
+| Today, streak and lifetime tiles side by side | Speak, Chess.com | S | open |
+| 30 day XP chart | Chess.com, AnkiMobile | M | open |
+| Course list with each course's progress, not just a name in a menu | Duolingo, Busuu, Memrise | M | open |
+| Lesson finished card: XP gained and misses for that lesson | Busuu, Mondly | S | open |
+| Achievements | Drops, Chess.com | L | open |
+
 ## Blocked on Joshua
 - Run `sudo pmset -a autorestart 1` once at the Mac (needs the password). Without it the Mac stays off after a power cut and the runner with it. Asked 2026-10-05, he was away from the desk.
 

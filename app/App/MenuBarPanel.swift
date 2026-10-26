@@ -106,6 +106,7 @@ struct MenuBarPanel: View {
                     // Today's gain, not the session's: xp0 resets on every
                     // restart, so the session number reads low after a crash.
                     if let today = s.xpToday {
+                        if let goal = s.xpGoal { GoalRing(today: today, goal: goal, size: 24) }
                         Text("+\(today) XP today")
                             .font(.surf(.title3, .bold).monospacedDigit())
                             .foregroundStyle(Color.surf)
