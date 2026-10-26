@@ -1,13 +1,13 @@
 # Surf brand kit and design system
 
-A wave about to break. Surf rides it so you don't have to: Duolingo, Factorio, Game Dev Tycoon and FEZ.
+A board riding a breaking wave. Surf rides it so you don't have to: Duolingo, Factorio, Game Dev Tycoon and FEZ.
 
 ## The mark
-A bold white breaking wave: the swell rises from the sea line and curls over into the barrel. One glyph on a gradient tile. No text, no outline. It replaced the tilted surfboard on 2026-10-26, which read as a feather at small sizes; the wave reads at 29 px.
+A bold white surfboard riding the face of a breaking wave, the crest curling into a spiral. One picture on a gradient tile. No text, no outline. It replaced the lone tilted surfboard on 2026-10-26, which read as a feather at small sizes; board and wave read at 29 px.
 
 - `../Surf.icon` is the source of truth (Icon Composer), used by the Mac and iPhone apps.
 - `../icon.svg` is the flat copy for the README and the landing. `icon-1024.png` is the App Store size, no alpha.
-- `mark.svg` is the wave alone in `currentColor`. `icon-tile.svg` is the square tile with no corner mask.
+- `mark.svg` is the board and wave alone in `currentColor`. `icon-tile.svg` is the square tile with no corner mask.
 - Clear space is the width of the curl's lip. Smallest size 16 px.
 
 ## Colour
