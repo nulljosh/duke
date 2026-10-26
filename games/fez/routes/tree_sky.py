@@ -18,7 +18,7 @@ def creep(d):
 
 def to_tree():
     go.turn_to("Front"); fez.walk(11.3, tol=0.15); creep("left"); fez.key("left", 60)
-    s = go.landed()
+    s = go.landed(); time.sleep(1); s = go.landed()   # the first landed() can return mid-fall
     if abs(s["pos"][1] - 41.97) > 0.3: return None
     fez.walk(13.5, tol=0.2); creep("right")
     fez.edge("down", True); time.sleep(0.3); fez.edge("down", False); time.sleep(0.8)
