@@ -2,7 +2,7 @@
 """go.py: walk Gomez to a spot in the current level with the planner, replanning after every surprise.
   go.py COL Y [VIEW]        target column (screen units in VIEW) and floor height
   Doors, routes between rooms and item pickup live in trip.py."""
-import sys, time
+import sys, threading, time
 import fez, fezlive, fezmap, plan
 from plan import iround
 
@@ -90,6 +90,8 @@ def step_out(s, toward):
 
 
 K, G, TERM = 73.0, 0.58, -0.408   # position units/s per velocity unit; dvy/dt; terminal vy (measured in TREE)
+LOWGRAV = {"PYRAMID": 0.30}   # gravity scale where a level script lowers it (a full jump peaks +6.5 there, +2.3 elsewhere)
+plan.LOWREACH["PYRAMID"] = {6: 3, 5: 4, 4: 4, 3: 5, 2: 5, 1: 6, 0: 6}   # jump up -> most columns across (measured 2026-10-26)
 
 
 def eta(y, vy, ty):
@@ -207,6 +209,14 @@ def step(kind, v, c, y):
             time.sleep(0.02)
         fez.edge(d, False)
         return fez.state() if fez.state()["action"] == "Bouncing" else settle(landed())
+    if kind == "hop" and s["level"] in LOWGRAV:   # floaty jumps carry far: jump full, then steer the landing by prediction
+        global G
+        g0, G = G, G * LOWGRAV[s["level"]]
+        try:   # direction held from takeoff (a blind 500ms jump loses ~1.5 across); space let go at 500ms
+            fez.edge("right" if target > fez.h(s) else "left", True); fez.edge("space", True)
+            threading.Timer(0.5, fez.edge, ("space", False)).start()
+            return settle(aim(target, y + 0.5, timeout=10))
+        finally: G = g0; fez.edge("right", False); fez.edge("left", False)
     if kind == "hop":
         up = y - here[2]
         if up > 0: ride_to_peak(); s = fez.state()

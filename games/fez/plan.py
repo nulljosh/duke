@@ -9,9 +9,11 @@ import fezmap
 from fezlive import USE_LIVE, bobbers, bridge_grid
 import fezlive
 
-MAX_DROP = 6        # stepping off from rest turns into deadly FreeFalling after ~7 (Zu Library trace); jumps first eat into it
+MAX_DROP = 6        # stepping off turns deadly (FreeFalling) after ~7 (Zu Library); jumps eat into it
 JUMP_UP = 2         # full jump peak is about +2.3
 JUMP_ACROSS = 5     # a standing full jump cleared 5 (Clock, 2026-10-25); ledge grabs add reach
+LOWREACH = {}   # low gravity, filled by go.py
+REACHNOW = None
 
 
 def iround(v):
@@ -23,9 +25,9 @@ SOLID = ("TopOnly", "TopNoStraightLedge", "AllSides")
 
 
 DEPTHS = {}   # (level, view) -> {(col, y): depth of the front-most solid trile in that cell}
-ALLDEPTHS = {}   # (level, view) -> {(col, y): depths of every solid trile in that cell (Gomez keeps his depth if one is there)}
+ALLDEPTHS = {}   # (level, view) -> {(col, y): depths of its solid triles (Gomez keeps his depth if one is there)}
 CLIMB = {}    # (level, view) -> {(col, y): {depths}} cells with a vine or ladder Gomez can climb from this camera
-FLAT = {}     # (level, view) -> {(col, y): {depths}} the subset facing toward or away from the camera: these allow shimmying sideways
+FLAT = {}     # (level, view) -> {(col, y): {depths}} those facing to or from the camera: they allow shimmying
 # A vine's Face is rotated by Phi quarter turns; measured in the Observatory 2026-10-25 (phi 1 sits on -x sides).
 FACING = {0: "Front", 1: "Left", 2: "Back", 3: "Right"}
 OPPOSITE = {"Front": "Back", "Back": "Front", "Left": "Right", "Right": "Left"}
@@ -33,7 +35,7 @@ OPPOSITE = {"Front": "Back", "Back": "Front", "Left": "Right", "Right": "Left"}
 
 ROTATED = {}   # level -> {group id: quarter turns} applied by a switch the executor just pulled (180 degrees only)
 HOLES = {}     # level -> [(from, to)] black holes the bridge reports as on; their cells (plus a margin) count as walls
-SEEN = {}      # level -> {(view, col, y)} floors Gomez was seen standing on that the front-most grid hides (a ledge at his depth)
+SEEN = {}      # level -> {(view, col, y)} floors Gomez stood on that the front-most grid hides
 
 
 class Grid(dict):
@@ -78,9 +80,9 @@ def grid(name, view):
         if e["Type"] in ("Vine", "Ladder"):   # vines don't hide what's behind them; keep the nearest one separately
             if cell not in vines or k > vines[cell][0]: vines[cell] = (k, t, e)
         elif cell not in front or k > front[cell][0]: front[cell] = (k, t, e)
-    # Measured in the Tree 2026-10-25: a TopOnly shelf hidden behind scenery (trunk, None faces) does not hold Gomez.
+    # Tree 2026-10-25: a TopOnly shelf hidden behind scenery does not hold Gomez.
     for cell, (k, t, e) in vines.items():
-        # Only a vine with no block in front of it can be climbed (one behind the trunk can't, measured in the Tree).
+        # Only a vine with no block in front of it can be climbed (Tree).
         # From that angle Gomez climbs it facing, edge-on (side-climb) or from behind (back-climb).
         if cell in front and front[cell][0] > k: continue
         cl.setdefault(cell, set()).add(int(t["Position"][di] // 1))
@@ -162,7 +164,7 @@ def land(g, c, y, lo):
 
 def safe(g, c, y, ly, limit):
     if ly is not None and swimming(g, c, ly): return True   # water breaks any fall
-    # Landing on a bouncer while FreeFalling kills like any floor (Tree, 2026-10-25), so the same limit applies.
+    # FreeFalling onto a bouncer kills like any floor (Tree, 2026-10-25).
     return ly is not None and (y - ly <= limit or (bouncy(g, c, ly) and y - ly <= limit))
 
 
@@ -209,12 +211,13 @@ def moves(g, c, y, lo, cl=None, dep=0):
                     ly = land(g, cc, y - 2, lo)
                     if ly is not None and 2 + j <= y - ly and safe(g, cc, y, ly, MAX_DROP):
                         yield ("dropback-" + ("right" if dc > 0 else "left"), cc, ly, None), 3 + j
-            for across in range(1, JUMP_ACROSS + 1):
+            for across in range(1, (6 if REACHNOW else JUMP_ACROSS) + 1):
                 cc = c + dc * across
                 if any(g.get((c + dc * k, y + 2)) == "wall" for k in range(1, across + 1)): break
-                for up in range(JUMP_UP + (1 if across <= 3 else 0), -5, -1):   # +3 only by catching the ledge
+                for up in range(6 if REACHNOW else JUMP_UP + (1 if across <= 3 else 0), -7 if REACHNOW else -5, -1):   # +3 by a ledge catch
+                    if REACHNOW and across > REACHNOW.get(up, 6): continue
                     # landing lower must be the first floor met falling down that column (floors only pass from below)
-                    if up == 3 and g.get((cc, y + 1)) is not None: continue   # +3 needs a bare ledge face to catch, not a stack of shelves
+                    if up == 3 and not REACHNOW and g.get((cc, y + 1)) is not None: continue   # +3 needs a bare ledge face
                     if standable(g, cc, y + up) and not (across == 1 and up == 0) and (up >= 0 or land(g, cc, y + 2, lo) == y + up):
                         yield ("hop", cc, y + up, None), 3 + across
                         break
@@ -283,6 +286,7 @@ def find(name, view, start, goal, goal_view=None, done=None):
     his depth only changes when he lands on a trile at another depth."""
     grids = {v: grid(name, v) for v in ORDER}
     lo = min(y for g in grids.values() for _, y in g) - 1
+    global REACHNOW; REACHNOW = LOWREACH.get(name)
     s0 = (view, *start)
     dist, prev, q = {s0: 0}, {}, [(0, s0)]
     end = None

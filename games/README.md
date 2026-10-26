@@ -9,7 +9,7 @@ Every game Duke plays, and the queue. Duke plays for real: it reads the game's s
 | Duolingo (languages, math, chess, music) | `../scripts` | Runs around the clock |
 | Factorio | `factorio/` | Beaten |
 | Game Dev Tycoon | `gdt/` | Playing in slot 5 |
-| FEZ | `fez/` | 32 of 32 cubes, finishing at the Star Gate |
+| FEZ | `fez/` | Beaten 2026-10-26 (32 of 32 cubes, Star Gate ending); maxing out to 100% next |
 | Mirage (Joshua Tree's platformer) | `mirage/` | Played by the Joshua Tree loop |
 
 ## Queue
