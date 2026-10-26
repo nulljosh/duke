@@ -131,9 +131,7 @@ def step(kind, v, c, y):
     if s["grounded"] and s.get("door") is not None and (kind in ("climb", "grab") or kind == "hop" and y - here[2] >= 3):
         s = step_out(s, 1 if target > fez.h(s) else -1); here = node(s)   # these press Up, which in a doorway walks him through the door
     if kind.startswith("turn"): return turn_to(v)
-    if kind in ("walk", "swim"):
-        if "Climb" in s["action"]: letgo()   # on a vine over the floor: Right/Left only slides along it (Big Tower)
-        return fez.walk(target)
+    if kind in ("walk", "swim"): return fez.walk(target)
     if kind == "climb":   # along a vine: up/down until the height matches, sideways until the column does
         if y != here[2]:
             k = "up" if y > here[2] else "down"; fez.edge(k, True); t0 = time.time()

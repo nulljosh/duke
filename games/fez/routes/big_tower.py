@@ -9,9 +9,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import fez, go
 
 
-def stair(edge_h, release_h, view=None, peak=False):
+def stair(edge_h, release_h, view=None, peak=False, run=None):
+    """Jump from a step's edge toward release_h. run: start from there and run up to the edge first (more reach)."""
     if view: go.turn_to(view)
-    fez.walk(edge_h, tol=0.15)
+    if run is not None:
+        fez.walk(run, tol=0.15); sign = 1 if release_h > edge_h else -1; d = "right" if sign > 0 else "left"
+        fez.edge(d, True); t0 = time.time()
+        while time.time() - t0 < 2 and (fez.h(fez.state()) - edge_h) * sign < 0: time.sleep(0.01)
+    else: fez.walk(edge_h, tol=0.15)
     if peak:   # wait for the top of the bob: its own height is the only clock
         ys = []; t0 = time.time()
         while time.time() - t0 < 5: ys.append(fez.state()["pos"][1]); time.sleep(0.03)
@@ -55,8 +60,32 @@ def attempt():
     return s if s["pos"][1] > 62.5 else None
 
 
+def lower():
+    """Door to the y50 step: up the side vine, jump off its top onto the y36 ledge (stepping off drops him through:
+    the ledge sits at another depth), then the Right and Left faces' steps, each hop from the step's edge."""
+    s = fez.state()
+    if not (s["grounded"] and abs(s["pos"][1] - 36.47) < 0.2 and abs(s["pos"][2] - 27.5) < 0.3):   # not on the ledge yet
+        if go.go((18, 36), "Front", tries=6) is None and "Climb" not in fez.state()["action"]: return None
+        go.turn_to("Front"); fez.edge("down", True); t0 = time.time()
+        while time.time() - t0 < 2 and fez.state()["pos"][1] > 36.3: time.sleep(0.02)
+        fez.edge("down", False)
+        for _ in range(3):   # Right held before the jump, or he only shuffles along the vine
+            fez.edge("right", True); time.sleep(0.15); fez.key("space", 250); time.sleep(0.6); fez.edge("right", False)
+            s = go.landed()
+            if s["grounded"]: break
+    if go.go((-25, 38), "Right", tries=4) is None: return None
+    for e, r, y, v, run in [(-23.4, -20.6, 40, "Right", None), (-19.4, -16.6, 42, "Right", None), (-27.4, -24.6, 44, "Back", None),
+                            (-23.4, -20.6, 46, "Back", None), (17.6, 20.3, 48, "Left", None), (21.6, 24.3, 50, "Left", None)]:
+        for _ in range(4):   # a miss usually lands him back on the step he jumped from: go again
+            y0 = go.node(fez.state())[2]
+            if go.node(stair(e, r, v, run=run))[2] == y: break   # run: a short run-up (y40 > y42 falls short from a standstill)
+            if go.node(fez.state())[2] != y0: return None
+        else: return None
+    return fez.state()
+
+
 def up(tries=25):
-    if fez.state()["pos"][1] < 49.5 and go.go((20, 50), "Front", tries=10) is None: return None
+    if fez.state()["pos"][1] < 49.5 and lower() is None: return None
     for _ in range(tries):
         if fez.state()["level"] != "BIG_TOWER": return fez.state()
         s = attempt()
