@@ -82,3 +82,67 @@ def mine_a_bit():
     fez.edge("right", False)
     rot("a", "Left"); fez.walk(26.3, tol=0.2, timeout=1.4)
     time.sleep(3); return log(tp, "after")
+
+
+def wrap_bit5(stand=32.4, take_off=24.1, blow=4.66):
+    """Mine Wrap's second bit sits behind bricks (27-31, 41-42) above the door lintel. A blast scans each screen cell
+    from the camera and stops at the first solid non-brick tile (BombsHost.DestroyNeighborhood), so the Front walls
+    block it. From the Back camera, bricks step up unbroken: (30-34, 39-40, z12) then the bit's own rows 41-42.
+    So: lift the left post's bomb in Front view (standing on it), jump the gap, stop under x32, turn twice to Back,
+    and jump so the bomb is at the top of the jump when it goes. Fuse: 4.0 s plus about 0.33 s per camera turn."""
+    t0 = time.time()
+    go.go((21, 36), "Front"); tp = pickup(22.1, "right")   # lifts only when standing on the bomb
+    if tp is None: return log(t0, "no bomb")
+    while fez.state()["action"] == "Lifting" and time.time() - tp < 2: time.sleep(0.03)
+    fez.edge("right", True); jumped = None
+    while time.time() - tp < 3.4:
+        s = fez.state(); x = fez.h(s)
+        if jumped is None and x > take_off: fez.edge("space", True); jumped = time.time()
+        if jumped and time.time() - jumped > 0.5: fez.edge("space", False)
+        if jumped and x >= stand - 0.5: break
+        time.sleep(0.02)
+    fez.edge("right", False); fez.edge("space", False)
+    fez.walk(stand, tol=0.15, timeout=0.6); log(tp, "under bricks")
+    for want in ("Right", "Back"):
+        fez.key("d", 60); t = time.time()
+        while time.time() - t < 1.5 and fez.state()["view"] != want: time.sleep(0.02)
+    log(tp, "back")
+    while time.time() - tp < blow - 0.5: time.sleep(0.01)
+    fez.edge("space", True); t = time.time(); peak = 0; acts = []
+    while time.time() - t < 1.6:
+        s = fez.state(); peak = max(peak, s["pos"][1])
+        if not acts or acts[-1][1] != s["action"]: acts.append((round(time.time() - tp, 2), s["action"], round(s["pos"][1], 2)))
+        time.sleep(0.02)
+    fez.edge("space", False); print(acts); time.sleep(3); return log(tp, f"after, peak {round(peak, 2)}")
+
+
+def wrap_chain(turns=(1.0, 2.2, 3.2), take_off=24.1):
+    """Mine Wrap's tower bricks are ONE group (56 bricks) wrapped around all four faces, and a group only stays
+    gone if every brick goes; otherwise all of it respawns 1.5 s after the last one breaks (BombsHost.ClearDestructible).
+    A blast stops at the first solid non-brick tile from the camera, so each face can only burn while the camera
+    looks at it. Start at floor level on the right face (x34, z15-16, y36-38) in Right view, then turn Back, Left
+    and Front as the chain climbs and wraps round. The bit sits behind the last face, the front row above the door."""
+    t0 = time.time()
+    go.go((21, 36), "Front"); tp = pickup(22.1, "right")
+    if tp is None: return log(t0, "no bomb")
+    while fez.state()["action"] == "Lifting" and time.time() - tp < 2: time.sleep(0.03)
+    fez.edge("right", True); jumped = None
+    while time.time() - tp < 3.3:
+        s = fez.state(); x = fez.h(s)
+        if jumped is None and x > take_off: fez.edge("space", True); jumped = time.time()
+        if jumped and time.time() - jumped > 0.5: fez.edge("space", False)
+        if jumped and x >= 29.5 and s["grounded"]: break
+        time.sleep(0.02)
+    fez.edge("right", False); fez.edge("space", False)
+    while time.time() - tp < 3.6 and not (fez.state()["grounded"] and "Jump" not in fez.state()["action"]): time.sleep(0.02)
+    if fez.h(fez.state()) < 28: return log(tp, "short of the floor, abort")   # turning off the x27 lip drops him
+    fez.key("d", 60); t = time.time()
+    while time.time() - t < 1.5 and fez.state()["view"] != "Right": time.sleep(0.02)
+    fez.walk(-15.5, tol=0.2, timeout=1.6); log(tp, "under right face")
+    while time.time() - tp < 6 and fez.state()["action"] != "Suffering": time.sleep(0.01)
+    tb = time.time(); log(tp, "boom")
+    for at, want in zip(turns, ("Back", "Left", "Front")):
+        while time.time() - tb < at: time.sleep(0.01)
+        fez.key("d", 60); t = time.time()
+        while time.time() - t < 1.5 and fez.state()["view"] != want: time.sleep(0.02)
+    time.sleep(2.5); fez.shot("chain"); return log(tp, "after")
