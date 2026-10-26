@@ -92,8 +92,10 @@ def grid(name, view):
         if f == "AllSides": g[cell] = "wall"
         elif f in SOLID: g[cell] = "top"
         if f in SOLID: deps.setdefault(cell, set()).add(int(t["Position"][di] // 1))
-    for (c, y) in [k for k, v in g.items() if v == "top" and g.get((k[0], k[1] - 1)) == "top"]:
-        del g[(c, y)]   # shelves stacked on a floor are a background wall: Gomez jumps through and lands on the floor (Mine A, 2026-10-25)
+    filled = {tuple(t["Position"]) for t in triles(name) if (e := ts.get(t["Id"])) and not e.get("Immaterial") and e["Type"] not in ("Vine", "Ladder") and any(f in SOLID for f in e["Faces"].values())}
+    for cell in [k for k, v in g.items() if v == "top"]:
+        x, y, z = front[cell][1]["Position"]
+        if (x, y + 1, z) in filled: del g[cell]   # a top covered at the same depth is no floor: Mine A's stacked walls (2026-10-25)
     d = fezmap.level(name)
     if d.get("WaterType") not in (None, "None") and d.get("WaterHeight"):
         g.water = iround(d["WaterHeight"] - 0.5 - 0.4)   # the node row Gomez floats at (measured: y 8.5 under water at 9)

@@ -155,6 +155,10 @@ def go(goal, goal_view=None, tries=8, item=None):
             time.sleep(0.3); s = fez.state()
         plan.HOLES[s["level"]] = [(h["from"], h["to"]) for h in s.get("holes", []) if h["on"]]
         v, c, y, dep = node(s)
+        if s["grounded"] and not plan.standable(plan.grid(s["level"], v), c, y):   # this view's grid misreads the floor: try another camera
+            for alt in plan.ORDER:
+                if alt != v and (s := turn_to(alt)) and plan.standable(plan.grid(s["level"], alt), *node(s)[1:3]): break
+            v, c, y, dep = node(s)
         if "Climb" in s["action"] and plan.standable(plan.grid(s["level"], v), c, y):   # on a vine right above a floor: step down onto it
             letgo(); s = fez.state(); v, c, y, dep = node(s)
         if goal is not None and (c, y) == goal and goal_view in (None, v): return s
@@ -172,6 +176,8 @@ def go(goal, goal_view=None, tries=8, item=None):
         prev = (v, c, y, dep)
         for kind, (vv, cc, yy, _) in plan.compress(p):
             s = step(kind, vv, cc, yy)
+            t1 = time.time()
+            while s["action"].startswith(("JumpTo", "Landing")) and time.time() - t1 < 1.5: time.sleep(0.05); s = fez.state()   # let a vine catch finish
             if s["action"].startswith(("Grab", "PullUp")) and kind not in ("grab", "climb", "dropgrab"): s = settle(s)   # caught a ledge: pull up first
             got = node(s)
             if got[0] == vv and got[2] == yy and abs(got[1] - cc) == 1 and s["grounded"]:   # right floor, one column off: walk the rest
