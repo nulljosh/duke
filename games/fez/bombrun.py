@@ -61,3 +61,24 @@ def run_left(take_off=6.3, stop=14.0):
 if __name__ == "__main__":
     import sys
     run(stop=-13.8, turn=True) if sys.argv[1:] == ["left"] else run()
+
+
+def mine_a_bit():
+    """Mine A's walled-in bit: its bricks face the Left camera from the y42 ledge, the bomb sits on the top floor.
+    Gomez cannot climb with a bomb, so: lift in Back view, turn to Right, step off the ladder end, turn to Front
+    in mid-air (the view can turn while falling), land on the y42 ledge, turn to Left and walk under the bricks."""
+    def rot(k, want):
+        fez.key(k, 60); t = time.time()
+        while time.time() - t < 1.5 and fez.state()["view"] != want: time.sleep(0.02)
+    go.turn_to("Back"); fez.walk(-18.5, tol=0.08); time.sleep(0.2)
+    fez.key("ctrl", 120); tp = time.time()
+    while time.time() - tp < 2.5 and fez.state()["action"] != "CarryIdle": time.sleep(0.02)
+    rot("a", "Right"); fez.edge("right", True); r = False
+    while time.time() - tp < 7:
+        s = fez.state()
+        if not r and not s["grounded"]: fez.edge("right", False); fez.key("a", 60); r = True
+        if r and s["grounded"]: break
+        time.sleep(0.02)
+    fez.edge("right", False)
+    rot("a", "Left"); fez.walk(26.3, tol=0.2, timeout=1.4)
+    time.sleep(3); return log(tp, "after")
