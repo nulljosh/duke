@@ -74,6 +74,8 @@ def route(a, b):
             x, y = n["LevelName"], t[str(c["Node"])]["LevelName"]; g[x].add(y); g[y].add(x)
     prev, q = {a: None}, [a]
     for x in q:
+        try: g[x] |= {dest for dest, *_ in doors(x)}   # level doors the map tree leaves out (Memory Core to Industrial City)
+        except (OSError, ValueError, KeyError): pass
         for y in g[x]:
             if y not in prev: prev[y] = x; q.append(y)
     p = [b]

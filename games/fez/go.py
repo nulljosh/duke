@@ -176,7 +176,9 @@ FORGIVEN = set()
 
 
 def go(goal, goal_view=None, tries=14, item=None):
+    t_start = time.time()
     for attempt in range(tries):
+        if time.time() - t_start > 600: print("time budget spent", flush=True); return None   # skip a target after ~10 min
         s = fez.state()
         t0 = time.time()   # wait out falls and respawns; hanging on a vine or ledge counts as settled
         while (s["action"] in ("Dying", "FreeFalling") or not (s["grounded"] or s["action"] in ("Bouncing", "Treading", "Swimming") or "Climb" in s["action"] or s["action"].startswith("Grab"))) and time.time() - t0 < 10:
@@ -198,6 +200,11 @@ def go(goal, goal_view=None, tries=14, item=None):
         if goal is not None and (c, y) == goal and goal_view in (None, v): return s
         p = plan.find_item(s["level"], v, (c, y, dep), item) if item else plan.find(s["level"], v, (c, y, dep), goal, goal_view)
         if p == []: return s
+        if p is None and plan.USE_LIVE and plan.bridge_grid(s["level"], v) is not None:   # a bad live dump must not strand a known leg
+            plan.USE_LIVE = False
+            p = plan.find_item(s["level"], v, (c, y, dep), item) if item else plan.find(s["level"], v, (c, y, dep), goal, goal_view)
+            plan.USE_LIVE = True
+            if p is not None: print("planned on the level-data grid", flush=True)
         if p is None and s["level"] not in FORGIVEN and any(b[0] == s["level"] for b in plan.BANNED):   # bans can be timing flukes (bobbing pillars): forgive them once
             FORGIVEN.add(s["level"])
             plan.BANNED -= {b for b in plan.BANNED if b[0] == s["level"]}; plan.BANS.write_text("".join(repr(b) + "\n" for b in plan.BANNED))

@@ -4,8 +4,10 @@ The level is flattened to a 2D grid the way the camera sees it (collision is per
 Moves: walk, step off a ledge (fall at most MAX_DROP), hop (up to JUMP_UP, across up to JUMP_ACROSS), climb, turn.
   plan.py LEVEL VIEW FROM_H FROM_Y FROM_DEPTH TO_H TO_Y [TO_VIEW]      prints the move list
 Grid columns are screen-horizontal units (fez.h), rows are the y of the floor Gomez stands on."""
-import ast, collections, heapq, math, pathlib, sys
+import ast, collections, heapq, json, math, pathlib, sys
 import fezmap
+from fezlive import USE_LIVE, bobbers, bridge_grid
+import fezlive
 
 MAX_DROP = 6        # stepping off from rest turns into deadly FreeFalling after ~7 (Zu Library trace); jumps first eat into it
 JUMP_UP = 2         # full jump peak is about +2.3
@@ -58,25 +60,6 @@ def triles(name):
     return out
 
 
-def bobbers(name):
-    """Groups that move straight up on a looping path (Zu City's floating pillars): {gid: (top triles, rise)}."""
-    out = {}
-    for gid, g in fezmap.level(name)["Groups"].items():
-        path = g.get("Path")
-        if not isinstance(path, dict) or path.get("NeedsTrigger"): continue
-        segs = [sg["Destination"] for sg in path["Segments"]]
-        if any(dx or dz for dx, _, dz in segs) or not g["Triles"]: continue
-        rise = iround(sum(dy for _, dy, _ in segs if dy > 0))
-        if rise <= 0: continue
-        d = fezmap.level(name); ts = fezmap.tileset(d["TrileSetName"])
-        solid = {tuple(t["Position"]) for t in d["Triles"] if (e := ts.get(t["Id"])) and any(f in SOLID for f in e["Faces"].values())}
-        cols = {}
-        for x, y, z in (p for p in g["Triles"] if tuple(p) in solid):   # the pillar's top solid trile, not a decoration on it
-            if (x, z) not in cols or y > cols[(x, z)]: cols[(x, z)] = y
-        out[int(gid)] = ([(x, y, z) for (x, z), y in cols.items()], rise)
-    return out
-
-
 def grid(name, view):
     """(col, y) -> 'top' | 'wall' | 'climb', using the same projection as fezmap.view."""
     d = fezmap.level(name); ts = fezmap.tileset(d["TrileSetName"]); hi, hs, di, ds = fezmap.VIEWS[view]
@@ -107,7 +90,14 @@ def grid(name, view):
         for c in range(int(min(lo3[hi] * hs, hi3[hi] * hs) // 1) - 1, int(max(lo3[hi] * hs, hi3[hi] * hs) // 1) + 2):
             for yy in range(int(lo3[1] // 1) - 1, int(hi3[1] // 1) + 2):
                 g[(c, yy)] = "wall"
-    for cell, (k, t, e) in front.items():
+    live = None if ROTATED.get(name) or not fezlive.USE_LIVE else bridge_grid(name, view)
+    if live is not None:   # the game's own collision answer (SurfBridge surfgrid.json): trust it over the level data
+        for w, y, f, depth, typ in live:
+            cell = (int((w + 0.5) * hs // 1), y)
+            if g.get(cell) == "wall" or f not in SOLID: continue
+            g[cell] = "bounce" if typ == "Bouncer" else "wall" if f == "AllSides" else "top"
+            deps.setdefault(cell, set()).add(int(depth // 1))
+    for cell, (k, t, e) in (() if live is not None else front.items()):
         if g.get(cell) == "wall": continue
         f = e["Faces"].get(view, "None")
         if e["Type"] == "Bouncer" and f in SOLID: g[cell] = "bounce"; deps.setdefault(cell, set()).add(int(t["Position"][di] // 1)); continue
@@ -115,7 +105,7 @@ def grid(name, view):
         elif f in SOLID: g[cell] = "top"
         if f in SOLID: deps.setdefault(cell, set()).add(int(t["Position"][di] // 1))
     filled = {tuple(t["Position"]) for t in triles(name) if (e := ts.get(t["Id"])) and not e.get("Immaterial") and e["Type"] not in ("Vine", "Ladder") and any(f in SOLID for f in e["Faces"].values())}
-    for cell in [k for k, v in g.items() if v == "top"]:
+    for cell in [k for k, v in g.items() if v == "top" and live is None]:
         x, y, z = front[cell][1]["Position"]
         if (x, y + 1, z) in filled: del g[cell]   # a top covered at the same depth is no floor: Mine A's stacked walls (2026-10-25)
     for v, c, y in SEEN.get(name, ()):

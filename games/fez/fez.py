@@ -162,6 +162,7 @@ def start(slot=3):
     for _ in range(30):   # the main menu ignores Enter while it animates in, so keep pressing until a level loads
         key("enter"); time.sleep(3)
         if (s := state()) and not s["loading"]:
+            if s.get("slot") == slot - 1: cmd("timescale 1.5")   # Joshua asked for faster play; a restart resets it to 1.0
             if s.get("slot") != slot - 1:   # never play Joshua's own slots
                 subprocess.run(["pkill", "-x", "HAT.bin.osx"]); time.sleep(2)
                 for p, (b, m) in keep.items(): p.write_bytes(b); os.utime(p, (m, m))

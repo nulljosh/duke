@@ -1,4 +1,6 @@
+using FezEngine;
 using FezEngine.Structure;
+using FezEngine.Services;
 using FezEngine.Tools;
 using FezGame;
 using FezGame.Services;
@@ -18,6 +20,11 @@ namespace SurfBridge
         [ServiceDependency] public IGameStateManager GameState { private get; set; }
 
         static readonly string OutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library/Application Support/FEZ/surfbridge.json");
+        static readonly string GridPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library/Application Support/FEZ/surfgrid.json");
+        static readonly Viewpoint[] Views = { Viewpoint.Front, Viewpoint.Right, Viewpoint.Back, Viewpoint.Left };
+        readonly Dictionary<Viewpoint, string> grids = new();
+        readonly HashSet<Viewpoint> exact = new();
+        string gridLevel;
         static readonly HashSet<ActorType> Wanted = new() { ActorType.CubeShard, ActorType.GoldenCube, ActorType.SecretCube, ActorType.PieceOfHeart, ActorType.SkeletonKey };
         int frame;
 
@@ -28,15 +35,53 @@ namespace SurfBridge
         static string F(float v) => v.ToString("0.###", CultureInfo.InvariantCulture);
         static string V(Vector3 v) => $"[{F(v.X)},{F(v.Y)},{F(v.Z)}]";
 
+        // The game's own collision answer per camera: for each screen cell, the trile FEZ collides with there
+        // (CollisionManager.CollidePoint takes NearestTrile's Deep ?? Surface) and that trile's face for the view.
+        // Material tests use the live camera, so a view is "exact" only once it was dumped while the camera faced it.
+        string Grid(Viewpoint vp)
+        {
+            var size = LevelManager.Size; bool fb = vp == Viewpoint.Front || vp == Viewpoint.Back;
+            var sb = new StringBuilder("[");
+            bool first = true;
+            for (int w = -2; w < (fb ? size.X : size.Z) + 2; w++)
+                for (int y = -2; y < size.Y + 2; y++)
+                {
+                    var pos = fb ? new Vector3(w + 0.5f, y + 0.5f, 0) : new Vector3(0, y + 0.5f, w + 0.5f);
+                    var n = LevelManager.NearestTrile(pos, QueryOptions.None, vp);
+                    var t = n.Deep ?? n.Surface;
+                    if (t == null) continue;
+                    var face = t.GetRotatedFace(vp.VisibleOrientation());
+                    float depth = fb ? t.Position.Z : t.Position.X;
+                    sb.Append(first ? "" : ",").Append($"[{w},{y},\"{face}\",{F(depth)},\"{t.Trile.ActorSettings.Type}\"]");
+                    first = false;
+                }
+            return sb.Append(']').ToString();
+        }
+
+        void DumpGrids()
+        {
+            var vp = CameraManager.Viewpoint;
+            if (LevelManager.Name != gridLevel) { grids.Clear(); exact.Clear(); gridLevel = LevelManager.Name; foreach (var v in Views) grids[v] = Grid(v); }
+            else if (Array.IndexOf(Views, vp) >= 0 && !exact.Contains(vp)) grids[vp] = Grid(vp);
+            else return;
+            if (Array.IndexOf(Views, vp) >= 0) exact.Add(vp);
+            var sb = new StringBuilder($"{{\"level\":\"{gridLevel}\",\"exact\":[{string.Join(",", exact.Select(v => $"\"{v}\""))}],\"views\":{{");
+            sb.Append(string.Join(",", grids.Select(kv => $"\"{kv.Key}\":{kv.Value}"))).Append("}}");
+            File.WriteAllText(GridPath + ".tmp", sb.ToString());
+            File.Move(GridPath + ".tmp", GridPath, true);
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (++frame % 6 != 0 || PlayerManager == null || LevelManager?.Name == null) return;
+            try { if (!GameState.Loading && CameraManager.Viewpoint.IsOrthographic() && CameraManager.ActionRunning) DumpGrids(); } catch (Exception) { }
             try
             {
                 var sb = new StringBuilder();
                 var sd = GameState.SaveData;
                 sb.Append($"{{\"t\":{F((float)gameTime.TotalGameTime.TotalSeconds)},\"slot\":{GameState.SaveSlot},\"level\":\"{LevelManager.Name}\",\"loading\":{(GameState.Loading ? "true" : "false")}");
                 sb.Append($",\"pos\":{V(PlayerManager.Position)},\"vel\":{V(PlayerManager.Velocity)},\"action\":\"{PlayerManager.Action}\",\"grounded\":{(PlayerManager.Grounded ? "true" : "false")}");
+                sb.Append($",\"bg\":{(PlayerManager.Background ? "true" : "false")},\"control\":{(PlayerManager.CanControl ? "true" : "false")},\"door\":{(PlayerManager.DoorVolume.HasValue ? PlayerManager.DoorVolume.Value.ToString() : "null")},\"tunnel\":{(PlayerManager.TunnelVolume.HasValue ? PlayerManager.TunnelVolume.Value.ToString() : "null")},\"volumes\":[{string.Join(",", PlayerManager.CurrentVolumes.Select(v => v.Id))}]");
                 sb.Append($",\"view\":\"{CameraManager.Viewpoint}\",\"cubes\":{sd.CubeShards},\"anti\":{sd.SecretCubes},\"bits\":{sd.CollectedParts},\"keys\":{sd.Keys}");
                 sb.Append(",\"items\":[");
                 bool first = true;
