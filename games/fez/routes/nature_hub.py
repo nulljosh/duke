@@ -51,5 +51,18 @@ def to_waterfall():
     return trip.door("WATERFALL")
 
 
+def warp_zu():
+    """The warp gate (GATEAO at x12 y25 z18) sends Gomez to Zu City Ruins from its Front face. FEZ only warps when
+    Gomez is grounded within 1.5 of the gate across and 2 up or down, so stand on the gate's step (y23.5), not the
+    floor (y22.5), and in front of it in depth (z20.5). The planner reaches Front 12,22; a hop puts him on the step."""
+    if go.go((12, 22), "Front") is None: return None
+    go.turn_to("Left"); fez.walk(19.6, tol=0.2)   # in front of the gate in depth
+    go.turn_to("Front"); fez.walk(12.0, tol=0.15)
+    fez.key("space", 200); time.sleep(1.2); fez.walk(12.0, tol=0.15)
+    if fez.state()["pos"][1] < 23: return None
+    fez.key("up", 150)
+    return wait_level("ZU_CITY_RUINS", 40)
+
+
 if __name__ == "__main__":
     s = reroll_holes() and to_waterfall(); print(s and (s["level"], s["pos"]))
