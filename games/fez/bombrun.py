@@ -257,3 +257,19 @@ def pillar_bit():
     fez.edge(held, False); log(tp, "dropped")
     fez.walk(29.0, tol=0.15, timeout=1.5); log(tp, "under brick")
     time.sleep(3.5); return log(tp, "after")
+
+
+def pillar_bricks(edge=19.8, go_at=3.25):
+    """Bomb Pillar's chest sits atop the left pillar, whose ladder (x14, z20, y54-58) runs into a 3x4x3 brick block
+    (13-15, 59-62, 17-19). Carry the roof bomb in Front view to the roof's left lip (level with the block's bottom
+    row), wait there, then step off toward the pillar so the 4 s fuse runs out as the bomb passes x16, y59."""
+    go.go((23, 60), "Front"); tp = pickup(23.3, "left")
+    if tp is None: return log(time.time(), "no bomb")
+    while fez.state()["action"] == "Lifting" and time.time() - tp < 2: time.sleep(0.03)
+    fez.walk(edge, tol=0.15, timeout=1.6); log(tp, "on the lip")
+    while time.time() - tp < go_at: time.sleep(0.01)
+    fez.edge("left", True); fez.edge("space", True); trace = []   # jump off: walking off drops below the block too soon
+    while time.time() - tp < 4.6:
+        s = fez.state(); trace.append((round(time.time() - tp, 2), round(fez.h(s), 2), round(s["pos"][1], 2), s["action"])); time.sleep(0.03)
+    fez.edge("left", False); fez.edge("space", False); print(trace[::2])
+    time.sleep(2.5); fez.shot("pillar"); return log(tp, "after")
