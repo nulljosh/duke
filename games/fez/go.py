@@ -225,6 +225,7 @@ def door(to):
         v = views[0]; hi, hs, _, _ = fezmap.VIEWS[v]
         col = int(((f[hi] + t[hi]) / 2) * hs // 1); y = iround(f[1])
         if go((col, y), v) is None: return None
+        fez.walk(((f[hi] + t[hi]) / 2) * hs, tol=0.15)   # the door's centre, not its grid column: thin doors sit on a cell edge
         fez.key("up", 150); time.sleep(6); s = fez.state()
         if s["level"] == lvl:   # behind the door in depth (Mine A, 2026-10-25): step to its depth from a side view, then retry
             side = plan.ORDER[(plan.ORDER.index(v) + 1) % 4]; shi, shs, _, _ = fezmap.VIEWS[side]
