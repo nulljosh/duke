@@ -11,6 +11,28 @@ import fez, go
 aim = go.aim
 
 
+def from_top():
+    """From the Tree Sky door (y97 step, Right view) to the y77 ledge. The y85 ledge (x9-10) is only solid in the Back
+    view: drop onto the y92 mushroom in the Right view, turn to Back on the bounce and steer onto it. A dropgrab
+    from there catches the trunk vine; climb it down-left in the Front view to its foot (x9.6) and let go."""
+    go.turn_to("Right")
+    fez.edge("left", True); t0 = time.time()
+    while time.time() - t0 < 1.5 and fez.state()["grounded"]: time.sleep(0.02)
+    fez.edge("left", False)
+    aim(-35.5, 92.5); fez.key("d", 100); time.sleep(0.3)   # y92 mushroom, Right -> Back
+    s = aim(-9.0, 85.5, timeout=8); time.sleep(1)
+    if abs(s["pos"][1] - 85.47) > 0.3: return None
+    if go.go((-11, 82), "Back", tries=6) is None: return None
+    go.turn_to("Front"); fez.edge("down", True); fez.edge("left", True); t0 = time.time()
+    while time.time() - t0 < 6:
+        s = fez.state()
+        if s["pos"][0] <= 9.8: fez.edge("left", False)
+        if s["pos"][1] < 79.2 and s["pos"][0] <= 9.8: break
+        time.sleep(0.03)
+    fez.edge("down", False); fez.edge("left", False)
+    return go.letgo()
+
+
 def down():
     """Run from the y77 ledge, Front view. Black holes between y64 and y75 re-roll per load: go while they're off."""
     aim(5.6, 73.5); aim(1.5, 69.5)            # y72 mushroom, then y68
