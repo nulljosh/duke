@@ -186,6 +186,41 @@ def cloud_sea(d, w, h, rng, y0):
         d.rectangle([0, base + 2, w, h], fill=hexc(body))
 
 
+def glow(d, img, cx, cy, r, rings):
+    """A dithered halo on the dark sky only, so it reads as light without a smooth gradient."""
+    px = img.load()
+    for y in range(max(0, cy - r), min(img.height, cy + r)):
+        for x in range(max(0, cx - r), min(img.width, cx + r)):
+            q = math.hypot(x - cx, y - cy) / r
+            if q >= 1 or sum(px[x, y]) > 140: continue
+            for edge, col, dens in rings:
+                if q < edge and BAYER[y % 4][x % 4] < 16 * dens * (1 - q / edge): d.point((x, y), hexc(col)); break
+
+
+def vignette(img, frame):
+    """Darken the corners in dithered steps and draw a thin frame, the Hermes/Nous way."""
+    px = img.load(); w, h = img.size
+    for y in range(h):
+        for x in range(w):
+            e = max(0, (math.hypot((x - w / 2) / (w / 2), (y - h / 2) / (h / 2)) - .7) / .55)
+            if e and BAYER[y % 4][x % 4] < 16 * min(1, e) * .8:
+                r, g, b = px[x, y]; px[x, y] = (r * 3 // 5, g * 3 // 5, b * 3 // 5)
+    ImageDraw.Draw(img).rectangle([frame, frame, w - 1 - frame, h - 1 - frame], outline=hexc("#3a5788"))
+
+
+def scanlines(img, period, dark=.8):
+    W, H = img.size
+    col = Image.new("L", (1, H)); col.putdata([int(255 * dark) if y % period >= period * 5 // 8 else 255 for y in range(H)])
+    m = col.resize((W, H), Image.NEAREST)
+    return ImageChops.multiply(img, Image.merge("RGB", (m, m, m)))
+
+
+def grain(img, block=2, amount=.16):
+    W, H = img.size
+    n = Image.effect_noise((W // block, H // block), 48).resize((W, H), Image.NEAREST)
+    return Image.blend(img, ImageChops.overlay(img, Image.merge("RGB", (n, n, n))), amount)
+
+
 def fez(kind):
     W, H = SIZES[kind]; scale = 8 if kind == "desktop" else 4; w, h = W // scale, H // scale
     img = Image.new("RGB", (w, h)); d = ImageDraw.Draw(img); rng = random.Random(32)
@@ -194,6 +229,8 @@ def fez(kind):
         mo, main, gold, sea, far = (96, 64, 22), (420, 196), (250, 104), 300, [((118, 212), 3.0, 8), ((560, 120), 2.4, 8), ((612, 250), 2.0, 6)]
     else:
         mo, main, gold, sea, far = (250, 236, 18), (165, 530), (104, 330), 630, [((40, 450), 2.2, 6), ((292, 392), 2.0, 6)]
+    glow(d, img, mo[0], mo[1], mo[2] * 3, [(.5, "#3a5788", .8), (1, "#22335a", .9)])
+    glow(d, img, *gold, 100, [(.42, "#9a7418", .5), (.7, "#5a4a1e", .45), (1, "#2c4370", .5)])
     stars(d, w, h, rng, w * h // 520, [(mo[0], mo[1], mo[2] + 10), (gold[0], gold[1], 50)])
     moon(d, *mo)
     for (fx, fy), fr, fs in far:
@@ -206,7 +243,8 @@ def fez(kind):
     door(d, ox, oy, top, s)
     hx, hy = at(ox, oy, 0, 1, top, s); fez_hat(d, hx + 4, hy - 4)
     gold_cube(d, *gold, 34, .5, rng)
-    return img.resize((W, H), Image.NEAREST)
+    vignette(img, 6 if kind == "desktop" else 4)
+    return grain(scanlines(img.resize((W, H), Image.NEAREST), scale))
 
 
 # ---------- Surf: the brand tile, Neptune's Horses and one glyph per game ----------
