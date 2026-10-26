@@ -92,6 +92,8 @@ def grid(name, view):
         if f == "AllSides": g[cell] = "wall"
         elif f in SOLID: g[cell] = "top"
         if f in SOLID: deps.setdefault(cell, set()).add(int(t["Position"][di] // 1))
+    for (c, y) in [k for k, v in g.items() if v == "top" and g.get((k[0], k[1] + 1)) in ("top", "wall")]:
+        g[(c, y)] = "wall"   # a stack of shelves is a solid tower from the side; only its top holds (Mine A, 2026-10-25)
     d = fezmap.level(name)
     if d.get("WaterType") not in (None, "None") and d.get("WaterHeight"):
         g.water = iround(d["WaterHeight"] - 0.5 - 0.4)   # the node row Gomez floats at (measured: y 8.5 under water at 9)
@@ -180,6 +182,8 @@ def moves(g, c, y, lo, cl=None, dep=0):
                 if any(g.get((c + dc * k, y + 2)) == "wall" for k in range(1, across + 1)): break
                 for up in range(JUMP_UP + (1 if across <= 3 else 0), -5, -1):   # +3 only by catching the ledge
                     # landing lower must be the first floor met falling down that column (floors only pass from below)
+                    if across > 5 - max(up, 0): continue   # measured: +2 up and 5 across falls short (Mine A, 2026-10-25)
+                    if up == 3 and g.get((cc, y + 1)) is not None: continue   # +3 needs a bare ledge face to catch, not a stack of shelves
                     if standable(g, cc, y + up) and not (across == 1 and up == 0) and (up >= 0 or land(g, cc, y + 2, lo) == y + up):
                         yield ("hop", cc, y + up, None), 3 + across
                         break

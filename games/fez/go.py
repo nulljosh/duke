@@ -142,7 +142,7 @@ def step(kind, v, c, y):
         return fez.state() if fez.state()["action"] == "Bouncing" else settle(landed())
     if kind == "hop":
         up = y - here[2]
-        if s["action"] in ("Treading", "Swimming"):   # out of water only by catching the ledge: hold Up, long jump (Nature Hub, 2026-10-25)
+        if s["action"] in ("Treading", "Swimming") or up >= 3:   # +3 (and out of water) only by catching the ledge: hold Up, long jump (Nature Hub, 2026-10-25)
             fez.edge("up", True); s = fez.hop(target, jump_ms=600, lead=0.5); fez.edge("up", False); return settle(landed(2))
         return settle(fez.hop(target, jump_ms=450 if up > 0 else 250 if up == 0 else 120, lead=0.5))
 
@@ -235,6 +235,7 @@ def sweep(level):
 
 
 if __name__ == "__main__":
+    for k in fez.CODES: fez.edge(k, False)   # a killed run leaves keys held; Gomez then runs off ledges after every respawn
     if sys.argv[1] == "sweep":
         for lv in sys.argv[2:]: s = sweep(lv)
     elif sys.argv[1] == "travel": s = travel(sys.argv[2])
