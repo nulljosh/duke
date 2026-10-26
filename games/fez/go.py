@@ -291,7 +291,7 @@ def travel(to):
         s = door(nxt)
         if s is None or s["level"] != nxt:
             print("stuck going", here, "->", nxt, flush=True)
-            if s is not None and s["level"] == here: fezmap.block(here, nxt)   # reached it but it would not open: route around next time
+            if (s or fez.state() or {}).get("level") == here: fezmap.block(here, nxt)   # reached it but it would not open: route around next time
             return None
     return None
 
