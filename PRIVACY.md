@@ -13,7 +13,7 @@ Your Duolingo session cookie, the browser profile, and the logs of every lesson 
 - **The public tunnel.** If you run the Cloudflare tunnel, that same live state is readable by anyone at your status address, and the landing page shows it as a live demo. Pausing, switching course and the screenshot need a token. Turn the tunnel off to keep it all on your network.
 
 ## The website
-surf.jaybulb.com is a static page on Cloudflare Pages. It sets no cookies and runs no analytics. Cloudflare keeps standard request logs, as every host does.
+duke.jaybulb.com (surf.jaybulb.com still serves) is a static page on Cloudflare Pages. It sets no cookies and runs no analytics. Cloudflare keeps standard request logs, as every host does.
 
 ## Kids
 Duke isn't made for children under 13 and doesn't knowingly collect anything from them.

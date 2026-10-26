@@ -4,7 +4,7 @@
 
 Duke plays Duolingo for you. Languages, math and chess, around the clock, in a real browser. Formerly Cruise.
 
-**Live:** https://surf.jaybulb.com
+**Live:** https://duke.jaybulb.com
 
 It reads each question's answer out of the page's own React state and clicks it. Math has no answer on the page, so Duke solves those itself. Nothing is guessed. A shape it has never seen gets logged and skipped.
 

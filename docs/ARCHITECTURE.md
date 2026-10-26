@@ -26,7 +26,7 @@ The runner serves its state on port 8737 and takes `POST /switch`, `/pause` and 
 | `kmp/` | Compose Multiplatform client for Android, Windows and Linux |
 | `tui/` | `duke-tui`, a one-shot terminal status card |
 | `functions/api/live.js` | Edge-cached live state for the landing |
-| `web/` | The landing at surf.jaybulb.com |
+| `web/` | The landing at duke.jaybulb.com |
 | `brand/` | Design system: tokens, mark, icon, Duke Sans notes |
 
 ## Build and test
