@@ -1,0 +1,292 @@
+{"type": "assist", "prompt": "aunt", "answer": "тётя"}
+{"type": "assist", "prompt": "daughter", "answer": "дочь"}
+{"type": "assist", "prompt": "grandson", "answer": "внука"}
+{"type": "assist", "prompt": "son", "answer": "сын"}
+{"type": "gapFill", "prompt": "___ делают из молока.", "answer": "сметану"}
+{"type": "gapFill", "prompt": "___ туалет", "answer": "женский"}
+{"type": "gapFill", "prompt": "Где ___ тетради?", "answer": "ваши"}
+{"type": "gapFill", "prompt": "Девушка всё ___ и идёт спать.", "answer": "прочитала"}
+{"type": "gapFill", "prompt": "Мне нужно найти большую ___ коробку.", "answer": "треугольную"}
+{"type": "gapFill", "prompt": "Они не ___.", "answer": "россияне"}
+{"type": "gapFill", "prompt": "Привет, ты здесь до ___?", "answer": "ночи"}
+{"type": "gapFill", "prompt": "У ___ брата дома нет кровати.", "answer": "моего"}
+{"type": "gapFill", "prompt": "У ___ дочерей хорошие учителя.", "answer": "моих"}
+{"type": "gapFill", "prompt": "У меня на даче много ___.", "answer": "берёз"}
+{"type": "gapFill", "prompt": "Я ___ сыр.", "answer": "ем"}
+{"type": "select", "prompt": "grandfather", "answer": "дедушка"}
+{"type": "select", "prompt": "grandmother", "answer": "бабушка"}
+{"type": "select", "prompt": "pig", "answer": "свинья"}
+{"type": "translate", "prompt": "A white birch grows under my window.", "answer": "Под моим окном растёт белая берёза."}
+{"type": "translate", "prompt": "Can you get up late?", "answer": "Вы можете вставать поздно?"}
+{"type": "translate", "prompt": "Could you wash the knives and forks?", "answer": "Можете помыть ножи и вилки?"}
+{"type": "translate", "prompt": "Dima was late to the lecture again.", "answer": "Дима опять опоздал на лекцию."}
+{"type": "translate", "prompt": "Do you like apples?", "answer": "Ты любишь яблоки?"}
+{"type": "translate", "prompt": "Do you smoke?", "answer": "Вы курите?"}
+{"type": "translate", "prompt": "He came on time.", "answer": "Он пришёл вовремя."}
+{"type": "translate", "prompt": "He does not have water.", "answer": "У него нет воды."}
+{"type": "translate", "prompt": "He is drinking tea in the kitchen.", "answer": "Он пьёт чай на кухне."}
+{"type": "translate", "prompt": "He threw a ball at me again.", "answer": "Он опять бросил в меня мяч."}
+{"type": "translate", "prompt": "He wants to buy this shirt.", "answer": "Он хочет купить эту рубашку."}
+{"type": "translate", "prompt": "He was looking at the tea.", "answer": "Он смотрел на чай."}
+{"type": "translate", "prompt": "His aunt is his father's sister.", "answer": "Его тётя - сестра его отца."}
+{"type": "translate", "prompt": "His girlfriend wants to read.", "answer": "Его девушка хочет читать."}
+{"type": "translate", "prompt": "I am opening the door.", "answer": "Я открываю дверь."}
+{"type": "translate", "prompt": "I am reading about this street.", "answer": "Я читаю об этой улице."}
+{"type": "translate", "prompt": "I eat.", "answer": "Я ем."}
+{"type": "translate", "prompt": "I have a lot of birches at my dacha.", "answer": "У меня на даче много берёз."}
+{"type": "translate", "prompt": "I like skating.", "answer": "Мне нравится кататься на коньках."}
+{"type": "translate", "prompt": "I like to have lunch here.", "answer": "Я люблю тут обедать."}
+{"type": "translate", "prompt": "I need fruit.", "answer": "Мне нужны фрукты."}
+{"type": "translate", "prompt": "I need to find a big triangular box.", "answer": "Мне нужно найти большую треугольную коробку."}
+{"type": "translate", "prompt": "I previously worked as a translator.", "answer": "Я раньше работала переводчиком."}
+{"type": "translate", "prompt": "In the village we wash ourselves in a banya.", "answer": "В деревне мы моемся в бане."}
+{"type": "translate", "prompt": "Is he Russian?", "answer": "Он россиянин?"}
+{"type": "translate", "prompt": "It is muddy and cold there.", "answer": "Там грязно и холодно."}
+{"type": "translate", "prompt": "Katya goes to Berlin every month.", "answer": "Катя ездит в Берлин каждый месяц."}
+{"type": "translate", "prompt": "Kazan is a city on the Volga River.", "answer": "Казань — это город на реке Волге."}
+{"type": "translate", "prompt": "Mom has a sister.", "answer": "У мамы есть сестра."}
+{"type": "translate", "prompt": "Mom learned what cats I like.", "answer": "Мама узнала, какие мне нравятся кошки."}
+{"type": "translate", "prompt": "My brother is eating an apple.", "answer": "Мой брат ест яблоко."}
+{"type": "translate", "prompt": "My brothers play piano.", "answer": "Мои братья играют на пианино."}
+{"type": "translate", "prompt": "My grandfather loves me.", "answer": "Мой дедушка любит меня."}
+{"type": "translate", "prompt": "My sister opens the book again.", "answer": "Моя сестра снова открывает книгу."}
+{"type": "translate", "prompt": "My skirt is on the chair.", "answer": "Моя юбка на стуле."}
+{"type": "translate", "prompt": "My uncle is my mother's brother.", "answer": "Мой дядя - это брат моей матери."}
+{"type": "translate", "prompt": "On Wednesday she does not need to go to school.", "answer": "В среду ей не надо идти в школу."}
+{"type": "translate", "prompt": "Russian folk musical instruments", "answer": "русские народные музыкальные инструменты"}
+{"type": "translate", "prompt": "The frog is jumping.", "answer": "Лягушка прыгает."}
+{"type": "translate", "prompt": "The soccer players are already at the stadium.", "answer": "Футболисты уже на стадионе."}
+{"type": "translate", "prompt": "The soccer players are running around the stadium.", "answer": "Футболисты бегают по стадиону."}
+{"type": "translate", "prompt": "The teacher gave us little time.", "answer": "Учитель дал нам мало времени."}
+{"type": "translate", "prompt": "There are a lot of churches and mosques in Kazan.", "answer": "В Казани много церквей и мечетей."}
+{"type": "translate", "prompt": "There are many long poems in this book.", "answer": "В этой книге много длинных стихов."}
+{"type": "translate", "prompt": "There are three birches and a river in the picture.", "answer": "На картине — три берёзы и река."}
+{"type": "translate", "prompt": "There is nothing about it in my book.", "answer": "В моей книге ничего об этом нет."}
+{"type": "translate", "prompt": "These rooms are mine.", "answer": "Эти комнаты - мои."}
+{"type": "translate", "prompt": "This is the price in Russian rubles.", "answer": "Это цена в российских рублях."}
+{"type": "translate", "prompt": "This movie has a sad ending.", "answer": "У этого фильма грустный конец."}
+{"type": "translate", "prompt": "Tomorrow I am leaving for Russia.", "answer": "Завтра я уезжаю в Россию."}
+{"type": "translate", "prompt": "Victoria is sometimes late for school.", "answer": "Виктория иногда опаздывает в школу."}
+{"type": "translate", "prompt": "What color is your bag?", "answer": "Какого цвета твоя сумка?"}
+{"type": "translate", "prompt": "What do buddhists think about death?", "answer": "Что буддисты думают про смерть?"}
+{"type": "translate", "prompt": "Where is Ivan Chernov?", "answer": "Где Иван Чернов?"}
+{"type": "translate", "prompt": "Where is the eagle flying?", "answer": "Куда летит орёл?"}
+{"type": "translate", "prompt": "Which city is he going to?", "answer": "В какой город он едет?"}
+{"type": "translate", "prompt": "Yes, the cat is here.", "answer": "Да, кошка здесь."}
+{"type": "translate", "prompt": "Yesterday he learned where the university is.", "answer": "Вчера он узнал, где находится университет."}
+{"type": "translate", "prompt": "You are a ghost. You do not exist!", "answer": "Ты привидение. Ты не существуешь!"}
+{"type": "translate", "prompt": "You eat apples and drink milk.", "answer": "Ты ешь яблоки и пьёшь молоко."}
+{"type": "translate", "prompt": "Your visa is here.", "answer": "Твоя виза здесь."}
+{"type": "translate", "prompt": "five o'clock", "answer": "пять часов"}
+{"type": "translate", "prompt": "state language", "answer": "государственный язык"}
+{"type": "translate", "prompt": "the State Flag of the Russian Federation", "answer": "Государственный флаг Российской Федерации"}
+{"type": "translate", "prompt": "the great Volga river", "answer": "великая река Волга"}
+{"type": "translate", "prompt": "your horses", "answer": "ваши лошади"}
+{"type": "translate", "prompt": "Ёж живёт в этом парке.", "answer": "The hedgehog lives in this park."}
+{"type": "translate", "prompt": "Александра пьёт кофе?", "answer": "Does Alexandra drink coffee?"}
+{"type": "translate", "prompt": "Бабочка летает в саду.", "answer": "The butterfly is flying in the garden."}
+{"type": "translate", "prompt": "Билеты здесь.", "answer": "The tickets are here."}
+{"type": "translate", "prompt": "Борис купил яблоки и положил их в сумку.", "answer": "Boris bought apples and put them into the bag."}
+{"type": "translate", "prompt": "В Казани два государственных языка.", "answer": "Kazan has two state languages."}
+{"type": "translate", "prompt": "В Казани много церквей и мечетей.", "answer": "There are a lot of churches and mosques in Kazan."}
+{"type": "translate", "prompt": "В деревне мы моемся в бане.", "answer": "In the village we wash ourselves in a banya."}
+{"type": "translate", "prompt": "В парке есть медведь!", "answer": "There is a bear in the park!"}
+{"type": "translate", "prompt": "В парке живёт лиса.", "answer": "A fox lives in the park."}
+{"type": "translate", "prompt": "В понедельник мы начнём готовиться к экзамену.", "answer": "On Monday we will start preparing for the exam."}
+{"type": "translate", "prompt": "В последнее время я поздно завтракаю.", "answer": "Recently, I have my breakfast late."}
+{"type": "translate", "prompt": "В храме поют буддисты.", "answer": "Buddhists are singing in the temple."}
+{"type": "translate", "prompt": "В этой книге много длинных стихов.", "answer": "There are many long poems in this book."}
+{"type": "translate", "prompt": "В этой комнате много места.", "answer": "There is lots of room in this room."}
+{"type": "translate", "prompt": "В этом городе есть буддисты?", "answer": "Are there Buddhists in this town?"}
+{"type": "translate", "prompt": "В этом доме четыре комнаты.", "answer": "There are four rooms in this house."}
+{"type": "translate", "prompt": "Ваши братья едят суп.", "answer": "Your brothers are eating soup."}
+{"type": "translate", "prompt": "Ваши дети в такси.", "answer": "Your children are in the taxi."}
+{"type": "translate", "prompt": "Виктория иногда опаздывает в школу.", "answer": "Victoria is sometimes late for school."}
+{"type": "translate", "prompt": "Во дворце нет места.", "answer": "There is no room in the palace."}
+{"type": "translate", "prompt": "Возле реки очень грязно.", "answer": "It is very muddy near the river."}
+{"type": "translate", "prompt": "Возьми с собой бутерброд с сыром.", "answer": "Take an open sandwich with cheese with you."}
+{"type": "translate", "prompt": "Волга — самая длинная река в Европе.", "answer": "The Volga is the longest river in Europe."}
+{"type": "translate", "prompt": "Вчера он узнал, где находится университет.", "answer": "Yesterday he learned where the university is."}
+{"type": "translate", "prompt": "Вы курите?", "answer": "Do you smoke?"}
+{"type": "translate", "prompt": "Вы можете вставать поздно?", "answer": "Can you get up late?"}
+{"type": "translate", "prompt": "Где ваши братья?", "answer": "Where are your brothers?"}
+{"type": "translate", "prompt": "Да, я хочу быть менеджером.", "answer": "Yes, I want to be the manager."}
+{"type": "translate", "prompt": "Дай мне ключи и я войду в квартиру.", "answer": "Give me the keys and I will enter the apartment."}
+{"type": "translate", "prompt": "Две ночи или одна ночь?", "answer": "Two nights or one night?"}
+{"type": "translate", "prompt": "Девушка всё прочитала и идёт спать.", "answer": "The girl has read everything and is going to bed."}
+{"type": "translate", "prompt": "Девушка снова читает.", "answer": "The girl is reading again."}
+{"type": "translate", "prompt": "Дедушка открывает газету.", "answer": "Grandfather is opening the newspaper."}
+{"type": "translate", "prompt": "Его девушка хочет читать.", "answer": "His girlfriend wants to read."}
+{"type": "translate", "prompt": "Женский туалет", "answer": "the women's bathroom"}
+{"type": "translate", "prompt": "Завтра десятое февраля.", "answer": "Tomorrow is the tenth of February."}
+{"type": "translate", "prompt": "Завтра я приду вовремя.", "answer": "Tomorrow I will come on time."}
+{"type": "translate", "prompt": "Завтра я уезжаю в Россию.", "answer": "Tomorrow I am leaving for Russia."}
+{"type": "translate", "prompt": "Здравствуйте, Иван.", "answer": "Hello, Ivan."}
+{"type": "translate", "prompt": "Здравствуйте, я Иван Чернов.", "answer": "Hello, I am Ivan Chernov."}
+{"type": "translate", "prompt": "Иван — это имя, Иванович — это отчество.", "answer": "Ivan is the name, Ivanovich is the patronymic."}
+{"type": "translate", "prompt": "Иди в баню мыться!", "answer": "Go to a banya to wash yourself!"}
+{"type": "translate", "prompt": "Извините, у меня нет конфет.", "answer": "Excuse me, I don't have any candy."}
+{"type": "translate", "prompt": "Казань — это \"третья столица России\".", "answer": "Kazan is the \"Third Capital of Russia\"."}
+{"type": "translate", "prompt": "Какая это фигура?", "answer": "What shape is it?"}
+{"type": "translate", "prompt": "Какого цвета свинья?", "answer": "What color is the pig?"}
+{"type": "translate", "prompt": "Какого цвета твоя сумка?", "answer": "What color is your bag?"}
+{"type": "translate", "prompt": "Какой телефон он хочет?", "answer": "Which phone does he want?"}
+{"type": "translate", "prompt": "Какой у тебя любимый цвет?", "answer": "What is your favorite color?"}
+{"type": "translate", "prompt": "Когда-нибудь она тоже будет менеджером.", "answer": "Some day she will be a manager, too."}
+{"type": "translate", "prompt": "Команда проиграла.", "answer": "The team lost."}
+{"type": "translate", "prompt": "Кофе здесь?", "answer": "Is the coffee here?"}
+{"type": "translate", "prompt": "Кошка съела всю сметану.", "answer": "The cat ate all the sour cream."}
+{"type": "translate", "prompt": "Кто из Норвегии?", "answer": "Who is from Norway?"}
+{"type": "translate", "prompt": "Кто там слева?", "answer": "Who is there on the left?"}
+{"type": "translate", "prompt": "Кто твой любимый герой из русских народных сказок?", "answer": "Who is your favorite character from Russian folk tales?"}
+{"type": "translate", "prompt": "Куда летит орёл?", "answer": "Where is the eagle flying?"}
+{"type": "translate", "prompt": "Куда он смотрел?", "answer": "Where was he looking?"}
+{"type": "translate", "prompt": "Купи куртку, которая дешевле.", "answer": "Buy the jacket which is cheaper."}
+{"type": "translate", "prompt": "Летом я часто езжу на дачу.", "answer": "In summer I often go to my dacha."}
+{"type": "translate", "prompt": "Мальчик бросил на пол очки.", "answer": "The boy threw the glasses on the floor."}
+{"type": "translate", "prompt": "Марк уже продал свою машину.", "answer": "Mark already sold his car."}
+{"type": "translate", "prompt": "Мне нравится кататься на коньках.", "answer": "I like skating."}
+{"type": "translate", "prompt": "Мне нужно найти большую треугольную коробку.", "answer": "I need to find a big triangular box."}
+{"type": "translate", "prompt": "Можете помыть ножи и вилки?", "answer": "Could you wash the knives and forks?"}
+{"type": "translate", "prompt": "Мои братья играют на пианино.", "answer": "My brothers play piano."}
+{"type": "translate", "prompt": "Мой дальний родственник живёт на Дальнем Востоке.", "answer": "My distant relative lives in the Far East."}
+{"type": "translate", "prompt": "Мой дедушка любит меня.", "answer": "My grandfather loves me."}
+{"type": "translate", "prompt": "Мой дедушка сейчас играет на скрипке.", "answer": "My grandfather is playing the violin now."}
+{"type": "translate", "prompt": "Мой дом на этой улице.", "answer": "My house is on this street."}
+{"type": "translate", "prompt": "Мой друг пришёл в среду.", "answer": "My friend came on Wednesday."}
+{"type": "translate", "prompt": "Мой сын очень хорошо понимает английский.", "answer": "My son understands English very well."}
+{"type": "translate", "prompt": "Мой сын потерял свою игрушку.", "answer": "My son lost his toy."}
+{"type": "translate", "prompt": "Моя виза на столе.", "answer": "My visa is on the table."}
+{"type": "translate", "prompt": "Моя девушка живёт на этой улице.", "answer": "My girlfriend lives on this street."}
+{"type": "translate", "prompt": "Моя машина стоит на улице.", "answer": "My car is on the street."}
+{"type": "translate", "prompt": "Моя сестра в театре.", "answer": "My sister is in the theater."}
+{"type": "translate", "prompt": "Моя юбка на стуле.", "answer": "My skirt is on the chair."}
+{"type": "translate", "prompt": "Муж и жена очень любят друг друга.", "answer": "The husband and wife love each other very much."}
+{"type": "translate", "prompt": "Мы выбрали чёрную кошку.", "answer": "We chose the black cat."}
+{"type": "translate", "prompt": "Мы идём к реке.", "answer": "We are walking toward the river."}
+{"type": "translate", "prompt": "Мы поехали в деревню, а потом в Москву.", "answer": "We went to the village, and then to Moscow."}
+{"type": "translate", "prompt": "Мы снова дома.", "answer": "We are at home again."}
+{"type": "translate", "prompt": "На картине — три берёзы и река.", "answer": "There are three birches and a river in the picture."}
+{"type": "translate", "prompt": "На столе лежат листы бумаги и карандаши.", "answer": "There are sheets of paper and pencils on the table."}
+{"type": "translate", "prompt": "На столе лежит лист бумаги.", "answer": "A sheet of paper lies on the desk."}
+{"type": "translate", "prompt": "На столе стоит огромная тарелка.", "answer": "There is a huge plate on the table."}
+{"type": "translate", "prompt": "Нам надо помыть вилки.", "answer": "We need to wash the forks."}
+{"type": "translate", "prompt": "Нам трудно есть мясо без ножей.", "answer": "It's hard for us to eat meat without knives."}
+{"type": "translate", "prompt": "Нет, моя школа слева.", "answer": "No, my school is on the left."}
+{"type": "translate", "prompt": "Нет, они поехали в Берлин.", "answer": "No, they went to Berlin."}
+{"type": "translate", "prompt": "Нет, у него нет сестры.", "answer": "No, he doesn't have a sister."}
+{"type": "translate", "prompt": "Нет, у неё нет собаки.", "answer": "No, she doesn't have a dog."}
+{"type": "translate", "prompt": "Нет, я не смотрел этот фильм.", "answer": "No, I have not watched this movie."}
+{"type": "translate", "prompt": "Ножи и ложки на кухне.", "answer": "Knives and spoons are in the kitchen."}
+{"type": "translate", "prompt": "Ну, эта кофточка ничего.", "answer": "Well, this top is not bad."}
+{"type": "translate", "prompt": "Он купил такой же свитер.", "answer": "He bought the same sweater."}
+{"type": "translate", "prompt": "Он мой брат.", "answer": "He is my brother."}
+{"type": "translate", "prompt": "Он не в театре.", "answer": "He is not in the theater."}
+{"type": "translate", "prompt": "Он опять бросил в меня мяч.", "answer": "He threw a ball at me again."}
+{"type": "translate", "prompt": "Он очень любит читать.", "answer": "He likes reading very much."}
+{"type": "translate", "prompt": "Он пришёл вовремя.", "answer": "He came on time."}
+{"type": "translate", "prompt": "Он россиянин?", "answer": "Is he Russian?"}
+{"type": "translate", "prompt": "Он тренер.", "answer": "He is a coach."}
+{"type": "translate", "prompt": "Он учится в Московском государственном университете.", "answer": "He studies at Moscow State University."}
+{"type": "translate", "prompt": "Он хочет купить эту рубашку.", "answer": "He wants to buy this shirt."}
+{"type": "translate", "prompt": "Она в театре или в кафе?", "answer": "Is she in the theater or in the cafe?"}
+{"type": "translate", "prompt": "Она всегда опаздывает.", "answer": "She is always late."}
+{"type": "translate", "prompt": "Она не ест шоколад.", "answer": "She does not eat chocolate."}
+{"type": "translate", "prompt": "Она студентка и много учится.", "answer": "She is a student and she studies a lot."}
+{"type": "translate", "prompt": "Они бегают только по выходным.", "answer": "They run only on weekends."}
+{"type": "translate", "prompt": "Они православные христиане.", "answer": "They are Orthodox Christians."}
+{"type": "translate", "prompt": "Пожалуйста, купи шоколад.", "answer": "Please, buy chocolate."}
+{"type": "translate", "prompt": "Почему здесь так грязно?", "answer": "Why is it so muddy here?"}
+{"type": "translate", "prompt": "Почему ты опять опоздала на лекцию?", "answer": "Why were you late to the lecture again?"}
+{"type": "translate", "prompt": "Пусть думает что хочет.", "answer": "Let him think what he wants."}
+{"type": "translate", "prompt": "Пусть она читает книги.", "answer": "Let her read books."}
+{"type": "translate", "prompt": "Российская Федерация", "answer": "the Russian Federation"}
+{"type": "translate", "prompt": "Сейчас семь часов.", "answer": "It is seven o'clock now."}
+{"type": "translate", "prompt": "Сметана для салата в холодильнике.", "answer": "Sour cream for the salad is in the refrigerator."}
+{"type": "translate", "prompt": "Смотрите во всех кинотеатрах страны!", "answer": "See it in every movie theater in the country!"}
+{"type": "translate", "prompt": "Таня хочет фрукты.", "answer": "Tanya wants fruit."}
+{"type": "translate", "prompt": "То, что он сказал, очень хорошо.", "answer": "What he said is very good."}
+{"type": "translate", "prompt": "Тут живёт мой брат.", "answer": "My brother lives here."}
+{"type": "translate", "prompt": "Тут моя улица.", "answer": "My street is here."}
+{"type": "translate", "prompt": "Тут ничего нет.", "answer": "There is nothing here."}
+{"type": "translate", "prompt": "Тут у них кровать.", "answer": "Here they have a bed."}
+{"type": "translate", "prompt": "Ты ешь яблоки?", "answer": "Do you eat apples?"}
+{"type": "translate", "prompt": "Ты любишь чай или кофе?", "answer": "Do you like tea or coffee?"}
+{"type": "translate", "prompt": "Ты любишь яблоки?", "answer": "Do you like apples?"}
+{"type": "translate", "prompt": "Ты привидение. Ты не существуешь!", "answer": "You are a ghost. You do not exist!"}
+{"type": "translate", "prompt": "У вас есть рубашка поменьше?", "answer": "Do you have a smaller shirt?"}
+{"type": "translate", "prompt": "У вас одна минута.", "answer": "You have one minute."}
+{"type": "translate", "prompt": "У вас тут есть фрукты?", "answer": "Do you have any fruit here?"}
+{"type": "translate", "prompt": "У мамы дома есть стол.", "answer": "Mom has a table at home."}
+{"type": "translate", "prompt": "У мамы есть хлеб?", "answer": "Does Mom have bread?"}
+{"type": "translate", "prompt": "У мамы нет брата.", "answer": "Mom does not have a brother."}
+{"type": "translate", "prompt": "У меня на даче много берёз.", "answer": "I have a lot of birches at my dacha."}
+{"type": "translate", "prompt": "У меня нет пиццы.", "answer": "I do not have a pizza."}
+{"type": "translate", "prompt": "У меня нет таких ботинок.", "answer": "I do not have such boots."}
+{"type": "translate", "prompt": "У моего друга красная лягушка.", "answer": "My friend has a red frog."}
+{"type": "translate", "prompt": "У моих родственников в деревне есть своя баня.", "answer": "My relatives in the village have their own banya."}
+{"type": "translate", "prompt": "У нас нет конфет.", "answer": "We do not have candy."}
+{"type": "translate", "prompt": "У него нет воды.", "answer": "He does not have water."}
+{"type": "translate", "prompt": "У него нет собаки.", "answer": "He doesn't have a dog."}
+{"type": "translate", "prompt": "У неё нет сестры.", "answer": "She does not have a sister."}
+{"type": "translate", "prompt": "У ребёнка есть велосипед.", "answer": "The child has a bicycle."}
+{"type": "translate", "prompt": "У ребёнка есть сестра.", "answer": "The child has a sister."}
+{"type": "translate", "prompt": "У тебя нет пиццы?", "answer": "Don't you have a pizza?"}
+{"type": "translate", "prompt": "У этого фильма грустный конец.", "answer": "This movie has a sad ending."}
+{"type": "translate", "prompt": "Учитель дал нам мало времени.", "answer": "The teacher gave us little time."}
+{"type": "translate", "prompt": "Учитель здесь.", "answer": "The teacher is here."}
+{"type": "translate", "prompt": "Футболисты бегают по стадиону.", "answer": "The soccer players are running around the stadium."}
+{"type": "translate", "prompt": "Что слева?", "answer": "What is on the left?"}
+{"type": "translate", "prompt": "Что ты узнала?", "answer": "What have you learned?"}
+{"type": "translate", "prompt": "Чья это семья?", "answer": "Whose family is it?"}
+{"type": "translate", "prompt": "Эта студентка любит свою лошадь.", "answer": "This student loves her horse."}
+{"type": "translate", "prompt": "Эта фигура называется \"треугольник\".", "answer": "This shape is called a \"triangle\"."}
+{"type": "translate", "prompt": "Эти лошади бегут быстро.", "answer": "These horses are running fast."}
+{"type": "translate", "prompt": "Это ваши дети?", "answer": "Are these your children?"}
+{"type": "translate", "prompt": "Это доктор.", "answer": "This is a doctor."}
+{"type": "translate", "prompt": "Это красная икра.", "answer": "This is red caviar."}
+{"type": "translate", "prompt": "Это не баскетболисты, а футболисты.", "answer": "These are not basketball players, but soccer players."}
+{"type": "translate", "prompt": "Это не наши билеты!", "answer": "These aren't our tickets!"}
+{"type": "translate", "prompt": "Это русская народная сказка о волке и лисе.", "answer": "This is a Russian folk tale about a wolf and a fox."}
+{"type": "translate", "prompt": "Это самый большой регион Российской Федерации.", "answer": "This is the largest region of the Russian Federation."}
+{"type": "translate", "prompt": "Это цена в российских рублях.", "answer": "This is the price in Russian rubles."}
+{"type": "translate", "prompt": "Этот самолёт летит в Москву.", "answer": "This plane is flying to Moscow."}
+{"type": "translate", "prompt": "Юлия играет в теннис?", "answer": "Does Yulia play tennis?"}
+{"type": "translate", "prompt": "Я думаю, что Юлия скажет правду.", "answer": "I think that Yulia will tell the truth."}
+{"type": "translate", "prompt": "Я ем.", "answer": "I eat."}
+{"type": "translate", "prompt": "Я каждый год езжу в Германию.", "answer": "Every year, I go to Germany."}
+{"type": "translate", "prompt": "Я не ем икру.", "answer": "I do not eat caviar."}
+{"type": "translate", "prompt": "Я не могу спать, потому что тут много комаров.", "answer": "I can't sleep because there are a lot of mosquitoes here."}
+{"type": "translate", "prompt": "Я не хочу сок.", "answer": "I do not want juice."}
+{"type": "translate", "prompt": "Я объясняю детям, о чём фильм.", "answer": "I am explaining what the movie is about to the children."}
+{"type": "translate", "prompt": "Я открываю дверь.", "answer": "I am opening the door."}
+{"type": "translate", "prompt": "Я пью из чашки.", "answer": "I drink from a cup."}
+{"type": "translate", "prompt": "Я раньше работала переводчиком.", "answer": "I previously worked as a translator."}
+{"type": "translate", "prompt": "Я узнал об этом сегодня утром.", "answer": "I learned about it this morning."}
+{"type": "translate", "prompt": "Я учусь в юридической академии.", "answer": "I study in a law academy."}
+{"type": "translate", "prompt": "Я хочу бутерброд с икрой.", "answer": "I want an open sandwich with caviar."}
+{"type": "translate", "prompt": "Я хочу такой же велосипед.", "answer": "I want the same bicycle."}
+{"type": "translate", "prompt": "Я хочу хлеб.", "answer": "I want bread."}
+{"type": "translate", "prompt": "Я хочу шоколад.", "answer": "I want chocolate."}
+{"type": "translate", "prompt": "Я — гражданин Российской Федерации, я — россиянин.", "answer": "I am a citizen of the Russian Federation, I am Russian."}
+{"type": "translate", "prompt": "великая река Волга", "answer": "the great Volga river"}
+{"type": "translate", "prompt": "город на Дальнем Востоке", "answer": "a city in the Far East"}
+{"type": "translate", "prompt": "две недели", "answer": "two weeks"}
+{"type": "translate", "prompt": "две чашки и одна ложка", "answer": "two cups and one spoon"}
+{"type": "translate", "prompt": "деревянная крыша", "answer": "wooden roof"}
+{"type": "translate", "prompt": "доктор и учитель", "answer": "the doctor and the teacher"}
+{"type": "translate", "prompt": "женский журнал", "answer": "women's magazine"}
+{"type": "translate", "prompt": "жёлтая крыша", "answer": "a yellow roof"}
+{"type": "translate", "prompt": "жёлтая юбка", "answer": "a yellow skirt"}
+{"type": "translate", "prompt": "заяц и волк", "answer": "a hare and a wolf"}
+{"type": "translate", "prompt": "красные цветы", "answer": "red flowers"}
+{"type": "translate", "prompt": "мои билеты", "answer": "my tickets"}
+{"type": "translate", "prompt": "мужчина и кошка", "answer": "a man and a cat"}
+{"type": "translate", "prompt": "наши братья и сёстры", "answer": "our brothers and sisters"}
+{"type": "translate", "prompt": "огромная туча", "answer": "a huge rain cloud"}
+{"type": "translate", "prompt": "площадь треугольника", "answer": "the area of the triangle"}
+{"type": "translate", "prompt": "пять мальчиков", "answer": "five boys"}
+{"type": "translate", "prompt": "пять недель", "answer": "five weeks"}
+{"type": "translate", "prompt": "пять часов", "answer": "five o'clock"}
+{"type": "translate", "prompt": "тренер", "answer": "a coach"}
+{"type": "translate", "prompt": "школа для мальчиков", "answer": "a school for boys"}

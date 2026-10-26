@@ -1,0 +1,204 @@
+{"type": "assist", "prompt": "I come", "answer": "venio"}
+{"type": "assist", "prompt": "I make", "answer": "facio"}
+{"type": "assist", "prompt": "I visit", "answer": "visito"}
+{"type": "assist", "prompt": "from where", "answer": "unde"}
+{"type": "assist", "prompt": "journey", "answer": "iter"}
+{"type": "assist", "prompt": "now", "answer": "nunc"}
+{"type": "assist", "prompt": "to", "answer": "ad"}
+{"type": "assist", "prompt": "with", "answer": "cum"}
+{"type": "gapFill", "prompt": "Cotidie mater Marcum ___.", "answer": "visitat"}
+{"type": "gapFill", "prompt": "Ita, ego in urbe ___.", "answer": "habito"}
+{"type": "gapFill", "prompt": "Marcus ___ non condit.", "answer": "urbem"}
+{"type": "gapFill", "prompt": "Marcus ___ urbes condit.", "answer": "multas"}
+{"type": "gapFill", "prompt": "Marcus iter ___ ad urbem facit.", "answer": "longum"}
+{"type": "gapFill", "prompt": "Puella crustulum ___.", "answer": "velit"}
+{"type": "gapFill", "prompt": "Quanti ___ constant?", "answer": "olivae"}
+{"type": "gapFill", "prompt": "Quanti olivae ___?", "answer": "constant"}
+{"type": "gapFill", "prompt": "Quis ad forum ___?", "answer": "it"}
+{"type": "gapFill", "prompt": "Quomodo Corinna ___ habet?", "answer": "se"}
+{"type": "gapFill", "prompt": "Quomodo femina ___ habet?", "answer": "se"}
+{"type": "gapFill", "prompt": "Tu familiares ___.", "answer": "visitas"}
+{"type": "gapFill", "prompt": "Velisne ___?", "answer": "panem"}
+{"type": "gapFill", "prompt": "___ est benigna.", "answer": "illa"}
+{"type": "gapFill", "prompt": "___ habeo.", "answer": "olivas"}
+{"type": "gapFill", "prompt": "___ habes.", "answer": "panem"}
+{"type": "gapFill", "prompt": "___ iter est.", "answer": "longum"}
+{"type": "gapFill", "prompt": "___ sorores in urbe sunt.", "answer": "multae"}
+{"type": "gapFill", "prompt": "___ sunt olivae.", "answer": "hae"}
+{"type": "gapFill", "prompt": "___ urbe venio.", "answer": "ab"}
+{"type": "select", "prompt": "city", "answer": "urbs"}
+{"type": "translate", "prompt": "A cookie costs four coins.", "answer": "Crustulum quattuor nummis constat."}
+{"type": "translate", "prompt": "Ab Italia venis.", "answer": "You come from Italy."}
+{"type": "translate", "prompt": "Ab urbe venio.", "answer": "I come from the city."}
+{"type": "translate", "prompt": "Ad forum eo.", "answer": "I go to the market."}
+{"type": "translate", "prompt": "Ad forum is.", "answer": "You go to the market."}
+{"type": "translate", "prompt": "Ad sepulchrum it et sacrificat.", "answer": "She goes to the grave and sacrifices."}
+{"type": "translate", "prompt": "Are the boys in Italy?", "answer": "Suntne pueri in Italia?"}
+{"type": "translate", "prompt": "Corinna and Livia make a journey.", "answer": "Corinna et Livia iter faciunt."}
+{"type": "translate", "prompt": "Corinna builds four cities.", "answer": "Corinna quattuor urbes condit."}
+{"type": "translate", "prompt": "Corinna comes into the city.", "answer": "Corinna in urbem venit."}
+{"type": "translate", "prompt": "Corinna domum it.", "answer": "Corinna goes home."}
+{"type": "translate", "prompt": "Corinna in urbem venit.", "answer": "Corinna comes into the city."}
+{"type": "translate", "prompt": "Corinna iter longum facit.", "answer": "Corinna makes a long journey."}
+{"type": "translate", "prompt": "Corinna vinum rubrum velit.", "answer": "Corinna would like red wine."}
+{"type": "translate", "prompt": "Corinna would like red wine.", "answer": "Corinna vinum rubrum velit."}
+{"type": "translate", "prompt": "Crustulum quattuor nummis constat.", "answer": "A cookie costs four coins."}
+{"type": "translate", "prompt": "Crustulum velim.", "answer": "I would like a cookie."}
+{"type": "translate", "prompt": "Discipula Romae studet.", "answer": "The student studies in Rome."}
+{"type": "translate", "prompt": "Discipula in foro est.", "answer": "The student is in the market."}
+{"type": "translate", "prompt": "Discipuli legunt.", "answer": "The students read."}
+{"type": "translate", "prompt": "Discipulus linguas discit.", "answer": "The student learns languages."}
+{"type": "translate", "prompt": "Domo venio.", "answer": "I come from home."}
+{"type": "translate", "prompt": "Domum eo.", "answer": "I go home."}
+{"type": "translate", "prompt": "Domum is.", "answer": "You go home."}
+{"type": "translate", "prompt": "Ego a California venio.", "answer": "I come from California."}
+{"type": "translate", "prompt": "Ego lectionem lego.", "answer": "I read the chapter."}
+{"type": "translate", "prompt": "Ego sum Livia.", "answer": "I am Livia."}
+{"type": "translate", "prompt": "Ego sum magistra.", "answer": "I am a teacher."}
+{"type": "translate", "prompt": "Ego urbem condo.", "answer": "I build the city."}
+{"type": "translate", "prompt": "Est paterfamilias.", "answer": "There is a head of the house."}
+{"type": "translate", "prompt": "Estne universitas Novi Eboraci?", "answer": "Is there a university in New York?"}
+{"type": "translate", "prompt": "Familiares visito.", "answer": "I visit relatives."}
+{"type": "translate", "prompt": "Give me a cookie.", "answer": "Da mihi crustulum."}
+{"type": "translate", "prompt": "Hae olivae non sunt in foro.", "answer": "These olives are not in the market."}
+{"type": "translate", "prompt": "He is the head of the house.", "answer": "Ille est paterfamilias."}
+{"type": "translate", "prompt": "He would like thirty olives.", "answer": "Triginta olivas velit."}
+{"type": "translate", "prompt": "Hoc crustulum velim.", "answer": "I would like this cookie."}
+{"type": "translate", "prompt": "How many students are in the city?", "answer": "Quot discipuli in urbe sunt?"}
+{"type": "translate", "prompt": "How much do olives and cookies cost?", "answer": "Quanti olivae et crustula constant?"}
+{"type": "translate", "prompt": "How much do olives cost?", "answer": "Quanti olivae constant?"}
+{"type": "translate", "prompt": "I am Stephanus.", "answer": "Ego sum Stephanus."}
+{"type": "translate", "prompt": "I come from California.", "answer": "Ego a California venio."}
+{"type": "translate", "prompt": "I go from home.", "answer": "Ego domo eo."}
+{"type": "translate", "prompt": "I have four cookies.", "answer": "Quattuor crustula habeo."}
+{"type": "translate", "prompt": "I have olives.", "answer": "Olivas habeo."}
+{"type": "translate", "prompt": "I have red wine.", "answer": "Vinum rubrum habeo."}
+{"type": "translate", "prompt": "I make a journey to the city.", "answer": "Iter ad urbem facio."}
+{"type": "translate", "prompt": "I visit the graves and sacrifice.", "answer": "Sepulchra visito et sacrifico."}
+{"type": "translate", "prompt": "I would like olives.", "answer": "Olivas velim."}
+{"type": "translate", "prompt": "I would like ten cookies.", "answer": "Decem crustula velim."}
+{"type": "translate", "prompt": "I would like this cookie.", "answer": "Hoc crustulum velim."}
+{"type": "translate", "prompt": "I would like twenty olives.", "answer": "Viginti olivas velim."}
+{"type": "translate", "prompt": "Illa est benigna.", "answer": "She is kind."}
+{"type": "translate", "prompt": "Is est pater.", "answer": "He is a father."}
+{"type": "translate", "prompt": "Iter ad urbem facis.", "answer": "You make a journey to the city."}
+{"type": "translate", "prompt": "Iter facio.", "answer": "I make a journey."}
+{"type": "translate", "prompt": "Iter longum facis.", "answer": "You make a long journey."}
+{"type": "translate", "prompt": "Livia femina est.", "answer": "Livia is a woman."}
+{"type": "translate", "prompt": "Livia iter facit.", "answer": "Livia makes a journey."}
+{"type": "translate", "prompt": "Livia makes a journey.", "answer": "Livia iter facit."}
+{"type": "translate", "prompt": "Livia, give me the wine.", "answer": "Livia, da mihi vinum."}
+{"type": "translate", "prompt": "Livia, please give me the wine.", "answer": "Livia, quaeso, da mihi vinum."}
+{"type": "translate", "prompt": "Longum iter est.", "answer": "It is a long journey."}
+{"type": "translate", "prompt": "Longum iter facio.", "answer": "I make a long journey."}
+{"type": "translate", "prompt": "Magistra Corinna litteras Latinas legit.", "answer": "Teacher Corinna reads Latin literature."}
+{"type": "translate", "prompt": "Many universities are in Rome.", "answer": "Multae universitates Romae sunt."}
+{"type": "translate", "prompt": "Marcus a Germania venit.", "answer": "Marcus comes from Germany."}
+{"type": "translate", "prompt": "Marcus ad forum it.", "answer": "Marcus goes to the market."}
+{"type": "translate", "prompt": "Marcus and Corinna go to the market.", "answer": "Marcus et Corinna ad forum eunt."}
+{"type": "translate", "prompt": "Marcus and Livia are coming from the city now.", "answer": "Marcus et Livia nunc ab urbe veniunt."}
+{"type": "translate", "prompt": "Marcus and Stephanus make a journey.", "answer": "Marcus et Stephanus iter faciunt."}
+{"type": "translate", "prompt": "Marcus builds many cities.", "answer": "Marcus multas urbes condit."}
+{"type": "translate", "prompt": "Marcus comes from Germany.", "answer": "Marcus a Germania venit."}
+{"type": "translate", "prompt": "Marcus does not build a city.", "answer": "Marcus urbem non condit."}
+{"type": "translate", "prompt": "Marcus et Corinna ad forum eunt.", "answer": "Marcus and Corinna go to the market."}
+{"type": "translate", "prompt": "Marcus et Stephanus iter faciunt.", "answer": "Marcus and Stephanus make a journey."}
+{"type": "translate", "prompt": "Marcus goes to the market.", "answer": "Marcus ad forum it."}
+{"type": "translate", "prompt": "Marcus iter longum ad urbem facit.", "answer": "Marcus makes a long journey to the city."}
+{"type": "translate", "prompt": "Marcus makes a long journey to the city.", "answer": "Marcus iter longum ad urbem facit."}
+{"type": "translate", "prompt": "Marcus nunc in urbem venit.", "answer": "Marcus is coming into the city now."}
+{"type": "translate", "prompt": "Marcus urbem non condit.", "answer": "Marcus does not build a city."}
+{"type": "translate", "prompt": "Maritus pius cotidie iter facit.", "answer": "The dutiful husband daily makes the journey."}
+{"type": "translate", "prompt": "Matrem et patrem visito.", "answer": "I visit mother and father."}
+{"type": "translate", "prompt": "Multas linguas disco.", "answer": "I am learning many languages."}
+{"type": "translate", "prompt": "Multas urbes condo.", "answer": "I establish many cities."}
+{"type": "translate", "prompt": "Multi libri sunt.", "answer": "There are many books."}
+{"type": "translate", "prompt": "My family lives in Boston.", "answer": "Familia mea Bostoniae habitat."}
+{"type": "translate", "prompt": "My university is in New York City.", "answer": "Universitas mea Novi Eboraci est."}
+{"type": "translate", "prompt": "Novi Eboraci habito et familia mea Bostoniae habitat.", "answer": "I live in New York and my family lives in Boston."}
+{"type": "translate", "prompt": "Now you go from home.", "answer": "Nunc domo is."}
+{"type": "translate", "prompt": "Nunc eo.", "answer": "Now I go."}
+{"type": "translate", "prompt": "Olivae sunt in foro.", "answer": "The olives are in the market."}
+{"type": "translate", "prompt": "Olivas velim.", "answer": "I would like olives."}
+{"type": "translate", "prompt": "Panem velim.", "answer": "I would like bread."}
+{"type": "translate", "prompt": "Panis non est in foro.", "answer": "The bread is not in the market."}
+{"type": "translate", "prompt": "Panis quinque nummis constat.", "answer": "Bread costs five coins."}
+{"type": "translate", "prompt": "Pater est severus.", "answer": "Father is strict."}
+{"type": "translate", "prompt": "Please give me olives.", "answer": "Quaeso, da mihi olivas."}
+{"type": "translate", "prompt": "Please give me thirty cookies.", "answer": "Quaeso, da mihi triginta crustula."}
+{"type": "translate", "prompt": "Please give me this wine.", "answer": "Quaeso, da mihi hoc vinum."}
+{"type": "translate", "prompt": "Please, give me bread.", "answer": "Quaeso, da mihi panem."}
+{"type": "translate", "prompt": "Puellae ab urbe veniunt.", "answer": "The girls come from the city."}
+{"type": "translate", "prompt": "Puellae ad urbem eunt.", "answer": "The girls go to the city."}
+{"type": "translate", "prompt": "Puer cum puella ad urbem it.", "answer": "The boy goes to the city with the girl."}
+{"type": "translate", "prompt": "Puer urbes condit.", "answer": "The boy builds cities."}
+{"type": "translate", "prompt": "Pueri ab Italia veniunt.", "answer": "The boys come from Italy."}
+{"type": "translate", "prompt": "Quaeso, da mihi olivas.", "answer": "Please give me olives."}
+{"type": "translate", "prompt": "Quanti olivae constant?", "answer": "How much do olives cost?"}
+{"type": "translate", "prompt": "Quis ad forum it?", "answer": "Who is going to the market?"}
+{"type": "translate", "prompt": "Quo iter facis?", "answer": "Where do you travel to?"}
+{"type": "translate", "prompt": "Quo iter facit Corinna?", "answer": "To where does Corinna make a journey?"}
+{"type": "translate", "prompt": "Quo iter faciunt?", "answer": "Where do they make a journey to?"}
+{"type": "translate", "prompt": "Quot discipuli in urbe sunt?", "answer": "How many students are in the city?"}
+{"type": "translate", "prompt": "Quot fratres habes?", "answer": "How many brothers do you have?"}
+{"type": "translate", "prompt": "Quot sorores habet Corinna?", "answer": "How many sisters does Corinna have?"}
+{"type": "translate", "prompt": "Red wine costs thirty coins.", "answer": "Vinum rubrum triginta nummis constat."}
+{"type": "translate", "prompt": "Romae habito.", "answer": "I live in Rome."}
+{"type": "translate", "prompt": "Salve, quid tibi est nomen?", "answer": "Hello, what is your name?"}
+{"type": "translate", "prompt": "Sepulchra visito et sacrifico.", "answer": "I visit the graves and sacrifice."}
+{"type": "translate", "prompt": "Sepulchrum visitas.", "answer": "You visit the grave."}
+{"type": "translate", "prompt": "She visits Marcus.", "answer": "Marcum visitat."}
+{"type": "translate", "prompt": "Stephanus Marcum visitat.", "answer": "Stephanus visits Marcus."}
+{"type": "translate", "prompt": "Stephanus and Livia go home.", "answer": "Stephanus et Livia domum eunt."}
+{"type": "translate", "prompt": "Stephanus cum Corinna ad forum it.", "answer": "Stephanus goes to the market with Corinna."}
+{"type": "translate", "prompt": "Stephanus goes to the market with Corinna.", "answer": "Stephanus cum Corinna ad forum it."}
+{"type": "translate", "prompt": "Stephanus goes to the market with Livia.", "answer": "Stephanus cum Livia ad forum it."}
+{"type": "translate", "prompt": "Suntne tres sorores?", "answer": "Are there three sisters?"}
+{"type": "translate", "prompt": "Surely there is not a university in Rome?", "answer": "Num universitas Romae est?"}
+{"type": "translate", "prompt": "Teacher Corinna reads Latin literature.", "answer": "Magistra Corinna litteras Latinas legit."}
+{"type": "translate", "prompt": "The boy goes to the city with the girl.", "answer": "Puer cum puella ad urbem it."}
+{"type": "translate", "prompt": "The boys come from Italy.", "answer": "Pueri ab Italia veniunt."}
+{"type": "translate", "prompt": "The bread costs ten coins.", "answer": "Panis decem nummis constat."}
+{"type": "translate", "prompt": "The bread is not in the market.", "answer": "Panis non est in foro."}
+{"type": "translate", "prompt": "The four sisters live in Rome.", "answer": "Quattuor sorores Romae habitant."}
+{"type": "translate", "prompt": "The girls come from the city.", "answer": "Puellae ab urbe veniunt."}
+{"type": "translate", "prompt": "The girls go to the city.", "answer": "Puellae ad urbem eunt."}
+{"type": "translate", "prompt": "The mother visits Marcus daily.", "answer": "Cotidie mater Marcum visitat."}
+{"type": "translate", "prompt": "The student has a cookie.", "answer": "Discipulus crustulum habet."}
+{"type": "translate", "prompt": "The students learn languages.", "answer": "Discipuli linguas discunt."}
+{"type": "translate", "prompt": "The students study the Latin language in school.", "answer": "Discipulae in ludo linguae Latinae student."}
+{"type": "translate", "prompt": "The teacher and the student learn languages.", "answer": "Magistra et discipula linguas discunt."}
+{"type": "translate", "prompt": "These are olives.", "answer": "Hae sunt olivae."}
+{"type": "translate", "prompt": "These olives are not in the market.", "answer": "Hae olivae non sunt in foro."}
+{"type": "translate", "prompt": "This cookie is in the market.", "answer": "Hoc crustulum in foro est."}
+{"type": "translate", "prompt": "This wine costs twenty coins.", "answer": "Hoc vinum viginti nummis constat."}
+{"type": "translate", "prompt": "To where does Corinna make a journey?", "answer": "Quo iter facit Corinna?"}
+{"type": "translate", "prompt": "Tu a Germania venis.", "answer": "You come from Germany."}
+{"type": "translate", "prompt": "Tu domo venis.", "answer": "You come from home."}
+{"type": "translate", "prompt": "Tu librum legis.", "answer": "You read the book."}
+{"type": "translate", "prompt": "Tu urbem condis.", "answer": "You build a city."}
+{"type": "translate", "prompt": "Ubi est universitas?", "answer": "Where is the university?"}
+{"type": "translate", "prompt": "Ubi sunt fratres tui?", "answer": "Where are your brothers?"}
+{"type": "translate", "prompt": "Unde venio?", "answer": "Where do I come from?"}
+{"type": "translate", "prompt": "Unde venis?", "answer": "Where do you come from?"}
+{"type": "translate", "prompt": "Unde venit Corinna?", "answer": "Where does Corinna come from?"}
+{"type": "translate", "prompt": "Urbes condis.", "answer": "You build the cities."}
+{"type": "translate", "prompt": "Urbes condo.", "answer": "I build cities."}
+{"type": "translate", "prompt": "Viginti olivas velim.", "answer": "I would like twenty olives."}
+{"type": "translate", "prompt": "Vinum rubrum velim.", "answer": "I would like red wine."}
+{"type": "translate", "prompt": "Viri domum eunt.", "answer": "The men go home."}
+{"type": "translate", "prompt": "What is your name?", "answer": "Quid tibi est nomen?"}
+{"type": "translate", "prompt": "Who is going to the market?", "answer": "Quis ad forum it?"}
+{"type": "translate", "prompt": "Wine costs twenty coins.", "answer": "Vinum viginti nummis constat."}
+{"type": "translate", "prompt": "Would you like bread?", "answer": "Velisne panem?"}
+{"type": "translate", "prompt": "Would you like olives?", "answer": "Velisne olivas?"}
+{"type": "translate", "prompt": "Would you like this cookie?", "answer": "Velisne hoc crustulum?"}
+{"type": "translate", "prompt": "You build many cities.", "answer": "Tu multas urbes condis."}
+{"type": "translate", "prompt": "You come from Germany.", "answer": "Tu a Germania venis."}
+{"type": "translate", "prompt": "You have five cookies.", "answer": "Quinque crustula habes."}
+{"type": "translate", "prompt": "You make a journey from the city.", "answer": "Ab urbe iter facis."}
+{"type": "translate", "prompt": "You make a journey to the city.", "answer": "Iter ad urbem facis."}
+{"type": "translate", "prompt": "You make a long journey.", "answer": "Iter longum facis."}
+{"type": "translate", "prompt": "You read the book.", "answer": "Tu librum legis."}
+{"type": "translate", "prompt": "You teach in a school.", "answer": "Tu in ludo doces."}
+{"type": "translate", "prompt": "You visit the grave.", "answer": "Sepulchrum visitas."}

@@ -1,0 +1,889 @@
+{"type": "assist", "prompt": "How about", "answer": "어때요"}
+{"type": "assist", "prompt": "Jeju Island", "answer": "제주도"}
+{"type": "assist", "prompt": "actor", "answer": "배우"}
+{"type": "assist", "prompt": "airport", "answer": "공항"}
+{"type": "assist", "prompt": "author", "answer": "작가"}
+{"type": "assist", "prompt": "bag", "answer": "가방"}
+{"type": "assist", "prompt": "ball", "answer": "공"}
+{"type": "assist", "prompt": "bathroom", "answer": "화장실"}
+{"type": "assist", "prompt": "beer", "answer": "맥주"}
+{"type": "assist", "prompt": "birthday", "answer": "생일"}
+{"type": "assist", "prompt": "book", "answer": "책"}
+{"type": "assist", "prompt": "cheap", "answer": "싼"}
+{"type": "assist", "prompt": "cup", "answer": "잔"}
+{"type": "assist", "prompt": "cute", "answer": "귀여운"}
+{"type": "assist", "prompt": "exercise", "answer": "운동"}
+{"type": "assist", "prompt": "family", "answer": "가족"}
+{"type": "assist", "prompt": "famous", "answer": "유명한"}
+{"type": "assist", "prompt": "fifteen", "answer": "열다섯"}
+{"type": "assist", "prompt": "funny", "answer": "웃긴"}
+{"type": "assist", "prompt": "game", "answer": "경기"}
+{"type": "assist", "prompt": "gift", "answer": "선물"}
+{"type": "assist", "prompt": "good", "answer": "좋은"}
+{"type": "assist", "prompt": "happy birthday", "answer": "생일 축하해요"}
+{"type": "assist", "prompt": "here", "answer": "여기"}
+{"type": "assist", "prompt": "hobby", "answer": "취미"}
+{"type": "assist", "prompt": "map", "answer": "지도"}
+{"type": "assist", "prompt": "money", "answer": "돈"}
+{"type": "assist", "prompt": "necklace", "answer": "목걸이"}
+{"type": "assist", "prompt": "new", "answer": "새"}
+{"type": "assist", "prompt": "notebook", "answer": "수첩"}
+{"type": "assist", "prompt": "passport", "answer": "여권"}
+{"type": "assist", "prompt": "player", "answer": "선수"}
+{"type": "assist", "prompt": "post office", "answer": "우체국"}
+{"type": "assist", "prompt": "postcard", "answer": "엽서"}
+{"type": "assist", "prompt": "restaurant", "answer": "식당"}
+{"type": "assist", "prompt": "seat", "answer": "자리"}
+{"type": "assist", "prompt": "soccer", "answer": "축구"}
+{"type": "assist", "prompt": "special", "answer": "특별한"}
+{"type": "assist", "prompt": "stadium", "answer": "경기장"}
+{"type": "assist", "prompt": "stop", "answer": "정류장"}
+{"type": "assist", "prompt": "strawberry", "answer": "딸기"}
+{"type": "assist", "prompt": "student ID", "answer": "학생증"}
+{"type": "assist", "prompt": "take care", "answer": "잘 가요"}
+{"type": "assist", "prompt": "tangerine", "answer": "귤"}
+{"type": "assist", "prompt": "that", "answer": "저것"}
+{"type": "assist", "prompt": "there", "answer": "저기"}
+{"type": "assist", "prompt": "this", "answer": "이것"}
+{"type": "assist", "prompt": "ticket", "answer": "표"}
+{"type": "assist", "prompt": "to be light", "answer": "가볍다"}
+{"type": "assist", "prompt": "to be not", "answer": "아니다"}
+{"type": "assist", "prompt": "to be spacious", "answer": "넓다"}
+{"type": "assist", "prompt": "today", "answer": "오늘"}
+{"type": "assist", "prompt": "tomorrow", "answer": "내일"}
+{"type": "assist", "prompt": "travel agency", "answer": "여행사"}
+{"type": "assist", "prompt": "tteokbokki", "answer": "떡볶이"}
+{"type": "assist", "prompt": "wallet", "answer": "지갑"}
+{"type": "assist", "prompt": "watch", "answer": "시계"}
+{"type": "assist", "prompt": "we", "answer": "우리"}
+{"type": "assist", "prompt": "what", "answer": "뭐"}
+{"type": "assist", "prompt": "where", "answer": "어디"}
+{"type": "assist", "prompt": "younger sister", "answer": "여동생"}
+{"type": "patternTapComplete", "prompt": "밥은 뜨거운 음식이에요.", "answer": "은"}
+{"type": "patternTapComplete", "prompt": "치킨이나 맥주 주세요.", "answer": "이나"}
+{"type": "select", "prompt": "airport", "answer": "공항"}
+{"type": "select", "prompt": "ball", "answer": "공"}
+{"type": "select", "prompt": "baseball", "answer": "야구"}
+{"type": "select", "prompt": "bathroom", "answer": "화장실"}
+{"type": "select", "prompt": "beer", "answer": "맥주"}
+{"type": "select", "prompt": "bus", "answer": "버스"}
+{"type": "select", "prompt": "camera", "answer": "카메라"}
+{"type": "select", "prompt": "family", "answer": "가족"}
+{"type": "select", "prompt": "fifteen", "answer": "열다섯"}
+{"type": "select", "prompt": "food", "answer": "음식"}
+{"type": "select", "prompt": "fried chicken", "answer": "치킨"}
+{"type": "select", "prompt": "gift", "answer": "선물"}
+{"type": "select", "prompt": "juice", "answer": "주스"}
+{"type": "select", "prompt": "map", "answer": "지도"}
+{"type": "select", "prompt": "money", "answer": "돈"}
+{"type": "select", "prompt": "notebook", "answer": "수첩"}
+{"type": "select", "prompt": "passport", "answer": "여권"}
+{"type": "select", "prompt": "player", "answer": "선수"}
+{"type": "select", "prompt": "popcorn", "answer": "팝콘"}
+{"type": "select", "prompt": "post office", "answer": "우체국"}
+{"type": "select", "prompt": "postcard", "answer": "엽서"}
+{"type": "select", "prompt": "ramyeon", "answer": "라면"}
+{"type": "select", "prompt": "restaurant", "answer": "식당"}
+{"type": "select", "prompt": "rice", "answer": "밥"}
+{"type": "select", "prompt": "seat", "answer": "자리"}
+{"type": "select", "prompt": "soccer", "answer": "축구"}
+{"type": "select", "prompt": "stadium", "answer": "경기장"}
+{"type": "select", "prompt": "stop", "answer": "정류장"}
+{"type": "select", "prompt": "strawberry", "answer": "딸기"}
+{"type": "select", "prompt": "taekwondo", "answer": "태권도"}
+{"type": "select", "prompt": "team", "answer": "팀"}
+{"type": "select", "prompt": "ticket", "answer": "표"}
+{"type": "select", "prompt": "wallet", "answer": "지갑"}
+{"type": "select", "prompt": "watch", "answer": "시계"}
+{"type": "select", "prompt": "white", "answer": "하얀색"}
+{"type": "tapComplete", "prompt": "맛있는 ___이에요!", "answer": "팝콘"}
+{"type": "tapComplete", "prompt": "유명한 ___ 가게예요.", "answer": "치킨"}
+{"type": "translate", "prompt": "Are you twenty-five years old?", "answer": "스물다섯 살이에요?"}
+{"type": "translate", "prompt": "Bora's family is at the airport.", "answer": "보라 씨의 가족은 공항에 있어요."}
+{"type": "translate", "prompt": "Bora, how about some tangerines?", "answer": "보라 씨, 귤은 어때요?"}
+{"type": "translate", "prompt": "Boss, galbitang, please.", "answer": "사장님, 갈비탕 주세요."}
+{"type": "translate", "prompt": "Boss, is ramen a hot food?", "answer": "사장님, 라면은 뜨거운 음식이에요?"}
+{"type": "translate", "prompt": "Boss, is shaved ice a sweet food?", "answer": "사장님, 빙수는 단 음식이에요?"}
+{"type": "translate", "prompt": "Boss, is this a stew?", "answer": "사장님, 이것은 찌개예요?"}
+{"type": "translate", "prompt": "Boss, is this food hot?", "answer": "사장님, 이것은 뜨거운 음식이에요?"}
+{"type": "translate", "prompt": "Boss, is this meat?", "answer": "사장님, 이것은 고기예요?"}
+{"type": "translate", "prompt": "Boss, is this spicy fried chicken?", "answer": "사장님, 이것은 매운 치킨이에요?"}
+{"type": "translate", "prompt": "Boss, is this sweet popcorn?", "answer": "사장님, 이것은 단 팝콘이에요?"}
+{"type": "translate", "prompt": "Boss, is this tofu?", "answer": "사장님, 이것은 두부예요?"}
+{"type": "translate", "prompt": "Boss, is this tteokbokki?", "answer": "사장님, 이것은 떡볶이예요?"}
+{"type": "translate", "prompt": "Boss, tteokbokki, please.", "answer": "사장님, 떡볶이 주세요."}
+{"type": "translate", "prompt": "Bread and cake, please", "answer": "빵이랑 케이크 주세요."}
+{"type": "translate", "prompt": "Bread and strawberry shaved ice, please.", "answer": "빵이랑 딸기 빙수 주세요."}
+{"type": "translate", "prompt": "Bubble tea is sweet tea.", "answer": "버블티는 단 차예요."}
+{"type": "translate", "prompt": "Excuse me, where is my seat?", "answer": "실례합니다, 제 자리는 어디에 있어요?"}
+{"type": "translate", "prompt": "He is a Korean actor.", "answer": "한국 배우예요."}
+{"type": "translate", "prompt": "How about American food?", "answer": "미국 음식은 어때요?"}
+{"type": "translate", "prompt": "How about Chinese food?", "answer": "중국 음식은 어때요?"}
+{"type": "translate", "prompt": "How about Korean food?", "answer": "한국 음식은 어때요?"}
+{"type": "translate", "prompt": "How about bread and bingsu?", "answer": "빵이랑 빙수는 어때요?"}
+{"type": "translate", "prompt": "How about expensive American food?", "answer": "비싼 미국 음식은 어때요?"}
+{"type": "translate", "prompt": "How about expensive food?", "answer": "비싼 음식은 어때요?"}
+{"type": "translate", "prompt": "How about spicy ramen?", "answer": "매운 라면은 어때요?"}
+{"type": "translate", "prompt": "How about sweet shaved ice?", "answer": "단 빙수는 어때요?"}
+{"type": "translate", "prompt": "How about the beef rib soup?", "answer": "갈비탕은 어때요?"}
+{"type": "translate", "prompt": "How about this cup?", "answer": "이 잔은 어때요?"}
+{"type": "translate", "prompt": "How's the food?", "answer": "음식은 어때요?"}
+{"type": "translate", "prompt": "I am a fan of this taekwondo player.", "answer": "저는 이 태권도 선수 팬이에요."}
+{"type": "translate", "prompt": "I am a soccer player.", "answer": "저는 축구 선수예요."}
+{"type": "translate", "prompt": "I am at the airport.", "answer": "공항에 있어요."}
+{"type": "translate", "prompt": "I am nineteen years old.", "answer": "열아홉 살이에요."}
+{"type": "translate", "prompt": "I am twenty-five years old.", "answer": "스물다섯 살이에요."}
+{"type": "translate", "prompt": "I'm a fan of funny books.", "answer": "저는 웃긴 책 팬이에요."}
+{"type": "translate", "prompt": "I'm a fan of funny dramas.", "answer": "저는 웃긴 드라마 팬이에요."}
+{"type": "translate", "prompt": "I'm a fan of melodramas.", "answer": "저는 멜로 드라마 팬이에요."}
+{"type": "translate", "prompt": "I'm a fan of this author.", "answer": "저는 이 작가 팬이에요."}
+{"type": "translate", "prompt": "I'm also a K-pop fan.", "answer": "저도 케이팝 팬이에요."}
+{"type": "translate", "prompt": "I'm also a fan of melodramas!", "answer": "저도 멜로 드라마 팬이에요!"}
+{"type": "translate", "prompt": "I'm also a jazz fan.", "answer": "저도 재즈 팬이에요."}
+{"type": "translate", "prompt": "I'm hungry.", "answer": "배고파요."}
+{"type": "translate", "prompt": "I'm not a special person.", "answer": "특별한 사람이 아니에요."}
+{"type": "translate", "prompt": "I'm thirty years old!", "answer": "서른 살이에요!"}
+{"type": "translate", "prompt": "Is Mr. Meow an actor?", "answer": "야옹 씨는 배우예요?"}
+{"type": "translate", "prompt": "Is Mr. Minjun also a K-pop fan?", "answer": "민준 씨도 케이팝 팬이에요?"}
+{"type": "translate", "prompt": "Is Mr. Minjun's hobby also soccer?", "answer": "민준 씨의 취미도 축구예요?"}
+{"type": "translate", "prompt": "Is Mr. Minjun's younger sister a famous author?", "answer": "민준 씨의 여동생은 유명한 작가예요?"}
+{"type": "translate", "prompt": "Is Mr. Minjun's younger sister fifteen years old?", "answer": "민준 씨의 여동생은 열다섯 살이에요?"}
+{"type": "translate", "prompt": "Is Ms. Bora a doctor?", "answer": "보라 씨는 의사예요?"}
+{"type": "translate", "prompt": "Is Ms. Bora a fan of this author?", "answer": "보라 씨는 이 작가 팬이에요?"}
+{"type": "translate", "prompt": "Is beef rib soup a spicy food?", "answer": "갈비탕은 매운 음식이에요?"}
+{"type": "translate", "prompt": "Is it Minjun's seat or our seat?", "answer": "민준 씨의 자리나 우리 자리예요?"}
+{"type": "translate", "prompt": "Is it a baseball stadium or a soccer stadium?", "answer": "야구 경기장이나 축구 경기장이에요?"}
+{"type": "translate", "prompt": "Is it a new stadium or a big stadium?", "answer": "새 경기장이나 큰 경기장이에요?"}
+{"type": "translate", "prompt": "Is it a special ball?", "answer": "특별한 공이에요?"}
+{"type": "translate", "prompt": "Is it an expensive travel agency?", "answer": "비싼 여행사예요?"}
+{"type": "translate", "prompt": "Is it my bus or that of Ms. Bora?", "answer": "제 버스나 보라 씨의 버스예요?"}
+{"type": "translate", "prompt": "Is it my seat or Bora's seat?", "answer": "제 자리나 보라 씨의 자리예요?"}
+{"type": "translate", "prompt": "Is it my seat or Minjun's?", "answer": "제 자리나 민준 씨의 자리예요?"}
+{"type": "translate", "prompt": "Is it our team or Minjun's team?", "answer": "우리 팀이나 민준 씨의 팀이에요?"}
+{"type": "translate", "prompt": "Is that Minjun's notebook?", "answer": "저것은 민준 씨의 수첩이에요?"}
+{"type": "translate", "prompt": "Is that a map?", "answer": "저것은 지도예요?"}
+{"type": "translate", "prompt": "Is that an expensive tangerine?", "answer": "저것은 비싼 귤이에요?"}
+{"type": "translate", "prompt": "Is the baseball game today or tomorrow?", "answer": "야구 경기는 오늘이나 내일이에요?"}
+{"type": "translate", "prompt": "Is the baseball game tomorrow or today?", "answer": "야구 경기는 내일이나 오늘이에요?"}
+{"type": "translate", "prompt": "Is the baseball match today?", "answer": "야구 경기는 오늘이에요?"}
+{"type": "translate", "prompt": "Is the game tomorrow or today?", "answer": "경기는 내일이나 오늘이에요?"}
+{"type": "translate", "prompt": "Is the soccer match today or tomorrow?", "answer": "축구 경기는 오늘이나 내일이에요?"}
+{"type": "translate", "prompt": "Is the stop spacious?", "answer": "넓은 정류장이에요?"}
+{"type": "translate", "prompt": "Is this Bora's money?", "answer": "이것은 보라 씨의 돈이에요?"}
+{"type": "translate", "prompt": "Is this Bora's student ID?", "answer": "이것은 보라 씨의 학생증이에요?"}
+{"type": "translate", "prompt": "Is this Minjun's money?", "answer": "이것은 민준 씨의 돈이에요?"}
+{"type": "translate", "prompt": "Is this Minjun's student ID?", "answer": "이것은 민준 씨의 학생증이에요?"}
+{"type": "translate", "prompt": "Is this Ms. Bora's gift?", "answer": "이것은 보라 씨의 선물이에요?"}
+{"type": "translate", "prompt": "Is this a fried chicken place?", "answer": "이것은 치킨 가게예요?"}
+{"type": "translate", "prompt": "Is this a funny book?", "answer": "이것은 웃긴 책이에요?"}
+{"type": "translate", "prompt": "Is this a melodrama?", "answer": "이것은 멜로 드라마예요?"}
+{"type": "translate", "prompt": "Is this beer?", "answer": "이것은 맥주예요?"}
+{"type": "translate", "prompt": "Is this book funny?", "answer": "이 책은 웃긴 책이에요?"}
+{"type": "translate", "prompt": "Is this our fried chicken?", "answer": "이것은 우리 치킨이에요?"}
+{"type": "translate", "prompt": "Is this our popcorn?", "answer": "이것은 우리 팝콘이에요?"}
+{"type": "translate", "prompt": "Is this our team's bus?", "answer": "이것은 우리 팀 버스예요?"}
+{"type": "translate", "prompt": "Is this person a baseball player?", "answer": "이 사람은 야구 선수예요?"}
+{"type": "translate", "prompt": "Is this person a famous actor?", "answer": "이 사람은 유명한 배우예요?"}
+{"type": "translate", "prompt": "Is this person a famous author?", "answer": "이 사람은 유명한 작가예요?"}
+{"type": "translate", "prompt": "Is this person a famous baseball player?", "answer": "이 사람은 유명한 야구 선수예요?"}
+{"type": "translate", "prompt": "Is this person our player?", "answer": "이 사람은 우리 선수예요?"}
+{"type": "translate", "prompt": "Is this seat our seat?", "answer": "이 자리는 우리 자리예요?"}
+{"type": "translate", "prompt": "Is this spicy bread?", "answer": "이것은 매운 빵이에요?"}
+{"type": "translate", "prompt": "Is this sweet bread?", "answer": "이것은 단 빵이에요?"}
+{"type": "translate", "prompt": "Is today Mr. Meow's birthday?", "answer": "오늘은 야옹 씨의 생일이에요?"}
+{"type": "translate", "prompt": "Is today Mr. Minjun's birthday?", "answer": "오늘은 민준 씨의 생일이에요?"}
+{"type": "translate", "prompt": "Is today Ms. Bora's birthday?", "answer": "오늘은 보라 씨의 생일이에요?"}
+{"type": "translate", "prompt": "Isn't it a cute notebook?", "answer": "귀여운 수첩이 아니에요?"}
+{"type": "translate", "prompt": "Isn't that a postcard?", "answer": "저것은 엽서가 아니에요?"}
+{"type": "translate", "prompt": "It is a big soccer stadium.", "answer": "큰 축구 경기장이에요."}
+{"type": "translate", "prompt": "It is a light postcard.", "answer": "가벼운 엽서예요."}
+{"type": "translate", "prompt": "It is a new ball.", "answer": "새 공이에요."}
+{"type": "translate", "prompt": "It is delicious kimchi.", "answer": "맛있는 김치예요."}
+{"type": "translate", "prompt": "It is hot food.", "answer": "뜨거운 음식이에요."}
+{"type": "translate", "prompt": "It is not Min-jun's notebook.", "answer": "민준 씨의 수첩이 아니에요."}
+{"type": "translate", "prompt": "It is not a post office.", "answer": "우체국이 아니에요."}
+{"type": "translate", "prompt": "It is not a special camera.", "answer": "특별한 카메라가 아니에요."}
+{"type": "translate", "prompt": "It is not an expensive camera.", "answer": "비싼 카메라가 아니에요."}
+{"type": "translate", "prompt": "It is our seat.", "answer": "우리 자리예요."}
+{"type": "translate", "prompt": "It's a cute necklace and watch.", "answer": "귀여운 목걸이랑 시계예요."}
+{"type": "translate", "prompt": "It's a heavy camera.", "answer": "무거운 카메라예요."}
+{"type": "translate", "prompt": "It's a new stadium.", "answer": "새 경기장이에요."}
+{"type": "translate", "prompt": "It's my notebook.", "answer": "제 수첩이에요."}
+{"type": "translate", "prompt": "It's not a cup.", "answer": "잔이 아니에요."}
+{"type": "translate", "prompt": "It's not a glass of water.", "answer": "물 잔이 아니에요."}
+{"type": "translate", "prompt": "It's not a map.", "answer": "지도가 아니에요."}
+{"type": "translate", "prompt": "It's not coffee.", "answer": "커피가 아니에요."}
+{"type": "translate", "prompt": "It's not my wallet.", "answer": "제 지갑이 아니에요."}
+{"type": "translate", "prompt": "It's our team's bus!", "answer": "우리 팀 버스예요!"}
+{"type": "translate", "prompt": "It's spicy ramen.", "answer": "매운 라면이에요."}
+{"type": "translate", "prompt": "It’s a spacious post office.", "answer": "넓은 우체국이에요."}
+{"type": "translate", "prompt": "Juice, please.", "answer": "주스 주세요."}
+{"type": "translate", "prompt": "Melon juice, please.", "answer": "멜론 주스 주세요."}
+{"type": "translate", "prompt": "Minjun's bus or my bus", "answer": "민준 씨의 버스나 제 버스"}
+{"type": "translate", "prompt": "Minjun's student ID", "answer": "민준 씨의 학생증"}
+{"type": "translate", "prompt": "Minjun, where is the restroom?", "answer": "민준 씨, 화장실은 어디에 있어요?"}
+{"type": "translate", "prompt": "Mr. Meow is also a jazz fan.", "answer": "야옹 씨도 재즈 팬이에요."}
+{"type": "translate", "prompt": "Mr. Meow's hobby is exercising.", "answer": "야옹 씨의 취미는 운동이에요."}
+{"type": "translate", "prompt": "Mr. Meow, take care!", "answer": "야옹 씨, 잘 가요!"}
+{"type": "translate", "prompt": "Mr. Minjun is a fan of this author.", "answer": "민준 씨는 이 작가 팬이에요."}
+{"type": "translate", "prompt": "Mr. Minjun's birthday is today!", "answer": "민준 씨의 생일은 오늘이에요!"}
+{"type": "translate", "prompt": "Mr. Minjun's hobby is exercising.", "answer": "민준 씨의 취미는 운동이에요."}
+{"type": "translate", "prompt": "Mr. Minjun, I'm hungry.", "answer": "민준 씨, 배고파요."}
+{"type": "translate", "prompt": "Mr. Minjun, how about Korean food?", "answer": "민준 씨, 한국 음식은 어때요?"}
+{"type": "translate", "prompt": "Mr. Minjun, take care!", "answer": "민준 씨, 잘 가요!"}
+{"type": "translate", "prompt": "Mr. Minjun, would you like japchae noodles?", "answer": "민준 씨, 잡채 드릴까요?"}
+{"type": "translate", "prompt": "Mr. Minjun, you can do it!", "answer": "민준 씨, 화이팅!"}
+{"type": "translate", "prompt": "Ms. Bora is Korean.", "answer": "보라 씨는 한국 사람이에요."}
+{"type": "translate", "prompt": "Ms. Bora is also a jazz fan!", "answer": "보라 씨도 재즈 팬이에요!"}
+{"type": "translate", "prompt": "Ms. Bora is also a jazz fan.", "answer": "보라 씨도 재즈 팬이에요."}
+{"type": "translate", "prompt": "Ms. Bora's seat is also a good seat!", "answer": "보라 씨의 자리도 좋은 자리예요!"}
+{"type": "translate", "prompt": "Ms. Bora, are you hungry?", "answer": "보라 씨, 배고파요?"}
+{"type": "translate", "prompt": "Ms. Bora, happy birthday!", "answer": "보라 씨, 생일 축하해요."}
+{"type": "translate", "prompt": "My birthday is today!", "answer": "제 생일은 오늘이에요!"}
+{"type": "translate", "prompt": "My food is delicious meat.", "answer": "제 음식은 맛있는 고기예요."}
+{"type": "translate", "prompt": "My food is hot.", "answer": "제 음식은 뜨거운 음식이에요."}
+{"type": "translate", "prompt": "My friend is a Taekwondo athlete.", "answer": "제 친구는 태권도 선수예요."}
+{"type": "translate", "prompt": "My friend is a famous author.", "answer": "제 친구는 유명한 작가예요."}
+{"type": "translate", "prompt": "My friend is a famous baseball player.", "answer": "제 친구는 유명한 야구 선수예요."}
+{"type": "translate", "prompt": "My friend is an actor.", "answer": "제 친구는 배우예요."}
+{"type": "translate", "prompt": "My gift is a cute necklace.", "answer": "제 선물은 귀여운 목걸이예요."}
+{"type": "translate", "prompt": "My gift is a necklace.", "answer": "제 선물은 목걸이예요."}
+{"type": "translate", "prompt": "My gift is a pen.", "answer": "제 선물은 볼펜이에요."}
+{"type": "translate", "prompt": "My gift is a strawberry cake.", "answer": "제 선물은 딸기 케이크예요."}
+{"type": "translate", "prompt": "My hobby is Taekwondo.", "answer": "제 취미는 태권도예요."}
+{"type": "translate", "prompt": "My hobby is reading.", "answer": "제 취미는 독서예요."}
+{"type": "translate", "prompt": "My older sister is at the airport.", "answer": "누나는 공항에 있어요."}
+{"type": "translate", "prompt": "My present is a watch and a necklace.", "answer": "제 선물은 시계랑 목걸이예요."}
+{"type": "translate", "prompt": "My ticket is here.", "answer": "제 표는 여기에 있어요."}
+{"type": "translate", "prompt": "My younger sister is fifteen years old.", "answer": "제 여동생은 열다섯 살이에요."}
+{"type": "translate", "prompt": "My younger sister's hobby is reading.", "answer": "제 여동생의 취미는 독서예요."}
+{"type": "translate", "prompt": "Nice to meet you.", "answer": "만나서 반가워요."}
+{"type": "translate", "prompt": "No, I am thirty years old!", "answer": "아니요, 서른 살이에요!"}
+{"type": "translate", "prompt": "No, I am thirty years old.", "answer": "아니요, 저는 서른 살이에요."}
+{"type": "translate", "prompt": "No, I'm a K-pop fan.", "answer": "아니요, 저는 케이팝 팬이에요."}
+{"type": "translate", "prompt": "No, I'm a taekwondo fan.", "answer": "아니요, 저는 태권도 팬이에요."}
+{"type": "translate", "prompt": "No, I'm thirty years old.", "answer": "아니요, 서른 살이에요."}
+{"type": "translate", "prompt": "No, it is not Jeju Island.", "answer": "아니요, 제주도가 아니에요."}
+{"type": "translate", "prompt": "No, it's a famous American book.", "answer": "아니요, 유명한 미국 책이에요."}
+{"type": "translate", "prompt": "No, it's not a spacious post office.", "answer": "아니요, 넓은 우체국이 아니에요."}
+{"type": "translate", "prompt": "No, it’s a popcorn shop.", "answer": "아니요, 팝콘 가게예요."}
+{"type": "translate", "prompt": "No, my friend is thirty years old.", "answer": "아니요, 제 친구는 서른 살이에요."}
+{"type": "translate", "prompt": "No, she's my older sister.", "answer": "아니요, 제 누나예요."}
+{"type": "translate", "prompt": "No, the bathroom is here.", "answer": "아니요, 화장실은 여기에 있어요."}
+{"type": "translate", "prompt": "No, the match is tomorrow.", "answer": "아니요, 경기는 내일이에요."}
+{"type": "translate", "prompt": "No, this is a melodrama.", "answer": "아니요, 이것은 멜로 드라마예요."}
+{"type": "translate", "prompt": "No, this is not Jeju Island.", "answer": "아니요, 이것은 제주도가 아니에요."}
+{"type": "translate", "prompt": "No, this isn't my bag.", "answer": "아니요, 이것은 제 가방이 아니에요."}
+{"type": "translate", "prompt": "No, today is my birthday!", "answer": "아니요, 오늘은 제 생일이에요!"}
+{"type": "translate", "prompt": "Please give me a glass of water.", "answer": "물 잔 주세요."}
+{"type": "translate", "prompt": "Popcorn or fried chicken, please.", "answer": "팝콘이나 치킨 주세요."}
+{"type": "translate", "prompt": "Reading is my hobby.", "answer": "독서는 제 취미예요."}
+{"type": "translate", "prompt": "Sir, is beef rib soup a Korean food?", "answer": "사장님, 갈비탕은 한국 음식이에요?"}
+{"type": "translate", "prompt": "Sir, is beef rib soup a hot food?", "answer": "사장님, 갈비탕은 뜨거운 음식이에요?"}
+{"type": "translate", "prompt": "Sir, is ramen a Korean food?", "answer": "사장님, 라면은 한국 음식이에요?"}
+{"type": "translate", "prompt": "Sir, is ramen a spicy food?", "answer": "사장님, 라면은 매운 음식이에요?"}
+{"type": "translate", "prompt": "Sir, is ramen an American food?", "answer": "사장님, 라면은 미국 음식이에요?"}
+{"type": "translate", "prompt": "Strawberry cake, please!", "answer": "딸기 케이크 주세요!"}
+{"type": "translate", "prompt": "Take care!", "answer": "잘 가요!"}
+{"type": "translate", "prompt": "Thank you for the cake and the necklace!", "answer": "케이크랑 목걸이 감사합니다!"}
+{"type": "translate", "prompt": "Thank you for the cute cake and delicious japchae noodles!", "answer": "귀여운 케이크랑 맛있는 잡채 감사합니다!"}
+{"type": "translate", "prompt": "Thank you for the cute gift and cake!", "answer": "귀여운 선물이랑 케이크 감사합니다!"}
+{"type": "translate", "prompt": "Thank you for the wallet and the watch!", "answer": "지갑이랑 시계 감사합니다!"}
+{"type": "translate", "prompt": "Thank you for the watch and cellphone!", "answer": "시계랑 핸드폰 감사합니다!"}
+{"type": "translate", "prompt": "Thank you, take care!", "answer": "감사합니다, 잘 가요!"}
+{"type": "translate", "prompt": "That is not my map.", "answer": "저것은 제 지도가 아니에요."}
+{"type": "translate", "prompt": "That's a ballpoint pen.", "answer": "저것은 볼펜이에요."}
+{"type": "translate", "prompt": "That's a special map.", "answer": "저것은 특별한 지도예요."}
+{"type": "translate", "prompt": "That's not coffee.", "answer": "저것은 커피가 아니에요."}
+{"type": "translate", "prompt": "The café is nearby.", "answer": "카페는 근처에 있어요."}
+{"type": "translate", "prompt": "The new cafe is over there.", "answer": "새 카페는 저기에 있어요."}
+{"type": "translate", "prompt": "The watch is an expensive gift!", "answer": "시계는 비싼 선물이에요!"}
+{"type": "translate", "prompt": "The white necklace is my gift.", "answer": "하얀색 목걸이는 제 선물이에요."}
+{"type": "translate", "prompt": "There is a good cafe over there.", "answer": "좋은 카페가 저기에 있어요."}
+{"type": "translate", "prompt": "This is Korean food.", "answer": "이것은 한국 음식이에요."}
+{"type": "translate", "prompt": "This is a cellphone and a necklace.", "answer": "이것은 핸드폰이랑 목걸이예요."}
+{"type": "translate", "prompt": "This is a funny drama.", "answer": "이것은 웃긴 드라마예요."}
+{"type": "translate", "prompt": "This is hot ramen and kimchi.", "answer": "이것은 뜨거운 라면이랑 김치예요."}
+{"type": "translate", "prompt": "This is melon juice.", "answer": "이것은 멜론 주스예요."}
+{"type": "translate", "prompt": "This is my gift.", "answer": "이것은 제 선물이에요."}
+{"type": "translate", "prompt": "This is my younger sister's gift.", "answer": "이것은 제 여동생의 선물이에요."}
+{"type": "translate", "prompt": "This is my younger sister's map.", "answer": "이것은 제 여동생의 지도예요."}
+{"type": "translate", "prompt": "This is not a cheap phone.", "answer": "이것은 싼 핸드폰이 아니에요."}
+{"type": "translate", "prompt": "This is not a cheap postcard.", "answer": "이것은 싼 엽서가 아니에요."}
+{"type": "translate", "prompt": "This is not a gift.", "answer": "이것은 선물이 아니에요."}
+{"type": "translate", "prompt": "This is not a map.", "answer": "이것은 지도가 아니에요."}
+{"type": "translate", "prompt": "This is not a pen.", "answer": "이것은 볼펜이 아니에요."}
+{"type": "translate", "prompt": "This is not a post office.", "answer": "여기는 우체국이 아니에요."}
+{"type": "translate", "prompt": "This is not a student ID card.", "answer": "이것은 학생증이 아니에요."}
+{"type": "translate", "prompt": "This is not a tangerine.", "answer": "이것은 귤이 아니에요."}
+{"type": "translate", "prompt": "This is not a travel agency.", "answer": "이것은 여행사가 아니에요."}
+{"type": "translate", "prompt": "This is not food from Jeju Island.", "answer": "이것은 제주도 음식이 아니에요."}
+{"type": "translate", "prompt": "This is not galbitang.", "answer": "이것은 갈비탕이 아니에요."}
+{"type": "translate", "prompt": "This is not my money.", "answer": "이것은 제 돈이 아니에요."}
+{"type": "translate", "prompt": "This is not my necklace.", "answer": "이것은 제 목걸이가 아니에요."}
+{"type": "translate", "prompt": "This is not my wallet.", "answer": "이것은 제 지갑이 아니에요."}
+{"type": "translate", "prompt": "This is sweet bubble tea.", "answer": "이것은 단 버블티예요."}
+{"type": "translate", "prompt": "This isn't money.", "answer": "이것은 돈이 아니에요."}
+{"type": "translate", "prompt": "This isn't sweet food.", "answer": "단 음식이 아니에요."}
+{"type": "translate", "prompt": "Today is Ms. Bora's birthday!", "answer": "오늘은 보라 씨의 생일이에요!"}
+{"type": "translate", "prompt": "Today is Ms. Bora's birthday.", "answer": "오늘은 보라 씨의 생일이에요."}
+{"type": "translate", "prompt": "Today is my birthday.", "answer": "오늘은 제 생일이에요."}
+{"type": "translate", "prompt": "Today is my younger sister's birthday.", "answer": "오늘은 제 여동생의 생일이에요."}
+{"type": "translate", "prompt": "What is Ms. Bora's hobby?", "answer": "보라 씨의 취미는 뭐예요?"}
+{"type": "translate", "prompt": "What is Ms. Bora's younger sister's hobby?", "answer": "보라 씨 여동생의 취미는 뭐예요?"}
+{"type": "translate", "prompt": "What is that?", "answer": "저것은 뭐예요?"}
+{"type": "translate", "prompt": "What is this white bus?", "answer": "이 하얀색 버스는 뭐예요?"}
+{"type": "translate", "prompt": "What's this stop called?", "answer": "이 정류장은 뭐예요?"}
+{"type": "translate", "prompt": "Where is the restaurant?", "answer": "식당은 어디에 있어요?"}
+{"type": "translate", "prompt": "Would you like bread and hot coffee?", "answer": "빵이랑 뜨거운 커피 드릴까요?"}
+{"type": "translate", "prompt": "Would you like cake?", "answer": "케이크 드릴까요?"}
+{"type": "translate", "prompt": "Would you like galbitang and japchae noodles?", "answer": "갈비탕이랑 잡채 드릴까요?"}
+{"type": "translate", "prompt": "Would you like japchae noodles?", "answer": "잡채 드릴까요?"}
+{"type": "translate", "prompt": "Would you like ramen and galbitang?", "answer": "라면이랑 갈비탕 드릴까요?"}
+{"type": "translate", "prompt": "Would you like tea?", "answer": "차 드릴까요?"}
+{"type": "translate", "prompt": "Wow, I'm also a K-pop fan!", "answer": "와, 저도 케이팝 팬이에요!"}
+{"type": "translate", "prompt": "Wow, I'm also a fan of this author!", "answer": "와, 저도 이 작가 팬이에요!"}
+{"type": "translate", "prompt": "Wow, I'm also a taekwondo fan!", "answer": "와, 저도 태권도 팬이에요!"}
+{"type": "translate", "prompt": "Wow, Ms. Bora is also a soccer fan.", "answer": "와, 보라 씨도 축구 팬이에요."}
+{"type": "translate", "prompt": "Wow, happy birthday!", "answer": "와, 생일 축하해요."}
+{"type": "translate", "prompt": "Wow, is Mr. Meow a jazz fan?", "answer": "와, 야옹 씨는 재즈 팬이에요?"}
+{"type": "translate", "prompt": "Wow, is Mr. Meow's hobby reading?", "answer": "와, 야옹 씨의 취미는 독서예요?"}
+{"type": "translate", "prompt": "Wow, is Mr. Minjun also a fan of this author?", "answer": "와, 민준 씨도 이 작가 팬이에요?"}
+{"type": "translate", "prompt": "Wow, is this Mr. Minjun's cake?", "answer": "와, 이것은 민준 씨의 케이크예요?"}
+{"type": "translate", "prompt": "Wow, is this Mr. Minjun's gift?", "answer": "와, 이것은 민준 씨의 선물이에요?"}
+{"type": "translate", "prompt": "Wow, is today Mr. Minjun's birthday?", "answer": "와, 오늘은 민준 씨의 생일이에요?"}
+{"type": "translate", "prompt": "Wow, our seats are good seats!", "answer": "와, 우리 자리는 좋은 자리예요!"}
+{"type": "translate", "prompt": "Wow, thank you for the strawberry juice!", "answer": "와, 딸기 주스 감사합니다!"}
+{"type": "translate", "prompt": "Wow, thanks for the delicious japchae noodles!", "answer": "와, 맛있는 잡채 감사합니다!"}
+{"type": "translate", "prompt": "Yes, I am hungry.", "answer": "네, 배고파요."}
+{"type": "translate", "prompt": "Yes, I'm a soccer fan.", "answer": "네, 저는 축구 팬이에요."}
+{"type": "translate", "prompt": "Yes, I'm also a K-pop fan!", "answer": "네, 저도 케이팝 팬이에요!"}
+{"type": "translate", "prompt": "Yes, I'm also a jazz fan.", "answer": "네, 저도 재즈 팬이에요."}
+{"type": "translate", "prompt": "Yes, Mr. Meow is a funny actor.", "answer": "네, 야옹 씨는 웃긴 배우예요."}
+{"type": "translate", "prompt": "Yes, Mr. Meow is a gray cat.", "answer": "네, 야옹 씨는 회색 고양이예요."}
+{"type": "translate", "prompt": "Yes, Mr. Meow is an athlete.", "answer": "네, 야옹 씨는 운동 선수예요."}
+{"type": "translate", "prompt": "Yes, Mr. Meow's hobby is exercising.", "answer": "네, 야옹 씨의 취미는 운동이에요."}
+{"type": "translate", "prompt": "Yes, beef rib soup is a Korean food.", "answer": "네, 갈비탕은 한국 음식이에요."}
+{"type": "translate", "prompt": "Yes, cake is a sweet food.", "answer": "네, 케이크는 단 음식이에요."}
+{"type": "translate", "prompt": "Yes, it is a spacious stop.", "answer": "네, 넓은 정류장이에요."}
+{"type": "translate", "prompt": "Yes, it's a big stadium.", "answer": "네, 큰 경기장이에요."}
+{"type": "translate", "prompt": "Yes, it's a famous book.", "answer": "네, 유명한 책이에요."}
+{"type": "translate", "prompt": "Yes, it's a spacious post office.", "answer": "네, 넓은 우체국이에요."}
+{"type": "translate", "prompt": "Yes, my bag is over here.", "answer": "네, 제 가방은 여기에 있어요."}
+{"type": "translate", "prompt": "Yes, my family is at the gate.", "answer": "네, 제 가족은 게이트에 있어요."}
+{"type": "translate", "prompt": "Yes, my friend is a famous author.", "answer": "네, 제 친구는 유명한 작가예요."}
+{"type": "translate", "prompt": "Yes, my ticket is here!", "answer": "네, 제 표는 여기에 있어요!"}
+{"type": "translate", "prompt": "Yes, my younger sister is fifteen years old!", "answer": "네, 제 여동생은 열다섯 살이에요!"}
+{"type": "translate", "prompt": "Yes, ramen is a spicy food.", "answer": "네, 라면은 매운 음식이에요."}
+{"type": "translate", "prompt": "Yes, the café is nearby.", "answer": "네, 카페는 근처에 있어요."}
+{"type": "translate", "prompt": "Yes, this is a light postcard.", "answer": "네, 이것은 가벼운 엽서예요."}
+{"type": "translate", "prompt": "Yes, this is also a funny book.", "answer": "네, 이것도 웃긴 책이에요."}
+{"type": "translate", "prompt": "Yes, this is my gift!", "answer": "네, 이것은 제 선물이에요!"}
+{"type": "translate", "prompt": "Yes, this is spicy bread.", "answer": "네, 이것은 매운 빵이에요."}
+{"type": "translate", "prompt": "Yes, this is spicy food.", "answer": "네, 이것은 매운 음식이에요."}
+{"type": "translate", "prompt": "Yes, today is Ms. Bora's birthday.", "answer": "네, 오늘은 보라 씨의 생일이에요."}
+{"type": "translate", "prompt": "Yes, today is my birthday!", "answer": "네, 오늘은 제 생일이에요!"}
+{"type": "translate", "prompt": "Yes, today is my birthday.", "answer": "네, 오늘은 제 생일이에요."}
+{"type": "translate", "prompt": "Yes, today is my younger sister's birthday.", "answer": "네, 오늘은 제 여동생의 생일이에요."}
+{"type": "translate", "prompt": "a big stadium or a new stadium", "answer": "큰 경기장이나 새 경기장"}
+{"type": "translate", "prompt": "a famous author", "answer": "유명한 작가"}
+{"type": "translate", "prompt": "a fried chicken shop or a popcorn shop", "answer": "치킨 가게나 팝콘 가게"}
+{"type": "translate", "prompt": "a new stadium or a big stadium", "answer": "새 경기장이나 큰 경기장"}
+{"type": "translate", "prompt": "big wallet", "answer": "큰 지갑"}
+{"type": "translate", "prompt": "delicious coffee", "answer": "맛있는 커피"}
+{"type": "translate", "prompt": "delicious tangerine", "answer": "맛있는 귤"}
+{"type": "translate", "prompt": "gifts and money", "answer": "선물이랑 돈"}
+{"type": "translate", "prompt": "lightweight camera", "answer": "가벼운 카메라"}
+{"type": "translate", "prompt": "money and a watch", "answer": "돈이랑 시계"}
+{"type": "translate", "prompt": "my older sister", "answer": "제 누나"}
+{"type": "translate", "prompt": "our seat or Bora's seat", "answer": "우리 자리나 보라 씨의 자리"}
+{"type": "translate", "prompt": "our team or the team of Ms. Bora", "answer": "우리 팀이나 보라 씨의 팀"}
+{"type": "translate", "prompt": "popcorn or beer", "answer": "팝콘이나 맥주"}
+{"type": "translate", "prompt": "popcorn shop or fried chicken shop", "answer": "팝콘 가게나 치킨 가게"}
+{"type": "translate", "prompt": "soccer stadium or baseball stadium", "answer": "축구 경기장이나 야구 경기장"}
+{"type": "translate", "prompt": "special ballpoint pen", "answer": "특별한 볼펜"}
+{"type": "translate", "prompt": "tomorrow or today", "answer": "내일이나 오늘"}
+{"type": "translate", "prompt": "가벼운", "answer": "light"}
+{"type": "translate", "prompt": "가벼운 엽서예요.", "answer": "It is a light postcard."}
+{"type": "translate", "prompt": "가족", "answer": "Family"}
+{"type": "translate", "prompt": "가족은 공항에 있어요.", "answer": "The family is at the airport."}
+{"type": "translate", "prompt": "갈비탕 주세요.", "answer": "Beef rib soup, please."}
+{"type": "translate", "prompt": "갈비탕은 매운 음식이에요?", "answer": "Is beef rib soup a spicy food?"}
+{"type": "translate", "prompt": "갈비탕은 미국 음식이에요?", "answer": "Is beef rib soup an American food?"}
+{"type": "translate", "prompt": "갈비탕이랑 라면이에요.", "answer": "It's galbitang and ramen."}
+{"type": "translate", "prompt": "갈비탕이랑 잡채 드릴까요?", "answer": "Would you like galbitang and japchae noodles?"}
+{"type": "translate", "prompt": "갈비탕이랑 케이크 드릴까요?", "answer": "Would you like galbitang and cake?"}
+{"type": "translate", "prompt": "경기는 내일이에요?", "answer": "Is the match tomorrow?"}
+{"type": "translate", "prompt": "공항에 있어요.", "answer": "I am at the airport."}
+{"type": "translate", "prompt": "공항은 여기에 있어요.", "answer": "The airport is here."}
+{"type": "translate", "prompt": "귀여운 목걸이랑 시계예요.", "answer": "It's a cute necklace and watch."}
+{"type": "translate", "prompt": "귀여운 선물이랑 케이크 감사합니다!", "answer": "Thank you for the cute gift and cake!"}
+{"type": "translate", "prompt": "귀여운 수첩이 아니에요?", "answer": "Isn't it a cute notebook?"}
+{"type": "translate", "prompt": "귀여운 지갑", "answer": "Cute wallet"}
+{"type": "translate", "prompt": "귀여운 케이크랑 맛있는 잡채 감사합니다!", "answer": "Thank you for the cute cake and delicious japchae noodles!"}
+{"type": "translate", "prompt": "근처에 있어요.", "answer": "It's nearby."}
+{"type": "translate", "prompt": "근처에 있어요?", "answer": "Is it nearby?"}
+{"type": "translate", "prompt": "내일이나 오늘", "answer": "tomorrow or today"}
+{"type": "translate", "prompt": "넓은 우체국", "answer": "spacious post office"}
+{"type": "translate", "prompt": "넓은 우체국이에요.", "answer": "It’s a spacious post office."}
+{"type": "translate", "prompt": "넓은 우체국이에요?", "answer": "Is the post office spacious?"}
+{"type": "translate", "prompt": "넓은 정류장", "answer": "spacious stop"}
+{"type": "translate", "prompt": "넓은 정류장이 아니에요.", "answer": "It is not a spacious stop."}
+{"type": "translate", "prompt": "넓은 정류장이에요.", "answer": "The stop is spacious."}
+{"type": "translate", "prompt": "넓은 정류장이에요?", "answer": "Is the stop spacious?"}
+{"type": "translate", "prompt": "네, 갈비탕은 뜨거운 음식이에요.", "answer": "Yes, beef rib soup is a hot food."}
+{"type": "translate", "prompt": "네, 게이트는 근처에 있어요!", "answer": "Yes, the gate is nearby!"}
+{"type": "translate", "prompt": "네, 넓은 우체국이에요.", "answer": "Yes, it's a spacious post office."}
+{"type": "translate", "prompt": "네, 넓은 정류장이에요.", "answer": "Yes, it is a spacious stop."}
+{"type": "translate", "prompt": "네, 딸기 케이크랑 커피 주세요.", "answer": "Yes, strawberry cake and coffee, please."}
+{"type": "translate", "prompt": "네, 민준 씨는 서른 살이에요.", "answer": "Yes, Mr. Minjun is thirty years old."}
+{"type": "translate", "prompt": "네, 반가워요.", "answer": "Yes, nice to meet you."}
+{"type": "translate", "prompt": "네, 보라 씨는 케이팝 팬이에요.", "answer": "Yes, Ms. Bora is a K-pop fan."}
+{"type": "translate", "prompt": "네, 야옹 씨는 열아홉 살이에요.", "answer": "Yes, Mr. Meow is nineteen years old."}
+{"type": "translate", "prompt": "네, 야옹 씨는 웃긴 배우예요.", "answer": "Yes, Mr. Meow is a funny actor."}
+{"type": "translate", "prompt": "네, 오늘은 제 생일이에요!", "answer": "Yes, today is my birthday!"}
+{"type": "translate", "prompt": "네, 오늘은 제 생일이에요.", "answer": "Yes, today is my birthday."}
+{"type": "translate", "prompt": "네, 오늘은 제 여동생의 생일이에요.", "answer": "Yes, today is my younger sister's birthday."}
+{"type": "translate", "prompt": "네, 유명한 책이에요.", "answer": "Yes, it's a famous book."}
+{"type": "translate", "prompt": "네, 이 사람은 유명한 야구 선수예요.", "answer": "Yes, this person is a famous baseball player."}
+{"type": "translate", "prompt": "네, 이것도 웃긴 책이에요.", "answer": "Yes, this is also a funny book."}
+{"type": "translate", "prompt": "네, 이것은 가벼운 엽서예요.", "answer": "Yes, this is a light postcard."}
+{"type": "translate", "prompt": "네, 이것은 매운 빵이에요.", "answer": "Yes, this is spicy bread."}
+{"type": "translate", "prompt": "네, 이것은 매운 음식이에요.", "answer": "Yes, this is spicy food."}
+{"type": "translate", "prompt": "네, 이것은 웃긴 책이에요.", "answer": "Yes, this is a funny book."}
+{"type": "translate", "prompt": "네, 잘 가요!", "answer": "Yes, take care!"}
+{"type": "translate", "prompt": "네, 저는 선생님이에요.", "answer": "Yes, I am a teacher."}
+{"type": "translate", "prompt": "네, 저는 재즈 팬이에요.", "answer": "Yes, I'm a jazz fan."}
+{"type": "translate", "prompt": "네, 저는 축구 팬이에요.", "answer": "Yes, I'm a soccer fan."}
+{"type": "translate", "prompt": "네, 저는 태권도 팬이에요.", "answer": "Yes, I'm a taekwondo fan."}
+{"type": "translate", "prompt": "네, 저는 한국 드라마 팬이에요.", "answer": "Yes, I'm a fan of Korean dramas."}
+{"type": "translate", "prompt": "네, 저도 미국 드라마 팬이에요!", "answer": "Yes, I'm also a fan of American dramas!"}
+{"type": "translate", "prompt": "네, 저도 재즈 팬이에요.", "answer": "Yes, I'm also a jazz fan."}
+{"type": "translate", "prompt": "네, 저도 케이팝 팬이에요!", "answer": "Yes, I'm also a K-pop fan!"}
+{"type": "translate", "prompt": "네, 제 여동생은 열다섯 살이에요!", "answer": "Yes, my younger sister is fifteen years old!"}
+{"type": "translate", "prompt": "네, 제 친구는 미국 사람이에요.", "answer": "Yes, my friend is an American person."}
+{"type": "translate", "prompt": "네, 제 친구는 열아홉 살이에요.", "answer": "Yes, my friend is nineteen years old."}
+{"type": "translate", "prompt": "네, 제 친구는 유명한 작가예요.", "answer": "Yes, my friend is a famous author."}
+{"type": "translate", "prompt": "네, 케이크는 단 음식이에요.", "answer": "Yes, cake is a sweet food."}
+{"type": "translate", "prompt": "네, 큰 경기장이에요.", "answer": "Yes, it's a big stadium."}
+{"type": "translate", "prompt": "단 귤", "answer": "sweet tangerine"}
+{"type": "translate", "prompt": "단 빙수는 어때요?", "answer": "How about sweet shaved ice?"}
+{"type": "translate", "prompt": "단 음식이 아니에요.", "answer": "This isn't sweet food."}
+{"type": "translate", "prompt": "돈은 여기에 있어요.", "answer": "The money is here."}
+{"type": "translate", "prompt": "돈이 아니에요.", "answer": "It's not money."}
+{"type": "translate", "prompt": "돈이랑 시계", "answer": "money and a watch"}
+{"type": "translate", "prompt": "딸기 주스 주세요.", "answer": "Strawberry juice, please"}
+{"type": "translate", "prompt": "딸기 케이크 드릴까요?", "answer": "Would you like strawberry cake?"}
+{"type": "translate", "prompt": "딸기 케이크 주세요!", "answer": "Strawberry cake, please!"}
+{"type": "translate", "prompt": "떡볶이는 맛있는 음식이에요.", "answer": "Tteokbokki is a delicious dish."}
+{"type": "translate", "prompt": "떡볶이는 매운 음식이에요?", "answer": "Is tteokbokki a spicy food?"}
+{"type": "translate", "prompt": "뜨거운 음식", "answer": "hot food"}
+{"type": "translate", "prompt": "뜨거운 음식은 어때요?", "answer": "How about hot food?"}
+{"type": "translate", "prompt": "뜨거운 음식이에요.", "answer": "It is hot food."}
+{"type": "translate", "prompt": "뜨거운 잡채예요.", "answer": "It's hot japchae noodles."}
+{"type": "translate", "prompt": "라면은 매운 음식이에요.", "answer": "Ramen is a spicy food."}
+{"type": "translate", "prompt": "라면은 어때요?", "answer": "How about ramen?"}
+{"type": "translate", "prompt": "라면은 중국 음식이에요?", "answer": "Is ramen a Chinese food?"}
+{"type": "translate", "prompt": "라면은 한국 음식이에요?", "answer": "Is ramen a Korean food?"}
+{"type": "translate", "prompt": "라면이랑 갈비탕 드릴까요?", "answer": "Would you like ramen and galbitang?"}
+{"type": "translate", "prompt": "만두 감사합니다.", "answer": "Thank you for the dumplings."}
+{"type": "translate", "prompt": "맛있는 갈비탕이랑 두부예요.", "answer": "It is delicious short rib soup and tofu."}
+{"type": "translate", "prompt": "맛있는 딸기 케이크예요.", "answer": "It's a delicious strawberry cake."}
+{"type": "translate", "prompt": "맛있는 만두", "answer": "delicious dumplings"}
+{"type": "translate", "prompt": "맛있는 음식이랑 귀여운 시계 감사합니다", "answer": "Thank you for the delicious food and cute watch."}
+{"type": "translate", "prompt": "매운 라면은 어때요?", "answer": "How about spicy ramen?"}
+{"type": "translate", "prompt": "매운 라면이에요.", "answer": "It's spicy ramen."}
+{"type": "translate", "prompt": "맥주나 물", "answer": "beer or water"}
+{"type": "translate", "prompt": "멜론 주스", "answer": "melon juice"}
+{"type": "translate", "prompt": "멜론 주스 주세요.", "answer": "Melon juice, please."}
+{"type": "translate", "prompt": "멜론 주스예요.", "answer": "It is melon juice."}
+{"type": "translate", "prompt": "목걸이 감사합니다!", "answer": "Thank you for the necklace!"}
+{"type": "translate", "prompt": "목걸이랑 시계", "answer": "necklace and watch"}
+{"type": "translate", "prompt": "무거운 가방", "answer": "a heavy bag"}
+{"type": "translate", "prompt": "무거운 책이에요.", "answer": "It is a heavy book."}
+{"type": "translate", "prompt": "물 잔 주세요.", "answer": "Please give me a glass of water."}
+{"type": "translate", "prompt": "물 잔이 아니에요.", "answer": "It's not a glass of water."}
+{"type": "translate", "prompt": "물이나 맥주", "answer": "water or beer"}
+{"type": "translate", "prompt": "미국 사람이에요.", "answer": "I am an American."}
+{"type": "translate", "prompt": "미국 음식", "answer": "American food"}
+{"type": "translate", "prompt": "미국 음식은 어때요?", "answer": "How about American food?"}
+{"type": "translate", "prompt": "민준 씨 여동생의 취미는 뭐예요?", "answer": "What is Mr. Minjun's younger sister's hobby?"}
+{"type": "translate", "prompt": "민준 씨, 딸기 주스 드릴까요?", "answer": "Mr. Minjun, would you like strawberry juice?"}
+{"type": "translate", "prompt": "민준 씨, 버블티는 어때요?", "answer": "Mr. Minjun, how about bubble tea?"}
+{"type": "translate", "prompt": "민준 씨, 잡채 드릴까요?", "answer": "Mr. Minjun, would you like japchae noodles?"}
+{"type": "translate", "prompt": "민준 씨, 화이팅!", "answer": "Mr. Minjun, you can do it!"}
+{"type": "translate", "prompt": "민준 씨는 열아홉 살이에요.", "answer": "Mr. Minjun is nineteen years old."}
+{"type": "translate", "prompt": "민준 씨는 운동 선수예요?", "answer": "Is Mr. Minjun an athlete?"}
+{"type": "translate", "prompt": "민준 씨는 웨이터예요.", "answer": "Mr. Minjun is a waiter."}
+{"type": "translate", "prompt": "민준 씨도 배우예요?", "answer": "Is Mr. Minjun also an actor?"}
+{"type": "translate", "prompt": "민준 씨도 축구 선수예요?", "answer": "Is Mr. Minjun also a soccer player?"}
+{"type": "translate", "prompt": "민준 씨도 축구 팬이에요?", "answer": "Is Mr. Minjun also a soccer fan?"}
+{"type": "translate", "prompt": "민준 씨의 가족은 게이트에 있어요?", "answer": "Is Mr. Minjun's family at the gate?"}
+{"type": "translate", "prompt": "민준 씨의 가족은 어디에 있어요?", "answer": "Where is the family of Minjun?"}
+{"type": "translate", "prompt": "민준 씨의 가족은 카페에 있어요.", "answer": "Minjun's family is at a cafe."}
+{"type": "translate", "prompt": "민준 씨의 돈이에요.", "answer": "It's Minjun's money."}
+{"type": "translate", "prompt": "민준 씨의 버스나 제 버스", "answer": "Minjun's bus or my bus"}
+{"type": "translate", "prompt": "민준 씨의 생일은 오늘이에요!", "answer": "Mr. Minjun's birthday is today!"}
+{"type": "translate", "prompt": "민준 씨의 선물은 비싼 목걸이예요?", "answer": "Is Mr. Minjun's gift an expensive necklace?"}
+{"type": "translate", "prompt": "민준 씨의 선물이에요.", "answer": "It's Mr. Minjun's gift."}
+{"type": "translate", "prompt": "민준 씨의 수첩이 아니에요.", "answer": "It is not Min-jun's notebook."}
+{"type": "translate", "prompt": "민준 씨의 여동생은 다섯 살이에요?", "answer": "Is Mr. Minjun's younger sister five years old?"}
+{"type": "translate", "prompt": "민준 씨의 여동생은 몇 살이에요?", "answer": "How old is Mr. Minjun's younger sister?"}
+{"type": "translate", "prompt": "민준 씨의 여동생은 어디에 있어요?", "answer": "Where is Mr. Minjun's younger sister?"}
+{"type": "translate", "prompt": "민준 씨의 여동생은 열다섯 살이에요?", "answer": "Is Mr. Minjun's younger sister fifteen years old?"}
+{"type": "translate", "prompt": "민준 씨의 여동생은 유명한 작가예요?", "answer": "Is Mr. Minjun's younger sister a famous author?"}
+{"type": "translate", "prompt": "민준 씨의 자리나 우리 자리예요?", "answer": "Is it Minjun's seat or our seat?"}
+{"type": "translate", "prompt": "민준 씨의 자리는 좋은 자리예요!", "answer": "Mr. Minjun's seat is a good seat!"}
+{"type": "translate", "prompt": "민준 씨의 취미는 뭐예요?", "answer": "What is Mr. Minjun's hobby?"}
+{"type": "translate", "prompt": "민준 씨의 취미는 운동이에요.", "answer": "Mr. Minjun's hobby is exercising."}
+{"type": "translate", "prompt": "민준 씨의 취미는 운동이에요?", "answer": "Is Mr. Minjun's hobby exercising?"}
+{"type": "translate", "prompt": "민준 씨의 취미도 태권도예요?", "answer": "Is Mr. Minjun's hobby also taekwondo?"}
+{"type": "translate", "prompt": "민준 씨의 학생증", "answer": "Minjun's student ID"}
+{"type": "translate", "prompt": "반가워요, 민준 씨는 몇 살이에요?", "answer": "Nice to meet you, Mr. Minjun, how old are you?"}
+{"type": "translate", "prompt": "밥은 어때요?", "answer": "How about rice?"}
+{"type": "translate", "prompt": "배고파요.", "answer": "I'm hungry."}
+{"type": "translate", "prompt": "버블티는 단 차예요.", "answer": "Bubble tea is sweet tea."}
+{"type": "translate", "prompt": "보라 씨 여동생의 취미는 뭐예요?", "answer": "What is Ms. Bora's younger sister's hobby?"}
+{"type": "translate", "prompt": "보라 씨, 귤은 어때요?", "answer": "Bora, how about some tangerines?"}
+{"type": "translate", "prompt": "보라 씨, 뜨거운 음식은 어때요?", "answer": "Ms. Bora, how about hot food?"}
+{"type": "translate", "prompt": "보라 씨, 배고파요?", "answer": "Ms. Bora, are you hungry?"}
+{"type": "translate", "prompt": "보라 씨, 버블티는 어때요?", "answer": "Ms. Bora, how about bubble tea?"}
+{"type": "translate", "prompt": "보라 씨, 생일 축하해요.", "answer": "Ms. Bora, happy birthday!"}
+{"type": "translate", "prompt": "보라 씨, 잘 가요!", "answer": "Ms. Bora, take care!"}
+{"type": "translate", "prompt": "보라 씨, 중국 음식은 어때요?", "answer": "Ms. Bora, how about Chinese food?"}
+{"type": "translate", "prompt": "보라 씨, 화이팅!", "answer": "Ms. Bora, you can do it!"}
+{"type": "translate", "prompt": "보라 씨는 이 작가 팬이에요!", "answer": "Ms. Bora is a fan of this author!"}
+{"type": "translate", "prompt": "보라 씨는 이 작가 팬이에요?", "answer": "Is Ms. Bora a fan of this author?"}
+{"type": "translate", "prompt": "보라 씨는 한국 사람이에요?", "answer": "Is Ms. Bora Korean?"}
+{"type": "translate", "prompt": "보라 씨도 야구 팬이에요?", "answer": "Is Ms. Bora also a baseball fan?"}
+{"type": "translate", "prompt": "보라 씨도 이 배우 팬이에요?", "answer": "Is Ms. Bora also a fan of this actor?"}
+{"type": "translate", "prompt": "보라 씨도 재즈 팬이에요!", "answer": "Ms. Bora is also a jazz fan!"}
+{"type": "translate", "prompt": "보라 씨도 재즈 팬이에요.", "answer": "Ms. Bora is also a jazz fan."}
+{"type": "translate", "prompt": "보라 씨의 돈이 아니에요.", "answer": "It isn't Bora's money."}
+{"type": "translate", "prompt": "보라 씨의 여동생은 몇 살이에요?", "answer": "How old is Ms. Bora's younger sister?"}
+{"type": "translate", "prompt": "보라 씨의 자리나 우리 자리", "answer": "Bora's seat or our seat"}
+{"type": "translate", "prompt": "보라 씨의 자리도 좋은 자리예요!", "answer": "Ms. Bora's seat is also a good seat!"}
+{"type": "translate", "prompt": "보라 씨의 자리예요.", "answer": "It is Bora's seat."}
+{"type": "translate", "prompt": "보라 씨의 취미는 뭐예요?", "answer": "What is Ms. Bora's hobby?"}
+{"type": "translate", "prompt": "보라 씨의 취미는 운동이에요?", "answer": "Is Ms. Bora's hobby exercising?"}
+{"type": "translate", "prompt": "보라 씨의 표는 여기에 있어요?", "answer": "Is the ticket for Bora here?"}
+{"type": "translate", "prompt": "비싼 미국 음식은 어때요?", "answer": "How about expensive American food?"}
+{"type": "translate", "prompt": "비싼 여행사예요?", "answer": "Is it an expensive travel agency?"}
+{"type": "translate", "prompt": "비싼 잔이 아니에요.", "answer": "It's not an expensive glass."}
+{"type": "translate", "prompt": "비싼 카메라가 아니에요.", "answer": "It is not an expensive camera."}
+{"type": "translate", "prompt": "비싼 카페", "answer": "an expensive cafe"}
+{"type": "translate", "prompt": "비싼 커피예요.", "answer": "It's expensive coffee."}
+{"type": "translate", "prompt": "비싼 케이크예요.", "answer": "It's an expensive cake."}
+{"type": "translate", "prompt": "빵, 물", "answer": "bread, water"}
+{"type": "translate", "prompt": "빵, 커피", "answer": "bread, coffee"}
+{"type": "translate", "prompt": "빵이랑 뜨거운 커피 드릴까요?", "answer": "Would you like bread and hot coffee?"}
+{"type": "translate", "prompt": "빵이랑 빙수는 어때요?", "answer": "How about bread and bingsu?"}
+{"type": "translate", "prompt": "빵이랑 커피는 어때요?", "answer": "How about bread and coffee?"}
+{"type": "translate", "prompt": "사장님, 갈비탕은 뜨거운 음식이에요?", "answer": "Sir, is beef rib soup a hot food?"}
+{"type": "translate", "prompt": "사장님, 갈비탕은 매운 음식이에요?", "answer": "Sir, is the beef rib soup a spicy food?"}
+{"type": "translate", "prompt": "사장님, 갈비탕은 한국 음식이에요?", "answer": "Sir, is beef rib soup a Korean food?"}
+{"type": "translate", "prompt": "사장님, 떡볶이는 매운 음식이에요?", "answer": "Boss, is tteokbokki a spicy food?"}
+{"type": "translate", "prompt": "사장님, 라면은 매운 음식이에요?", "answer": "Sir, is ramen a spicy food?"}
+{"type": "translate", "prompt": "사장님, 라면은 한국 음식이에요?", "answer": "Sir, is ramen a Korean food?"}
+{"type": "translate", "prompt": "사장님, 빙수는 단 음식이에요?", "answer": "Boss, is shaved ice a sweet food?"}
+{"type": "translate", "prompt": "사장님, 이것은 고기예요?", "answer": "Boss, is this meat?"}
+{"type": "translate", "prompt": "사장님, 이것은 김치예요?", "answer": "Boss, is this kimchi?"}
+{"type": "translate", "prompt": "사장님, 이것은 단 빵이에요?", "answer": "Boss, is this a sweet bread?"}
+{"type": "translate", "prompt": "사장님, 이것은 단 팝콘이에요?", "answer": "Boss, is this sweet popcorn?"}
+{"type": "translate", "prompt": "사장님, 이것은 뜨거운 빵이에요?", "answer": "Boss, is this bread hot?"}
+{"type": "translate", "prompt": "사장님, 이것은 뜨거운 음식이에요?", "answer": "Boss, is this food hot?"}
+{"type": "translate", "prompt": "사장님, 이것은 매운 빵이에요?", "answer": "Boss, is this bread spicy?"}
+{"type": "translate", "prompt": "사장님, 이것은 매운 찌개예요?", "answer": "Boss, is this stew spicy?"}
+{"type": "translate", "prompt": "사장님, 이것은 밥이에요?", "answer": "Boss, is this rice?"}
+{"type": "translate", "prompt": "사장님, 치킨 주세요!", "answer": "Boss, fried chicken, please."}
+{"type": "translate", "prompt": "새 경기장이 아니에요.", "answer": "It is not a new stadium."}
+{"type": "translate", "prompt": "새 경기장이나 큰 경기장", "answer": "a new stadium or a big stadium"}
+{"type": "translate", "prompt": "새 경기장이에요.", "answer": "It's a new stadium."}
+{"type": "translate", "prompt": "새 경기장이에요?", "answer": "Is it a new stadium?"}
+{"type": "translate", "prompt": "생일 축하해요!", "answer": "Happy birthday!"}
+{"type": "translate", "prompt": "생일 축하해요.", "answer": "Happy birthday!"}
+{"type": "translate", "prompt": "서른 살이에요.", "answer": "I am thirty years old."}
+{"type": "translate", "prompt": "선물이랑 돈", "answer": "gifts and money"}
+{"type": "translate", "prompt": "시계 감사합니다!", "answer": "Thank you for the watch!"}
+{"type": "translate", "prompt": "시계는 비싼 선물이에요!", "answer": "The watch is an expensive gift!"}
+{"type": "translate", "prompt": "시계랑 목걸이", "answer": "watch and necklace"}
+{"type": "translate", "prompt": "시계랑 핸드폰 감사합니다!", "answer": "Thank you for the watch and cellphone!"}
+{"type": "translate", "prompt": "식당은 어디에 있어요?", "answer": "Where is the restaurant?"}
+{"type": "translate", "prompt": "식당은 여기에 있어요?", "answer": "Is the restaurant here?"}
+{"type": "translate", "prompt": "실례합니다, 물 주세요.", "answer": "Excuse me, water, please."}
+{"type": "translate", "prompt": "실례합니다, 차 주세요.", "answer": "Excuse me, tea please."}
+{"type": "translate", "prompt": "실례합니다.", "answer": "Excuse me."}
+{"type": "translate", "prompt": "싼 볼펜", "answer": "cheap ballpoint pen"}
+{"type": "translate", "prompt": "싼 시계가 아니에요?", "answer": "Isn't it a cheap watch?"}
+{"type": "translate", "prompt": "싼 엽서가 아니에요.", "answer": "It is not a cheap postcard."}
+{"type": "translate", "prompt": "싼 음식", "answer": "cheap food"}
+{"type": "translate", "prompt": "아니요, 경기는 내일이에요.", "answer": "No, the match is tomorrow."}
+{"type": "translate", "prompt": "아니요, 넓은 우체국이 아니에요.", "answer": "No, it's not a spacious post office."}
+{"type": "translate", "prompt": "아니요, 라면은 매운 음식이에요.", "answer": "No, ramen is a spicy food."}
+{"type": "translate", "prompt": "아니요, 민준 씨는 케이팝 팬이에요.", "answer": "No, Mr. Minjun is a K-pop fan."}
+{"type": "translate", "prompt": "아니요, 보라 씨는 야구 팬이에요.", "answer": "No, Ms. Bora is a baseball fan."}
+{"type": "translate", "prompt": "아니요, 야옹 씨는 회색 고양이예요.", "answer": "No, Mr. Meow is a gray cat."}
+{"type": "translate", "prompt": "아니요, 여행사가 아니에요.", "answer": "No, it's not a travel agency."}
+{"type": "translate", "prompt": "아니요, 오늘은 제 생일이에요!", "answer": "No, today is my birthday!"}
+{"type": "translate", "prompt": "아니요, 오늘은 제 여동생의 생일이에요.", "answer": "No, today is my younger sister's birthday."}
+{"type": "translate", "prompt": "아니요, 유명한 미국 책이에요.", "answer": "No, it's a famous American book."}
+{"type": "translate", "prompt": "아니요, 이것은 멜로 드라마예요.", "answer": "No, this is a melodrama."}
+{"type": "translate", "prompt": "아니요, 이것은 여행사가 아니에요.", "answer": "No, this is not a travel agency."}
+{"type": "translate", "prompt": "아니요, 이것은 웃긴 책이에요.", "answer": "No, this is a funny book."}
+{"type": "translate", "prompt": "아니요, 이것은 제 가방이 아니에요.", "answer": "No, this isn't my bag."}
+{"type": "translate", "prompt": "아니요, 이것은 제주도가 아니에요.", "answer": "No, this is not Jeju Island."}
+{"type": "translate", "prompt": "아니요, 저는 서른 살이에요.", "answer": "No, I am thirty years old."}
+{"type": "translate", "prompt": "아니요, 저는 케이팝 팬이에요.", "answer": "No, I'm a K-pop fan."}
+{"type": "translate", "prompt": "아니요, 제 여동생은 축구 팬이에요.", "answer": "No, my younger sister is a soccer fan."}
+{"type": "translate", "prompt": "아니요, 제 여동생은 화장실에 있어요.", "answer": "No, my younger sister is in the bathroom."}
+{"type": "translate", "prompt": "아니요, 제 친구는 중국 배우예요.", "answer": "No, my friend is a Chinese actor."}
+{"type": "translate", "prompt": "안녕하세요, 민준 씨는 몇 살이에요?", "answer": "Hello, Mr. Minjun, how old are you?"}
+{"type": "translate", "prompt": "안녕하세요, 보라 씨는 몇 살이에요?", "answer": "Hello, Ms. Bora, how old are you?"}
+{"type": "translate", "prompt": "안녕하세요, 저는 민준이에요!", "answer": "Hello, I am Minjun!"}
+{"type": "translate", "prompt": "야구 경기", "answer": "a baseball game"}
+{"type": "translate", "prompt": "야구 경기는 내일이나 오늘이에요?", "answer": "Is the baseball game tomorrow or today?"}
+{"type": "translate", "prompt": "야구 경기예요!", "answer": "It's a baseball match!"}
+{"type": "translate", "prompt": "야구 경기장이나 축구 경기장이에요?", "answer": "Is it a baseball stadium or a soccer stadium?"}
+{"type": "translate", "prompt": "야구랑 축구", "answer": "baseball and soccer"}
+{"type": "translate", "prompt": "야옹 씨, 잘 가요!", "answer": "Mr. Meow, take care!"}
+{"type": "translate", "prompt": "야옹 씨, 화이팅!", "answer": "Mr. Meow, you can do it!"}
+{"type": "translate", "prompt": "야옹 씨는 몇 살이에요?", "answer": "How old is Mr. Meow?"}
+{"type": "translate", "prompt": "야옹 씨는 배우예요?", "answer": "Is Mr. Meow an actor?"}
+{"type": "translate", "prompt": "야옹 씨는 열아홉 살이에요!", "answer": "Mr. Meow is nineteen years old!"}
+{"type": "translate", "prompt": "야옹 씨는 작가예요?", "answer": "Is Mr. Meow an author?"}
+{"type": "translate", "prompt": "야옹 씨는 재즈 팬이에요.", "answer": "Mr. Meow is a jazz fan."}
+{"type": "translate", "prompt": "야옹 씨도 야구 팬이에요?", "answer": "Is Mr. Meow also a baseball fan?"}
+{"type": "translate", "prompt": "야옹 씨도 재즈 팬이에요.", "answer": "Mr. Meow is also a jazz fan."}
+{"type": "translate", "prompt": "야옹 씨도 축구 팬이에요.", "answer": "Mr. Meow is also a soccer fan."}
+{"type": "translate", "prompt": "야옹 씨의 가족", "answer": "Mr. Meow's family"}
+{"type": "translate", "prompt": "야옹 씨의 취미는 뭐예요?", "answer": "What is Mr. Meow's hobby?"}
+{"type": "translate", "prompt": "어디에", "answer": "Where?"}
+{"type": "translate", "prompt": "어디에 있어요?", "answer": "Where is it?"}
+{"type": "translate", "prompt": "여권은 어디에 있어요?", "answer": "Where is the passport?"}
+{"type": "translate", "prompt": "여권은 여기에 있어요.", "answer": "Here is the passport."}
+{"type": "translate", "prompt": "여기", "answer": "here"}
+{"type": "translate", "prompt": "여기에", "answer": "Right here"}
+{"type": "translate", "prompt": "여기에 있어요.", "answer": "It's here."}
+{"type": "translate", "prompt": "여동생의 돈이에요.", "answer": "It's the younger sister's money."}
+{"type": "translate", "prompt": "여행사예요.", "answer": "It's a travel agency."}
+{"type": "translate", "prompt": "열아홉 살이에요.", "answer": "I am nineteen years old."}
+{"type": "translate", "prompt": "오늘은 보라 씨의 생일이에요!", "answer": "Today is Ms. Bora's birthday!"}
+{"type": "translate", "prompt": "오늘은 보라 씨의 생일이에요.", "answer": "Today is Ms. Bora's birthday."}
+{"type": "translate", "prompt": "오늘은 보라 씨의 생일이에요?", "answer": "Is today Ms. Bora's birthday?"}
+{"type": "translate", "prompt": "오늘은 야옹 씨의 생일이에요?", "answer": "Is today Mr. Meow's birthday?"}
+{"type": "translate", "prompt": "오늘은 제 생일이에요!", "answer": "Today is my birthday!"}
+{"type": "translate", "prompt": "오늘은 제 생일이에요.", "answer": "Today is my birthday."}
+{"type": "translate", "prompt": "오늘이나 내일", "answer": "today or tomorrow"}
+{"type": "translate", "prompt": "와 케이크예요!", "answer": "Wow, it's cake!"}
+{"type": "translate", "prompt": "와, 가방 감사합니다!", "answer": "Wow, thank you for the bag!"}
+{"type": "translate", "prompt": "와, 귤이에요!", "answer": "Wow, it's a tangerine!"}
+{"type": "translate", "prompt": "와, 딸기 주스 감사합니다!", "answer": "Wow, thank you for the strawberry juice!"}
+{"type": "translate", "prompt": "와, 민준 씨도 케이팝 팬이에요!", "answer": "Wow, Mr. Minjun is also a K-pop fan!"}
+{"type": "translate", "prompt": "와, 민준 씨의 취미는 운동이에요?", "answer": "Wow, is Mr. Minjun's hobby exercising?"}
+{"type": "translate", "prompt": "와, 버블티 감사합니다!", "answer": "Wow, thank you for the bubble tea!"}
+{"type": "translate", "prompt": "와, 보라 씨도 케이팝 팬이에요?", "answer": "Wow, is Ms. Bora also a K-pop fan?"}
+{"type": "translate", "prompt": "와, 야옹 씨는 운동 선수예요?", "answer": "Wow, is Mr. Meow an athlete?"}
+{"type": "translate", "prompt": "와, 야옹 씨는 재즈 팬이에요?", "answer": "Wow, is Mr. Meow a jazz fan?"}
+{"type": "translate", "prompt": "와, 야옹 씨도 케이팝 팬이에요?", "answer": "Wow, is Mr. Meow also a K-pop fan?"}
+{"type": "translate", "prompt": "와, 야옹 씨의 취미는 독서예요?", "answer": "Wow, is Mr. Meow's hobby reading?"}
+{"type": "translate", "prompt": "와, 오늘은 민준 씨의 생일이에요?", "answer": "Wow, is today Mr. Minjun's birthday?"}
+{"type": "translate", "prompt": "와, 오늘은 보라 씨의 생일이에요!", "answer": "Wow, today is Ms. Bora's birthday!"}
+{"type": "translate", "prompt": "와, 우리 자리는 좋은 자리예요!", "answer": "Wow, our seats are good seats!"}
+{"type": "translate", "prompt": "와, 우리 팀 화이팅!", "answer": "Wow, our team, you can do it!"}
+{"type": "translate", "prompt": "와, 이것은 민준 씨의 케이크예요?", "answer": "Wow, is this Mr. Minjun's cake?"}
+{"type": "translate", "prompt": "와, 잡채랑 케이크 감사합니다!", "answer": "Wow, thank you for the japchae noodles and cake!"}
+{"type": "translate", "prompt": "와, 저는 이 작가 팬이에요!", "answer": "Wow, I'm a fan of this author!"}
+{"type": "translate", "prompt": "와, 저도 케이팝 팬이에요!", "answer": "Wow, I'm also a K-pop fan!"}
+{"type": "translate", "prompt": "와, 저도 태권도 팬이에요!", "answer": "Wow, I'm also a taekwondo fan!"}
+{"type": "translate", "prompt": "와, 저도 한국 드라마 팬이에요.", "answer": "Wow, I'm also a fan of Korean dramas."}
+{"type": "translate", "prompt": "와, 제 게이트는 근처에 있어요!", "answer": "Wow, my gate is nearby!"}
+{"type": "translate", "prompt": "와, 카메라 감사합니다!", "answer": "Wow, thanks for the camera!"}
+{"type": "translate", "prompt": "와, 화이팅!", "answer": "Wow, you can do it!"}
+{"type": "translate", "prompt": "우리 선수, 화이팅!", "answer": "Our team, you can do it!"}
+{"type": "translate", "prompt": "우리 자리나 민준 씨의 자리", "answer": "our seat or Minjun's seat"}
+{"type": "translate", "prompt": "우리 자리나 보라 씨의 자리", "answer": "our seat or Bora's seat"}
+{"type": "translate", "prompt": "우리 자리예요.", "answer": "It is our seat."}
+{"type": "translate", "prompt": "우리 팀 버스예요!", "answer": "It's our team's bus!"}
+{"type": "translate", "prompt": "우리 팀이나 민준 씨의 팀이에요?", "answer": "Is it our team or Minjun's team?"}
+{"type": "translate", "prompt": "우리 팀이나 보라 씨의 팀", "answer": "our team or the team of Ms. Bora"}
+{"type": "translate", "prompt": "우리 팀이에요!", "answer": "It's our team!"}
+{"type": "translate", "prompt": "우체국이 아니에요.", "answer": "It is not a post office."}
+{"type": "translate", "prompt": "웨이터, 의사", "answer": "waiter, doctor"}
+{"type": "translate", "prompt": "유명한 여행사", "answer": "famous travel agency"}
+{"type": "translate", "prompt": "유명한 작가", "answer": "a famous author"}
+{"type": "translate", "prompt": "유명한 책이에요?", "answer": "Is it a famous book?"}
+{"type": "translate", "prompt": "음식은 뜨거운 김치찌개예요.", "answer": "The food is hot kimchi stew."}
+{"type": "translate", "prompt": "음식은 어때요?", "answer": "How's the food?"}
+{"type": "translate", "prompt": "이 게이트", "answer": "this gate"}
+{"type": "translate", "prompt": "이 경기장은 큰 경기장이에요?", "answer": "Is this stadium big?"}
+{"type": "translate", "prompt": "이 귤은 어때요?", "answer": "How do you like this tangerine?"}
+{"type": "translate", "prompt": "이 사람은 야구 선수예요?", "answer": "Is this person a baseball player?"}
+{"type": "translate", "prompt": "이 사람은 유명한 작가예요?", "answer": "Is this person a famous author?"}
+{"type": "translate", "prompt": "이 잔은 어때요?", "answer": "How about this cup?"}
+{"type": "translate", "prompt": "이 책은 웃긴 책이에요?", "answer": "Is this book funny?"}
+{"type": "translate", "prompt": "이 하얀색 버스는 뭐예요?", "answer": "What is this white bus?"}
+{"type": "translate", "prompt": "이것은 가벼운 카메라예요?", "answer": "Is this camera light?"}
+{"type": "translate", "prompt": "이것은 갈비탕이 아니에요.", "answer": "This is not galbitang."}
+{"type": "translate", "prompt": "이것은 단 버블티예요.", "answer": "This is sweet bubble tea."}
+{"type": "translate", "prompt": "이것은 단 빵이에요.", "answer": "This is sweet bread."}
+{"type": "translate", "prompt": "이것은 단 팝콘이에요?", "answer": "Is this sweet popcorn?"}
+{"type": "translate", "prompt": "이것은 돈이 아니에요.", "answer": "This isn't money."}
+{"type": "translate", "prompt": "이것은 떡볶이예요?", "answer": "Is this tteokbokki?"}
+{"type": "translate", "prompt": "이것은 뜨거운 라면이랑 김치예요.", "answer": "This is hot ramen and kimchi."}
+{"type": "translate", "prompt": "이것은 라면이랑 갈비탕이에요.", "answer": "This is ramen and galbitang."}
+{"type": "translate", "prompt": "이것은 만두예요?", "answer": "Is this a dumpling?"}
+{"type": "translate", "prompt": "이것은 매운 빵이에요?", "answer": "Is this spicy bread?"}
+{"type": "translate", "prompt": "이것은 매운 치킨이에요!", "answer": "This is spicy fried chicken!"}
+{"type": "translate", "prompt": "이것은 멜로 드라마예요?", "answer": "Is this a melodrama?"}
+{"type": "translate", "prompt": "이것은 멜론 주스예요.", "answer": "This is melon juice."}
+{"type": "translate", "prompt": "이것은 물이 아니에요.", "answer": "This is not water."}
+{"type": "translate", "prompt": "이것은 민준 씨의 돈이에요?", "answer": "Is this Minjun's money?"}
+{"type": "translate", "prompt": "이것은 민준 씨의 선물이에요?", "answer": "Is this Mr. Minjun's gift?"}
+{"type": "translate", "prompt": "이것은 민준 씨의 학생증이에요?", "answer": "Is this Minjun's student ID?"}
+{"type": "translate", "prompt": "이것은 보라 씨의 선물이에요?", "answer": "Is this Ms. Bora's gift?"}
+{"type": "translate", "prompt": "이것은 볼펜이 아니에요.", "answer": "This is not a pen."}
+{"type": "translate", "prompt": "이것은 싼 엽서가 아니에요.", "answer": "This is not a cheap postcard."}
+{"type": "translate", "prompt": "이것은 여행사가 아니에요.", "answer": "This is not a travel agency."}
+{"type": "translate", "prompt": "이것은 우리 팝콘이에요?", "answer": "Is this our popcorn?"}
+{"type": "translate", "prompt": "이것은 웃긴 드라마예요.", "answer": "This is a funny drama."}
+{"type": "translate", "prompt": "이것은 웃긴 드라마예요?", "answer": "Is this a funny drama?"}
+{"type": "translate", "prompt": "이것은 웃긴 책이에요?", "answer": "Is this a funny book?"}
+{"type": "translate", "prompt": "이것은 잔이에요?", "answer": "Is this a cup?"}
+{"type": "translate", "prompt": "이것은 제 돈이 아니에요.", "answer": "This is not my money."}
+{"type": "translate", "prompt": "이것은 제 돈이에요.", "answer": "This is my money."}
+{"type": "translate", "prompt": "이것은 제 선물이에요.", "answer": "This is my gift."}
+{"type": "translate", "prompt": "이것은 제 여동생의 선물이에요.", "answer": "This is my younger sister's gift."}
+{"type": "translate", "prompt": "이것은 제 여동생의 지도예요.", "answer": "This is my younger sister's map."}
+{"type": "translate", "prompt": "이것은 제 취미예요.", "answer": "This is my hobby."}
+{"type": "translate", "prompt": "이것은 제 학생증이 아니에요.", "answer": "This is not my student ID."}
+{"type": "translate", "prompt": "이것은 제 핸드폰이 아니에요.", "answer": "This is not my phone."}
+{"type": "translate", "prompt": "이것은 제주도가 아니에요.", "answer": "This is not Jeju Island."}
+{"type": "translate", "prompt": "이것은 지도예요?", "answer": "Is this a map?"}
+{"type": "translate", "prompt": "이것은 치킨 가게예요?", "answer": "Is this a fried chicken place?"}
+{"type": "translate", "prompt": "이것은 학생증이 아니에요.", "answer": "This is not a student ID card."}
+{"type": "translate", "prompt": "이것은 한국 음식이 아니에요.", "answer": "This is not Korean food."}
+{"type": "translate", "prompt": "잔이 아니에요.", "answer": "It's not a cup."}
+{"type": "translate", "prompt": "잘 가요!", "answer": "Take care!"}
+{"type": "translate", "prompt": "잘 가요.", "answer": "Take care."}
+{"type": "translate", "prompt": "잡채랑 맛있는 고기예요.", "answer": "It is japchae noodles and delicious meat."}
+{"type": "translate", "prompt": "저것은 가방이에요?", "answer": "Is that a bag?"}
+{"type": "translate", "prompt": "저것은 맛있는 귤이에요?", "answer": "Is that a tasty tangerine?"}
+{"type": "translate", "prompt": "저것은 뭐예요?", "answer": "What is that?"}
+{"type": "translate", "prompt": "저것은 민준 씨의 수첩이에요?", "answer": "Is that Minjun's notebook?"}
+{"type": "translate", "prompt": "저것은 비싼 귤이에요?", "answer": "Is that an expensive tangerine?"}
+{"type": "translate", "prompt": "저것은 제 지도가 아니에요.", "answer": "That is not my map."}
+{"type": "translate", "prompt": "저것은 지도예요?", "answer": "Is that a map?"}
+{"type": "translate", "prompt": "저것은 커피가 아니에요.", "answer": "That's not coffee."}
+{"type": "translate", "prompt": "저것은 특별한 핸드폰이에요?", "answer": "Is that a special phone?"}
+{"type": "translate", "prompt": "저기에", "answer": "over there"}
+{"type": "translate", "prompt": "저기에 있어요.", "answer": "It's over there."}
+{"type": "translate", "prompt": "저는 공항에 있어요.", "answer": "I'm at the airport."}
+{"type": "translate", "prompt": "저는 미국 드라마 팬이에요.", "answer": "I am a fan of American dramas."}
+{"type": "translate", "prompt": "저는 민준이에요!", "answer": "I am Minjun!"}
+{"type": "translate", "prompt": "저는 야구 팬이에요.", "answer": "I am a baseball fan."}
+{"type": "translate", "prompt": "저는 웃긴 드라마 팬이에요.", "answer": "I'm a fan of funny dramas."}
+{"type": "translate", "prompt": "저는 웃긴 책 팬이에요.", "answer": "I'm a fan of funny books."}
+{"type": "translate", "prompt": "저는 이 배우 팬이에요.", "answer": "I am a fan of this actor."}
+{"type": "translate", "prompt": "저는 이 작가 팬이에요.", "answer": "I'm a fan of this author."}
+{"type": "translate", "prompt": "저는 이 태권도 선수 팬이에요.", "answer": "I am a fan of this taekwondo player."}
+{"type": "translate", "prompt": "저는 제주도 사람이 아니에요.", "answer": "I am not from Jeju Island."}
+{"type": "translate", "prompt": "저는 축구 선수예요.", "answer": "I am a soccer player."}
+{"type": "translate", "prompt": "저는 케이팝 팬이에요.", "answer": "I'm a K-pop fan."}
+{"type": "translate", "prompt": "저는 태권도 팬이에요.", "answer": "I am a taekwondo fan."}
+{"type": "translate", "prompt": "저는 한국 드라마 팬이에요!", "answer": "I'm a fan of Korean dramas!"}
+{"type": "translate", "prompt": "저는 회사원이 아니에요.", "answer": "I am not an office worker."}
+{"type": "translate", "prompt": "저도 멜로 드라마 팬이에요!", "answer": "I'm also a fan of melodramas!"}
+{"type": "translate", "prompt": "저도 재즈 팬이에요.", "answer": "I'm also a jazz fan."}
+{"type": "translate", "prompt": "저도 케이팝 팬이에요.", "answer": "I'm also a K-pop fan."}
+{"type": "translate", "prompt": "정류장이 아니에요.", "answer": "It is not a bus stop."}
+{"type": "translate", "prompt": "정류장이에요.", "answer": "It's a bus stop."}
+{"type": "translate", "prompt": "제 가방", "answer": "my bag"}
+{"type": "translate", "prompt": "제 가방은 게이트에 있어요.", "answer": "My bag is at the gate."}
+{"type": "translate", "prompt": "제 가방이 아니에요.", "answer": "It's not my bag."}
+{"type": "translate", "prompt": "제 누나", "answer": "my older sister"}
+{"type": "translate", "prompt": "제 누나는 공항에 있어요.", "answer": "My older sister is at the airport."}
+{"type": "translate", "prompt": "제 누나는 스물다섯 살이에요.", "answer": "My older sister is twenty-five years old."}
+{"type": "translate", "prompt": "제 볼펜이에요!", "answer": "It's my pen!"}
+{"type": "translate", "prompt": "제 생일은 오늘이에요!", "answer": "My birthday is today!"}
+{"type": "translate", "prompt": "제 생일은 오늘이에요.", "answer": "My birthday is today."}
+{"type": "translate", "prompt": "제 선물은 가방이에요.", "answer": "My gift is a bag."}
+{"type": "translate", "prompt": "제 선물은 귀여운 목걸이예요.", "answer": "My gift is a cute necklace."}
+{"type": "translate", "prompt": "제 선물은 딸기 케이크예요.", "answer": "My gift is a strawberry cake."}
+{"type": "translate", "prompt": "제 선물은 목걸이예요.", "answer": "My gift is a necklace."}
+{"type": "translate", "prompt": "제 선물은 볼펜이에요.", "answer": "My gift is a pen."}
+{"type": "translate", "prompt": "제 선물은 시계랑 목걸이예요.", "answer": "My present is a watch and a necklace."}
+{"type": "translate", "prompt": "제 선물은 잡채랑 딸기 케이크예요.", "answer": "My gift is japchae noodles and a strawberry cake."}
+{"type": "translate", "prompt": "제 선물은 하얀색 카메라예요.", "answer": "My gift is a white camera."}
+{"type": "translate", "prompt": "제 여동생도 야구 선수예요!", "answer": "My younger sister is also a baseball player!"}
+{"type": "translate", "prompt": "제 여동생도 이 축구 선수 팬이에요!", "answer": "My younger sister is also a fan of this soccer player!"}
+{"type": "translate", "prompt": "제 여동생은 열다섯 살이에요!", "answer": "My younger sister is fifteen years old!"}
+{"type": "translate", "prompt": "제 여동생은 열다섯 살이에요.", "answer": "My younger sister is fifteen years old."}
+{"type": "translate", "prompt": "제 여동생은 운동 선수예요.", "answer": "My younger sister is an athlete."}
+{"type": "translate", "prompt": "제 여동생은 축구 팬이에요.", "answer": "My younger sister is a soccer fan."}
+{"type": "translate", "prompt": "제 여동생은 태권도 선수예요.", "answer": "My younger sister is a taekwondo athlete."}
+{"type": "translate", "prompt": "제 여동생의 취미는 독서예요.", "answer": "My younger sister's hobby is reading."}
+{"type": "translate", "prompt": "제 음식은 김치예요.", "answer": "My food is kimchi."}
+{"type": "translate", "prompt": "제 음식은 뜨거운 음식이에요.", "answer": "My food is hot."}
+{"type": "translate", "prompt": "제 음식은 맛있는 고기예요.", "answer": "My food is delicious meat."}
+{"type": "translate", "prompt": "제 자리나 보라 씨의 자리예요?", "answer": "Is it my seat or Bora's seat?"}
+{"type": "translate", "prompt": "제 지갑이에요.", "answer": "It's my wallet."}
+{"type": "translate", "prompt": "제 책", "answer": "my book"}
+{"type": "translate", "prompt": "제 취미는 독서예요.", "answer": "My hobby is reading."}
+{"type": "translate", "prompt": "제 취미는 운동이에요.", "answer": "My hobby is exercising."}
+{"type": "translate", "prompt": "제 취미는 축구예요.", "answer": "My hobby is soccer."}
+{"type": "translate", "prompt": "제 친구는 배우예요.", "answer": "My friend is an actor."}
+{"type": "translate", "prompt": "제 친구는 유명한 야구 선수예요.", "answer": "My friend is a famous baseball player."}
+{"type": "translate", "prompt": "제 친구는 유명한 작가예요.", "answer": "My friend is a famous author."}
+{"type": "translate", "prompt": "제 친구의 취미는 운동이에요.", "answer": "My friend's hobby is exercising."}
+{"type": "translate", "prompt": "제 학생증 주세요.", "answer": "Please give me my student ID."}
+{"type": "translate", "prompt": "제 핸드폰", "answer": "my cell phone"}
+{"type": "translate", "prompt": "제 핸드폰은 여기에 있어요.", "answer": "My cellphone is here."}
+{"type": "translate", "prompt": "제주도 음식이에요.", "answer": "It's food from Jeju Island."}
+{"type": "translate", "prompt": "좋은 자리", "answer": "a good seat"}
+{"type": "translate", "prompt": "좋은 카페", "answer": "good cafe"}
+{"type": "translate", "prompt": "중국 음식이에요.", "answer": "It's Chinese food."}
+{"type": "translate", "prompt": "중국 음식이에요?", "answer": "Is it Chinese food?"}
+{"type": "translate", "prompt": "지갑, 책", "answer": "wallet, book"}
+{"type": "translate", "prompt": "지갑이랑 시계 감사합니다!", "answer": "Thank you for the wallet and the watch!"}
+{"type": "translate", "prompt": "지도가 아니에요.", "answer": "It's not a map."}
+{"type": "translate", "prompt": "차 드릴까요?", "answer": "Would you like tea?"}
+{"type": "translate", "prompt": "차 주세요.", "answer": "Tea, please."}
+{"type": "translate", "prompt": "차, 커피", "answer": "tea, coffee"}
+{"type": "translate", "prompt": "축구 경기는 내일이나 오늘이에요?", "answer": "Is the soccer game tomorrow or today?"}
+{"type": "translate", "prompt": "축구 경기는 오늘이나 내일이에요?", "answer": "Is the soccer match today or tomorrow?"}
+{"type": "translate", "prompt": "축구 경기장", "answer": "the soccer field"}
+{"type": "translate", "prompt": "축구 경기장이나 야구 경기장", "answer": "soccer stadium or baseball stadium"}
+{"type": "translate", "prompt": "출구는 근처에 있어요.", "answer": "The exit is nearby."}
+{"type": "translate", "prompt": "출구는 여기에 있어요.", "answer": "The exit is here."}
+{"type": "translate", "prompt": "출구는 저기에 있어요.", "answer": "The exit is over there."}
+{"type": "translate", "prompt": "치킨 가게나 팝콘 가게", "answer": "a fried chicken shop or a popcorn shop"}
+{"type": "translate", "prompt": "치킨 가게나 팝콘 가게예요?", "answer": "Is it a chicken shop or a popcorn shop?"}
+{"type": "translate", "prompt": "친구, 화이팅!", "answer": "Friend, you can do it!"}
+{"type": "translate", "prompt": "카메라가 아니에요.", "answer": "It's not a camera."}
+{"type": "translate", "prompt": "카페는 저기에 있어요.", "answer": "The café is over there."}
+{"type": "translate", "prompt": "커피가 아니에요.", "answer": "It's not coffee."}
+{"type": "translate", "prompt": "케이크 드릴까요?", "answer": "Would you like cake?"}
+{"type": "translate", "prompt": "케이크는 단 음식이에요.", "answer": "Cake is a sweet food."}
+{"type": "translate", "prompt": "케이크랑 목걸이 감사합니다!", "answer": "Thank you for the cake and the necklace!"}
+{"type": "translate", "prompt": "큰 경기장이 아니에요.", "answer": "It is not a big stadium."}
+{"type": "translate", "prompt": "큰 경기장이나 새 경기장", "answer": "a big stadium or a new stadium"}
+{"type": "translate", "prompt": "큰 경기장이에요?", "answer": "Is it a big stadium?"}
+{"type": "translate", "prompt": "큰 지갑이에요.", "answer": "It is a big wallet."}
+{"type": "translate", "prompt": "큰 축구 경기장이에요.", "answer": "It is a big soccer stadium."}
+{"type": "translate", "prompt": "큰 핸드폰이에요.", "answer": "It is a big cell phone."}
+{"type": "translate", "prompt": "태권도 선수", "answer": "Taekwondo athlete"}
+{"type": "translate", "prompt": "특별한 볼펜", "answer": "special ballpoint pen"}
+{"type": "translate", "prompt": "특별한 사람이 아니에요.", "answer": "I'm not a special person."}
+{"type": "translate", "prompt": "특별한 엽서", "answer": "special postcard"}
+{"type": "translate", "prompt": "특별한 책", "answer": "a special book"}
+{"type": "translate", "prompt": "특별한 카메라가 아니에요.", "answer": "It is not a special camera."}
+{"type": "translate", "prompt": "특별한 케이크", "answer": "a special cake"}
+{"type": "translate", "prompt": "팝콘 가게", "answer": "popcorn shop"}
+{"type": "translate", "prompt": "팝콘 주세요.", "answer": "Popcorn, please."}
+{"type": "translate", "prompt": "팝콘이나 맥주", "answer": "popcorn or beer"}
+{"type": "translate", "prompt": "팝콘이나 치킨 주세요.", "answer": "Popcorn or fried chicken, please."}
+{"type": "translate", "prompt": "표는 여기에 있어요.", "answer": "The ticket is here."}
+{"type": "translate", "prompt": "하얀색 시계는 민준 씨의 선물이에요?", "answer": "Is the white watch Mr. Minjun's gift?"}
+{"type": "translate", "prompt": "한국 배우예요.", "answer": "He is a Korean actor."}
+{"type": "translate", "prompt": "화가, 의사", "answer": "painter, doctor"}
+{"type": "translate", "prompt": "화이팅!", "answer": "You can do it!"}

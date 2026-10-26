@@ -1,0 +1,14 @@
+{"type": "characterIntro", "prompt": "حَل", "answer": "hal"}
+{"type": "characterIntro", "prompt": "حَمة", "answer": "hama"}
+{"type": "characterIntro", "prompt": "نَحَل", "answer": "nahal"}
+{"type": "characterIntro", "prompt": "نَهَل", "answer": "nahal"}
+{"type": "characterIntro", "prompt": "هَرُح", "answer": "haruh"}
+{"type": "characterIntro", "prompt": "هَل", "answer": "hal"}
+{"type": "characterIntro", "prompt": "هَمزة", "answer": "hamza"}
+{"type": "characterSelect", "prompt": "Hal", "answer": "حَل"}
+{"type": "characterSelect", "prompt": "Hama", "answer": "حَمة"}
+{"type": "characterSelect", "prompt": "hal", "answer": "هَل"}
+{"type": "characterSelect", "prompt": "hamza", "answer": "هَمزة"}
+{"type": "characterSelect", "prompt": "haruH", "answer": "هَرُح"}
+{"type": "characterSelect", "prompt": "naHal", "answer": "نَحَل"}
+{"type": "characterSelect", "prompt": "nahal", "answer": "نَهَل"}

@@ -15,6 +15,7 @@ targets:
     info:
       path: App/Info-macOS.plist
       properties:
+        CFBundleShortVersionString: $(MARKETING_VERSION)
         LSUIElement: false
         ATSApplicationFontsPath: "."
         NSLocalNetworkUsageDescription: Reads live puzzle progress from the Surf autopilot running on your Mac.
@@ -37,6 +38,7 @@ targets:
     info:
       path: App/Info-watchOS.plist
       properties:
+        CFBundleShortVersionString: $(MARKETING_VERSION)
         NSLocalNetworkUsageDescription: Reads live puzzle progress from the Surf autopilot running on your Mac.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
@@ -59,6 +61,7 @@ targets:
     info:
       path: App/Info-iOS.plist
       properties:
+        CFBundleShortVersionString: $(MARKETING_VERSION)
         NSLocalNetworkUsageDescription: Reads live puzzle progress from the Surf autopilot running on your Mac.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
@@ -90,6 +93,7 @@ targets:
     info:
       path: Widget/Info-Widget.plist
       properties:
+        CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleDisplayName: Surf
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true

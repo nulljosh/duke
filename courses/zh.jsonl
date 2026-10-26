@@ -1,0 +1,10 @@
+{"type": "characterIntro", "prompt": "加拿大", "answer": "jiānádà"}
+{"type": "gapFill", "prompt": "Bu otobüs postaneden sağa ___.", "answer": "dönmüyor"}
+{"type": "gapFill", "prompt": "Öğretmen öğrencilere bir soru ___.", "answer": "soruyor"}
+{"type": "svgPuzzle", "prompt": "加拿大", "answer": "拿"}
+{"type": "translate", "prompt": "Annemin çayı bitiyor.", "answer": "My mother's tea is running out."}
+{"type": "translate", "prompt": "Gün başlamıyor, bitiyor.", "answer": "The day is not beginning, it is ending."}
+{"type": "translate", "prompt": "Is he still speaking?", "answer": "Hala konuşuyor mu?"}
+{"type": "translate", "prompt": "Çocuğum için çok iyi bir doktor arıyorum.", "answer": "I am looking for a very good doctor for my child."}
+{"type": "translate", "prompt": "öğrencilere bir soru", "answer": "a question to the students"}
+{"type": "translate", "prompt": "Şimdi kedim benimle konuşuyor.", "answer": "Now my cat is talking to me."}

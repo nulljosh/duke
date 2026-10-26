@@ -1,0 +1,175 @@
+{"type": "assist", "prompt": "breakfast", "answer": "ontbijt"}
+{"type": "assist", "prompt": "dinner", "answer": "avondeten"}
+{"type": "assist", "prompt": "hungry", "answer": "honger"}
+{"type": "assist", "prompt": "meal", "answer": "maaltijd"}
+{"type": "assist", "prompt": "meat", "answer": "vlees"}
+{"type": "assist", "prompt": "plate", "answer": "bord"}
+{"type": "assist", "prompt": "salt", "answer": "zout"}
+{"type": "assist", "prompt": "strawberry", "answer": "aardbei"}
+{"type": "assist", "prompt": "thirsty", "answer": "dorst"}
+{"type": "assist", "prompt": "vegetables", "answer": "groente"}
+{"type": "name", "prompt": "the glass", "answer": "het glas"}
+{"type": "select", "prompt": "the banana", "answer": "de banaan"}
+{"type": "select", "prompt": "the beer", "answer": "het bier"}
+{"type": "select", "prompt": "the dinner", "answer": "het avondeten"}
+{"type": "select", "prompt": "the food", "answer": "het eten"}
+{"type": "select", "prompt": "the glass", "answer": "het glas"}
+{"type": "select", "prompt": "the meat", "answer": "het vlees"}
+{"type": "select", "prompt": "the orange", "answer": "de sinaasappel"}
+{"type": "select", "prompt": "the pepper", "answer": "de peper"}
+{"type": "select", "prompt": "the plate", "answer": "het bord"}
+{"type": "select", "prompt": "the salt", "answer": "het zout"}
+{"type": "select", "prompt": "the soup", "answer": "de soep"}
+{"type": "select", "prompt": "the strawberry", "answer": "de aardbei"}
+{"type": "select", "prompt": "the tomato", "answer": "de tomaat"}
+{"type": "select", "prompt": "the vegetables", "answer": "de groente"}
+{"type": "translate", "prompt": "A glass of juice, please.", "answer": "Een glas sap, alsjeblieft."}
+{"type": "translate", "prompt": "An orange is fruit.", "answer": "Een sinaasappel is fruit."}
+{"type": "translate", "prompt": "Avondeten en middageten.", "answer": "Dinner and lunch."}
+{"type": "translate", "prompt": "Breakfast is an egg and coffee.", "answer": "Het ontbijt is een ei en koffie."}
+{"type": "translate", "prompt": "Cheese is good.", "answer": "Kaas is goed."}
+{"type": "translate", "prompt": "Dat is geen suiker, het is zout.", "answer": "That is not sugar, it is salt."}
+{"type": "translate", "prompt": "Dat is koffie.", "answer": "That is coffee."}
+{"type": "translate", "prompt": "Dat is melk, geen bier.", "answer": "That is milk, not beer."}
+{"type": "translate", "prompt": "De jongens eten de banaan.", "answer": "The boys are eating the banana."}
+{"type": "translate", "prompt": "De jongens eten soep en brood.", "answer": "The boys eat soup and bread."}
+{"type": "translate", "prompt": "De jongens hebben kip.", "answer": "The boys have chicken."}
+{"type": "translate", "prompt": "De kinderen eten fruit.", "answer": "The children eat fruit."}
+{"type": "translate", "prompt": "De kip eet brood.", "answer": "The chicken is eating bread."}
+{"type": "translate", "prompt": "De maaltijd is goed.", "answer": "The meal is good."}
+{"type": "translate", "prompt": "De man eet de aardbei.", "answer": "The man is eating the strawberry."}
+{"type": "translate", "prompt": "De mannen drinken thee.", "answer": "The men drink tea."}
+{"type": "translate", "prompt": "De pasta is het eten.", "answer": "The pasta is the food."}
+{"type": "translate", "prompt": "De sinaasappel spreekt.", "answer": "The orange is speaking."}
+{"type": "translate", "prompt": "De soep is lekker!", "answer": "The soup is tasty!"}
+{"type": "translate", "prompt": "De thee is lekker.", "answer": "The tea is tasty."}
+{"type": "translate", "prompt": "De vrouw drinkt de thee.", "answer": "The woman drinks the tea."}
+{"type": "translate", "prompt": "De vrouw eet kaas.", "answer": "The woman eats cheese."}
+{"type": "translate", "prompt": "De vrouw eet vis.", "answer": "The woman eats fish."}
+{"type": "translate", "prompt": "De vrouw heeft de peper.", "answer": "The woman has the pepper."}
+{"type": "translate", "prompt": "De vrouwen lezen het menu.", "answer": "The women read the menu."}
+{"type": "translate", "prompt": "Dinner and lunch.", "answer": "Avondeten en middageten."}
+{"type": "translate", "prompt": "Fine, thank you.", "answer": "Goed, dank je."}
+{"type": "translate", "prompt": "Goed, bedankt!", "answer": "Good, thanks!"}
+{"type": "translate", "prompt": "Goed, dank je.", "answer": "Fine, thank you."}
+{"type": "translate", "prompt": "Good day, juice.", "answer": "Goedendag, sap."}
+{"type": "translate", "prompt": "Good evening and good night!", "answer": "Goedenavond en welterusten!"}
+{"type": "translate", "prompt": "Good morning, thank you!", "answer": "Goedemorgen, bedankt!"}
+{"type": "translate", "prompt": "Goodbye!", "answer": "Tot ziens!"}
+{"type": "translate", "prompt": "Hallo, bedankt", "answer": "Hello, thank you"}
+{"type": "translate", "prompt": "He is eating chicken or fish.", "answer": "Hij eet kip of vis."}
+{"type": "translate", "prompt": "He is thirsty.", "answer": "Hij heeft dorst."}
+{"type": "translate", "prompt": "Hello, thank you", "answer": "Hallo, bedankt"}
+{"type": "translate", "prompt": "Het avondeten is pasta.", "answer": "The dinner is pasta."}
+{"type": "translate", "prompt": "Het eten is goed.", "answer": "The food is good."}
+{"type": "translate", "prompt": "Het is een ei.", "answer": "It is an egg."}
+{"type": "translate", "prompt": "Het is een maaltijd.", "answer": "It is a meal."}
+{"type": "translate", "prompt": "Het meisje eet een aardbei.", "answer": "The girl eats a strawberry."}
+{"type": "translate", "prompt": "Het meisje eet suiker en kaas.", "answer": "The girl eats sugar and cheese."}
+{"type": "translate", "prompt": "Het meisje heeft een sinaasappel.", "answer": "The girl has an orange."}
+{"type": "translate", "prompt": "Het meisje heeft geen dorst.", "answer": "The girl is not thirsty."}
+{"type": "translate", "prompt": "Het ontbijt is een ei en koffie.", "answer": "Breakfast is an egg and coffee."}
+{"type": "translate", "prompt": "Hi!", "answer": "Hoi!"}
+{"type": "translate", "prompt": "Hi.", "answer": "Hoi."}
+{"type": "translate", "prompt": "Hij eet brood.", "answer": "He eats bread."}
+{"type": "translate", "prompt": "Hij eet een ei.", "answer": "He eats an egg."}
+{"type": "translate", "prompt": "Hij eet kip of vis.", "answer": "He eats chicken or fish."}
+{"type": "translate", "prompt": "Hij is een kind.", "answer": "He is a child."}
+{"type": "translate", "prompt": "Hoe gaat het?", "answer": "How's it going?"}
+{"type": "translate", "prompt": "How are you?", "answer": "Hoe gaat het?"}
+{"type": "translate", "prompt": "I am hungry.", "answer": "Ik heb honger."}
+{"type": "translate", "prompt": "I am not a child.", "answer": "Ik ben geen kind."}
+{"type": "translate", "prompt": "I am not a girl.", "answer": "Ik ben geen meisje."}
+{"type": "translate", "prompt": "I do not drink wine.", "answer": "Ik drink geen wijn."}
+{"type": "translate", "prompt": "I drink a glass of milk", "answer": "Ik drink een glas melk"}
+{"type": "translate", "prompt": "I drink coffee and tea.", "answer": "Ik drink koffie en thee."}
+{"type": "translate", "prompt": "I eat a tomato.", "answer": "Ik eet een tomaat."}
+{"type": "translate", "prompt": "I eat breakfast and read the newspaper.", "answer": "Ik eet ontbijt en lees de krant."}
+{"type": "translate", "prompt": "I eat salt.", "answer": "Ik eet zout."}
+{"type": "translate", "prompt": "I have salt and water.", "answer": "Ik heb zout en water."}
+{"type": "translate", "prompt": "I have the meat.", "answer": "Ik heb het vlees."}
+{"type": "translate", "prompt": "I have the orange.", "answer": "Ik heb de sinaasappel."}
+{"type": "translate", "prompt": "Ik ben een banaan!", "answer": "I am a banana!"}
+{"type": "translate", "prompt": "Ik ben geen banaan!", "answer": "I am not a banana!"}
+{"type": "translate", "prompt": "Ik drink een glas melk", "answer": "I drink a glass of milk"}
+{"type": "translate", "prompt": "Ik drink geen bier.", "answer": "I do not drink beer."}
+{"type": "translate", "prompt": "Ik drink koffie.", "answer": "I drink coffee."}
+{"type": "translate", "prompt": "Ik eet een maaltijd.", "answer": "I eat a meal."}
+{"type": "translate", "prompt": "Ik eet een tomaat.", "answer": "I eat a tomato."}
+{"type": "translate", "prompt": "Ik eet soep.", "answer": "I am eating soup."}
+{"type": "translate", "prompt": "Ik heb dorst.", "answer": "I'm thirsty."}
+{"type": "translate", "prompt": "Ik heb een bord.", "answer": "I have a plate."}
+{"type": "translate", "prompt": "Ik heb honger.", "answer": "I'm hungry."}
+{"type": "translate", "prompt": "It is a meal.", "answer": "Het is een maaltijd."}
+{"type": "translate", "prompt": "It is a tomato.", "answer": "Het is een tomaat."}
+{"type": "translate", "prompt": "Ja, oké.", "answer": "Yes, okay."}
+{"type": "translate", "prompt": "Je hebt de melk.", "answer": "You have the milk."}
+{"type": "translate", "prompt": "Jullie eten het eten.", "answer": "You eat the food."}
+{"type": "translate", "prompt": "Jullie hebben de pasta en het water.", "answer": "You have the pasta and the water."}
+{"type": "translate", "prompt": "Kinderen drinken geen wijn.", "answer": "Children do not drink wine."}
+{"type": "translate", "prompt": "Melk en suiker alsjeblieft.", "answer": "Milk and sugar please."}
+{"type": "translate", "prompt": "Milk and sugar please.", "answer": "Melk en suiker alsjeblieft."}
+{"type": "translate", "prompt": "No, I do not eat dinner.", "answer": "Nee, ik eet geen avondeten."}
+{"type": "translate", "prompt": "Oké, dank je.", "answer": "OK, thanks."}
+{"type": "translate", "prompt": "Oké?", "answer": "Okay?"}
+{"type": "translate", "prompt": "Ontbijt en middageten?", "answer": "Breakfast and lunch?"}
+{"type": "translate", "prompt": "Pardon, ik heb geen bord.", "answer": "Excuse me, I do not have a plate."}
+{"type": "translate", "prompt": "Pasta is geen fruit.", "answer": "Pasta is not fruit."}
+{"type": "translate", "prompt": "Pasta is not fruit.", "answer": "Pasta is geen fruit."}
+{"type": "translate", "prompt": "She does not eat vegetables.", "answer": "Ze eet geen groente."}
+{"type": "translate", "prompt": "That is not sugar, it is salt.", "answer": "Dat is geen suiker, het is zout."}
+{"type": "translate", "prompt": "That is the menu.", "answer": "Dat is het menu."}
+{"type": "translate", "prompt": "The boy is not hungry.", "answer": "De jongen heeft geen honger."}
+{"type": "translate", "prompt": "The boys are eating breakfast.", "answer": "De jongens eten ontbijt."}
+{"type": "translate", "prompt": "The boys are eating the banana.", "answer": "De jongens eten de banaan."}
+{"type": "translate", "prompt": "The boys eat soup and bread.", "answer": "De jongens eten soep en brood."}
+{"type": "translate", "prompt": "The cheese is tasty.", "answer": "De kaas is lekker."}
+{"type": "translate", "prompt": "The chicken or the egg?", "answer": "De kip of het ei?"}
+{"type": "translate", "prompt": "The children are hungry.", "answer": "De kinderen hebben honger."}
+{"type": "translate", "prompt": "The children eat fruit.", "answer": "De kinderen eten fruit."}
+{"type": "translate", "prompt": "The children eat pasta.", "answer": "De kinderen eten pasta."}
+{"type": "translate", "prompt": "The coffee is tasty.", "answer": "De koffie is lekker."}
+{"type": "translate", "prompt": "The dinner is pasta.", "answer": "Het avondeten is pasta."}
+{"type": "translate", "prompt": "The girl eats sugar and cheese.", "answer": "Het meisje eet suiker en kaas."}
+{"type": "translate", "prompt": "The girl is not thirsty.", "answer": "Het meisje heeft geen dorst."}
+{"type": "translate", "prompt": "The meal is good.", "answer": "De maaltijd is goed."}
+{"type": "translate", "prompt": "The men are eating fish.", "answer": "De mannen eten vis."}
+{"type": "translate", "prompt": "The men are eating fruit.", "answer": "De mannen eten fruit."}
+{"type": "translate", "prompt": "The men do not eat meat.", "answer": "De mannen eten geen vlees."}
+{"type": "translate", "prompt": "The orange is speaking.", "answer": "De sinaasappel spreekt."}
+{"type": "translate", "prompt": "The pasta is the food.", "answer": "De pasta is het eten."}
+{"type": "translate", "prompt": "The salt is tasty.", "answer": "Het zout is lekker."}
+{"type": "translate", "prompt": "The soup is tasty!", "answer": "De soep is lekker!"}
+{"type": "translate", "prompt": "The strawberry is delicious.", "answer": "De aardbei is lekker."}
+{"type": "translate", "prompt": "The tea is tasty.", "answer": "De thee is lekker."}
+{"type": "translate", "prompt": "The woman eats cheese.", "answer": "De vrouw eet kaas."}
+{"type": "translate", "prompt": "The woman has a tomato.", "answer": "De vrouw heeft een tomaat."}
+{"type": "translate", "prompt": "The woman has the pepper.", "answer": "De vrouw heeft de peper."}
+{"type": "translate", "prompt": "The woman is eating fish.", "answer": "De vrouw eet vis."}
+{"type": "translate", "prompt": "The women eat a meal.", "answer": "De vrouwen eten een maaltijd."}
+{"type": "translate", "prompt": "We are hungry and thirsty.", "answer": "We hebben honger en dorst."}
+{"type": "translate", "prompt": "We drinken sap en eten kaas.", "answer": "We are drinking juice and eating cheese."}
+{"type": "translate", "prompt": "We eten.", "answer": "We eat."}
+{"type": "translate", "prompt": "You eat the food.", "answer": "Jullie eten het eten."}
+{"type": "translate", "prompt": "Ze drinkt een glas wijn.", "answer": "She drinks a glass of wine."}
+{"type": "translate", "prompt": "Ze eet geen groente.", "answer": "She does not eat vegetables."}
+{"type": "translate", "prompt": "de kip", "answer": "the chicken"}
+{"type": "translate", "prompt": "de kip en het ei", "answer": "the chicken and the egg"}
+{"type": "translate", "prompt": "een sinaasappel", "answer": "an orange"}
+{"type": "translate", "prompt": "hallo en doei", "answer": "hello and bye"}
+{"type": "translate", "prompt": "het brood", "answer": "the bread"}
+{"type": "translate", "prompt": "het middageten", "answer": "the lunch"}
+{"type": "translate", "prompt": "het vlees", "answer": "the meat"}
+{"type": "translate", "prompt": "pepper and salt", "answer": "peper en zout"}
+{"type": "translate", "prompt": "the chicken and the egg", "answer": "de kip en het ei"}
+{"type": "translate", "prompt": "the lunch", "answer": "het middageten"}
+{"type": "translate", "prompt": "the pepper", "answer": "de peper"}
+{"type": "translate", "prompt": "the tomato and the apple", "answer": "de tomaat en de appel"}
+{"type": "translate", "prompt": "דו האָסט צײַט.", "answer": "You have time."}
+{"type": "translate", "prompt": "האָסטו אַ טאָכטער אין ירושלים?", "answer": "Do you have a daughter in Jerusalem?"}
+{"type": "translate", "prompt": "האָסטו אַ טאָכטער?", "answer": "Do you have a daughter?"}
+{"type": "translate", "prompt": "האָסטו אַ קאַץ?", "answer": "Do you have a cat?"}
+{"type": "translate", "prompt": "ווי אַזוי הייסט דאָס לאַנד?", "answer": "What is this country called?"}
+{"type": "translate", "prompt": "ווי אַזוי הייסט דײַן מאַמע?", "answer": "What is your mother called?"}
+{"type": "translate", "prompt": "ווען קומסטו?", "answer": "When are you coming?"}
+{"type": "translate", "prompt": "שלום־עליכם, ווי אַזוי הייסטו?", "answer": "Hello, what is your name?"}

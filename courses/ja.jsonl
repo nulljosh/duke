@@ -1,0 +1,455 @@
+{"type": "assist", "prompt": "Brazilian", "answer": "ブラジルじん"}
+{"type": "assist", "prompt": "Japanese person", "answer": "にほんじん"}
+{"type": "assist", "prompt": "Vietnamese", "answer": "ベトナムじん"}
+{"type": "assist", "prompt": "big", "answer": "おおきい"}
+{"type": "assist", "prompt": "breakfast", "answer": "ontbijt"}
+{"type": "assist", "prompt": "chicken", "answer": "kip"}
+{"type": "assist", "prompt": "good evening", "answer": "こんばんは"}
+{"type": "assist", "prompt": "lunch", "answer": "middageten"}
+{"type": "assist", "prompt": "see you tomorrow", "answer": "またあした"}
+{"type": "assist", "prompt": "small", "answer": "ちいさい"}
+{"type": "assist", "prompt": "sugar", "answer": "suiker"}
+{"type": "assist", "prompt": "tea", "answer": "thee"}
+{"type": "assist", "prompt": "wine", "answer": "wijn"}
+{"type": "assist", "prompt": "yes", "answer": "はい"}
+{"type": "gapFill", "prompt": "Chłopiec je ___.", "answer": "kolację"}
+{"type": "gapFill", "prompt": "Kobieta i mężczyzna jedzą ___.", "answer": "kolację"}
+{"type": "gapFill", "prompt": "Kobieta lubi ___.", "answer": "zupę"}
+{"type": "gapFill", "prompt": "Kobiety lubią ___.", "answer": "kawę"}
+{"type": "gapFill", "prompt": "Mam ___.", "answer": "rybę"}
+{"type": "gapFill", "prompt": "Piję ___.", "answer": "kawę"}
+{"type": "gapFill", "prompt": "Tamta kobieta jest ___.", "answer": "zła"}
+{"type": "gapFill", "prompt": "Tamten mężczyzna ___ pomidory.", "answer": "kocha"}
+{"type": "gapFill", "prompt": "Tamto ___ zwierzę to pies.", "answer": "małe"}
+{"type": "gapFill", "prompt": "Ty ___ tej kobiety?", "answer": "słuchasz"}
+{"type": "gapFill", "prompt": "Wino jest ___.", "answer": "smaczne"}
+{"type": "gapFill", "prompt": "Zupa jest ___.", "answer": "smaczna"}
+{"type": "gapFill", "prompt": "___ dziecko pije mleko.", "answer": "tamto"}
+{"type": "gapFill", "prompt": "___ słoń", "answer": "tamten"}
+{"type": "gapFill", "prompt": "______、こんばんは！", "answer": "はなさん"}
+{"type": "gapFill", "prompt": "___、けんさん！", "answer": "こんにちは"}
+{"type": "gapFill", "prompt": "___がくせいです。", "answer": "かっこいい"}
+{"type": "gapFill", "prompt": "___はおいしいケーキです。", "answer": "これ"}
+{"type": "gapFill", "prompt": "___はピザです。", "answer": "これ"}
+{"type": "gapFill", "prompt": "___ひとです。", "answer": "やさしい"}
+{"type": "gapFill", "prompt": "これはおいしい___ですか。", "answer": "ラーメン"}
+{"type": "gapFill", "prompt": "なおみ___はアメリカじんです。", "answer": "さん"}
+{"type": "gapFill", "prompt": "やさしい___です。", "answer": "いしゃ"}
+{"type": "gapFill", "prompt": "カナダは___です。", "answer": "おおきい"}
+{"type": "select", "prompt": "Brazil", "answer": "ブラジル"}
+{"type": "select", "prompt": "Canada", "answer": "カナダ"}
+{"type": "select", "prompt": "Japan", "answer": "にほん"}
+{"type": "select", "prompt": "cake", "answer": "ケーキ"}
+{"type": "select", "prompt": "pizza", "answer": "ピザ"}
+{"type": "select", "prompt": "ramen", "answer": "ラーメン"}
+{"type": "select", "prompt": "salad", "answer": "サラダ"}
+{"type": "select", "prompt": "the banana", "answer": "de banaan"}
+{"type": "select", "prompt": "the beer", "answer": "het bier"}
+{"type": "select", "prompt": "the breakfast", "answer": "het ontbijt"}
+{"type": "select", "prompt": "the chicken", "answer": "de kip"}
+{"type": "select", "prompt": "the egg", "answer": "het ei"}
+{"type": "select", "prompt": "the fish", "answer": "de vis"}
+{"type": "select", "prompt": "the fruit", "answer": "het fruit"}
+{"type": "select", "prompt": "the lunch", "answer": "het middageten"}
+{"type": "select", "prompt": "the pasta", "answer": "de pasta"}
+{"type": "select", "prompt": "the strawberry", "answer": "de aardbei"}
+{"type": "select", "prompt": "the sugar", "answer": "de suiker"}
+{"type": "select", "prompt": "the tea", "answer": "de thee"}
+{"type": "select", "prompt": "the tomato", "answer": "de tomaat"}
+{"type": "select", "prompt": "the wine", "answer": "de wijn"}
+{"type": "tapComplete", "prompt": "___ ___、こんにちは。", "answer": "なおみ さん"}
+{"type": "tapComplete", "prompt": "___ ___。", "answer": "やさしい です"}
+{"type": "tapComplete", "prompt": "___ ___ごはんです！", "answer": "これ は"}
+{"type": "tapComplete", "prompt": "___ ___です。", "answer": "かっこいい べんごし"}
+{"type": "tapComplete", "prompt": "___ ___です！", "answer": "かっこいい せんせい"}
+{"type": "tapComplete", "prompt": "___ ___サラダです。", "answer": "これ は"}
+{"type": "tapComplete", "prompt": "___ ___ラーメンです。", "answer": "これ は"}
+{"type": "tapComplete", "prompt": "___ ___！", "answer": "やさしい です"}
+{"type": "tapComplete", "prompt": "___がくせい___。", "answer": "やさしい です"}
+{"type": "tapComplete", "prompt": "___は___です。", "answer": "ピザ おいしい"}
+{"type": "tapComplete", "prompt": "___ひと___。", "answer": "かっこいい です"}
+{"type": "tapComplete", "prompt": "これ___おちゃです___。", "answer": "は か"}
+{"type": "tapComplete", "prompt": "これ___みずです___。", "answer": "は か"}
+{"type": "tapComplete", "prompt": "これ___ピザです___。", "answer": "は か"}
+{"type": "tapComplete", "prompt": "こんにちは、___ ___。", "answer": "はな です"}
+{"type": "tapComplete", "prompt": "なおみ___、___。", "answer": "さん またあした"}
+{"type": "tapComplete", "prompt": "なおみ___、___！", "answer": "さん またあした"}
+{"type": "tapComplete", "prompt": "はな___、___。", "answer": "さん またあした"}
+{"type": "translate", "prompt": "America and Japan", "answer": "アメリカとにほん"}
+{"type": "translate", "prompt": "America is big.", "answer": "アメリカはおおきいです。"}
+{"type": "translate", "prompt": "Bardzo lubię włoską kulturę.", "answer": "I like Italian culture very much."}
+{"type": "translate", "prompt": "Biorę swój portfel.", "answer": "I am taking my wallet."}
+{"type": "translate", "prompt": "Cake is tasty.", "answer": "ケーキはおいしいです。"}
+{"type": "translate", "prompt": "Ci nowi ludzie nie lubią tej kobiety.", "answer": "These new people do not like this woman."}
+{"type": "translate", "prompt": "Cool!", "answer": "すごい！"}
+{"type": "translate", "prompt": "Czy to ptak? Czy to samolot?", "answer": "Is it a bird? Is it a plane?"}
+{"type": "translate", "prompt": "Daję mu swoje okulary.", "answer": "I am giving him my eyeglasses."}
+{"type": "translate", "prompt": "Dostarczają książki swoim uczniom.", "answer": "They deliver books to their pupils."}
+{"type": "translate", "prompt": "Gdzie jest Europejska Stolica Kultury?", "answer": "Where is the European Capital of Culture?"}
+{"type": "translate", "prompt": "Gdzie płynie ten statek?", "answer": "Where is this ship sailing to?"}
+{"type": "translate", "prompt": "Good evening!", "answer": "こんばんは！"}
+{"type": "translate", "prompt": "Good evening, Hana.", "answer": "はなさん、こんばんは。"}
+{"type": "translate", "prompt": "Good evening, I'm Ken!", "answer": "こんばんは、けんです！"}
+{"type": "translate", "prompt": "Good evening, I'm Ken.", "answer": "こんばんは、けんです。"}
+{"type": "translate", "prompt": "Good evening, Ken!", "answer": "けんさん、こんばんは！"}
+{"type": "translate", "prompt": "Good evening, Ken.", "answer": "けんさん、こんばんは。"}
+{"type": "translate", "prompt": "Good evening, Naomi.", "answer": "なおみさん、こんばんは。"}
+{"type": "translate", "prompt": "Good evening.", "answer": "こんばんは。"}
+{"type": "translate", "prompt": "Green tea and rice, please.", "answer": "おちゃとごはん、ください。"}
+{"type": "translate", "prompt": "Green tea and sushi, please.", "answer": "おちゃとすし、ください。"}
+{"type": "translate", "prompt": "Green tea, please!", "answer": "おちゃ、ください！"}
+{"type": "translate", "prompt": "He's a cool lawyer!", "answer": "かっこいいべんごしです！"}
+{"type": "translate", "prompt": "He's a cool student!", "answer": "かっこいいがくせいです！"}
+{"type": "translate", "prompt": "He's a doctor!", "answer": "いしゃです！"}
+{"type": "translate", "prompt": "He's a lawyer!", "answer": "べんごしです！"}
+{"type": "translate", "prompt": "He's a nice doctor.", "answer": "やさしいいしゃです。"}
+{"type": "translate", "prompt": "He's a nice teacher!", "answer": "やさしいせんせいです！"}
+{"type": "translate", "prompt": "He's a teacher.", "answer": "せんせいです。"}
+{"type": "translate", "prompt": "He's cool.", "answer": "かっこいいです。"}
+{"type": "translate", "prompt": "Hello, Hana!", "answer": "はなさん、こんにちは！"}
+{"type": "translate", "prompt": "Hello, Hana.", "answer": "はなさん、こんにちは。"}
+{"type": "translate", "prompt": "Hello, I'm Hana!", "answer": "こんにちは、はなです！"}
+{"type": "translate", "prompt": "Hello, I'm Ken!", "answer": "こんにちは、けんです！"}
+{"type": "translate", "prompt": "Hello, I'm Ken.", "answer": "こんにちは、けんです。"}
+{"type": "translate", "prompt": "Hello, Ken!", "answer": "けんさん、こんにちは！"}
+{"type": "translate", "prompt": "Hello, Ken.", "answer": "けんさん、こんにちは。"}
+{"type": "translate", "prompt": "I am Japanese!", "answer": "にほんじんです！"}
+{"type": "translate", "prompt": "I am Ken, good evening!", "answer": "けんです、こんばんは！"}
+{"type": "translate", "prompt": "I am Ken, good evening.", "answer": "けんです、こんばんは。"}
+{"type": "translate", "prompt": "I'm Hana!", "answer": "はなです！"}
+{"type": "translate", "prompt": "I'm Hana, hello!", "answer": "はなです、こんにちは！"}
+{"type": "translate", "prompt": "I'm Hana, hello.", "answer": "はなです、こんにちは。"}
+{"type": "translate", "prompt": "I'm Hana.", "answer": "はなです。"}
+{"type": "translate", "prompt": "I'm Ken!", "answer": "けんです！"}
+{"type": "translate", "prompt": "I'm Ken, hello!", "answer": "けんです、こんにちは！"}
+{"type": "translate", "prompt": "I'm Ken, hello.", "answer": "けんです、こんにちは。"}
+{"type": "translate", "prompt": "Is America big?", "answer": "アメリカはおおきいですか。"}
+{"type": "translate", "prompt": "Is Brazil small?", "answer": "ブラジルはちいさいですか。"}
+{"type": "translate", "prompt": "Is Canada big?", "answer": "カナダはおおきいですか。"}
+{"type": "translate", "prompt": "Is Hana Vietnamese?", "answer": "はなさんはベトナムじんですか。"}
+{"type": "translate", "prompt": "Is Ken Brazilian?", "answer": "けんさんはブラジルじんですか。"}
+{"type": "translate", "prompt": "Is Ken Vietnamese?", "answer": "けんさんはベトナムじんですか。"}
+{"type": "translate", "prompt": "Is Naomi Brazilian?", "answer": "なおみさんはブラジルじんですか。"}
+{"type": "translate", "prompt": "Is Vietnam small?", "answer": "ベトナムはちいさいですか。"}
+{"type": "translate", "prompt": "Is it tasty?", "answer": "おいしいですか。"}
+{"type": "translate", "prompt": "Is ramen tasty?", "answer": "ラーメンはおいしいですか。"}
+{"type": "translate", "prompt": "Is the cake tasty?", "answer": "ケーキはおいしいですか。"}
+{"type": "translate", "prompt": "Is the salad tasty?", "answer": "サラダはおいしいですか。"}
+{"type": "translate", "prompt": "Is this a salad?", "answer": "これはサラダですか。"}
+{"type": "translate", "prompt": "Is this green tea?", "answer": "これはおちゃですか。"}
+{"type": "translate", "prompt": "Is this ramen?", "answer": "これはラーメンですか。"}
+{"type": "translate", "prompt": "Is this sushi?", "answer": "これはすしですか。"}
+{"type": "translate", "prompt": "Is this tasty?", "answer": "これはおいしいですか。"}
+{"type": "translate", "prompt": "Is this water?", "answer": "これは水ですか？"}
+{"type": "translate", "prompt": "It's rice.", "answer": "ごはんです。"}
+{"type": "translate", "prompt": "It's water.", "answer": "みずです。"}
+{"type": "translate", "prompt": "Japan and America", "answer": "にほんとアメリカ"}
+{"type": "translate", "prompt": "Kanapka i sok.", "answer": "A sandwich and juice."}
+{"type": "translate", "prompt": "Każdego dnia jem coś na śniadanie.", "answer": "I eat something for breakfast every day."}
+{"type": "translate", "prompt": "Ken is Brazilian.", "answer": "けんさんはブラジルじんです。"}
+{"type": "translate", "prompt": "Kiedy są wakacje?", "answer": "When are the summer holidays?"}
+{"type": "translate", "prompt": "Kocham mój motor.", "answer": "I love my motorcycle."}
+{"type": "translate", "prompt": "Mój bogaty wujek kupuje mały samolot.", "answer": "My rich uncle is buying a small airplane."}
+{"type": "translate", "prompt": "Naomi is Vietnamese.", "answer": "なおみさんはベトナムじんです。"}
+{"type": "translate", "prompt": "Naomi, see you tomorrow!", "answer": "なおみさん、またあした！"}
+{"type": "translate", "prompt": "Niemiecki samolot leci nad włoską stolicą.", "answer": "The German airplane is flying over the Italian capital."}
+{"type": "translate", "prompt": "Ona jest pracownikiem tej szkoły.", "answer": "She is an employee of this school."}
+{"type": "translate", "prompt": "Ona nie wierzy swojej córce.", "answer": "She does not believe her daughter."}
+{"type": "translate", "prompt": "Pisarz sprzedaje swoją książkę.", "answer": "The writer is selling his book."}
+{"type": "translate", "prompt": "Pizza and water, please.", "answer": "ピザとみず、ください。"}
+{"type": "translate", "prompt": "Pizza is tasty.", "answer": "ピザはおいしいです。"}
+{"type": "translate", "prompt": "Pizza, please.", "answer": "ピザ、ください。"}
+{"type": "translate", "prompt": "Polak kupuje niemiecki samochód.", "answer": "A Pole is buying a German car."}
+{"type": "translate", "prompt": "Ramen is tasty.", "answer": "ラーメンはおいしいです。"}
+{"type": "translate", "prompt": "Rolnik tęskni za swoją żoną.", "answer": "The farmer misses his wife."}
+{"type": "translate", "prompt": "See you tomorrow, Hana!", "answer": "はなさん、またあした！"}
+{"type": "translate", "prompt": "She's a cool doctor!", "answer": "かっこいいいしゃです！"}
+{"type": "translate", "prompt": "She's a doctor.", "answer": "いしゃです。"}
+{"type": "translate", "prompt": "She's a lawyer.", "answer": "べんごしです。"}
+{"type": "translate", "prompt": "Smaczna herbata", "answer": "Tasty tea"}
+{"type": "translate", "prompt": "Sushi and green tea, please.", "answer": "すしとおちゃ、ください。"}
+{"type": "translate", "prompt": "Sushi, please!", "answer": "すし、ください！"}
+{"type": "translate", "prompt": "Sushi, please.", "answer": "すし、ください。"}
+{"type": "translate", "prompt": "Tata pożycza nam swoje czasopismo.", "answer": "Dad lends us his magazine."}
+{"type": "translate", "prompt": "Te wycieczki są za drogie!", "answer": "These trips are too expensive!"}
+{"type": "translate", "prompt": "That man sees me.", "answer": "Tamten mężczyzna mnie widzi."}
+{"type": "translate", "prompt": "This is a cake!", "answer": "これはケーキです！"}
+{"type": "translate", "prompt": "This is a salad!", "answer": "これはサラダです！"}
+{"type": "translate", "prompt": "This is a salad.", "answer": "これはサラダです。"}
+{"type": "translate", "prompt": "This is cake.", "answer": "これはケーキです。"}
+{"type": "translate", "prompt": "This is green tea!", "answer": "これはおちゃです！"}
+{"type": "translate", "prompt": "This is green tea.", "answer": "これはおちゃです。"}
+{"type": "translate", "prompt": "This is pizza.", "answer": "これはピザです。"}
+{"type": "translate", "prompt": "This is ramen!", "answer": "これはラーメンです！"}
+{"type": "translate", "prompt": "This is ramen.", "answer": "これはラーメンです。"}
+{"type": "translate", "prompt": "This is rice.", "answer": "これはごはんです。"}
+{"type": "translate", "prompt": "This is sushi!", "answer": "すしです！"}
+{"type": "translate", "prompt": "This is water.", "answer": "これはみずです。"}
+{"type": "translate", "prompt": "To jest włoska czy francuska flaga?", "answer": "Is this the Italian or the French flag?"}
+{"type": "translate", "prompt": "To niemiecka flaga.", "answer": "This is the German flag."}
+{"type": "translate", "prompt": "Water and sushi, please.", "answer": "みずとすし、ください。"}
+{"type": "translate", "prompt": "Wychowujesz swoje siostry.", "answer": "You are raising your sisters."}
+{"type": "translate", "prompt": "Yes, he's Brazilian.", "answer": "はい、ブラジルじんです。"}
+{"type": "translate", "prompt": "Yes, he's Canadian.", "answer": "はい、カナダじんです。"}
+{"type": "translate", "prompt": "Yes, this is ramen.", "answer": "はい、これはラーメンです。"}
+{"type": "translate", "prompt": "Yes, this is rice.", "answer": "はい、これはごはんです。"}
+{"type": "translate", "prompt": "Yes, this is tasty.", "answer": "はい、これはおいしいです。"}
+{"type": "translate", "prompt": "a cool student", "answer": "かっこいいがくせい"}
+{"type": "translate", "prompt": "a doctor and a teacher", "answer": "いしゃとせんせい"}
+{"type": "translate", "prompt": "a doctor, a teacher", "answer": "いしゃ、せんせい"}
+{"type": "translate", "prompt": "a lawyer and a doctor", "answer": "べんごしといしゃ"}
+{"type": "translate", "prompt": "a lawyer and a teacher", "answer": "べんごしとせんせい"}
+{"type": "translate", "prompt": "a teacher and a doctor", "answer": "せんせいといしゃ"}
+{"type": "translate", "prompt": "a teacher and a lawyer", "answer": "せんせいとべんごし"}
+{"type": "translate", "prompt": "doctor", "answer": "いしゃ"}
+{"type": "translate", "prompt": "doctor and lawyer", "answer": "いしゃとべんごし"}
+{"type": "translate", "prompt": "green tea", "answer": "おちゃ"}
+{"type": "translate", "prompt": "green tea and water", "answer": "おちゃとみず"}
+{"type": "translate", "prompt": "green tea, rice", "answer": "おちゃ、ごはん"}
+{"type": "translate", "prompt": "green tea, sushi", "answer": "おちゃ、すし"}
+{"type": "translate", "prompt": "green tea, water", "answer": "おちゃ、みず"}
+{"type": "translate", "prompt": "lawyer, teacher", "answer": "べんごし、せんせい"}
+{"type": "translate", "prompt": "nice", "answer": "やさしい"}
+{"type": "translate", "prompt": "person", "answer": "ひと"}
+{"type": "translate", "prompt": "ramen and salad", "answer": "ラーメンとサラダ"}
+{"type": "translate", "prompt": "rice and sushi", "answer": "ごはんとすし"}
+{"type": "translate", "prompt": "rice, green tea", "answer": "ごはん、おちゃ"}
+{"type": "translate", "prompt": "rice, sushi", "answer": "ごはん、すし"}
+{"type": "translate", "prompt": "rice, water", "answer": "ごはん、みず"}
+{"type": "translate", "prompt": "salad", "answer": "サラダ"}
+{"type": "translate", "prompt": "salad and ramen", "answer": "サラダとラーメン"}
+{"type": "translate", "prompt": "student", "answer": "がくせい"}
+{"type": "translate", "prompt": "sushi", "answer": "すし"}
+{"type": "translate", "prompt": "sushi and green tea", "answer": "すしとおちゃ"}
+{"type": "translate", "prompt": "sushi and rice", "answer": "すしとごはん"}
+{"type": "translate", "prompt": "sushi, green tea", "answer": "すし、おちゃ"}
+{"type": "translate", "prompt": "sushi, water", "answer": "すし、みず"}
+{"type": "translate", "prompt": "tasty", "answer": "おいしい"}
+{"type": "translate", "prompt": "tasty cake", "answer": "おいしいケーキ"}
+{"type": "translate", "prompt": "tasty green tea", "answer": "おいしいおちゃ"}
+{"type": "translate", "prompt": "tasty pizza", "answer": "おいしいピザ"}
+{"type": "translate", "prompt": "tasty ramen", "answer": "おいしいラーメン"}
+{"type": "translate", "prompt": "teacher", "answer": "せんせい"}
+{"type": "translate", "prompt": "teacher, lawyer", "answer": "せんせい、べんごし"}
+{"type": "translate", "prompt": "water", "answer": "みず"}
+{"type": "translate", "prompt": "water and green tea", "answer": "みずとおちゃ"}
+{"type": "translate", "prompt": "water, green tea", "answer": "みず、おちゃ"}
+{"type": "translate", "prompt": "water, rice", "answer": "みず、ごはん"}
+{"type": "translate", "prompt": "water, sushi", "answer": "みず、すし"}
+{"type": "translate", "prompt": "Θα έχει γεράσει μέχρι να γράψει το γράμμα.", "answer": "He will have grown old by the time he writes the letter."}
+{"type": "translate", "prompt": "Θα έχω έρθει στο γραφείο πριν από εσένα.", "answer": "I will have come to the office before you."}
+{"type": "translate", "prompt": "Θα έχω γράψει δέκα βιβλία μέχρι το καλοκαίρι.", "answer": "I will have written ten books by the summer."}
+{"type": "translate", "prompt": "Θα έχω δει τη μητέρα μου πριν πάρω το τρένο.", "answer": "I will have seen my mother before I get the train."}
+{"type": "translate", "prompt": "Θα έχω δει την ταινία μέχρι αύριο.", "answer": "I will have seen the movie by tomorrow."}
+{"type": "translate", "prompt": "Θα έχω φύγει από τη χώρα όταν πας στην αστυνομία.", "answer": "I will have left the country when you go to the police."}
+{"type": "translate", "prompt": "Μέσα στον επόμενο μήνα, όλα θα έχουν φτιαχτεί.", "answer": "In the next month, everything will have been done."}
+{"type": "translate", "prompt": "Μέχρι να γίνω είκοσι χρονών θα έχω γίνει δικηγόρος.", "answer": "By the time I am twenty years old, I will have become a lawyer."}
+{"type": "translate", "prompt": "Μην φοβάσαι, θα έχουν βρει ήδη ποιος το έκανε, είμαι σίγουρος.", "answer": "Don't be afraid, they will have already found who did it, I'm sure."}
+{"type": "translate", "prompt": "Ρώτησέ με αύριο, θα το έχω σκεφτεί.", "answer": "Ask me tomorrow, I will have thought about it."}
+{"type": "translate", "prompt": "Το κορίτσι θα έχει φέρει  το βιβλίο της.", "answer": "The girl will have brought her book."}
+{"type": "translate", "prompt": "Το κορίτσι μου θα έχει αγοράσει ένα ρολόι.", "answer": "My girlfriend will have bought a watch."}
+{"type": "translate", "prompt": "いしゃ", "answer": "doctor"}
+{"type": "translate", "prompt": "いしゃ、せんせい", "answer": "a doctor, a teacher"}
+{"type": "translate", "prompt": "いしゃ、べんごし", "answer": "doctor, lawyer"}
+{"type": "translate", "prompt": "いしゃです。", "answer": "She's a doctor."}
+{"type": "translate", "prompt": "いしゃです！", "answer": "He's a doctor!"}
+{"type": "translate", "prompt": "いしゃとせんせい", "answer": "a doctor and a teacher"}
+{"type": "translate", "prompt": "いしゃとべんごし", "answer": "doctor and lawyer"}
+{"type": "translate", "prompt": "おいしい", "answer": "tasty"}
+{"type": "translate", "prompt": "おいしいおちゃ", "answer": "tasty green tea"}
+{"type": "translate", "prompt": "おいしいごはん", "answer": "tasty rice"}
+{"type": "translate", "prompt": "おいしいですか。", "answer": "Is it tasty?"}
+{"type": "translate", "prompt": "おいしいケーキ", "answer": "tasty cake"}
+{"type": "translate", "prompt": "おいしいサラダ", "answer": "tasty salad"}
+{"type": "translate", "prompt": "おいしいピザ", "answer": "tasty pizza"}
+{"type": "translate", "prompt": "おいしいラーメン", "answer": "tasty ramen"}
+{"type": "translate", "prompt": "おちゃ", "answer": "green tea"}
+{"type": "translate", "prompt": "おちゃ、ください。", "answer": "Green tea, please."}
+{"type": "translate", "prompt": "おちゃ、ください！", "answer": "Green tea, please!"}
+{"type": "translate", "prompt": "おちゃ、ごはん", "answer": "green tea, rice"}
+{"type": "translate", "prompt": "おちゃ、すし", "answer": "green tea, sushi"}
+{"type": "translate", "prompt": "おちゃとごはん", "answer": "green tea and rice"}
+{"type": "translate", "prompt": "おちゃとごはん、ください。", "answer": "Green tea and rice, please."}
+{"type": "translate", "prompt": "おちゃとすし", "answer": "green tea and sushi"}
+{"type": "translate", "prompt": "おちゃとみず", "answer": "green tea and water"}
+{"type": "translate", "prompt": "おちゃとみず、ください。", "answer": "Green tea and water, please."}
+{"type": "translate", "prompt": "かっこいい", "answer": "cool"}
+{"type": "translate", "prompt": "かっこいいいしゃです！", "answer": "She's a cool doctor!"}
+{"type": "translate", "prompt": "かっこいいがくせい", "answer": "a cool student"}
+{"type": "translate", "prompt": "かっこいいがくせいです！", "answer": "He's a cool student!"}
+{"type": "translate", "prompt": "かっこいいせんせいです。", "answer": "She's a cool teacher."}
+{"type": "translate", "prompt": "かっこいいせんせいです！", "answer": "He's a cool teacher!"}
+{"type": "translate", "prompt": "かっこいいです。", "answer": "He's cool."}
+{"type": "translate", "prompt": "かっこいいです！", "answer": "She's cool!"}
+{"type": "translate", "prompt": "かっこいいひと", "answer": "a cool person"}
+{"type": "translate", "prompt": "かっこいいひとです。", "answer": "She's a cool person."}
+{"type": "translate", "prompt": "かっこいいひとです！", "answer": "He's a cool person!"}
+{"type": "translate", "prompt": "かっこいいべんごしです！", "answer": "He's a cool lawyer!"}
+{"type": "translate", "prompt": "かっこいい！", "answer": "Cool!"}
+{"type": "translate", "prompt": "がくせい", "answer": "student"}
+{"type": "translate", "prompt": "がくせいです。", "answer": "She's a student."}
+{"type": "translate", "prompt": "けんさん、こんにちは。", "answer": "Hello, Ken."}
+{"type": "translate", "prompt": "けんさん、こんにちは！", "answer": "Hello, Ken!"}
+{"type": "translate", "prompt": "けんさん、こんばんは。", "answer": "Good evening, Ken."}
+{"type": "translate", "prompt": "けんさん、こんばんは！", "answer": "Good evening, Ken!"}
+{"type": "translate", "prompt": "けんさんはブラジルじんですか。", "answer": "Is Ken Brazilian?"}
+{"type": "translate", "prompt": "けんです、こんにちは。", "answer": "I'm Ken, hello."}
+{"type": "translate", "prompt": "けんです、こんにちは！", "answer": "I'm Ken, hello!"}
+{"type": "translate", "prompt": "けんです、こんばんは。", "answer": "I am Ken, good evening."}
+{"type": "translate", "prompt": "けんです、こんばんは！", "answer": "I am Ken, good evening!"}
+{"type": "translate", "prompt": "けんです。", "answer": "I'm Ken."}
+{"type": "translate", "prompt": "けんです！", "answer": "I'm Ken!"}
+{"type": "translate", "prompt": "これはおいしいです。", "answer": "This is tasty."}
+{"type": "translate", "prompt": "これはおいしいですか。", "answer": "Is this tasty?"}
+{"type": "translate", "prompt": "これはおいしいです！", "answer": "This is tasty!"}
+{"type": "translate", "prompt": "これはおちゃです。", "answer": "This is green tea."}
+{"type": "translate", "prompt": "これはおちゃですか。", "answer": "Is this green tea?"}
+{"type": "translate", "prompt": "これはおちゃです！", "answer": "This is green tea!"}
+{"type": "translate", "prompt": "これはごはんです。", "answer": "This is rice."}
+{"type": "translate", "prompt": "これはごはんです！", "answer": "This is rice!"}
+{"type": "translate", "prompt": "これはすしです。", "answer": "This is sushi."}
+{"type": "translate", "prompt": "これはすしですか。", "answer": "Is this sushi?"}
+{"type": "translate", "prompt": "これはすしです！", "answer": "This is sushi!"}
+{"type": "translate", "prompt": "これはみずです。", "answer": "This is water."}
+{"type": "translate", "prompt": "これはみずですか。", "answer": "Is this water?"}
+{"type": "translate", "prompt": "これはみずです！", "answer": "This is water!"}
+{"type": "translate", "prompt": "これはケーキです。", "answer": "This is cake."}
+{"type": "translate", "prompt": "これはケーキです！", "answer": "This is a cake!"}
+{"type": "translate", "prompt": "これはサラダです。", "answer": "This is a salad."}
+{"type": "translate", "prompt": "これはサラダですか。", "answer": "Is this a salad?"}
+{"type": "translate", "prompt": "これはサラダです！", "answer": "This is a salad!"}
+{"type": "translate", "prompt": "これはピザです。", "answer": "This is pizza."}
+{"type": "translate", "prompt": "これはラーメンです。", "answer": "This is ramen."}
+{"type": "translate", "prompt": "これはラーメンですか。", "answer": "Is this ramen?"}
+{"type": "translate", "prompt": "これはラーメンです！", "answer": "This is ramen!"}
+{"type": "translate", "prompt": "こんにちは、けんです。", "answer": "Hello, I'm Ken."}
+{"type": "translate", "prompt": "こんにちは、けんです！", "answer": "Hello, I'm Ken!"}
+{"type": "translate", "prompt": "こんにちは、はなです。", "answer": "Hello, I'm Hana."}
+{"type": "translate", "prompt": "こんにちは、はなです！", "answer": "Hello, I'm Hana!"}
+{"type": "translate", "prompt": "こんにちは。", "answer": "Hello."}
+{"type": "translate", "prompt": "こんにちは！", "answer": "Hello!"}
+{"type": "translate", "prompt": "こんばんは、けんです。", "answer": "Good evening, I'm Ken."}
+{"type": "translate", "prompt": "こんばんは、けんです！", "answer": "Good evening, I'm Ken!"}
+{"type": "translate", "prompt": "こんばんは。", "answer": "Good evening."}
+{"type": "translate", "prompt": "こんばんは！", "answer": "Good evening!"}
+{"type": "translate", "prompt": "ごはん", "answer": "rice"}
+{"type": "translate", "prompt": "ごはん、おちゃ", "answer": "rice, green tea"}
+{"type": "translate", "prompt": "ごはん、ください！", "answer": "Rice, please!"}
+{"type": "translate", "prompt": "ごはん、すし", "answer": "rice, sushi"}
+{"type": "translate", "prompt": "ごはん、みず", "answer": "rice, water"}
+{"type": "translate", "prompt": "ごはんです。", "answer": "It's rice."}
+{"type": "translate", "prompt": "ごはんとおちゃ", "answer": "rice and green tea"}
+{"type": "translate", "prompt": "ごはんとすし", "answer": "rice and sushi"}
+{"type": "translate", "prompt": "ごはんとみず", "answer": "rice and water"}
+{"type": "translate", "prompt": "すし", "answer": "sushi"}
+{"type": "translate", "prompt": "すし、ください。", "answer": "Sushi, please."}
+{"type": "translate", "prompt": "すし、ください！", "answer": "Sushi, please!"}
+{"type": "translate", "prompt": "すし、ごはん", "answer": "sushi, rice"}
+{"type": "translate", "prompt": "すし、みず", "answer": "sushi, water"}
+{"type": "translate", "prompt": "すしです。", "answer": "It's sushi."}
+{"type": "translate", "prompt": "すしです！", "answer": "It's sushi."}
+{"type": "translate", "prompt": "すしとおちゃ", "answer": "sushi and green tea"}
+{"type": "translate", "prompt": "すしとおちゃ、ください。", "answer": "Sushi and green tea, please."}
+{"type": "translate", "prompt": "すしとごはん", "answer": "sushi and rice"}
+{"type": "translate", "prompt": "すしはおいしいですか。", "answer": "Is sushi tasty?"}
+{"type": "translate", "prompt": "せんせい", "answer": "teacher"}
+{"type": "translate", "prompt": "せんせい、いしゃ", "answer": "a teacher, a doctor"}
+{"type": "translate", "prompt": "せんせい、べんごし", "answer": "teacher, lawyer"}
+{"type": "translate", "prompt": "せんせいです。", "answer": "He's a teacher."}
+{"type": "translate", "prompt": "せんせいといしゃ", "answer": "a teacher and a doctor"}
+{"type": "translate", "prompt": "せんせいとがくせい", "answer": "a teacher and a student"}
+{"type": "translate", "prompt": "せんせいとべんごし", "answer": "a teacher and a lawyer"}
+{"type": "translate", "prompt": "なおみさん、こんにちは。", "answer": "Hello, Naomi."}
+{"type": "translate", "prompt": "なおみさん、こんにちは！", "answer": "Hello, Naomi!"}
+{"type": "translate", "prompt": "なおみさん、こんばんは。", "answer": "Good evening, Naomi."}
+{"type": "translate", "prompt": "なおみさん、またあした。", "answer": "See you tomorrow, Naomi."}
+{"type": "translate", "prompt": "なおみさん、またあした！", "answer": "Naomi, see you tomorrow!"}
+{"type": "translate", "prompt": "なおみさんはブラジルじんですか。", "answer": "Is Naomi Brazilian?"}
+{"type": "translate", "prompt": "にほん", "answer": "Japan"}
+{"type": "translate", "prompt": "にほんじん", "answer": "Japanese"}
+{"type": "translate", "prompt": "にほんじんです。", "answer": "I'm Japanese."}
+{"type": "translate", "prompt": "にほんじんです！", "answer": "I am Japanese!"}
+{"type": "translate", "prompt": "にほんはおおきいですか。", "answer": "Is Japan big?"}
+{"type": "translate", "prompt": "にほんはちいさいですか。", "answer": "Is Japan small?"}
+{"type": "translate", "prompt": "はい、これはおいしいです。", "answer": "Yes, this is tasty."}
+{"type": "translate", "prompt": "はい、これはごはんです。", "answer": "Yes, this is rice."}
+{"type": "translate", "prompt": "はい、これはラーメンです。", "answer": "Yes, this is ramen."}
+{"type": "translate", "prompt": "はい、アメリカじんです。", "answer": "Yes, she's American."}
+{"type": "translate", "prompt": "はい、アメリカはおおきいです。", "answer": "Yes, America is big."}
+{"type": "translate", "prompt": "はい、ベトナムじんです。", "answer": "Yes, I am Vietnamese."}
+{"type": "translate", "prompt": "はなさん、こんにちは。", "answer": "Hello, Hana."}
+{"type": "translate", "prompt": "はなさん、こんにちは！", "answer": "Hello, Hana!"}
+{"type": "translate", "prompt": "はなさん、こんばんは。", "answer": "Good evening, Hana."}
+{"type": "translate", "prompt": "はなさん、またあした。", "answer": "See you tomorrow, Hana."}
+{"type": "translate", "prompt": "はなさん、またあした！", "answer": "See you tomorrow, Hana!"}
+{"type": "translate", "prompt": "はなさんはベトナムじんですか。", "answer": "Is Hana Vietnamese?"}
+{"type": "translate", "prompt": "はなです、こんにちは。", "answer": "I'm Hana, hello."}
+{"type": "translate", "prompt": "はなです、こんにちは！", "answer": "I'm Hana, hello!"}
+{"type": "translate", "prompt": "はなです。", "answer": "I'm Hana."}
+{"type": "translate", "prompt": "はなです！", "answer": "I'm Hana!"}
+{"type": "translate", "prompt": "ひと", "answer": "person"}
+{"type": "translate", "prompt": "べんごし", "answer": "lawyer"}
+{"type": "translate", "prompt": "べんごし、いしゃ", "answer": "a lawyer, a doctor"}
+{"type": "translate", "prompt": "べんごし、せんせい", "answer": "lawyer, teacher"}
+{"type": "translate", "prompt": "べんごしです。", "answer": "She's a lawyer."}
+{"type": "translate", "prompt": "べんごしといしゃ", "answer": "a lawyer and a doctor"}
+{"type": "translate", "prompt": "べんごしとせんせい", "answer": "a lawyer and a teacher"}
+{"type": "translate", "prompt": "またあした。", "answer": "See you tomorrow."}
+{"type": "translate", "prompt": "またあした！", "answer": "See you tomorrow!"}
+{"type": "translate", "prompt": "みず", "answer": "water"}
+{"type": "translate", "prompt": "みず、おちゃ", "answer": "water, green tea"}
+{"type": "translate", "prompt": "みず、ください。", "answer": "Water, please."}
+{"type": "translate", "prompt": "みず、ください！", "answer": "Water, please!"}
+{"type": "translate", "prompt": "みず、ごはん", "answer": "water, rice"}
+{"type": "translate", "prompt": "みず、すし", "answer": "water, sushi"}
+{"type": "translate", "prompt": "みずです。", "answer": "It's water."}
+{"type": "translate", "prompt": "みずとおちゃ", "answer": "water and green tea"}
+{"type": "translate", "prompt": "みずとおちゃ、ください。", "answer": "Water and green tea, please."}
+{"type": "translate", "prompt": "みずとごはん", "answer": "water and rice"}
+{"type": "translate", "prompt": "みずとすし", "answer": "water and sushi"}
+{"type": "translate", "prompt": "みずとすし、ください。", "answer": "Water and sushi, please."}
+{"type": "translate", "prompt": "やさしい", "answer": "nice"}
+{"type": "translate", "prompt": "やさしいいしゃです。", "answer": "He's a nice doctor."}
+{"type": "translate", "prompt": "やさしいがくせい", "answer": "a nice student"}
+{"type": "translate", "prompt": "やさしいがくせいです。", "answer": "She's a nice student."}
+{"type": "translate", "prompt": "やさしいせんせいです！", "answer": "He's a nice teacher!"}
+{"type": "translate", "prompt": "やさしいです。", "answer": "She's nice."}
+{"type": "translate", "prompt": "やさしいです！", "answer": "He's nice!"}
+{"type": "translate", "prompt": "やさしいひと", "answer": "a nice person"}
+{"type": "translate", "prompt": "やさしいひとです。", "answer": "She's a nice person."}
+{"type": "translate", "prompt": "やさしいひとです！", "answer": "He's a nice person!"}
+{"type": "translate", "prompt": "やさしいべんごしです。", "answer": "He is a nice lawyer."}
+{"type": "translate", "prompt": "アメリカじん", "answer": "American"}
+{"type": "translate", "prompt": "アメリカじんです。", "answer": "I'm American."}
+{"type": "translate", "prompt": "アメリカはおおきいですか。", "answer": "Is America big?"}
+{"type": "translate", "prompt": "カナダ", "answer": "Canada"}
+{"type": "translate", "prompt": "カナダじん", "answer": "Canadian"}
+{"type": "translate", "prompt": "カナダじんです。", "answer": "I'm Canadian."}
+{"type": "translate", "prompt": "カナダはおおきいです。", "answer": "Canada is big."}
+{"type": "translate", "prompt": "カナダはおおきいですか。", "answer": "Is Canada big?"}
+{"type": "translate", "prompt": "ケーキ", "answer": "cake"}
+{"type": "translate", "prompt": "ケーキはおいしいです。", "answer": "Cake is tasty."}
+{"type": "translate", "prompt": "ケーキはおいしいですか。", "answer": "Is the cake tasty?"}
+{"type": "translate", "prompt": "サラダ", "answer": "salad"}
+{"type": "translate", "prompt": "サラダとラーメン", "answer": "salad and ramen"}
+{"type": "translate", "prompt": "サラダはおいしいです。", "answer": "Salad is tasty."}
+{"type": "translate", "prompt": "サラダはおいしいですか。", "answer": "Is the salad tasty?"}
+{"type": "translate", "prompt": "サラダはおいしいです！", "answer": "Salad is tasty!"}
+{"type": "translate", "prompt": "ピザ", "answer": "pizza"}
+{"type": "translate", "prompt": "ピザ、ください。", "answer": "Pizza, please."}
+{"type": "translate", "prompt": "ピザとみず、ください。", "answer": "Pizza and water, please."}
+{"type": "translate", "prompt": "ピザはおいしいです。", "answer": "Pizza is tasty."}
+{"type": "translate", "prompt": "ピザはおいしいですか。", "answer": "Is pizza tasty?"}
+{"type": "translate", "prompt": "ブラジル", "answer": "Brazil"}
+{"type": "translate", "prompt": "ブラジルじんです。", "answer": "I'm Brazilian."}
+{"type": "translate", "prompt": "ブラジルはちいさいですか。", "answer": "Is Brazil small?"}
+{"type": "translate", "prompt": "ベトナム", "answer": "Vietnam"}
+{"type": "translate", "prompt": "ベトナムじん", "answer": "Vietnamese person"}
+{"type": "translate", "prompt": "ベトナムじんです。", "answer": "I am Vietnamese."}
+{"type": "translate", "prompt": "ベトナムはおおきいですか。", "answer": "Is Vietnam big?"}
+{"type": "translate", "prompt": "ベトナムはちいさいですか。", "answer": "Is Vietnam small?"}
+{"type": "translate", "prompt": "ラーメン", "answer": "ramen"}
+{"type": "translate", "prompt": "ラーメンとおちゃ", "answer": "ramen and green tea"}
+{"type": "translate", "prompt": "ラーメンとサラダ", "answer": "ramen and salad"}
+{"type": "translate", "prompt": "ラーメンはおいしいです。", "answer": "Ramen is tasty."}
+{"type": "translate", "prompt": "ラーメンはおいしいですか。", "answer": "Is ramen tasty?"}

@@ -1,0 +1,24 @@
+{"type": "assist", "prompt": "cat", "answer": "gato"}
+{"type": "assist", "prompt": "dad", "answer": "pai"}
+{"type": "assist", "prompt": "dog", "answer": "cachorro"}
+{"type": "assist", "prompt": "water", "answer": "água"}
+{"type": "select", "prompt": "car", "answer": "carro"}
+{"type": "select", "prompt": "cat", "answer": "gato"}
+{"type": "select", "prompt": "dad", "answer": "pai"}
+{"type": "select", "prompt": "dog", "answer": "cachorro"}
+{"type": "select", "prompt": "mom", "answer": "mãe"}
+{"type": "select", "prompt": "water", "answer": "água"}
+{"type": "tapComplete", "prompt": "Ele é ___ Luís e ela é ___ Maria.", "answer": "o a"}
+{"type": "translate", "prompt": "Até logo, obrigado.", "answer": "See you later, thanks."}
+{"type": "translate", "prompt": "Bom dia, eu sou a Ana.", "answer": "Good morning, I am Ana."}
+{"type": "translate", "prompt": "Bom dia, muito prazer!", "answer": "Good morning, nice to meet you!"}
+{"type": "translate", "prompt": "Bom dia, tudo bem?", "answer": "Good morning, how are you?"}
+{"type": "translate", "prompt": "Ele é o Luís.", "answer": "He is Luis."}
+{"type": "translate", "prompt": "Eu sou o Luís.", "answer": "I am Luís."}
+{"type": "translate", "prompt": "I'm Ana, how are you?", "answer": "Eu sou a Ana, tudo bem?"}
+{"type": "translate", "prompt": "I'm Maria, how are you?", "answer": "Eu sou a Maria, tudo bem?"}
+{"type": "translate", "prompt": "Muito prazer, até logo!", "answer": "Nice to meet you, see you later!"}
+{"type": "translate", "prompt": "Nice to meet you, see you later.", "answer": "Muito prazer, até logo."}
+{"type": "translate", "prompt": "Oi, eu sou o Luís.", "answer": "Hi, I'm Luís."}
+{"type": "translate", "prompt": "Oi, tudo.", "answer": "Hi, all good."}
+{"type": "translate", "prompt": "o Luís", "answer": "Luis"}

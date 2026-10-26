@@ -1,0 +1,100 @@
+{"type": "gapFill", "prompt": "Bha an duine cho mòr ri ___.", "answer": "beinn"}
+{"type": "gapFill", "prompt": "Bha mi a' ruith cho luath ri ___.", "answer": "geàrr"}
+{"type": "gapFill", "prompt": "Chan eil mi ___ fhathast ach tha mi ag ionnsachadh.", "answer": "fileanta"}
+{"type": "gapFill", "prompt": "Cho ___ ri sionnach.", "answer": "seòlta"}
+{"type": "gapFill", "prompt": "Die Jacke ist ___.", "answer": "teuer"}
+{"type": "gapFill", "prompt": "Die Kappe ___ drei Euro.", "answer": "kostet"}
+{"type": "gapFill", "prompt": "Die alte Lampe ist langweilig und auch zu ___.", "answer": "teuer"}
+{"type": "gapFill", "prompt": "Ich möchte das Radio ___.", "answer": "kaufen"}
+{"type": "gapFill", "prompt": "Is toil leam Gàidhlig. Tha mi cho fileanta ri ___.", "answer": "bàrd"}
+{"type": "gapFill", "prompt": "Tha e briste. Cha robh e ___ gu leòr.", "answer": "cruaidh"}
+{"type": "gapFill", "prompt": "Tha e cho ___ ri ugh.", "answer": "làn"}
+{"type": "translate", "prompt": "A bheil thu goirt? Suidh sìos ma-thà.", "answer": "Are you sore? Sit down then."}
+{"type": "translate", "prompt": "Ada Ibu di luar.", "answer": "Mother is outside."}
+{"type": "translate", "prompt": "Ada apa di luar?", "answer": "What is going on outside?"}
+{"type": "translate", "prompt": "Anak saya laki-laki.", "answer": "My child is male."}
+{"type": "translate", "prompt": "Anjing-anjing saya tidak suka kucing.", "answer": "My dogs do not like cats."}
+{"type": "translate", "prompt": "Apakah saya hamil?", "answer": "Am I pregnant?"}
+{"type": "translate", "prompt": "Are the caps expensive?", "answer": "Sind die Kappen teuer?"}
+{"type": "translate", "prompt": "Balik kiri di sini.", "answer": "Turn around to the left here."}
+{"type": "translate", "prompt": "Barat laut, barat daya, timur laut, tenggara.", "answer": "Northwest, southwest, northeast, southeast."}
+{"type": "translate", "prompt": "Barat, barat daya, selatan.", "answer": "West, southwest, south."}
+{"type": "translate", "prompt": "Belok ke arah mana?", "answer": "Turn to which direction?"}
+{"type": "translate", "prompt": "Berapa saudara mereka?", "answer": "How many siblings do they have?"}
+{"type": "translate", "prompt": "Bha an cù cho luath ri geàrr.", "answer": "The dog was as fast as a hare."}
+{"type": "translate", "prompt": "Bola-bola, kue-kue, anjing-anjing.", "answer": "Balls, cakes, dogs."}
+{"type": "translate", "prompt": "Brauchst du eine Tasche?", "answer": "Do you need a bag?"}
+{"type": "translate", "prompt": "Das Buch kostet sieben Euro.", "answer": "The book costs seven euros."}
+{"type": "translate", "prompt": "Das Foto ist schön und sehr billig.", "answer": "The photo is beautiful and very cheap."}
+{"type": "translate", "prompt": "Das Radio kostet nur sechs Euro.", "answer": "The radio costs only six euros."}
+{"type": "translate", "prompt": "Das Sofa ist zu teuer.", "answer": "The sofa is too expensive."}
+{"type": "translate", "prompt": "Di kanan saya.", "answer": "On my right."}
+{"type": "translate", "prompt": "Di mana posisi Anda?", "answer": "Where is your position?"}
+{"type": "translate", "prompt": "Di mana tante kamu?", "answer": "Where is your aunt?"}
+{"type": "translate", "prompt": "Dia makan kue-kue saya.", "answer": "He eats my cakes."}
+{"type": "translate", "prompt": "Dia menuju Bali.", "answer": "He heads to Bali."}
+{"type": "translate", "prompt": "Die Brezel ist sehr lecker, richtig?", "answer": "The pretzel is very tasty, right?"}
+{"type": "translate", "prompt": "Die Fotos kosten nur zwei Euro, Mia.", "answer": "The photos cost only two euros, Mia."}
+{"type": "translate", "prompt": "Die Kappe ist sehr cool, aber teuer.", "answer": "The cap is very cool, but expensive."}
+{"type": "translate", "prompt": "Die Radios sind alt.", "answer": "The radios are old."}
+{"type": "translate", "prompt": "Die Taschen sind wirklich hässlich.", "answer": "The bags are really ugly."}
+{"type": "translate", "prompt": "Du sammelst Flaschen, richtig?", "answer": "You collect bottles, right?"}
+{"type": "translate", "prompt": "Findest du die Kappe schön?", "answer": "Do you find the cap beautiful?"}
+{"type": "translate", "prompt": "Findest du die Tasche schick, Mia?", "answer": "Do you find the bag stylish, Mia?"}
+{"type": "translate", "prompt": "Hotel-hotel ini besar.", "answer": "These hotels are big."}
+{"type": "translate", "prompt": "Hotel-hotel itu ada di sini.", "answer": "Those hotels are here."}
+{"type": "translate", "prompt": "I find the lamp too pink, Alex.", "answer": "Ich finde die Lampe zu pink, Alex."}
+{"type": "translate", "prompt": "I find the table very stylish.", "answer": "Ich finde den Tisch sehr schick."}
+{"type": "translate", "prompt": "I have six jackets.", "answer": "Ich habe sechs Jacken."}
+{"type": "translate", "prompt": "I often buy photos.", "answer": "Ich kaufe oft Fotos."}
+{"type": "translate", "prompt": "Ich finde den Tisch sehr schick.", "answer": "I find the table very stylish."}
+{"type": "translate", "prompt": "Ich finde die Lampe zu pink, Alex.", "answer": "I find the lamp too pink, Alex."}
+{"type": "translate", "prompt": "Ich kaufe eine Kappe, Lisa.", "answer": "I am buying a cap, Lisa."}
+{"type": "translate", "prompt": "Ini putra dan putri saya.", "answer": "These are my son and daughter."}
+{"type": "translate", "prompt": "Ja, ich kaufe die Flasche und die Jacke.", "answer": "Yes, I am buying the bottle and the jacket."}
+{"type": "translate", "prompt": "Jeruk-jeruk saya besar.", "answer": "My oranges are big."}
+{"type": "translate", "prompt": "Kami membaca koran-koran dan buku-buku.", "answer": "We read newspapers and books."}
+{"type": "translate", "prompt": "Koran-koran ini dari Jakarta.", "answer": "These newspapers are from Jakarta."}
+{"type": "translate", "prompt": "Kucing-kucing Andi suka susu.", "answer": "Andi's cats like milk."}
+{"type": "translate", "prompt": "Kucing-kucing mereka hitam dan putih.", "answer": "Their cats are black and white."}
+{"type": "translate", "prompt": "Kue-kue saya enak.", "answer": "My cakes are delicious."}
+{"type": "translate", "prompt": "Kutub utara dan kutub selatan.", "answer": "North pole and south pole."}
+{"type": "translate", "prompt": "Look, the radio is pink!", "answer": "Guck mal, das Radio ist pink!"}
+{"type": "translate", "prompt": "Maaf, istri saya hamil.", "answer": "Sorry, my wife is pregnant."}
+{"type": "translate", "prompt": "Mein Papa sammelt Radios.", "answer": "My dad collects radios."}
+{"type": "translate", "prompt": "Mereka suka kakak saya!", "answer": "They like my older sister!"}
+{"type": "translate", "prompt": "My friend needs a jacket.", "answer": "Mein Freund braucht eine Jacke."}
+{"type": "translate", "prompt": "Nein, der Flohmarkt ist nicht langweilig.", "answer": "No, the flea market is not boring."}
+{"type": "translate", "prompt": "No, the flea market is not boring.", "answer": "Nein, der Flohmarkt ist nicht langweilig."}
+{"type": "translate", "prompt": "Posisi dia di kiri saya.", "answer": "Her position is on my left."}
+{"type": "translate", "prompt": "Saya mau turun ke bawah.", "answer": "I want to go down."}
+{"type": "translate", "prompt": "Saya tidak hamil!", "answer": "I am not pregnant!"}
+{"type": "translate", "prompt": "Seas faisg air an taigh.", "answer": "Stand near the house."}
+{"type": "translate", "prompt": "Siapa kakak kamu?", "answer": "Who is your older sibling?"}
+{"type": "translate", "prompt": "Siapa nama putra kalian?", "answer": "What is the name of your son?"}
+{"type": "translate", "prompt": "Stand near the house.", "answer": "Seas faisg air an taigh."}
+{"type": "translate", "prompt": "Suami saya punya kakak dan adik.", "answer": "My husband has an older sibling and a younger sibling."}
+{"type": "translate", "prompt": "Suidh ann an cathair.", "answer": "Sit in a chair."}
+{"type": "translate", "prompt": "Surat-surat dan buku-buku ini punya saya.", "answer": "These letters and books are mine."}
+{"type": "translate", "prompt": "Tante mereka cantik.", "answer": "Their aunt is pretty."}
+{"type": "translate", "prompt": "The T-shirt is really cool.", "answer": "Das T-Shirt ist wirklich cool."}
+{"type": "translate", "prompt": "The T-shirts cost six euros.", "answer": "Die T-Shirts kosten sechs Euro."}
+{"type": "translate", "prompt": "The bag is cheap, but pink.", "answer": "Die Tasche ist billig, aber pink."}
+{"type": "translate", "prompt": "The flea market is never boring!", "answer": "Der Flohmarkt ist nie langweilig!"}
+{"type": "translate", "prompt": "The jacket costs only three euros!", "answer": "Die Jacke kostet nur drei Euro!"}
+{"type": "translate", "prompt": "The jackets are so cool.", "answer": "Die Jacken sind so cool."}
+{"type": "translate", "prompt": "The jackets cost seven euros.", "answer": "Die Jacken kosten sieben Euro."}
+{"type": "translate", "prompt": "The photos are cheap.", "answer": "Die Fotos sind billig."}
+{"type": "translate", "prompt": "The photos cost only two euros, Mia.", "answer": "Die Fotos kosten nur zwei Euro, Mia."}
+{"type": "translate", "prompt": "The puzzle costs six euros.", "answer": "Das Puzzle kostet sechs Euro."}
+{"type": "translate", "prompt": "The radio costs only six euros.", "answer": "Das Radio kostet nur sechs Euro."}
+{"type": "translate", "prompt": "Three bags come to six euros, please.", "answer": "Drei Taschen machen sechs Euro, bitte."}
+{"type": "translate", "prompt": "Three puzzles cost six euros.", "answer": "Drei Puzzles machen sechs Euro."}
+{"type": "translate", "prompt": "Two caps cost five euros.", "answer": "Zwei Kappen machen fünf Euro."}
+{"type": "translate", "prompt": "Two puzzles are eight euros, please.", "answer": "Zwei Puzzles machen acht Euro, bitte."}
+{"type": "translate", "prompt": "Vier T-Shirts machen acht Euro, richtig?", "answer": "Four T-shirts come to eight euros, right?"}
+{"type": "translate", "prompt": "Wir haben nur drei Puzzles.", "answer": "We have only three puzzles."}
+{"type": "translate", "prompt": "You collect bottles, right?", "answer": "Du sammelst Flaschen, richtig?"}
+{"type": "translate", "prompt": "die Flasche, die Flaschen", "answer": "the bottle, the bottles"}
+{"type": "translate", "prompt": "die Jacke, die Jacken", "answer": "the jacket, the jackets"}
+{"type": "translate", "prompt": "die Kappe, die Kappen", "answer": "the cap, the caps"}

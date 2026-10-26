@@ -1,0 +1,231 @@
+{"type": "assist", "prompt": "on foot", "answer": "צו פוס"}
+{"type": "assist", "prompt": "why", "answer": "proč"}
+{"type": "characterSelect", "prompt": "Tel Aviv", "answer": "תּל אביב"}
+{"type": "characterSelect", "prompt": "efsher", "answer": "אפשר"}
+{"type": "definition", "prompt": "\"Learning is a lifelong process.\" This means that as long as you're alive, you never stop learning.", "answer": "lasting all your life"}
+{"type": "definition", "prompt": "\"The cup fell off the table.\" This means the cup was on the table, but it ended up on the floor.", "answer": "fall down from"}
+{"type": "definition", "prompt": "\"You faced your fear.\" This means you were afraid of doing something, but you did it anyway!", "answer": "stop avoiding your fear"}
+{"type": "definition", "prompt": "A method is the way that you choose to do things.", "answer": "how something is done"}
+{"type": "definition", "prompt": "After finishing high school, many people continue studying in higher education.", "answer": "college or university"}
+{"type": "definition", "prompt": "An audition is a short performance by an actor who wants to be hired for a play or a movie.", "answer": "a test to choose an actor"}
+{"type": "definition", "prompt": "Drinking water is good for you. Doctors recommend about half a gallon a day.", "answer": "healthy"}
+{"type": "definition", "prompt": "I know you're stressed about organizing the party, but everything will turn out fine. It'll all go perfectly.", "answer": "end up"}
+{"type": "definition", "prompt": "I'm sorry to complain, but there's a fly in my soup!", "answer": "i need to explain a problem…"}
+{"type": "definition", "prompt": "If you don't agree with a decision, you can say, \"I'm against this decision.\"", "answer": "i disagree with"}
+{"type": "definition", "prompt": "If you figure something is true, you believe it's true, although you don't know for sure.", "answer": "suppose"}
+{"type": "definition", "prompt": "If you hurt your leg, the doctor may take an X-ray to see if it's broken.", "answer": "a photo of your bones"}
+{"type": "definition", "prompt": "If you involve the police in something, you call the police so they can be a part of the situation.", "answer": "include in a situation"}
+{"type": "definition", "prompt": "If you keep your mouth shut, you decide not to mention certain information to others.", "answer": "stay quiet"}
+{"type": "definition", "prompt": "If you work online, having good computer skills will probably benefit your career.", "answer": "help"}
+{"type": "definition", "prompt": "If you're at risk, you're in a situation where something bad could happen to you.", "answer": "in danger"}
+{"type": "definition", "prompt": "If your clothes are good quality, they may be expensive, but you can wear them for a long time.", "answer": "how well something is made"}
+{"type": "definition", "prompt": "Laura needed a pen, so I took one out of my bag and handed it to her.", "answer": "give something with your hand"}
+{"type": "definition", "prompt": "Most people have two lungs that help move air in and out of their body.", "answer": "a body part for breathing"}
+{"type": "definition", "prompt": "People often reread a text to make sure they didn't miss any information the first time.", "answer": "read again"}
+{"type": "definition", "prompt": "The show is about a murder. In the first episode, a boy dies. Then, they try to find out who did it.", "answer": "killing"}
+{"type": "definition", "prompt": "This character gives a speech that is ten minutes long! Remembering it is quite a challenge for any actor.", "answer": "a significant challenge"}
+{"type": "definition", "prompt": "Watch out for that broken glass! It could really hurt you.", "answer": "be careful with"}
+{"type": "definition", "prompt": "When my son lost his favorite toy, he was in tears. I had to dry his face with tissues.", "answer": "crying a lot"}
+{"type": "definition", "prompt": "When you handle a problem, you do the necessary work to solve it.", "answer": "fix"}
+{"type": "definition", "prompt": "Your dress is eighty dollars. Oh, this is a hundred dollars. Here's your change, twenty dollars.", "answer": "money that you get back"}
+{"type": "gapFill", "prompt": "Ben, it was nice of you _________ that stressful situation.", "answer": "to handle"}
+{"type": "gapFill", "prompt": "Bob has changed so much that I _________ even recognize him!", "answer": "did not"}
+{"type": "gapFill", "prompt": "Bob is the smartest guy in class, so all the tests are very ___ for him.", "answer": "easy"}
+{"type": "gapFill", "prompt": "Can you explain to us how you _________ those handcuffs?", "answer": "escaped from"}
+{"type": "gapFill", "prompt": "Can't ___ to start the next chapter of my life!", "answer": "wait"}
+{"type": "gapFill", "prompt": "He got the virus, so he had to take some ___.", "answer": "medicine"}
+{"type": "gapFill", "prompt": "Hi, I'm your personal trainer. I'll be showing you the best way to ___ out.", "answer": "work"}
+{"type": "gapFill", "prompt": "I have fond memories of our family vacations. I _________ them!", "answer": "always enjoyed"}
+{"type": "gapFill", "prompt": "I have noticed some big changes in gender roles since _________.", "answer": "the sixties"}
+{"type": "gapFill", "prompt": "I like teaching, so I'd like to work in higher ___.", "answer": "education"}
+{"type": "gapFill", "prompt": "I'd like to ___ a toast to my beautiful bride!", "answer": "make"}
+{"type": "gapFill", "prompt": "I'm a lifelong learner, so _______________ learning!", "answer": "i'll always be"}
+{"type": "gapFill", "prompt": "I'm going to have surgery on my knee because it _____________________.", "answer": "hurts all the time"}
+{"type": "gapFill", "prompt": "I'm sorry to complain, but the staff here are a little ___!", "answer": "rude"}
+{"type": "gapFill", "prompt": "In my opinion, the best treatment for a sore throat is _____________________.", "answer": "hot tea with lemon"}
+{"type": "gapFill", "prompt": "In the future, I'd like to work in higher education as a _________.", "answer": "college professor"}
+{"type": "gapFill", "prompt": "It was ___ of him to ask if I needed help with my packing.", "answer": "kind"}
+{"type": "gapFill", "prompt": "Learning English will really benefit me. It'll _________ for my career!", "answer": "be great"}
+{"type": "gapFill", "prompt": "My dad fell off a wall. That's how he _______________.", "answer": "broke his leg"}
+{"type": "gapFill", "prompt": "My kids say I'm out of shape and I need to _________.", "answer": "get fit"}
+{"type": "gapFill", "prompt": "So, what's on the horizon for you, Amy? What _________?", "answer": "comes next"}
+{"type": "gapFill", "prompt": "The Brazilian team is expected to ___ the soccer tournament!", "answer": "win"}
+{"type": "gapFill", "prompt": "The doctor says I need an X-ray on my ___.", "answer": "foot"}
+{"type": "gapFill", "prompt": "The magician amazed the audience by untying a ___ knot within seconds.", "answer": "complicated"}
+{"type": "gapFill", "prompt": "There's a festival going ___ in town this weekend.", "answer": "on"}
+{"type": "gapFill", "prompt": "WIth our mobile deposits, you can make a deposit from anywhere _______________.", "answer": "with your phone"}
+{"type": "gapFill", "prompt": "We paid workers to deliver food. A ___ girl came and brought cake.", "answer": "delivery"}
+{"type": "gapFill", "prompt": "We were always _________ the slide at the playground.", "answer": "playing on"}
+{"type": "gapFill", "prompt": "We were scouts as children, so we're pretty good at ___ activities.", "answer": "outdoor"}
+{"type": "gapFill", "prompt": "We're arguing ___ the new school building.", "answer": "about"}
+{"type": "gapFill", "prompt": "We're looking for the right person ___ this job. Is it you?", "answer": "for"}
+{"type": "gapFill", "prompt": "When I got to the doctor's office, I had to spend half an hour in the ___ room!", "answer": "waiting"}
+{"type": "gapFill", "prompt": "When will you have been ___ here for a year?", "answer": "working"}
+{"type": "gapFill", "prompt": "Whenever I look at a computer for too long, I ___ a headache!", "answer": "get"}
+{"type": "gapFill", "prompt": "You'll have _________ time to exercise every day.", "answer": "to find"}
+{"type": "gapFill", "prompt": "You're really ___ to help me with all those tasks while I'm out of town?", "answer": "agreeing"}
+{"type": "gapFill", "prompt": "You're really _________ look after my house, water my plants, and walk the dog too?", "answer": "going to"}
+{"type": "gapFill", "prompt": "___ you great success in your job search!", "answer": "wishing"}
+{"type": "patternTapComplete", "prompt": "He used to walk to school.", "answer": "walk"}
+{"type": "patternTapComplete", "prompt": "I used to write stories when I was young.", "answer": "write"}
+{"type": "patternTapComplete", "prompt": "The vegetables could be eaten by rabbits.", "answer": "eaten"}
+{"type": "patternTapComplete", "prompt": "When they enter, they will greet the guests.", "answer": "enter"}
+{"type": "tapComplete", "prompt": "All in all, the house looks ___ for your mom's visit. I just need to put a ___ in the bathroom.", "answer": "ready towel"}
+{"type": "tapComplete", "prompt": "Amara doesn't eat ___ because she's Muslim.", "answer": "pork"}
+{"type": "tapComplete", "prompt": "Athletes will ___ for the ceremony later. They will be ___ in the stadium at 5.", "answer": "gather gathering"}
+{"type": "tapComplete", "prompt": "Be careful when you take an expensive ___ on your camping trip. You might get dirt in it!", "answer": "camera"}
+{"type": "tapComplete", "prompt": "By then, ___ have ___ serving ice cream at their shop for sixty years.", "answer": "they'll been"}
+{"type": "tapComplete", "prompt": "By then, ___ have ___ working here for 30 years!", "answer": "she'll been"}
+{"type": "tapComplete", "prompt": "Can we ___ a tree in the front yard? Could it ___ between our house and the neighbor's?", "answer": "plant be planted"}
+{"type": "tapComplete", "prompt": "Could you open the trunk? I'd like to ___ my ___ in there.", "answer": "put suitcase"}
+{"type": "tapComplete", "prompt": "Didn't you use to ___ an apartment downtown? Are you still ___ one now?", "answer": "rent renting"}
+{"type": "tapComplete", "prompt": "Do the kids need to ___ so loudly? They're constantly ___ at each other!", "answer": "yell yelling"}
+{"type": "tapComplete", "prompt": "Does the front ___ close? That ___ been repaired recently.", "answer": "window window's"}
+{"type": "tapComplete", "prompt": "Duo would like to jog, but Eddy says they need to run quickly to get ready for next week's ___.", "answer": "race"}
+{"type": "tapComplete", "prompt": "During recess, ___ ___ hang out under the trees.", "answer": "we always used to"}
+{"type": "tapComplete", "prompt": "Eric, you can't just have cookies, potato chips, and cake for lunch! That stuff isn't ___ for you!", "answer": "good"}
+{"type": "tapComplete", "prompt": "Everybody was fine! It was ___ ___ the crash never happened!", "answer": "as if"}
+{"type": "tapComplete", "prompt": "Fans from around the world gather to ___ for their favorite athletes during the Olympic Games.", "answer": "cheer"}
+{"type": "tapComplete", "prompt": "For my audition, I'm going to ___ a scene from the play \"Guys and Dolls.\"", "answer": "perform"}
+{"type": "tapComplete", "prompt": "Fred lost his job last month. He doesn't miss the work, but he hates not ___ money!", "answer": "having"}
+{"type": "tapComplete", "prompt": "Grandpa used to cover his car when he wasn't driving, so it was always ___.", "answer": "clean"}
+{"type": "tapComplete", "prompt": "Have you ___ your final class today, or do you still need to teach one more?", "answer": "taught"}
+{"type": "tapComplete", "prompt": "He ___ the musicians before the guests ___ them.", "answer": "will meet meet"}
+{"type": "tapComplete", "prompt": "I didn't have any food or beverages today. Watching you eat is making ___ ___!", "answer": "me hungry"}
+{"type": "tapComplete", "prompt": "I don't want to ___ the house myself! Let's get it ___ professionally.", "answer": "paint painted"}
+{"type": "tapComplete", "prompt": "I hate not ___ cash. I always ___ cash when I go out.", "answer": "having have"}
+{"type": "tapComplete", "prompt": "I have trouble ___ lately. I only ___ for an hour last night!", "answer": "sleeping slept"}
+{"type": "tapComplete", "prompt": "I like not ___ to go to the bank often. I only ___ to go once a month.", "answer": "having have"}
+{"type": "tapComplete", "prompt": "I need to ___ Dad a birthday present. Have you ___ him anything yet?", "answer": "buy bought"}
+{"type": "tapComplete", "prompt": "I need to ___ for the final exam next week. Have you already ___?", "answer": "prepare prepared"}
+{"type": "tapComplete", "prompt": "I normally ___ after having a bad dream. Have you ever ___ because of one?", "answer": "wake up woken up"}
+{"type": "tapComplete", "prompt": "I see you have a mosquito ___ on your leg. An insect ___ me yesterday too.", "answer": "bite bit"}
+{"type": "tapComplete", "prompt": "I see you've got a red ___ on your arm. It looks like a mosquito ___ you.", "answer": "bite bit"}
+{"type": "tapComplete", "prompt": "I think that was the ___ incredible magic trick I've seen ___!", "answer": "most yet"}
+{"type": "tapComplete", "prompt": "I was in tears after talking to the guy next door. He was so rude that he made me ___!", "answer": "cry"}
+{"type": "tapComplete", "prompt": "I wasn't ___ fit everything in one bag, but I ___.", "answer": "able to tried to"}
+{"type": "tapComplete", "prompt": "I'd like to make a ___ toast since I have known the couple ___ for so long.", "answer": "personal personally"}
+{"type": "tapComplete", "prompt": "I'll ___ the payment tonight since she asked me not ___ it until later.", "answer": "make to make"}
+{"type": "tapComplete", "prompt": "I'm ___ tired ___ keep going!", "answer": "too to"}
+{"type": "tapComplete", "prompt": "I'm applying for a new ___. I really want to work there.", "answer": "job"}
+{"type": "tapComplete", "prompt": "I'm having my teeth ___ this afternoon. The assistant usually ___ them.", "answer": "cleaned cleans"}
+{"type": "tapComplete", "prompt": "I'm sorry to complain, but your receptionist is a little ___!", "answer": "lazy"}
+{"type": "tapComplete", "prompt": "I'm sorry, but that ___ been sold. Would you like to see a different ___?", "answer": "car's car"}
+{"type": "tapComplete", "prompt": "I've ___ three times already, but I don't need to ___ until eight!", "answer": "woken up wake up"}
+{"type": "tapComplete", "prompt": "I've been wanting ___ down into the canyon. How about you ___ there with me?", "answer": "to hike hike"}
+{"type": "tapComplete", "prompt": "If ___ driven myself to the museum, ___ have arrived on time!", "answer": "i had i would"}
+{"type": "tapComplete", "prompt": "In July, we ___ ___ these cookies for 15 years!", "answer": "will have been making"}
+{"type": "tapComplete", "prompt": "It was nice of ___ to pay me since ___ didn't have to.", "answer": "her she"}
+{"type": "tapComplete", "prompt": "It was very frustrating to ___ my keys. I searched for them for hours!", "answer": "lose"}
+{"type": "tapComplete", "prompt": "It's difficult for Mr. Bear to face his ___ of snakes. He'd rather run away!", "answer": "fear"}
+{"type": "tapComplete", "prompt": "It's not easy to ___ that project. Thanks for ___ it!", "answer": "handle handling"}
+{"type": "tapComplete", "prompt": "Kevin has ___ about buying a boat, but he ___ it might be expensive.", "answer": "thought thinks"}
+{"type": "tapComplete", "prompt": "Long story short, my car was being ___, and it took three hours to ___ it.", "answer": "fixed fix"}
+{"type": "tapComplete", "prompt": "Making the bird disappear was her ___ trick ___!", "answer": "best yet"}
+{"type": "tapComplete", "prompt": "Mark had to have surgery on his foot because it was ___.", "answer": "broken"}
+{"type": "tapComplete", "prompt": "Max ___ a knitting expert. Next month, he will have ___ knitting for fifty years.", "answer": "is been"}
+{"type": "tapComplete", "prompt": "May I have another brave volunteer come to the stage? Yes, you! The young ___ with the yellow blouse!", "answer": "woman"}
+{"type": "tapComplete", "prompt": "Mia is constantly ___ her dog run around the neighborhood! I should ___ her mom know.", "answer": "letting let"}
+{"type": "tapComplete", "prompt": "Mia is making a ___ of \"The Lady in the Red Hat.\" The real painting was completed in the eighteenth century!", "answer": "copy"}
+{"type": "tapComplete", "prompt": "Mia really wants to ___. She can have ___ by working hard.", "answer": "succeed success"}
+{"type": "tapComplete", "prompt": "My dog loves to lie on my bed and ___.", "answer": "sleep"}
+{"type": "tapComplete", "prompt": "My interview wasn't a ___ this time, but I know I'll ___ next time!", "answer": "success succeed"}
+{"type": "tapComplete", "prompt": "My mom and I don't like love stories. The action ___ we watch together are more ___.", "answer": "movies exciting"}
+{"type": "tapComplete", "prompt": "My wound is healing, so I'll have my bandage ___ tomorrow. The doctor will ___ it.", "answer": "removed remove"}
+{"type": "tapComplete", "prompt": "Never ___ ___ that college would benefit us so much.", "answer": "did i think"}
+{"type": "tapComplete", "prompt": "Never ___ ___ that higher education would be a part of my life.", "answer": "did i guess"}
+{"type": "tapComplete", "prompt": "Never ___ ___ that lifelong learning would be so important.", "answer": "did i think"}
+{"type": "tapComplete", "prompt": "Never ___ ___ that we would finish higher education.", "answer": "did i dream"}
+{"type": "tapComplete", "prompt": "Never stop practicing! ___ your English will benefit you in many ways!", "answer": "improving"}
+{"type": "tapComplete", "prompt": "Oh no! I'm running late! I'm ___ to meet a friend in 5 minutes!", "answer": "supposed"}
+{"type": "tapComplete", "prompt": "On weekends, I would usually get on my ___ and ride to a friend's house.", "answer": "bike"}
+{"type": "tapComplete", "prompt": "Our car's almost out of gas, so we need to ___ by the gas station on the way to the store.", "answer": "stop"}
+{"type": "tapComplete", "prompt": "People usually ___ in action movies. The kids ___ after they saw one.", "answer": "fight fought"}
+{"type": "tapComplete", "prompt": "Performing in a Broadway musical is ___ ___ achievement!", "answer": "quite an"}
+{"type": "tapComplete", "prompt": "Playing chess is ___. I don't know why you don't feel ___.", "answer": "relaxing relaxed"}
+{"type": "tapComplete", "prompt": "Please ___ a short speech. While you are ___ for it, please practice with your friends.", "answer": "prepare preparing"}
+{"type": "tapComplete", "prompt": "Please ___ the wound regularly, and come back Tuesday to have it ___ by the doctor.", "answer": "check checked"}
+{"type": "tapComplete", "prompt": "Please check your email for a temporary ___ if you can't log in.", "answer": "password"}
+{"type": "tapComplete", "prompt": "Please, give the magician a round of applause for his ___ impressive trick ___!", "answer": "most yet"}
+{"type": "tapComplete", "prompt": "Poor Michael has the chills and can't stop ___!", "answer": "shaking"}
+{"type": "tapComplete", "prompt": "She ___ joined us if ___ finished work earlier.", "answer": "would've she'd"}
+{"type": "tapComplete", "prompt": "She ___ your favorite song before the musicians ___ other songs.", "answer": "will play play"}
+{"type": "tapComplete", "prompt": "She'll be ___ how to change a bandage. The doctor will ___ her.", "answer": "taught teach"}
+{"type": "tapComplete", "prompt": "Should teachers ___ grades for participation? Who ___ students points for speaking in class?", "answer": "give gives"}
+{"type": "tapComplete", "prompt": "Sorry I hung up on you. I was being pulled over by a police ___ for talking on my cell phone!", "answer": "officer"}
+{"type": "tapComplete", "prompt": "Sorry, you need to pay over there because this checkout is ___.", "answer": "closed"}
+{"type": "tapComplete", "prompt": "Thanks for ___ my day, Maria! I love it when you ___ cookies!", "answer": "making make"}
+{"type": "tapComplete", "prompt": "That is the ___ movie we've ever seen. It's really ___!", "answer": "scariest scary"}
+{"type": "tapComplete", "prompt": "That serious issue is still ___ about. It ___ about last week too.", "answer": "getting talked got talked"}
+{"type": "tapComplete", "prompt": "That soap opera had such a ___ actress. She was the ___ girl ever!", "answer": "pretty prettiest"}
+{"type": "tapComplete", "prompt": "That was the ___ stunning trick ___!", "answer": "most yet"}
+{"type": "tapComplete", "prompt": "That's my personal trainer, Ben. He's preparing a ___ plan for me so I'll become as strong as him!", "answer": "fitness"}
+{"type": "tapComplete", "prompt": "The criminal's demand was for fifty million ___!", "answer": "dollars"}
+{"type": "tapComplete", "prompt": "The man next door is ___ Italian now. Didn't he use to ___ French?", "answer": "studying study"}
+{"type": "tapComplete", "prompt": "The mosquito ___ my arm. Now, there's a huge red ___.", "answer": "bit bite"}
+{"type": "tapComplete", "prompt": "The mosquito left a ___ on my arm. It ___ me so quickly.", "answer": "bite bit"}
+{"type": "tapComplete", "prompt": "The music ___ over an hour ago, and the party ___ over very soon too.", "answer": "was will be"}
+{"type": "tapComplete", "prompt": "The player is expected ___ again because she has ___ many medals.", "answer": "to win won"}
+{"type": "tapComplete", "prompt": "The quality of this leather looks great! It must be an ___ purse!", "answer": "expensive"}
+{"type": "tapComplete", "prompt": "The trunk has been ___. I'll ___ the doors too.", "answer": "locked lock"}
+{"type": "tapComplete", "prompt": "There ___ a lot of people here, but there ___ a lot of space!", "answer": "are isn't"}
+{"type": "tapComplete", "prompt": "They ___ in the last film, but will they ___ in the next film?", "answer": "fought fight"}
+{"type": "tapComplete", "prompt": "They want to be ___ seriously. Why don't you ever ___ them seriously?", "answer": "taken take"}
+{"type": "tapComplete", "prompt": "This is the performance ___ I watched 10 years ago. Do you want to know ___ it's about?", "answer": "that what"}
+{"type": "tapComplete", "prompt": "This jacket is perfect for low ___.", "answer": "temperatures"}
+{"type": "tapComplete", "prompt": "Tom arrived after the ceremony ___ over. Lunch ___ over soon, so he has to eat now.", "answer": "was will be"}
+{"type": "tapComplete", "prompt": "Tom, ___ you allergic to fish? Why ___ you said anything?", "answer": "aren't haven't"}
+{"type": "tapComplete", "prompt": "Tomorrow, you'll have ___ for 20 minutes, so ___ for 15 minutes today.", "answer": "to run run"}
+{"type": "tapComplete", "prompt": "Usually ___ are unhealthy, but ___ I bought are made from broccoli!", "answer": "fries the fries"}
+{"type": "tapComplete", "prompt": "Usually ___ are unhealthy, but ___that I made are actually good for you.", "answer": "cookies the cookies"}
+{"type": "tapComplete", "prompt": "Wait, ___ Tom and Mia friends? Why ___ they spoken for a year?", "answer": "weren't haven't"}
+{"type": "tapComplete", "prompt": "We ___ very annoying neighbors. They're constantly ___ loud parties.", "answer": "have having"}
+{"type": "tapComplete", "prompt": "We might not be ___ make it, but we'll ___!", "answer": "able to try to"}
+{"type": "tapComplete", "prompt": "We only need to ___ these plants once a week. They could ___ too much if we're not careful.", "answer": "water be watered"}
+{"type": "tapComplete", "prompt": "We're all cheering for you! Can't wait to see what you ___ next!", "answer": "accomplish"}
+{"type": "tapComplete", "prompt": "Well, I'm ___ at the moment, but I used to be a professional model.", "answer": "unemployed"}
+{"type": "tapComplete", "prompt": "Well, ___ they invite you to their party? Why ___ you told me about it?", "answer": "didn't haven't"}
+{"type": "tapComplete", "prompt": "What if the ship sinks? I'm ___ young ___ die!", "answer": "too to"}
+{"type": "tapComplete", "prompt": "What kind of costume did the thieves ___? The clown costume was ___ last time.", "answer": "wear worn"}
+{"type": "tapComplete", "prompt": "When we were kids, ___ ___ play hide and seek after school.", "answer": "we always used to"}
+{"type": "tapComplete", "prompt": "When you're cleaning, don't forget to sweep the floors in the upstairs ___!", "answer": "bathroom"}
+{"type": "tapComplete", "prompt": "Why ___ they saying anything? Why ___ they made their decision yet?", "answer": "aren't haven't"}
+{"type": "tapComplete", "prompt": "Will all your relatives come to the wedding, even your ___?", "answer": "cousins"}
+{"type": "tapComplete", "prompt": "Would it be rude of ___ to say no? You know ___ don't have much free time.", "answer": "me i"}
+{"type": "tapComplete", "prompt": "Would you ___ remembered to do it if you ___ written a note?", "answer": "have had"}
+{"type": "tapComplete", "prompt": "Wow! You can do mobile transactions on your ___?", "answer": "smartphone"}
+{"type": "tapComplete", "prompt": "You ___ learned the whole prayer by the time you ___ four years old!", "answer": "had were"}
+{"type": "tapComplete", "prompt": "You must work harder during each session if you want to see ___.", "answer": "progress"}
+{"type": "tapComplete", "prompt": "You really ___ to organize my drawers while you're here? That's nice of you!", "answer": "want"}
+{"type": "tapComplete", "prompt": "You seem very tired. Have you had trouble ___ recently?", "answer": "sleeping"}
+{"type": "tapComplete", "prompt": "You think you won't like camping because you hate bugs, but you won't know if you don't ___ an attempt!", "answer": "make"}
+{"type": "tapComplete", "prompt": "You'll need ___ squats. Also, ___ a little cardio every day.", "answer": "to do do"}
+{"type": "tapComplete", "prompt": "Your letter made my day! I was really ___ after I read it.", "answer": "happy"}
+{"type": "tapComplete", "prompt": "___ the oil been changed already? ___ it cheap?", "answer": "has was"}
+{"type": "translate", "prompt": "Anuanu ka makani i kēia lā.", "answer": "The wind is cold today."}
+{"type": "translate", "prompt": "Anuanu ʻo ia i kēia lā.", "answer": "He is cold today."}
+{"type": "translate", "prompt": "Co je to zvláštní slovo?", "answer": "What is that strange word?"}
+{"type": "translate", "prompt": "He lā mālie kēia lā.", "answer": "Today is a calm day."}
+{"type": "translate", "prompt": "Jak dlouhá je další otázka?", "answer": "How long is the next question?"}
+{"type": "translate", "prompt": "Jaký je František manžel?", "answer": "What kind of husband is František?"}
+{"type": "translate", "prompt": "Je to dobré jméno?", "answer": "Is it a good name?"}
+{"type": "translate", "prompt": "Kde je ten zvláštní chlapec?", "answer": "Where is that strange boy?"}
+{"type": "translate", "prompt": "Kde je ten zvláštní strom?", "answer": "Where is that strange tree?"}
+{"type": "translate", "prompt": "Kdo je ta zvláštní dívka?", "answer": "Who is that strange girl?"}
+{"type": "translate", "prompt": "Kdo je ten hezký chlapec?", "answer": "Who is that handsome boy?"}
+{"type": "translate", "prompt": "Kdo je ten zvláštní člověk?", "answer": "Who is that strange person?"}
+{"type": "translate", "prompt": "Mālie ke anilā o kēia lā.", "answer": "Today's weather is calm."}
+{"type": "translate", "prompt": "Proč je Kateřina dobrá manželka?", "answer": "Why is Kateřina a good wife?"}
+{"type": "translate", "prompt": "Proč je to malé?", "answer": "Why is it small?"}
+{"type": "translate", "prompt": "Today is a cloudy day.", "answer": "He lā ʻōmalumalu kēia lā."}
+{"type": "translate", "prompt": "Wow, Hilo is humid!", "answer": "Hū ka ikiiki o Hilo!"}
+{"type": "translate", "prompt": "Wow, Honolulu is hot!", "answer": "Hū ka wela o Honolulu!"}
+{"type": "translate", "prompt": "Wow, it's humid!", "answer": "Auē kēia ikiiki!"}
+{"type": "translate", "prompt": "איז זי אפשר דאָרט?", "answer": "Is she there perhaps?"}
+{"type": "translate", "prompt": "איך דאַרף גלײַך אַ גלאָז וואַסער!", "answer": "I need a glass of water immediately!"}
+{"type": "translate", "prompt": "אפשר, אָבער ער איז אויף דער שיף.", "answer": "Maybe, but he is on the ship."}
+{"type": "translate", "prompt": "דער מאָטאָציקל איז נישט ברוין.", "answer": "The motorcycle is not brown."}
+{"type": "translate", "prompt": "וווּ איז דײַן מאָטאָציקל?", "answer": "Where is your motorcycle?"}
+{"type": "translate", "prompt": "ווען פליסטו קיין האָנג קאָנג?", "answer": "When are you flying to Hong Kong?"}
+{"type": "translate", "prompt": "זי קומט צו פוס.", "answer": "She is coming on foot."}
+{"type": "translate", "prompt": "פאַר וואָס לויפסטו נישט אַהיים?", "answer": "Why don't you run home?"}

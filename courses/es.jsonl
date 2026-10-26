@@ -1,0 +1,186 @@
+{"type": "assist", "prompt": "November", "answer": "nowemapa"}
+{"type": "assist", "prompt": "eraser", "answer": "borrador"}
+{"type": "assist", "prompt": "feather", "answer": "pluma"}
+{"type": "assist", "prompt": "grade", "answer": "calificación"}
+{"type": "assist", "prompt": "identify", "answer": "ngu'"}
+{"type": "assist", "prompt": "joyful", "answer": "ʻoliʻoli"}
+{"type": "assist", "prompt": "nice", "answer": "lindo"}
+{"type": "assist", "prompt": "no idea", "answer": "ni idea"}
+{"type": "assist", "prompt": "pencil", "answer": "lápiz"}
+{"type": "assist", "prompt": "sovereignty", "answer": "ea"}
+{"type": "assist", "prompt": "thirty-one", "answer": "kanakolukūmākahi"}
+{"type": "assist", "prompt": "true", "answer": "cierto"}
+{"type": "assist", "prompt": "voice", "answer": "ghogh"}
+{"type": "assist", "prompt": "what", "answer": "qué"}
+{"type": "gapFill", "prompt": "'ugh ___ ngo'.", "answer": "qumwi'"}
+{"type": "gapFill", "prompt": "Astăzi este ___.", "answer": "luni"}
+{"type": "gapFill", "prompt": "Ați ___ podeaua?", "answer": "spălat"}
+{"type": "gapFill", "prompt": "Ei au ___ piersici.", "answer": "mâncat"}
+{"type": "gapFill", "prompt": "Eu nu am băut cafea atunci când am ___ copil.", "answer": "fost"}
+{"type": "gapFill", "prompt": "Eu nu l-am ___.", "answer": "avut"}
+{"type": "gapFill", "prompt": "Secolele și ___.", "answer": "deceniile"}
+{"type": "gapFill", "prompt": "Tu ai un ___?", "answer": "calendar"}
+{"type": "gapFill", "prompt": "Un ___, vă rog.", "answer": "moment"}
+{"type": "gapFill", "prompt": "___ este un anotimp.", "answer": "vara"}
+{"type": "patternTapComplete", "prompt": "Ana es nuestra tía.", "answer": "tía"}
+{"type": "patternTapComplete", "prompt": "Ella es nuestra directora.", "answer": "directora"}
+{"type": "patternTapComplete", "prompt": "Ellos son sus amigos en el colegio.", "answer": "sus"}
+{"type": "patternTapComplete", "prompt": "Ellos son sus amigos.", "answer": "amigos"}
+{"type": "patternTapComplete", "prompt": "Ellos son sus tíos.", "answer": "tíos"}
+{"type": "patternTapComplete", "prompt": "Sí, ellos son sus vecinos.", "answer": "sus"}
+{"type": "patternTapComplete", "prompt": "Sí, él es nuestro amigo.", "answer": "amigo"}
+{"type": "patternTapComplete", "prompt": "¿Ella es nuestra vecina?", "answer": "vecina"}
+{"type": "patternTapComplete", "prompt": "Él es nuestro maestro.", "answer": "maestro"}
+{"type": "select", "prompt": "computer", "answer": "computadora"}
+{"type": "select", "prompt": "map", "answer": "mapa"}
+{"type": "select", "prompt": "pencil", "answer": "lápiz"}
+{"type": "tapComplete", "prompt": "¡Este proyecto es para nuestra ___ de geografía!", "answer": "clase"}
+{"type": "translate", "prompt": "A decade has ten years.", "answer": "Un deceniu are zece ani."}
+{"type": "translate", "prompt": "Ah, ¿seguro?", "answer": "Ah, are you sure?"}
+{"type": "translate", "prompt": "Aia ka lā Hoʻihoʻi Ea ma ka mahina ʻo Iulai.", "answer": "Sovereignty Restoration Day is in the month of July."}
+{"type": "translate", "prompt": "Ana's project is very lovely.", "answer": "El proyecto de Ana es muy lindo."}
+{"type": "translate", "prompt": "Bez ní ne!", "answer": "Not without her!"}
+{"type": "translate", "prompt": "But our dictionary is old.", "answer": "Pero nuestro diccionario es viejo."}
+{"type": "translate", "prompt": "Băiatul învață cu ei.", "answer": "The boy learns  with them."}
+{"type": "translate", "prompt": "Băieții adună mere.", "answer": "The boys collect apples."}
+{"type": "translate", "prompt": "Ce au băut studenții?", "answer": "What did the students drink?"}
+{"type": "translate", "prompt": "Copiii au cântat împreună.", "answer": "The children sang together."}
+{"type": "translate", "prompt": "Copiii mei nu au ascultat de mine.", "answer": "My children did not listen to me."}
+{"type": "translate", "prompt": "Daniel explică ziarul nou.", "answer": "Daniel explains the new newspaper."}
+{"type": "translate", "prompt": "El proyecto es un mapa muy creativo.", "answer": "The project is a very creative map."}
+{"type": "translate", "prompt": "Ella es su maestra.", "answer": "She is your teacher."}
+{"type": "translate", "prompt": "Entonces está bien.", "answer": "Then it is fine."}
+{"type": "translate", "prompt": "Este maestro trabaja siempre con nuestra maestra.", "answer": "This teacher always works with our teacher."}
+{"type": "translate", "prompt": "Eu vizitez, voi vizitați", "answer": "I visit, you visit"}
+{"type": "translate", "prompt": "Generațiile de fete fug.", "answer": "The generations of girls run."}
+{"type": "translate", "prompt": "HoD! Qum 'e' nID 'oH!", "answer": "Captain! It tried to communicate!"}
+{"type": "translate", "prompt": "I am wearing pants.", "answer": "אני לובש מכנסיים."}
+{"type": "translate", "prompt": "I am wearing shoes.", "answer": "אני נועל נעליים."}
+{"type": "translate", "prompt": "I gave him a slap across the face.", "answer": "Eu i-am dat o palmă peste față."}
+{"type": "translate", "prompt": "I have the same pants.", "answer": "יש לי אותם מכנסיים."}
+{"type": "translate", "prompt": "I have your grades.", "answer": "Tengo sus calificaciones."}
+{"type": "translate", "prompt": "I never review, it's true.", "answer": "Yo nunca repaso, es cierto."}
+{"type": "translate", "prompt": "I'm sorry, I don't have an eraser.", "answer": "Lo siento, no tengo borrador."}
+{"type": "translate", "prompt": "It is a creative project.", "answer": "Es un proyecto creativo."}
+{"type": "translate", "prompt": "It is a project for our class.", "answer": "Es un proyecto para nuestra clase."}
+{"type": "translate", "prompt": "It is not true, it is good.", "answer": "No es cierto, es bueno."}
+{"type": "translate", "prompt": "Jeho kůň je černobílý.", "answer": "His horse is black and white."}
+{"type": "translate", "prompt": "Její oblíbená barva je zelená.", "answer": "Her favorite color is green."}
+{"type": "translate", "prompt": "Jitka má tmavě šedého psa.", "answer": "Jitka has a dark gray dog."}
+{"type": "translate", "prompt": "Jsem malá modrá věc.", "answer": "I am a small blue thing."}
+{"type": "translate", "prompt": "Kargan navigates.", "answer": "chIj qarghan."}
+{"type": "translate", "prompt": "Kuřata jsou žlutá.", "answer": "Chickens are yellow."}
+{"type": "translate", "prompt": "La pluma no es buena.", "answer": "The pen is not good."}
+{"type": "translate", "prompt": "Ma ka hapalua hola ʻeiwa kāua e hui ai i kona hale.", "answer": "We should meet at her house at 9:30."}
+{"type": "translate", "prompt": "Ma ka hapalua hola ʻewalu kāua e hui ai.", "answer": "We should meet at 8:30."}
+{"type": "translate", "prompt": "Matěj má mnoho sester.", "answer": "Matěj has many sisters."}
+{"type": "translate", "prompt": "Mira, ¡nuestras calificaciones!", "answer": "Look, our grades!"}
+{"type": "translate", "prompt": "Mis libros están aquí.", "answer": "My books are here."}
+{"type": "translate", "prompt": "Máme červená a zelená jablka.", "answer": "We have red and green apples."}
+{"type": "translate", "prompt": "Máš raději zelenou nebo žlutou?", "answer": "Do you prefer green or yellow?"}
+{"type": "translate", "prompt": "Necesitamos nuestra copia y nuestro libro.", "answer": "We need our copy and our book."}
+{"type": "translate", "prompt": "Necesito un diccionario.", "answer": "I need a dictionary."}
+{"type": "translate", "prompt": "Neznají jména svých rodičů.", "answer": "They do not know the names of their parents."}
+{"type": "translate", "prompt": "Ni idea.", "answer": "I have no idea."}
+{"type": "translate", "prompt": "No, este proyecto es aburrido.", "answer": "No, this project is boring."}
+{"type": "translate", "prompt": "No, está bien.", "answer": "No, it's fine."}
+{"type": "translate", "prompt": "No, our teacher is not creative.", "answer": "No, nuestro maestro no es creativo."}
+{"type": "translate", "prompt": "Nu asculți de el?", "answer": "Don't you listen to him?"}
+{"type": "translate", "prompt": "Nu vreau momente rele.", "answer": "I do not want bad moments."}
+{"type": "translate", "prompt": "Nuestro diccionario es excelente.", "answer": "Our dictionary is excellent."}
+{"type": "translate", "prompt": "Nuestros libros no son nuevos.", "answer": "Our books are not new."}
+{"type": "translate", "prompt": "Our project is difficult.", "answer": "Nuestro proyecto es difícil."}
+{"type": "translate", "prompt": "Pablo es su compañero, ¿verdad?", "answer": "Pablo is your classmate, right?"}
+{"type": "translate", "prompt": "QIn mugh mughwI'.", "answer": "The translator translates the message."}
+{"type": "translate", "prompt": "Quiero tres copias.", "answer": "I want three copies."}
+{"type": "translate", "prompt": "Raději mám červená jablka.", "answer": "I prefer red apples."}
+{"type": "translate", "prompt": "Sestřenice paní Novotné je moje teta.", "answer": "Mrs. Novotná's cousin is my aunt."}
+{"type": "translate", "prompt": "Soj qem toy'wI'.", "answer": "A servant brings food."}
+{"type": "translate", "prompt": "Sus maestros son simpáticos.", "answer": "Their teachers are nice."}
+{"type": "translate", "prompt": "Sí, es mi clase.", "answer": "Yes, it's my class."}
+{"type": "translate", "prompt": "Sí, está bien.", "answer": "Yes, it is fine."}
+{"type": "translate", "prompt": "Sí, hoy está bien.", "answer": "Yes, today is fine."}
+{"type": "translate", "prompt": "Sí, tu computadora está encima de la mesa.", "answer": "Yes, your computer is on top of the table."}
+{"type": "translate", "prompt": "Sí, uso mi lápiz para los ejercicios.", "answer": "Yes, I use my pencil for the exercises."}
+{"type": "translate", "prompt": "Ten modrý dům je hezký.", "answer": "That blue house is nice."}
+{"type": "translate", "prompt": "The repairman repaired the computer.", "answer": "De'wI' tI' tI'wI'."}
+{"type": "translate", "prompt": "There are very hardworking students!", "answer": "¡Hay estudiantes muy trabajadores!"}
+{"type": "translate", "prompt": "They drank beer at my house.", "answer": "Ei au băut bere la mine acasă."}
+{"type": "translate", "prompt": "To ale není jméno vaší ženy!", "answer": "But that is not your wife's name!"}
+{"type": "translate", "prompt": "To auto má modrou barvu.", "answer": "The car is blue."}
+{"type": "translate", "prompt": "To je medvěd mojí tety.", "answer": "That is my aunt's bear."}
+{"type": "translate", "prompt": "To jsou jména bratrů Kateřiny.", "answer": "They are the names of Kateřina's brothers."}
+{"type": "translate", "prompt": "To nejsou prasata mého strýce!", "answer": "Those are not my uncle's pigs!"}
+{"type": "translate", "prompt": "Tu cauți o mandarină?", "answer": "Do you search for a tangerine?"}
+{"type": "translate", "prompt": "Tu nu cauți un cuptor?", "answer": "Don't you search for an oven?"}
+{"type": "translate", "prompt": "Unfortunately, the shuttlecraft pilot is drunk.", "answer": "Do'Ha' chech lupDujHom 'orwI'."}
+{"type": "translate", "prompt": "Uso siempre mi computadora.", "answer": "I always use my computer."}
+{"type": "translate", "prompt": "Vaší manželky se bojím.", "answer": "I am afraid of your wife."}
+{"type": "translate", "prompt": "Vidím modré auto.", "answer": "I see a blue car."}
+{"type": "translate", "prompt": "Vidím černou kočku.", "answer": "I see a black cat."}
+{"type": "translate", "prompt": "Voi fetelor, v-ați schimbat.", "answer": "You girls changed."}
+{"type": "translate", "prompt": "Voi spălați merele.", "answer": "You wash the apples."}
+{"type": "translate", "prompt": "We do not understand that language! Translate it!", "answer": "Holvetlh wIyajbe'! yImugh!"}
+{"type": "translate", "prompt": "What did the students drink?", "answer": "Ce au băut studenții?"}
+{"type": "translate", "prompt": "What do we need for the project?", "answer": "¿Qué necesitamos para el proyecto?"}
+{"type": "translate", "prompt": "Where is our class?", "answer": "¿Dónde está nuestra clase?"}
+{"type": "translate", "prompt": "Yo uso solo pluma.", "answer": "I use only a pen."}
+{"type": "translate", "prompt": "You are wearing shoes.", "answer": "את נועלת נעליים."}
+{"type": "translate", "prompt": "You girls changed.", "answer": "Voi fetelor, v-ați schimbat."}
+{"type": "translate", "prompt": "Your homework is very good.", "answer": "Su tarea es muy buena."}
+{"type": "translate", "prompt": "Your teacher is nice.", "answer": "Su maestro es simpático."}
+{"type": "translate", "prompt": "Znáte přítelkyně svojí sestry?", "answer": "Do you know your sister's girlfriends?"}
+{"type": "translate", "prompt": "chIS puH DujwIj.", "answer": "My car is white."}
+{"type": "translate", "prompt": "jIyItlaHbe' 'ach bIHoS. QelDaq HIqem!", "answer": "I cannot walk, but you are strong. Bring me to the doctor!"}
+{"type": "translate", "prompt": "las copias para el proyecto", "answer": "the copies for the project"}
+{"type": "translate", "prompt": "las estudiantes", "answer": "the students"}
+{"type": "translate", "prompt": "mara! yIqet! mara torgh je! peqet!", "answer": "Mara! Run! Mara and Torg! Run!"}
+{"type": "translate", "prompt": "mi calificación", "answer": "my grade"}
+{"type": "translate", "prompt": "mi mesa y mi silla", "answer": "my table and my chair"}
+{"type": "translate", "prompt": "muD Duj 'or ghojmoHwI'.", "answer": "The teacher pilots the airplane."}
+{"type": "translate", "prompt": "nuestra tarea", "answer": "our homework"}
+{"type": "translate", "prompt": "nuestras sillas", "answer": "our chairs"}
+{"type": "translate", "prompt": "nuestras tabletas", "answer": "our tablets"}
+{"type": "translate", "prompt": "nuestro curso y nuestra tarea", "answer": "our course and our homework"}
+{"type": "translate", "prompt": "nuestros proyectos", "answer": "our projects"}
+{"type": "translate", "prompt": "paqvam yIlaD! paqmeyvetlh tIlaD!", "answer": "Read this book! Read those books!"}
+{"type": "translate", "prompt": "pe'vIl Suv lotlhwI'.", "answer": "The rebel fights forcefully."}
+{"type": "translate", "prompt": "peSop! petlhutlh! wa'leS maSuv.", "answer": "Eat! Drink! Tomorrow we will fight."}
+{"type": "translate", "prompt": "su lápiz", "answer": "your pencil"}
+{"type": "translate", "prompt": "tera' rewbe' HIqemQo'! tlhIngan SuvwI' HIqem!", "answer": "Don't bring me an Earth citizen! Bring me a Klingon warrior!"}
+{"type": "translate", "prompt": "torgh! yIvem!", "answer": "Torg! Wake up!"}
+{"type": "translate", "prompt": "tu proyecto", "answer": "your project"}
+{"type": "translate", "prompt": "tus ejercicios", "answer": "your exercises"}
+{"type": "translate", "prompt": "un borrador grande", "answer": "a big eraser"}
+{"type": "translate", "prompt": "una tarea creativa", "answer": "creative homework"}
+{"type": "translate", "prompt": "vumwI'pu' Soy'", "answer": "clumsy workers"}
+{"type": "translate", "prompt": "yISam 'ej yIqIm!", "answer": "Find him and pay attention to him!"}
+{"type": "translate", "prompt": "yaSpu' tISujQo'! nabtaH chaH.", "answer": "Don't disturb the officers! They are planning."}
+{"type": "translate", "prompt": "¡Es cierto, la tarea es fácil!", "answer": "It's true, the homework is easy!"}
+{"type": "translate", "prompt": "¡Es muy lindo!", "answer": "It’s very lovely!"}
+{"type": "translate", "prompt": "¡Es nuestro curso!", "answer": "It's our course!"}
+{"type": "translate", "prompt": "¡Sí, es muy creativo!", "answer": "Yes, it is very creative!"}
+{"type": "translate", "prompt": "¡Tus plumas son muy lindas!", "answer": "Your pens are very lovely!"}
+{"type": "translate", "prompt": "¡Yo tengo tus copias!", "answer": "I have your copies!"}
+{"type": "translate", "prompt": "¿Con lápiz?", "answer": "In pencil?"}
+{"type": "translate", "prompt": "¿Es allí? ¿Seguro?", "answer": "Is it there? Are you sure?"}
+{"type": "translate", "prompt": "¿Es creativo?", "answer": "Are you creative?"}
+{"type": "translate", "prompt": "¿Los estudiantes están en su casa?", "answer": "Are the students at their house?"}
+{"type": "translate", "prompt": "¿Nuestro lápiz o nuestra pluma?", "answer": "Our pencil or our pen?"}
+{"type": "translate", "prompt": "¿Nunca estudias sin computadora?", "answer": "Do you ever study without a computer?"}
+{"type": "translate", "prompt": "¿Qué miramos ahora?", "answer": "What are we looking at now?"}
+{"type": "translate", "prompt": "¿Seguro?", "answer": "Are you sure?"}
+{"type": "translate", "prompt": "¿Usas siempre este lápiz?", "answer": "Do you always use this pencil?"}
+{"type": "translate", "prompt": "¿Ustedes no dibujan sus mapas?", "answer": "Don't you draw your maps?"}
+{"type": "translate", "prompt": "¿Y nuestras calificaciones?", "answer": "And our grades?"}
+{"type": "translate", "prompt": "Čekám na svoje sestřenice.", "answer": "I am waiting for my cousins."}
+{"type": "translate", "prompt": "Žofie je dcera mé sestřenice Kateřiny.", "answer": "Žofie is the daughter of my cousin Kateřina."}
+{"type": "translate", "prompt": "ʻO nehinei ka lā Hoʻihoʻi Ea o Hawaiʻi.", "answer": "Yesterday was Hawaiʻi's Sovereignty Restoration Day."}
+{"type": "translate", "prompt": "אני נועלת נעליים.", "answer": "I am wearing shoes."}
+{"type": "translate", "prompt": "את נועלת נעליים.", "answer": "You are wearing shoes."}
+{"type": "translate", "prompt": "המעילים.", "answer": "The coats."}
+{"type": "translate", "prompt": "הנעל.", "answer": "The shoe."}
+{"type": "translate", "prompt": "התכשיטים שלהם יפים.", "answer": "Their jewelry is pretty."}
+{"type": "translate", "prompt": "חתולים לא גורבים גרביים.", "answer": "Cats don't wear socks."}
+{"type": "translate", "prompt": "יש לו עניבה.", "answer": "He has a tie."}
+{"type": "translate", "prompt": "תכשיט יפֶה.", "answer": "A pretty piece of jewelry."}

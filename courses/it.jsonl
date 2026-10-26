@@ -1,0 +1,106 @@
+{"type": "assist", "prompt": "bird", "answer": "uccello"}
+{"type": "assist", "prompt": "candle", "answer": "candela"}
+{"type": "assist", "prompt": "eighteen", "answer": "diciotto"}
+{"type": "assist", "prompt": "forty", "answer": "quaranta"}
+{"type": "assist", "prompt": "keychain", "answer": "portachiavi"}
+{"type": "assist", "prompt": "lighter", "answer": "accendino"}
+{"type": "assist", "prompt": "magnet", "answer": "calamita"}
+{"type": "assist", "prompt": "nineteen", "answer": "diciannove"}
+{"type": "assist", "prompt": "parent", "answer": "genitore"}
+{"type": "assist", "prompt": "parents", "answer": "genitori"}
+{"type": "assist", "prompt": "pin", "answer": "spilla"}
+{"type": "assist", "prompt": "stuffed toy", "answer": "pupazzo"}
+{"type": "assist", "prompt": "to spend", "answer": "spendere"}
+{"type": "assist", "prompt": "to watch", "answer": "guardare"}
+{"type": "patternTapComplete", "prompt": "Quelli sono nuovi.", "answer": "quelli"}
+{"type": "patternTapComplete", "prompt": "Quello è nuovo.", "answer": "quello"}
+{"type": "patternTapComplete", "prompt": "Questa è nuova.", "answer": "questa"}
+{"type": "patternTapComplete", "prompt": "Questo è economico.", "answer": "questo"}
+{"type": "select", "prompt": "bird", "answer": "uccello"}
+{"type": "select", "prompt": "candle", "answer": "candela"}
+{"type": "select", "prompt": "eighteen", "answer": "diciotto"}
+{"type": "select", "prompt": "nineteen", "answer": "diciannove"}
+{"type": "translate", "prompt": "Alessandro, do you want to buy this?", "answer": "Alessandro, vuoi comprare questo?"}
+{"type": "translate", "prompt": "Buy something typical instead.", "answer": "Compra qualcosa di tipico invece."}
+{"type": "translate", "prompt": "Buy something typical, not that one!", "answer": "Compra qualcosa di tipico, non quello!"}
+{"type": "translate", "prompt": "Cerca qualche maglietta carina.", "answer": "Look for some cute T-shirts."}
+{"type": "translate", "prompt": "Compra qualcosa di tipico, non quello!", "answer": "Buy something typical, not that one!"}
+{"type": "translate", "prompt": "Did you stretch your legs?", "answer": "Ua hoʻomālō anei ʻoe i kou wāwae?"}
+{"type": "translate", "prompt": "Do fifteen v-ups.", "answer": "E pelu kīkala he ʻumikūmālima manawa."}
+{"type": "translate", "prompt": "Do you already have a keychain?", "answer": "Ha già un portachiavi?"}
+{"type": "translate", "prompt": "Dove vendono i formaggi tipici?", "answer": "Where do they sell typical cheeses?"}
+{"type": "translate", "prompt": "E hāpai hao kākou ma hope o ka hana.", "answer": "Let's lift weights after work."}
+{"type": "translate", "prompt": "Girls, that one is scary!", "answer": "Ragazze, quella è spaventosa!"}
+{"type": "translate", "prompt": "Ho quaranta euro.", "answer": "I have forty euros."}
+{"type": "translate", "prompt": "Humans can't drink Klingon tea. It's too toxic.", "answer": "tlhIngan Dargh lutlhutlhlaHbe' Humanpu'. tlhoy SuQ."}
+{"type": "translate", "prompt": "I do not like these.", "answer": "Non mi piacciono queste."}
+{"type": "translate", "prompt": "I like this, but it's dirty.", "answer": "Mi piace questo, ma è sporco."}
+{"type": "translate", "prompt": "I want a red candle.", "answer": "Voglio una candela rossa."}
+{"type": "translate", "prompt": "Io preferisco quelle.", "answer": "I prefer those."}
+{"type": "translate", "prompt": "Io vorrei questo.", "answer": "I would like this."}
+{"type": "translate", "prompt": "La calamita rotonda è carina.", "answer": "The round magnet is cute."}
+{"type": "translate", "prompt": "Le candele sono molto carine!", "answer": "The candles are very pretty!"}
+{"type": "translate", "prompt": "Lele kaula au ma mua o ka holo māmā.", "answer": "I jump rope before I do sprints."}
+{"type": "translate", "prompt": "Lele kaula nā keiki.", "answer": "Kids jump rope."}
+{"type": "translate", "prompt": "Lele kaula ʻo ia ma hope o ka hāpai hao.", "answer": "She jump-ropes after lifting weights."}
+{"type": "translate", "prompt": "Let's find a better keychain.", "answer": "Troviamo un portachiavi migliore."}
+{"type": "translate", "prompt": "Let's lift weights after work.", "answer": "E hāpai hao kākou ma hope o ka hana."}
+{"type": "translate", "prompt": "Mario, anche quello è disgustoso.", "answer": "Mario, that’s disgusting too."}
+{"type": "translate", "prompt": "Mi piace questa.", "answer": "I like this one."}
+{"type": "translate", "prompt": "Mi piace questo, ma è sporco.", "answer": "I like this, but it's dirty."}
+{"type": "translate", "prompt": "Non comprare questi.", "answer": "Don't buy these."}
+{"type": "translate", "prompt": "Non comprate accendini.", "answer": "Do not buy lighters."}
+{"type": "translate", "prompt": "Odio le spille.", "answer": "I hate pins."}
+{"type": "translate", "prompt": "Posso spendere tre euro.", "answer": "I can spend three euros."}
+{"type": "translate", "prompt": "Preferisco questi.", "answer": "I prefer these."}
+{"type": "translate", "prompt": "Preferisco questo perché è rotondo.", "answer": "I prefer this because it is round."}
+{"type": "translate", "prompt": "Quella sembra carina, ma è inutile.", "answer": "That one seems cute, but it is useless."}
+{"type": "translate", "prompt": "Quella è orribile!", "answer": "That is horrible!"}
+{"type": "translate", "prompt": "Quelle costano nove euro!", "answer": "Those cost nine euros!"}
+{"type": "translate", "prompt": "Quelle sono peggiori.", "answer": "Those are worse."}
+{"type": "translate", "prompt": "Quelli sono troppo cari.", "answer": "Those are too expensive."}
+{"type": "translate", "prompt": "Quello costa due euro e venti centesimi!", "answer": "That costs two euros and twenty cents!"}
+{"type": "translate", "prompt": "Quello è molto brutto.", "answer": "That is very ugly."}
+{"type": "translate", "prompt": "Quello è rotto.", "answer": "That is broken."}
+{"type": "translate", "prompt": "Questa è carina.", "answer": "This is cute."}
+{"type": "translate", "prompt": "Queste sono orribili!", "answer": "These are horrible!"}
+{"type": "translate", "prompt": "Questi sono brutti!", "answer": "These are ugly!"}
+{"type": "translate", "prompt": "Questi sono disgustosi, Matteo!", "answer": "These are disgusting, Matteo!"}
+{"type": "translate", "prompt": "Questo è bello!", "answer": "This is beautiful!"}
+{"type": "translate", "prompt": "Questo è troppo caro.", "answer": "This is too expensive."}
+{"type": "translate", "prompt": "She jogged far.", "answer": "Ua holo mālie ʻo ia a mamao."}
+{"type": "translate", "prompt": "Soj vISop. bIQ vItlhutlh. 'ach chatlh vI'ep.", "answer": "I eat food. I drink water. But I consume soup."}
+{"type": "translate", "prompt": "SuQ Darghvam 'ach 'ey!", "answer": "This tea is toxic but it's delicious!"}
+{"type": "translate", "prompt": "Sì, questa è bella.", "answer": "Yes, this one is beautiful."}
+{"type": "translate", "prompt": "That is a bit strange.", "answer": "Quella è un po' strana."}
+{"type": "translate", "prompt": "That is horrible!", "answer": "Quella è orribile!"}
+{"type": "translate", "prompt": "The candle costs only one euro.", "answer": "La candela costa solo un euro."}
+{"type": "translate", "prompt": "This fruit is toxic.", "answer": "SuQ naHvam."}
+{"type": "translate", "prompt": "This tea is too hot!", "answer": "tlhoy tuj Darghvam!"}
+{"type": "translate", "prompt": "This tea is toxic but it's delicious!", "answer": "SuQ Darghvam 'ach 'ey!"}
+{"type": "translate", "prompt": "Those are better.", "answer": "Quelli sono migliori."}
+{"type": "translate", "prompt": "Ti piacciono i pupazzi?", "answer": "Do you like stuffed toys?"}
+{"type": "translate", "prompt": "Tu preferisci queste o quelle?", "answer": "Do you prefer these or those?"}
+{"type": "translate", "prompt": "Voglio un pupazzo per mia sorella, e tu?", "answer": "I want a stuffed toy for my sister, and you?"}
+{"type": "translate", "prompt": "Vuoi qualche cartolina?", "answer": "Do you want some postcards?"}
+{"type": "translate", "prompt": "Vuoi quelli o questi?", "answer": "Do you want those or these?"}
+{"type": "translate", "prompt": "Vuoi queste?", "answer": "Do you want these?"}
+{"type": "translate", "prompt": "We don't need another candle.", "answer": "Non abbiamo bisogno di un'altra candela."}
+{"type": "translate", "prompt": "Yes, this one is beautiful.", "answer": "Sì, questa è bella."}
+{"type": "translate", "prompt": "i miei genitori", "answer": "my parents"}
+{"type": "translate", "prompt": "io guardo, tu guardi", "answer": "I watch, you watch"}
+{"type": "translate", "prompt": "l'uccello, gli uccelli", "answer": "the bird, the birds"}
+{"type": "translate", "prompt": "la calamita, le calamite", "answer": "the magnet, the magnets"}
+{"type": "translate", "prompt": "lei spende, loro spendono", "answer": "she spends, they spend"}
+{"type": "translate", "prompt": "romuluS HIq vItlhutlhpu' 'ach jIchechbe'.", "answer": "I have drunk Romulan ale but I am not drunk."}
+{"type": "translate", "prompt": "un dolce tipico", "answer": "a typical dessert"}
+{"type": "translate", "prompt": "un piatto rotondo", "answer": "a round plate"}
+{"type": "translate", "prompt": "un portachiavi", "answer": "a keychain"}
+{"type": "translate", "prompt": "un uccello blu", "answer": "a blue bird"}
+{"type": "translate", "prompt": "un uccello piccolo", "answer": "a small bird"}
+{"type": "translate", "prompt": "una bambola tipica", "answer": "a typical doll"}
+{"type": "translate", "prompt": "una spilla brutta", "answer": "an ugly pin"}
+{"type": "translate", "prompt": "wagh romuluS HIq 'ach 'eyqu' 'oH.", "answer": "Romulan ale is expensive but it is very tasty."}
+{"type": "translate", "prompt": "wej peb'otmey tIyob! DeHbe'!", "answer": "Don't harvest the pebots yet! They are not ripe!"}
+{"type": "translate", "prompt": "wornagh lungaS balmeyvetlh.", "answer": "Those bottles contain warnog."}
+{"type": "translate", "prompt": "È un pupazzo spaventoso.", "answer": "It is a scary stuffed toy."}

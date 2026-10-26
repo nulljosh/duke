@@ -1,0 +1,154 @@
+{"type": "assist", "prompt": "always", "answer": "alltid"}
+{"type": "assist", "prompt": "beer", "answer": "bere"}
+{"type": "assist", "prompt": "chess", "answer": "schack"}
+{"type": "assist", "prompt": "chicken", "answer": "pui"}
+{"type": "assist", "prompt": "garlic", "answer": "usturoi"}
+{"type": "assist", "prompt": "guitar", "answer": "gitarr"}
+{"type": "assist", "prompt": "music", "answer": "musik"}
+{"type": "assist", "prompt": "soccer", "answer": "fotboll"}
+{"type": "assist", "prompt": "sometimes", "answer": "ibland"}
+{"type": "assist", "prompt": "while", "answer": "medan"}
+{"type": "assist", "prompt": "wine", "answer": "vin"}
+{"type": "name", "prompt": "a cell phone", "answer": "en mobil"}
+{"type": "select", "prompt": "music", "answer": "musik"}
+{"type": "select", "prompt": "soccer", "answer": "fotboll"}
+{"type": "translate", "prompt": "A table, a salad, and a cake!", "answer": "Ett bord, en sallad, och en tårta!"}
+{"type": "translate", "prompt": "Anna bakar ofta en tårta.", "answer": "Anna often bakes a cake."}
+{"type": "translate", "prompt": "But you always dance!", "answer": "Men du dansar alltid!"}
+{"type": "translate", "prompt": "Băiatul scrie două scrisori.", "answer": "The boy writes two letters."}
+{"type": "translate", "prompt": "Copilul are morcovi și cartofi.", "answer": "The child has carrots and potatoes."}
+{"type": "translate", "prompt": "Du bakar ofta en tårta, eller hur?", "answer": "You often bake a cake, right?"}
+{"type": "translate", "prompt": "Du dansar medan du duschar, eller hur?", "answer": "You dance while you shower, right?"}
+{"type": "translate", "prompt": "Du målar, eller hur?", "answer": "You paint, right?"}
+{"type": "translate", "prompt": "Du pluggar ibland, eller hur?", "answer": "You sometimes study, right?"}
+{"type": "translate", "prompt": "Du seglar, eller hur?", "answer": "You go sailing, right?"}
+{"type": "translate", "prompt": "Du städar din bil och ditt hus.", "answer": "You clean your car and your house."}
+{"type": "translate", "prompt": "Du städar ditt hus och din bil.", "answer": "You clean your house and your car."}
+{"type": "translate", "prompt": "Du tittar på tv, eller hur?", "answer": "You watch TV, right?"}
+{"type": "translate", "prompt": "Du tältar ofta, eller hur?", "answer": "You often go camping, right?"}
+{"type": "translate", "prompt": "Du vaknar tidigt, eller hur?", "answer": "You wake up early, right?"}
+{"type": "translate", "prompt": "El are două sticle de maioneză.", "answer": "He has two bottles of mayonnaise."}
+{"type": "translate", "prompt": "En varm tårta, tack!", "answer": "A hot cake, please!"}
+{"type": "translate", "prompt": "Erik och Sara lyssnar på musik.", "answer": "Erik and Sara listen to music."}
+{"type": "translate", "prompt": "Eu am două cuțite la bucătărie.", "answer": "I have two knives in the kitchen."}
+{"type": "translate", "prompt": "Eu am două linguri de sare.", "answer": "I have two spoons of salt."}
+{"type": "translate", "prompt": "Good, Malmö!", "answer": "Bra, Malmö!"}
+{"type": "translate", "prompt": "Han lyssnar på musik medan han tränar.", "answer": "He listens to music while he works out."}
+{"type": "translate", "prompt": "Han lyssnar på musik.", "answer": "He listens to music."}
+{"type": "translate", "prompt": "Han målar medan jag spelar piano.", "answer": "He paints while I play piano."}
+{"type": "translate", "prompt": "Han spelar ofta piano.", "answer": "He often plays piano."}
+{"type": "translate", "prompt": "He cleans your house and your car.", "answer": "Han städar ditt hus och din bil."}
+{"type": "translate", "prompt": "He often plays piano.", "answer": "Han spelar ofta piano."}
+{"type": "translate", "prompt": "He paints while I play piano.", "answer": "Han målar medan jag spelar piano."}
+{"type": "translate", "prompt": "He works in Stockholm.", "answer": "Han arbetar i Stockholm."}
+{"type": "translate", "prompt": "Hon lyssnar på musik, eller hur?", "answer": "She listens to music, right?"}
+{"type": "translate", "prompt": "Hon simmar aldrig!", "answer": "She never swims!"}
+{"type": "translate", "prompt": "Hon simmar ofta, eller hur?", "answer": "She often swims, right?"}
+{"type": "translate", "prompt": "Hon vaknar tidigt och bakar bröd.", "answer": "She wakes up early and bakes bread."}
+{"type": "translate", "prompt": "Hon vaknar tidigt och tränar.", "answer": "She wakes up early and works out."}
+{"type": "translate", "prompt": "I clean your room and your car.", "answer": "Jag städar ditt rum och din bil."}
+{"type": "translate", "prompt": "I like music.", "answer": "Jag tycker om musik."}
+{"type": "translate", "prompt": "I listen to music while I paint.", "answer": "Jag lyssnar på musik medan jag målar."}
+{"type": "translate", "prompt": "I listen to music while I shower.", "answer": "Jag lyssnar på musik medan jag duschar."}
+{"type": "translate", "prompt": "I listen to music with my brother.", "answer": "Jag lyssnar på musik med min bror."}
+{"type": "translate", "prompt": "I need a new apartment.", "answer": "Jag behöver en ny lägenhet."}
+{"type": "translate", "prompt": "I often swim.", "answer": "Jag simmar ofta."}
+{"type": "translate", "prompt": "I wake up early.", "answer": "Jag vaknar tidigt."}
+{"type": "translate", "prompt": "I watch TV while I study.", "answer": "Jag tittar på tv medan jag pluggar."}
+{"type": "translate", "prompt": "Ibland eller alltid?", "answer": "Sometimes or always?"}
+{"type": "translate", "prompt": "Ja, alltid!", "answer": "Yes, always!"}
+{"type": "translate", "prompt": "Ja, gitarr och piano!", "answer": "Yes, guitar and piano!"}
+{"type": "translate", "prompt": "Ja, jag lyssnar på musik!", "answer": "Yes, I listen to music!"}
+{"type": "translate", "prompt": "Ja, jag pluggar alltid!", "answer": "Yes, I always study!"}
+{"type": "translate", "prompt": "Ja, jag spelar gitarr.", "answer": "Yes, I play guitar."}
+{"type": "translate", "prompt": "Ja, jag spelar ofta piano.", "answer": "Yes, I often play piano."}
+{"type": "translate", "prompt": "Ja, jag tittar på tv.", "answer": "Yes, I watch TV."}
+{"type": "translate", "prompt": "Ja, jag tältar!", "answer": "Yes, I go camping!"}
+{"type": "translate", "prompt": "Ja, min fru är läkare.", "answer": "Yes, my wife is a doctor."}
+{"type": "translate", "prompt": "Jag duschar ofta.", "answer": "I often shower."}
+{"type": "translate", "prompt": "Jag lyssnar på musik med min bror.", "answer": "I listen to music with my brother."}
+{"type": "translate", "prompt": "Jag lyssnar på musik medan jag arbetar.", "answer": "I listen to music while I work."}
+{"type": "translate", "prompt": "Jag lyssnar på musik medan jag duschar.", "answer": "I listen to music while I shower."}
+{"type": "translate", "prompt": "Jag simmar ofta.", "answer": "I often swim."}
+{"type": "translate", "prompt": "Jag städar ditt rum och din bil.", "answer": "I clean your room and your car."}
+{"type": "translate", "prompt": "Jag tränar och duschar.", "answer": "I work out and shower."}
+{"type": "translate", "prompt": "Jag tycker om musik.", "answer": "I like music."}
+{"type": "translate", "prompt": "Jag vaknar tidigt.", "answer": "I wake up early."}
+{"type": "translate", "prompt": "Kaffe, tack!", "answer": "Coffee, please!"}
+{"type": "translate", "prompt": "Kaffe?", "answer": "Coffee?"}
+{"type": "translate", "prompt": "Men du dansar alltid!", "answer": "But you always dance!"}
+{"type": "translate", "prompt": "Min bror är skådespelare.", "answer": "My brother is an actor."}
+{"type": "translate", "prompt": "Min chef dansar alltid!", "answer": "My boss always dances!"}
+{"type": "translate", "prompt": "Min chef tittar på tv medan han arbetar.", "answer": "My boss watches TV while he works."}
+{"type": "translate", "prompt": "Min dotter duschar aldrig.", "answer": "My daughter never showers."}
+{"type": "translate", "prompt": "Min dotter tycker om fotboll.", "answer": "My daughter likes soccer."}
+{"type": "translate", "prompt": "Min dotter är väldigt smart.", "answer": "My daughter is very smart."}
+{"type": "translate", "prompt": "Min familj tittar på tv.", "answer": "My family watches TV."}
+{"type": "translate", "prompt": "Min fru spelar fotboll.", "answer": "My wife plays soccer."}
+{"type": "translate", "prompt": "Min läkare tränar ofta.", "answer": "My doctor often works out."}
+{"type": "translate", "prompt": "Min lärare dansar alltid!", "answer": "My teacher always dances!"}
+{"type": "translate", "prompt": "Min lärare spelar gitarr och piano.", "answer": "My teacher plays guitar and piano."}
+{"type": "translate", "prompt": "Min man vaknar alltid tidigt.", "answer": "My husband always wakes up early."}
+{"type": "translate", "prompt": "Min mor tältar ofta.", "answer": "My mother often goes camping."}
+{"type": "translate", "prompt": "Min son målar alltid.", "answer": "My son always paints."}
+{"type": "translate", "prompt": "Min son pluggar aldrig.", "answer": "My son never studies."}
+{"type": "translate", "prompt": "Min son spelar ofta piano.", "answer": "My son often plays piano."}
+{"type": "translate", "prompt": "Min son är ung.", "answer": "My son is young."}
+{"type": "translate", "prompt": "Min syster simmar ofta.", "answer": "My sister often swims."}
+{"type": "translate", "prompt": "My family sometimes goes camping.", "answer": "Min familj tältar ibland."}
+{"type": "translate", "prompt": "My father is very young.", "answer": "Min far är väldigt ung."}
+{"type": "translate", "prompt": "My husband is a doctor.", "answer": "Min man är läkare."}
+{"type": "translate", "prompt": "My mother often goes camping.", "answer": "Min mor tältar ofta."}
+{"type": "translate", "prompt": "My son always paints.", "answer": "Min son målar alltid."}
+{"type": "translate", "prompt": "My son never studies.", "answer": "Min son pluggar aldrig."}
+{"type": "translate", "prompt": "Nej, hon seglar aldrig.", "answer": "No, she never goes sailing."}
+{"type": "translate", "prompt": "Nej, jag bakar aldrig bröd.", "answer": "No, I never bake bread."}
+{"type": "translate", "prompt": "Nej, jag seglar aldrig.", "answer": "No, I never go sailing."}
+{"type": "translate", "prompt": "Nej, vi tältar aldrig.", "answer": "No, we never go camping."}
+{"type": "translate", "prompt": "No, I never go sailing.", "answer": "Nej, jag seglar aldrig."}
+{"type": "translate", "prompt": "No, she never goes sailing.", "answer": "Nej, hon seglar aldrig."}
+{"type": "translate", "prompt": "No, we never go camping.", "answer": "Nej, vi tältar aldrig."}
+{"type": "translate", "prompt": "Noi avem cuțite la bucătărie.", "answer": "We have knives in the kitchen."}
+{"type": "translate", "prompt": "Noi nu mâncăm căței de usturoi.", "answer": "We do not eat cloves of garlic."}
+{"type": "translate", "prompt": "Peter seglar ofta, eller hur?", "answer": "Peter often goes sailing, right?"}
+{"type": "translate", "prompt": "Sara dances while she plays chess.", "answer": "Sara dansar medan hon spelar schack."}
+{"type": "translate", "prompt": "Sara has a house in Malmö.", "answer": "Sara har ett hus i Malmö."}
+{"type": "translate", "prompt": "She never swims!", "answer": "Hon simmar aldrig!"}
+{"type": "translate", "prompt": "She wakes up early and bakes bread.", "answer": "Hon vaknar tidigt och bakar bröd."}
+{"type": "translate", "prompt": "She wakes up early and works out.", "answer": "Hon vaknar tidigt och tränar."}
+{"type": "translate", "prompt": "Sven dansar alltid.", "answer": "Sven always dances."}
+{"type": "translate", "prompt": "Sven likes chess.", "answer": "Sven tycker om schack."}
+{"type": "translate", "prompt": "Var är min bil?", "answer": "Where's my car?"}
+{"type": "translate", "prompt": "Vi pluggar tillsammans ibland.", "answer": "We sometimes study together."}
+{"type": "translate", "prompt": "Vi seglar aldrig men tältar ofta.", "answer": "We never go sailing but often go camping."}
+{"type": "translate", "prompt": "Vi simmar och tränar.", "answer": "We swim and work out."}
+{"type": "translate", "prompt": "Vi spelar fotboll tillsammans.", "answer": "We play soccer together."}
+{"type": "translate", "prompt": "Väldigt ofta!", "answer": "Very often!"}
+{"type": "translate", "prompt": "We never go sailing but often go camping.", "answer": "Vi seglar aldrig men tältar ofta."}
+{"type": "translate", "prompt": "We often play piano together.", "answer": "Vi spelar ofta piano tillsammans."}
+{"type": "translate", "prompt": "We play chess together.", "answer": "Vi spelar schack tillsammans."}
+{"type": "translate", "prompt": "We play piano and paint.", "answer": "Vi spelar piano och målar."}
+{"type": "translate", "prompt": "We play soccer together.", "answer": "Vi spelar fotboll tillsammans."}
+{"type": "translate", "prompt": "We sometimes study together.", "answer": "Vi pluggar tillsammans ibland."}
+{"type": "translate", "prompt": "We swim and play chess.", "answer": "Vi simmar och spelar schack."}
+{"type": "translate", "prompt": "Yes, Anna is my daughter.", "answer": "Ja, Anna är min dotter."}
+{"type": "translate", "prompt": "Yes, I always dance in my apartment.", "answer": "Ja, jag dansar alltid i min lägenhet."}
+{"type": "translate", "prompt": "Yes, I listen to music!", "answer": "Ja, jag lyssnar på musik!"}
+{"type": "translate", "prompt": "Yes, always!", "answer": "Ja, alltid!"}
+{"type": "translate", "prompt": "Yes, guitar and piano!", "answer": "Ja, gitarr och piano!"}
+{"type": "translate", "prompt": "You clean your car and your house.", "answer": "Du städar din bil och ditt hus."}
+{"type": "translate", "prompt": "You clean your house and your car.", "answer": "Du städar ditt hus och din bil."}
+{"type": "translate", "prompt": "You dance while you shower, right?", "answer": "Du dansar medan du duschar, eller hur?"}
+{"type": "translate", "prompt": "You often go camping, right?", "answer": "Du tältar ofta, eller hur?"}
+{"type": "translate", "prompt": "You often swim, right?", "answer": "Du simmar ofta, eller hur?"}
+{"type": "translate", "prompt": "You play chess, right?", "answer": "Du spelar schack, eller hur?"}
+{"type": "translate", "prompt": "You play guitar, right?", "answer": "Du spelar gitarr, eller hur?"}
+{"type": "translate", "prompt": "You sometimes study, right?", "answer": "Du pluggar ibland, eller hur?"}
+{"type": "translate", "prompt": "You wake up early, right?", "answer": "Du vaknar tidigt, eller hur?"}
+{"type": "translate", "prompt": "cuțite", "answer": "knives"}
+{"type": "translate", "prompt": "easy but interesting", "answer": "lätt men intressant"}
+{"type": "translate", "prompt": "en lägenhet", "answer": "an apartment"}
+{"type": "translate", "prompt": "en mobil", "answer": "a cell phone"}
+{"type": "translate", "prompt": "i Stockholm", "answer": "in Stockholm"}
+{"type": "translate", "prompt": "lätt men intressant", "answer": "easy but interesting"}
+{"type": "translate", "prompt": "min bror", "answer": "my brother"}

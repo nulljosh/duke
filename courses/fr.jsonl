@@ -1,0 +1,1188 @@
+{"type": "assist", "prompt": "account", "answer": "λογαριασμός"}
+{"type": "assist", "prompt": "active", "answer": "ενεργός"}
+{"type": "assist", "prompt": "analog", "answer": "αναλογικός"}
+{"type": "assist", "prompt": "analysis", "answer": "ανάλυση"}
+{"type": "assist", "prompt": "application", "answer": "εφαρμογή"}
+{"type": "assist", "prompt": "article", "answer": "άρθρο"}
+{"type": "assist", "prompt": "astronaut", "answer": "αστροναύτης"}
+{"type": "assist", "prompt": "aunt", "answer": "tante"}
+{"type": "assist", "prompt": "belt", "answer": "ceinture"}
+{"type": "assist", "prompt": "biology", "answer": "βιολογία"}
+{"type": "assist", "prompt": "brother", "answer": "frère"}
+{"type": "assist", "prompt": "browser", "answer": "φυλλομετρητής"}
+{"type": "assist", "prompt": "button", "answer": "κουμπί"}
+{"type": "assist", "prompt": "can you help me", "answer": "ungangisiza"}
+{"type": "assist", "prompt": "cause", "answer": "αιτία"}
+{"type": "assist", "prompt": "chemist", "answer": "χημικός"}
+{"type": "assist", "prompt": "chemistry", "answer": "χημεία"}
+{"type": "assist", "prompt": "coin", "answer": "νόμισμα"}
+{"type": "assist", "prompt": "conclusion", "answer": "συμπέρασμα"}
+{"type": "assist", "prompt": "connect", "answer": "συνδέω"}
+{"type": "assist", "prompt": "connection", "answer": "σύνδεση"}
+{"type": "assist", "prompt": "cost", "answer": "κόστος"}
+{"type": "assist", "prompt": "credit card", "answer": "πιστωτική κάρτα"}
+{"type": "assist", "prompt": "cursor", "answer": "δρομέας"}
+{"type": "assist", "prompt": "daughter", "answer": "fille"}
+{"type": "assist", "prompt": "definition", "answer": "ορισμός"}
+{"type": "assist", "prompt": "depth", "answer": "βάθος"}
+{"type": "assist", "prompt": "detail", "answer": "λεπτομέρεια"}
+{"type": "assist", "prompt": "digital", "answer": "ψηφιακός"}
+{"type": "assist", "prompt": "disconnect", "answer": "αποσυνδέω"}
+{"type": "assist", "prompt": "discount", "answer": "έκπτωση"}
+{"type": "assist", "prompt": "discovery", "answer": "ανακάλυψη"}
+{"type": "assist", "prompt": "download", "answer": "κατεβάζω"}
+{"type": "assist", "prompt": "economy", "answer": "οικονομία"}
+{"type": "assist", "prompt": "electricity", "answer": "ηλεκτρισμός"}
+{"type": "assist", "prompt": "energy", "answer": "ενέργεια"}
+{"type": "assist", "prompt": "evidence", "answer": "στοιχείο"}
+{"type": "assist", "prompt": "funny", "answer": "amusant"}
+{"type": "assist", "prompt": "green", "answer": "vert"}
+{"type": "assist", "prompt": "hat", "answer": "chapeau"}
+{"type": "assist", "prompt": "have", "answer": "έχω"}
+{"type": "assist", "prompt": "in large", "answer": "enkulu"}
+{"type": "assist", "prompt": "in this", "answer": "kule"}
+{"type": "assist", "prompt": "increase", "answer": "αυξάνω"}
+{"type": "assist", "prompt": "installation", "answer": "εγκατάσταση"}
+{"type": "assist", "prompt": "invent", "answer": "εφευρίσκω"}
+{"type": "assist", "prompt": "keyboard", "answer": "πληκτρολόγιο"}
+{"type": "assist", "prompt": "laboratory", "answer": "εργαστήριο"}
+{"type": "assist", "prompt": "limit", "answer": "όριό"}
+{"type": "assist", "prompt": "loan", "answer": "δάνειο"}
+{"type": "assist", "prompt": "mass", "answer": "μάζα"}
+{"type": "assist", "prompt": "mean", "answer": "méchant"}
+{"type": "assist", "prompt": "method", "answer": "μέθοδος"}
+{"type": "assist", "prompt": "microphone", "answer": "μικρόφωνο"}
+{"type": "assist", "prompt": "money", "answer": "χρήμα"}
+{"type": "assist", "prompt": "mouse", "answer": "ποντίκι"}
+{"type": "assist", "prompt": "my aunt", "answer": "ma tante"}
+{"type": "assist", "prompt": "my brother", "answer": "mon frère"}
+{"type": "assist", "prompt": "my niece", "answer": "ma nièce"}
+{"type": "assist", "prompt": "my sister", "answer": "ma sœur"}
+{"type": "assist", "prompt": "nephew", "answer": "neveu"}
+{"type": "assist", "prompt": "notification", "answer": "ειδοποίηση"}
+{"type": "assist", "prompt": "now", "answer": "maintenant"}
+{"type": "assist", "prompt": "of course", "answer": "bien sûr"}
+{"type": "assist", "prompt": "profile", "answer": "προφίλ"}
+{"type": "assist", "prompt": "profit", "answer": "κέρδος"}
+{"type": "assist", "prompt": "quantity", "answer": "ποσότητα"}
+{"type": "assist", "prompt": "reduce", "answer": "μειώνω"}
+{"type": "assist", "prompt": "research", "answer": "έρευνα"}
+{"type": "assist", "prompt": "rocket", "answer": "πύραυλος"}
+{"type": "assist", "prompt": "sample", "answer": "δείγμα"}
+{"type": "assist", "prompt": "science", "answer": "επιστήμη"}
+{"type": "assist", "prompt": "scientific", "answer": "επιστημονικός"}
+{"type": "assist", "prompt": "scientist", "answer": "επιστήμονας"}
+{"type": "assist", "prompt": "shirt", "answer": "chemise"}
+{"type": "assist", "prompt": "shoe", "answer": "जूता"}
+{"type": "assist", "prompt": "sister", "answer": "sœur"}
+{"type": "assist", "prompt": "speed", "answer": "ταχύτητα"}
+{"type": "assist", "prompt": "supposition", "answer": "υπόθεση"}
+{"type": "assist", "prompt": "surface", "answer": "επιφάνεια"}
+{"type": "assist", "prompt": "sweater", "answer": "pull"}
+{"type": "assist", "prompt": "technique", "answer": "τεχνική"}
+{"type": "assist", "prompt": "technology", "answer": "τεχνολογία"}
+{"type": "assist", "prompt": "temperature", "answer": "θερμοκρασία"}
+{"type": "assist", "prompt": "tie", "answer": "cravate"}
+{"type": "assist", "prompt": "type", "answer": "πληκτρολογώ"}
+{"type": "assist", "prompt": "umbrella", "answer": "छाता"}
+{"type": "assist", "prompt": "user", "answer": "χρήστης"}
+{"type": "assist", "prompt": "virtual", "answer": "εικονικός"}
+{"type": "assist", "prompt": "web", "answer": "ιστός"}
+{"type": "assist", "prompt": "winter", "answer": "zasebusika"}
+{"type": "assist", "prompt": "wire", "answer": "καλώδιο"}
+{"type": "gapFill", "prompt": "Bonjour, je cherche ___ robe.", "answer": "une"}
+{"type": "gapFill", "prompt": "J'ai un fils à Toronto et un fils à ___.", "answer": "paris"}
+{"type": "gapFill", "prompt": "J'ai un frère, Paul. Il est ___ !", "answer": "méchant"}
+{"type": "gapFill", "prompt": "J'ai une ___ à Paris. Elle est méchante !", "answer": "tante"}
+{"type": "gapFill", "prompt": "J'ai une ___. Elle est très amusante !", "answer": "sœur"}
+{"type": "gapFill", "prompt": "J'ai une sœur à ___.", "answer": "paris"}
+{"type": "gapFill", "prompt": "Oh ___, pas du tout !", "answer": "non"}
+{"type": "gapFill", "prompt": "Oh, tu as un ___ !", "answer": "frère"}
+{"type": "gapFill", "prompt": "Oh, tu as une tante à ___ ?", "answer": "lyon"}
+{"type": "gapFill", "prompt": "Oui, j'ai une ___ !", "answer": "fille"}
+{"type": "gapFill", "prompt": "Tu as un ___ ?", "answer": "fils"}
+{"type": "gapFill", "prompt": "Tu as un frère à _________ ?", "answer": "new york"}
+{"type": "gapFill", "prompt": "Tu as un oncle ___ !", "answer": "amusant"}
+{"type": "gapFill", "prompt": "Tu as une ___ ?", "answer": "sœur"}
+{"type": "gapFill", "prompt": "Tu as une tante à Toronto ou à _________ ?", "answer": "new york"}
+{"type": "gapFill", "prompt": "___ δεν είναι τέλειος.", "answer": "κανείς"}
+{"type": "gapFill", "prompt": "Ça va ? Bien, ___ !", "answer": "merci"}
+{"type": "gapFill", "prompt": "Εμείς ___ από τους γονείς μας.", "answer": "κρυβόμασταν"}
+{"type": "gapFill", "prompt": "Η ___ τελείωσε.", "answer": "συζήτηση"}
+{"type": "gapFill", "prompt": "Τα παιδιά ___.", "answer": "ονειρεύονται"}
+{"type": "name", "prompt": "coat", "answer": "manteau"}
+{"type": "name", "prompt": "dress", "answer": "une robe"}
+{"type": "name", "prompt": "hat", "answer": "chapeau"}
+{"type": "name", "prompt": "shirt", "answer": "chemise"}
+{"type": "select", "prompt": "belt", "answer": "ceinture"}
+{"type": "select", "prompt": "coat", "answer": "manteau"}
+{"type": "select", "prompt": "dress", "answer": "une robe"}
+{"type": "select", "prompt": "hat", "answer": "chapeau"}
+{"type": "select", "prompt": "shirt", "answer": "chemise"}
+{"type": "select", "prompt": "sweater", "answer": "pull"}
+{"type": "select", "prompt": "the coins", "answer": "τα νομίσματα"}
+{"type": "select", "prompt": "the depth", "answer": "το βάθος"}
+{"type": "select", "prompt": "the money", "answer": "τα χρήματα"}
+{"type": "select", "prompt": "the rocket", "answer": "ο πύραυλος"}
+{"type": "select", "prompt": "the science", "answer": "η επιστήμη"}
+{"type": "select", "prompt": "the scientist", "answer": "ο επιστήμονας"}
+{"type": "tapComplete", "prompt": "Elle est méchante, mais elle est ___ amusante !", "answer": "très"}
+{"type": "tapComplete", "prompt": "Il est ___ et elle est très intéressante !", "answer": "amusant"}
+{"type": "tapComplete", "prompt": "J'ai ___ ___.", "answer": "un frère à lyon"}
+{"type": "tapComplete", "prompt": "J'ai ___ ___ !", "answer": "une sœur à new york"}
+{"type": "tapComplete", "prompt": "J'ai ___ frère et ___ sœur.", "answer": "un une"}
+{"type": "tapComplete", "prompt": "J'ai ___ oncle et ___ tante à Paris.", "answer": "un une"}
+{"type": "tapComplete", "prompt": "J'ai un ___ et une sœur.", "answer": "frère"}
+{"type": "tapComplete", "prompt": "J'ai une ___ !", "answer": "nièce"}
+{"type": "tapComplete", "prompt": "J'ai une fille et un ___.", "answer": "fils"}
+{"type": "tapComplete", "prompt": "Lisa, ___ ___ ?", "answer": "tu as un fils"}
+{"type": "tapComplete", "prompt": "Léo, ___ ___ ?", "answer": "tu as une sœur"}
+{"type": "tapComplete", "prompt": "Marie, ___ ___ ?", "answer": "tu as un frère"}
+{"type": "tapComplete", "prompt": "Marie, tu as ___ fils ou ___ fille ?", "answer": "un une"}
+{"type": "tapComplete", "prompt": "Oh, Léo, tu as un ___ !", "answer": "frère"}
+{"type": "tapComplete", "prompt": "Oh, j'ai un frère à ___ !", "answer": "paris"}
+{"type": "tapComplete", "prompt": "Oui, j'ai un ___ à Toronto !", "answer": "oncle"}
+{"type": "tapComplete", "prompt": "Paul, ___ ___ ?", "answer": "tu as une fille"}
+{"type": "tapComplete", "prompt": "Tu as un neveu ou un ___ à Paris ?", "answer": "frère"}
+{"type": "tapComplete", "prompt": "Une ___ ou un ___ ?", "answer": "chemise chapeau"}
+{"type": "tapComplete", "prompt": "___, au revoir !", "answer": "merci"}
+{"type": "translate", "prompt": "A coat or a hat?", "answer": "Un manteau ou un chapeau ?"}
+{"type": "translate", "prompt": "A dress or a shirt?", "answer": "Une robe ou une chemise ?"}
+{"type": "translate", "prompt": "A green sweater or a green dress?", "answer": "Un pull vert ou une robe verte ?"}
+{"type": "translate", "prompt": "A shirt or a dress?", "answer": "Une chemise ou une robe ?"}
+{"type": "translate", "prompt": "A tea or a coffee?", "answer": "Un thé ou un café ?"}
+{"type": "translate", "prompt": "After my master's, I want to work in research.", "answer": "Μετά το μεταπτυχιακό μου, θέλω να ασχοληθώ με την έρευνα."}
+{"type": "translate", "prompt": "An astronaut must speak English and Russian.", "answer": "Ένας αστροναύτης πρέπει να μιλάει αγγλικά και ρώσικα."}
+{"type": "translate", "prompt": "Are monkeys clever?", "answer": "Είναι έξυπνες οι μαϊμούδες;"}
+{"type": "translate", "prompt": "Are you looking for a black dress or a blue dress?", "answer": "Vous cherchez une robe noire ou une robe bleue ?"}
+{"type": "translate", "prompt": "Are you looking for a blue shirt, Sir?", "answer": "Vous cherchez une chemise bleue, Monsieur ?"}
+{"type": "translate", "prompt": "Are you looking for a dress or a sweater?", "answer": "Vous cherchez une robe ou un pull ?"}
+{"type": "translate", "prompt": "Are you looking for a green dress and a blue sweater?", "answer": "Vous cherchez une robe verte et un pull bleu ?"}
+{"type": "translate", "prompt": "Au revoir.", "answer": "Goodbye."}
+{"type": "translate", "prompt": "Au revoir !", "answer": "Goodbye!"}
+{"type": "translate", "prompt": "Berapa kantongmu?", "answer": "How many pockets do you have?"}
+{"type": "translate", "prompt": "Bien !", "answer": "Good!"}
+{"type": "translate", "prompt": "Bonjour Madame, je voudrais un croissant.", "answer": "Hello Madam, I would like a croissant."}
+{"type": "translate", "prompt": "Bonjour Madame, je voudrais un sandwich.", "answer": "Hello Madam, I would like a sandwich."}
+{"type": "translate", "prompt": "Bonjour Madame, vous cherchez une robe ?", "answer": "Hello Madam, are you looking for a dress?"}
+{"type": "translate", "prompt": "Calm down, I'm on your side.", "answer": "Ήρεμα, είμαι με το μέρος σου."}
+{"type": "translate", "prompt": "Can I eat you, my precious kneidel?", "answer": "קען איך דיך עסן, מײַן טײַער קניידל?"}
+{"type": "translate", "prompt": "Can you help me with the program's installation?", "answer": "Μπορείς να με βοηθήσεις με την εγκατάσταση του προγράμματος;"}
+{"type": "translate", "prompt": "Cha, isigqoko yikhulu neshumi lamarandi.", "answer": "No, the hat is a hundred and ten rands."}
+{"type": "translate", "prompt": "Civic life concerns us all!", "answer": "Τα κοινά μάς αφορούν όλους!"}
+{"type": "translate", "prompt": "Dia membeli tas, sepatu, dan dompet.", "answer": "She buys a bag, shoes, and a wallet."}
+{"type": "translate", "prompt": "Did I answer correctly?", "answer": "Απάντησα σωστά;"}
+{"type": "translate", "prompt": "Did you connect the microphone to the computer?", "answer": "Συνδέσετε το μικρόφωνο στον υπολογιστή;"}
+{"type": "translate", "prompt": "Did you send the e-mail?", "answer": "Έστειλες την ηλεκτρονική αλληλογραφία;"}
+{"type": "translate", "prompt": "Do not sit there!", "answer": "Μην κάτσεις εκεί!"}
+{"type": "translate", "prompt": "Do you have an aunt in Paris?", "answer": "Tu as une tante à Paris ?"}
+{"type": "translate", "prompt": "Do you know the recipe for this meal?", "answer": "Ξέρεις τη συνταγή αυτού του γεύματος;"}
+{"type": "translate", "prompt": "Do you like the green glasses that I bought yesterday?", "answer": "Σου αρέσουν τα πράσινα γυαλιά που αγόρασα χθες;"}
+{"type": "translate", "prompt": "Do you prefer ancient tragedy or ancient comedy?", "answer": "Προτιμάς την αρχαία τραγωδία ή την αρχαία κωμωδία;"}
+{"type": "translate", "prompt": "Does he live in Paris or in Lyon?", "answer": "Il habite à Paris ou à Lyon ?"}
+{"type": "translate", "prompt": "Does he live in Toronto or in New York?", "answer": "Il habite à Toronto ou à New York ?"}
+{"type": "translate", "prompt": "Does she live in Lyon or in New York?", "answer": "Elle habite à Lyon ou à New York ?"}
+{"type": "translate", "prompt": "Does she live in Lyon or in Paris?", "answer": "Elle habite à Lyon ou à Paris ?"}
+{"type": "translate", "prompt": "Does your wife love him?", "answer": "Τον αγαπάει η γυναίκα σου;"}
+{"type": "translate", "prompt": "Doesn't anyone want chocolate?", "answer": "Κανένας δε θέλει σοκολάτα;"}
+{"type": "translate", "prompt": "Dompet kamu merah.", "answer": "Your wallet is red."}
+{"type": "translate", "prompt": "Don't press any button you want!", "answer": "Μην πατάς όποιο κουμπί θες!"}
+{"type": "translate", "prompt": "Don't press the delete button!", "answer": "Μην πατήσεις το κουμπί της διαγραφής!"}
+{"type": "translate", "prompt": "Download that application, please.", "answer": "Κατέβασε εκείνη την εφαρμογή, σε παρακαλώ."}
+{"type": "translate", "prompt": "Each note was wonderful!", "answer": "Κάθε νότα ήταν υπέροχη!"}
+{"type": "translate", "prompt": "Each one has his own things.", "answer": "Ο καθένας έχει τα δικά του πράγματα."}
+{"type": "translate", "prompt": "Elle est amusante ?", "answer": "She is funny?"}
+{"type": "translate", "prompt": "Elle est intéressante.", "answer": "She is interesting."}
+{"type": "translate", "prompt": "Elle est très amusante ?", "answer": "She is very funny?"}
+{"type": "translate", "prompt": "Elle habite à Lyon ou à Paris ?", "answer": "Does she live in Lyon or in Paris?"}
+{"type": "translate", "prompt": "Elle habite à Paris ou à New York ?", "answer": "Does she live in Paris or in New York?"}
+{"type": "translate", "prompt": "Elle vient de Paris ou de New York ?", "answer": "Is she from Paris or New York?"}
+{"type": "translate", "prompt": "Enchanté, je m'appelle Léo.", "answer": "Nice to meet you, my name is Léo."}
+{"type": "translate", "prompt": "Even my grandmother has email.", "answer": "Ακόμα και η γιαγιά μου έχει ηλεκτρονικό ταχυδρομείο."}
+{"type": "translate", "prompt": "Excuse me Sir, I am looking for a hat.", "answer": "Excusez-moi Monsieur, je cherche un chapeau."}
+{"type": "translate", "prompt": "Excuse me, I am looking for a black dress.", "answer": "Excusez-moi, je cherche une robe noire."}
+{"type": "translate", "prompt": "Excuse me, Madam, I am looking for a coat.", "answer": "Excusez-moi, Madame, je cherche un manteau."}
+{"type": "translate", "prompt": "Excuse me, Sir, I am looking for a coat.", "answer": "Excusez-moi, Monsieur, je cherche un manteau."}
+{"type": "translate", "prompt": "Excusez-moi, je cherche un pull vert.", "answer": "Excuse me, I am looking for a green sweater."}
+{"type": "translate", "prompt": "Excusez-moi, je cherche une cravate verte.", "answer": "Excuse me, I am looking for a green tie."}
+{"type": "translate", "prompt": "Excusez-moi, je cherche une robe noire.", "answer": "Excuse me, I am looking for a black dress."}
+{"type": "translate", "prompt": "Experiments on humans and green owls are prohibited.", "answer": "Απαγορεύονται τα πειράματα σε ανθρώπους και πράσινες κουκουβάγιες."}
+{"type": "translate", "prompt": "For science weight and mass are different things.", "answer": "Για την επιστήμη το βάρος και η μάζα είναι διαφορετικά πράγματα."}
+{"type": "translate", "prompt": "Glass is cheaper than aluminum.", "answer": "Το γυαλί είναι φθηνότερο από το αλουμίνιο."}
+{"type": "translate", "prompt": "Go ahead or come behind.", "answer": "आगे जाओ या पीछे आओ।"}
+{"type": "translate", "prompt": "Gold is a material.", "answer": "Ο χρυσός είναι ένα υλικό."}
+{"type": "translate", "prompt": "Goodbye, sir.", "answer": "Au revoir, Monsieur."}
+{"type": "translate", "prompt": "Government policy concerns you!", "answer": "Η πολιτική της κυβέρνησης σε αφορά!"}
+{"type": "translate", "prompt": "He asked me what the port on the computer is .", "answer": "Με ρώτησε ποια είναι η θύρα στον υπολογιστή."}
+{"type": "translate", "prompt": "He disconnected the speakers from the computer.", "answer": "Αποσύνδεσε τα ηχεία από τον υπολογιστή."}
+{"type": "translate", "prompt": "He is always interesting.", "answer": "Il est toujours intéressant."}
+{"type": "translate", "prompt": "He is funny.", "answer": "Il est amusant."}
+{"type": "translate", "prompt": "He is funny?", "answer": "Il est amusant ?"}
+{"type": "translate", "prompt": "He is mean?", "answer": "Il est méchant ?"}
+{"type": "translate", "prompt": "He reads her the newspaper.", "answer": "Αυτός της διαβάζει την εφημερίδα."}
+{"type": "translate", "prompt": "Hello Madam, I am looking for a hat.", "answer": "Bonjour Madame, je cherche un chapeau."}
+{"type": "translate", "prompt": "Hello Madam, I would like a sandwich.", "answer": "Bonjour Madame, je voudrais un sandwich."}
+{"type": "translate", "prompt": "Hello Madam, are you looking for a dress?", "answer": "Bonjour Madame, vous cherchez une robe ?"}
+{"type": "translate", "prompt": "Hello, I am looking for a dress.", "answer": "Bonjour, je cherche une robe."}
+{"type": "translate", "prompt": "Hello, I am looking for a sweater and a tie.", "answer": "Bonjour, je cherche un pull et une cravate."}
+{"type": "translate", "prompt": "Hello, Madam, a tea, please.", "answer": "Bonjour Madame, un thé, s'il vous plaît."}
+{"type": "translate", "prompt": "How do we say \"cursor\" in English?", "answer": "Πώς λέμε \"δρομέας\" στα αγγλικά;"}
+{"type": "translate", "prompt": "How do you renew this?", "answer": "איך מחדשים את זה?"}
+{"type": "translate", "prompt": "How many apps do you have on your mobile phone?", "answer": "Πόσες εφαρμογές έχεις στο κινητό σου;"}
+{"type": "translate", "prompt": "How many people are there in the rocket?", "answer": "Πόσα άτομα είναι μέσα στον πύραυλο;"}
+{"type": "translate", "prompt": "How many shares does the photo have?", "answer": "Πόσες κοινοποιήσεις έχει η φωτογραφία;"}
+{"type": "translate", "prompt": "How many shares does the post have so far?", "answer": "Πόσες κοινοποιήσεις έχει η ανάρτηση μέχρι στιγμής;"}
+{"type": "translate", "prompt": "I am a chemist, I don't know physics!", "answer": "Είμαι χημικός, δεν ξέρω φυσική!"}
+{"type": "translate", "prompt": "I am ahead and you are behind.", "answer": "मैं आगे हूँ और तू पीछे है।"}
+{"type": "translate", "prompt": "I am almost going home.", "answer": "איך גיי כּמעט אַהיים."}
+{"type": "translate", "prompt": "I am bringing your father the chair.", "answer": "איך ברענג דײַן טאַטן דאָס בענקל."}
+{"type": "translate", "prompt": "I am from New York.", "answer": "Je suis à New York."}
+{"type": "translate", "prompt": "I am looking for a black sweater and a blue tie.", "answer": "Je cherche un pull noir et une cravate bleue."}
+{"type": "translate", "prompt": "I am looking for a black sweater.", "answer": "Je cherche un pull noir."}
+{"type": "translate", "prompt": "I am looking for a blue shirt with a tie.", "answer": "Je cherche une chemise bleue avec une cravate."}
+{"type": "translate", "prompt": "I am looking for a coat, please.", "answer": "Je cherche un manteau, s'il vous plaît."}
+{"type": "translate", "prompt": "I am looking for a coat.", "answer": "Je cherche un manteau."}
+{"type": "translate", "prompt": "I am looking for a dress.", "answer": "Je cherche une robe."}
+{"type": "translate", "prompt": "I am looking for a green belt.", "answer": "Je cherche une ceinture verte."}
+{"type": "translate", "prompt": "I am looking for a green coat.", "answer": "Je cherche un manteau vert."}
+{"type": "translate", "prompt": "I am looking for a green sweater with a tie.", "answer": "Je cherche un pull vert avec une cravate."}
+{"type": "translate", "prompt": "I am looking for a sweater with a coat.", "answer": "Je cherche un pull avec un manteau."}
+{"type": "translate", "prompt": "I am looking forward to seeing him.", "answer": "Ανυπομονώ να τον δω."}
+{"type": "translate", "prompt": "I am talking with my friends online.", "answer": "Μιλάω με τους φίλους μου διαδικτυακά."}
+{"type": "translate", "prompt": "I did not share any of his posts.", "answer": "Δεν κοινοποίησα καμία από τις αναρτήσεις του."}
+{"type": "translate", "prompt": "I do my shopping online.", "answer": "Κάνω τις αγορές μου διαδικτυακά."}
+{"type": "translate", "prompt": "I do not have the necessary technological knowledge for this job.", "answer": "Δεν έχω τις απαραίτητες τεχνολογικές γνώσεις για αυτήν τη δουλειά."}
+{"type": "translate", "prompt": "I do not know who invented the telephone.", "answer": "Δεν ξέρω ποιος εφηύρε το τηλέφωνο."}
+{"type": "translate", "prompt": "I do not remember her nickname.", "answer": "Δε θυμάμαι το ψευδώνυμό της."}
+{"type": "translate", "prompt": "I don't have an account on any social media network.", "answer": "Δεν έχω λογαριασμό σε κανένα μέσο κοινωνικής δικτύωσης."}
+{"type": "translate", "prompt": "I don't know whether what I saw was a tragedy or a comedy.", "answer": "Δεν ξέρω αν αυτό που είδα ήταν τραγωδία ή κωμωδία."}
+{"type": "translate", "prompt": "I don't see the cord.", "answer": "Δε βλέπω το καλώδιο."}
+{"type": "translate", "prompt": "I don't usually comment on social media.", "answer": "Εγώ συνήθως δε σχολιάζω στα μέσα κοινωνικής δικτύωσης."}
+{"type": "translate", "prompt": "I had never spoken to anyone about it.", "answer": "Δεν είχα μιλήσει ποτέ σε κανέναν για αυτό."}
+{"type": "translate", "prompt": "I have a brother and he is always mean!", "answer": "J'ai un frère et il est toujours méchant !"}
+{"type": "translate", "prompt": "I have a brother and he is mean.", "answer": "J'ai un frère et il est méchant."}
+{"type": "translate", "prompt": "I have a daughter.", "answer": "J'ai une fille."}
+{"type": "translate", "prompt": "I have a nephew and he lives in Paris.", "answer": "J'ai un neveu et il habite à Paris."}
+{"type": "translate", "prompt": "I have a nephew in New York.", "answer": "J'ai un neveu à New York."}
+{"type": "translate", "prompt": "I have a sister and she is funny.", "answer": "J'ai une sœur et elle est amusante."}
+{"type": "translate", "prompt": "I have a sister and she is mean.", "answer": "J'ai une sœur et elle est méchante."}
+{"type": "translate", "prompt": "I have a sister and she is very mean.", "answer": "J'ai une sœur et elle est très méchante."}
+{"type": "translate", "prompt": "I have a son and he lives in Paris.", "answer": "J'ai un fils et il habite à Paris."}
+{"type": "translate", "prompt": "I have got tired of hearing your assumptions, I want proof!", "answer": "Έχω κουραστεί να ακούω τις υποθέσεις σου, θέλω αποδείξεις!"}
+{"type": "translate", "prompt": "I have one hundred ten friend requests.", "answer": "Έχω εκατόν δέκα αιτήματα φιλίας."}
+{"type": "translate", "prompt": "I have ten aunts.", "answer": "איך האָב צען מומעס."}
+{"type": "translate", "prompt": "I hope that we never experience a biological war.", "answer": "Ελπίζω να μη ζήσουμε ποτέ έναν βιολογικό πόλεμο."}
+{"type": "translate", "prompt": "I know who had left.", "answer": "Εγώ ξέρω ποιος είχε φύγει."}
+{"type": "translate", "prompt": "I like some of these.", "answer": "Μου αρέσουν κάποια από αυτά."}
+{"type": "translate", "prompt": "I made a discovery.", "answer": "Έκανα μία ανακάλυψη."}
+{"type": "translate", "prompt": "I met my favourite sportswriter.", "answer": "Συνάντησα τον αγαπημένο μου αθλητικογράφο."}
+{"type": "translate", "prompt": "I need a cord for my telephone.", "answer": "Χρειάζομαι καλώδιο για το τηλέφωνό μου."}
+{"type": "translate", "prompt": "I need a new microphone.", "answer": "Χρειάζομαι νέο μικρόφωνο."}
+{"type": "translate", "prompt": "I only speak Yiddish.", "answer": "איך רעד נאָר ייִדיש."}
+{"type": "translate", "prompt": "I read her the book.", "answer": "Της διαβάζω το βιβλίο."}
+{"type": "translate", "prompt": "I reported your profile and then blocked you.", "answer": "Έκανα αναφορά στο προφίλ σου και μετά σου έκανα μπλοκ."}
+{"type": "translate", "prompt": "I sent her a message and she blocked me.", "answer": "Της έστειλα μήνυμα και μου έκανε μπλοκ."}
+{"type": "translate", "prompt": "I shared a funny picture and all my friends commented below.", "answer": "Κοινοποίησα μια αστεία φωτογραφία και όλοι οι φίλοι μου σχολίασαν από κάτω."}
+{"type": "translate", "prompt": "I shared it many times but very few saw it.", "answer": "Το κοινοποίησα πολλές φορές αλλά ελάχιστοι το είδαν."}
+{"type": "translate", "prompt": "I talked with the movie's director.", "answer": "Μίλησα με τον σκηνοθέτη της ταινίας."}
+{"type": "translate", "prompt": "I uploaded this photo yesterday.", "answer": "Ανέβασα αυτήν τη φωτογραφία χθες."}
+{"type": "translate", "prompt": "I use social networks safely.", "answer": "Χρησιμοποιώ τα κοινωνικά δίκτυα με ασφάλεια."}
+{"type": "translate", "prompt": "I usually watch movies online.", "answer": "Συνήθως βλέπω ταινίες διαδικτυακά."}
+{"type": "translate", "prompt": "I want one more time.", "answer": "Θέλω άλλη μια φορά."}
+{"type": "translate", "prompt": "I will leave by the six o'clock rocket.", "answer": "Θα φύγω με τον πύραυλο των έξι."}
+{"type": "translate", "prompt": "I will make my share public.", "answer": "Θα κάνω την κοινοποίησή μου δημόσια."}
+{"type": "translate", "prompt": "I will search it on the web.", "answer": "Θα το ψάξω στον ιστό."}
+{"type": "translate", "prompt": "I would like a hat and a coat.", "answer": "Je voudrais un chapeau et un manteau."}
+{"type": "translate", "prompt": "Il est amusant.", "answer": "He is funny."}
+{"type": "translate", "prompt": "Il est méchant ?", "answer": "He is mean?"}
+{"type": "translate", "prompt": "Il est toujours intéressant.", "answer": "He is always interesting."}
+{"type": "translate", "prompt": "Il habite à Paris ou à Lyon ?", "answer": "Does he live in Paris or in Lyon?"}
+{"type": "translate", "prompt": "Il habite à Toronto ou à New York ?", "answer": "Does he live in Toronto or in New York?"}
+{"type": "translate", "prompt": "Il vient de Paris ou de Lyon ?", "answer": "Is he from Paris or Lyon?"}
+{"type": "translate", "prompt": "Il vient de Toronto.", "answer": "He comes from Toronto."}
+{"type": "translate", "prompt": "Is he from Paris or Lyon?", "answer": "Il vient de Paris ou de Lyon ?"}
+{"type": "translate", "prompt": "Is he from Toronto or New York?", "answer": "Il vient de Toronto ou de New York ?"}
+{"type": "translate", "prompt": "Is he from Toronto or Paris?", "answer": "Il vient de Toronto ou de Paris ?"}
+{"type": "translate", "prompt": "Is quantity more important than quality?", "answer": "Είναι η ποσότητα πιο σημαντική από την ποιότητα;"}
+{"type": "translate", "prompt": "Is she from Lyon or New York?", "answer": "Elle vient de Lyon ou de New York ?"}
+{"type": "translate", "prompt": "Is she from New York or Paris?", "answer": "Elle vient de New York ou de Paris ?"}
+{"type": "translate", "prompt": "Is she from Paris or Lyon?", "answer": "Elle vient de Paris ou de Lyon ?"}
+{"type": "translate", "prompt": "Is she funny or mean?", "answer": "Elle est amusante ou méchante ?"}
+{"type": "translate", "prompt": "Is the deactivation easy?", "answer": "Η απενεργοποίηση είναι εύκολη;"}
+{"type": "translate", "prompt": "It seemed like you were thinking of something.", "answer": "Φάνηκε σαν να σκεφτόσουν κάτι."}
+{"type": "translate", "prompt": "J'ai un fils et il habite à Paris.", "answer": "I have a son and he lives in Paris."}
+{"type": "translate", "prompt": "J'ai un frère et il habite à Lyon.", "answer": "I have a brother and he lives in Lyon."}
+{"type": "translate", "prompt": "J'ai un neveu à New York.", "answer": "I have a nephew in New York."}
+{"type": "translate", "prompt": "J'ai une nièce et elle habite à Toronto.", "answer": "I have a niece and she lives in Toronto."}
+{"type": "translate", "prompt": "Jaket ini besar.", "answer": "This jacket is big."}
+{"type": "translate", "prompt": "Je cherche un chapeau vert.", "answer": "I am looking for a green hat."}
+{"type": "translate", "prompt": "Je cherche un chapeau.", "answer": "I am looking for a hat."}
+{"type": "translate", "prompt": "Je cherche un pull avec un manteau.", "answer": "I am looking for a sweater with a coat."}
+{"type": "translate", "prompt": "Je cherche un pull vert avec une cravate.", "answer": "I am looking for a green sweater with a tie."}
+{"type": "translate", "prompt": "Je cherche une chemise.", "answer": "I am looking for a shirt."}
+{"type": "translate", "prompt": "Je viens de New York, et toi ?", "answer": "I am from New York, and you?"}
+{"type": "translate", "prompt": "Kateřina je ve čtvrtém měsíci.", "answer": "Kateřina is in her fourth month."}
+{"type": "translate", "prompt": "Kemeja mereka besar.", "answer": "Their shirts are big."}
+{"type": "translate", "prompt": "Let's download her favorite song.", "answer": "Ας κατεβάσουμε το αγαπημένο της τραγούδι."}
+{"type": "translate", "prompt": "Lisa, tu as un frère ?", "answer": "Lisa, you have a brother?"}
+{"type": "translate", "prompt": "Lisa, you have a brother?", "answer": "Lisa, tu as un frère ?"}
+{"type": "translate", "prompt": "Look at your notifications!", "answer": "Κοίτα τις ειδοποιήσεις σου!"}
+{"type": "translate", "prompt": "Léo est très intéressant.", "answer": "Léo is very interesting."}
+{"type": "translate", "prompt": "Ma nièce Marie est très amusante.", "answer": "My niece Marie is very funny."}
+{"type": "translate", "prompt": "Ma sœur Alice est toujours méchante !", "answer": "My sister Alice is always mean!"}
+{"type": "translate", "prompt": "Ma tante Marie est très intéressante.", "answer": "My aunt Marie is very interesting."}
+{"type": "translate", "prompt": "Madam, are you looking for a green dress?", "answer": "Madame, vous cherchez une robe verte ?"}
+{"type": "translate", "prompt": "Madam, are you looking for a shirt or a dress?", "answer": "Madame, vous cherchez une chemise ou une robe ?"}
+{"type": "translate", "prompt": "Madame, un café ?", "answer": "Madam, a coffee?"}
+{"type": "translate", "prompt": "Madame, vous cherchez une robe verte ?", "answer": "Madam, are you looking for a green dress?"}
+{"type": "translate", "prompt": "Me too, I would like a dress!", "answer": "Moi aussi, je voudrais une robe !"}
+{"type": "translate", "prompt": "Me too, I would like a hat!", "answer": "Moi aussi, je voudrais un chapeau !"}
+{"type": "translate", "prompt": "Me too, I would like a shirt.", "answer": "Moi aussi, je voudrais une chemise."}
+{"type": "translate", "prompt": "Medvědi spí od listopadu do března.", "answer": "Bears sleep from November to March."}
+{"type": "translate", "prompt": "Mereka membawa buku.", "answer": "They bring books."}
+{"type": "translate", "prompt": "Mereka tidak suka tas dan dompet saya.", "answer": "They do not like my bag and wallet."}
+{"type": "translate", "prompt": "Mina ngithanda izicathulo, kodwa yena uthanda ibhande.", "answer": "I like the shoes, but he likes the belt."}
+{"type": "translate", "prompt": "Moi aussi, je viens de New York !", "answer": "Me too, I am from New York!"}
+{"type": "translate", "prompt": "Moi aussi, je viens de Paris.", "answer": "Me too, I am from Paris."}
+{"type": "translate", "prompt": "Monsieur, je voudrais un café, s'il vous plaît.", "answer": "Sir, I would like a coffee, please."}
+{"type": "translate", "prompt": "Monsieur, vous cherchez une robe ou une chemise ?", "answer": "Sir, are you looking for a dress or a shirt?"}
+{"type": "translate", "prompt": "My aunt Marie is very interesting.", "answer": "Ma tante Marie est très intéressante."}
+{"type": "translate", "prompt": "My aunt had cooked four different foods for the dinner party.", "answer": "Η θεία μου είχε μαγειρέψει τέσσερα διαφορετικά φαγητά για το τραπέζι."}
+{"type": "translate", "prompt": "My friend was coming to see me, when you came across her on the street.", "answer": "Η φίλη μου ερχόταν να με δει, όταν τη συνάντησες στον δρόμο."}
+{"type": "translate", "prompt": "My niece Marie is very funny.", "answer": "Ma nièce Marie est très amusante."}
+{"type": "translate", "prompt": "My opinion of the sample is positive.", "answer": "Η γνώμη μου για το δείγμα είναι θετική."}
+{"type": "translate", "prompt": "My red bag.", "answer": "Tas merah saya."}
+{"type": "translate", "prompt": "Má teta měla v listopadu další dítě.", "answer": "My aunt had another child in November."}
+{"type": "translate", "prompt": "Ngifuna ukuthenga izimpahla zabesimame.", "answer": "I want to buy women's clothes."}
+{"type": "translate", "prompt": "Nice to meet you, Marie, my name is Léo.", "answer": "Enchanté Marie, je m'appelle Léo."}
+{"type": "translate", "prompt": "Nkosazana leli jezi yikhulu neshumi lamarandi.", "answer": "Ma'am, this sweater is a hundred and ten rands."}
+{"type": "translate", "prompt": "Nkosazana, umuhle kakhulu kule ngubo!", "answer": "Ma'am, you're very beautiful in this dress!"}
+{"type": "translate", "prompt": "No one else is like you.", "answer": "Καμία άλλη δεν είναι σαν εσένα."}
+{"type": "translate", "prompt": "No, I would like a shirt, please.", "answer": "Non, je voudrais une chemise s'il vous plaît."}
+{"type": "translate", "prompt": "No, a niece and a nephew.", "answer": "Non, une nièce et un neveu."}
+{"type": "translate", "prompt": "No, a sister.", "answer": "Non, une sœur."}
+{"type": "translate", "prompt": "No, my brother is very funny.", "answer": "Non, mon frère est très amusant."}
+{"type": "translate", "prompt": "No, my brother is very mean!", "answer": "Non, mon frère est très méchant !"}
+{"type": "translate", "prompt": "No, my sister is very mean!", "answer": "Non, ma sœur est très méchante !"}
+{"type": "translate", "prompt": "No, not at all!", "answer": "Non, pas du tout !"}
+{"type": "translate", "prompt": "No, she is from Paris.", "answer": "Non, elle vient de Paris."}
+{"type": "translate", "prompt": "No, she lives in New York.", "answer": "Non, elle habite à New York."}
+{"type": "translate", "prompt": "Nobody had worried about the weather.", "answer": "Κανείς δεν είχε ανησυχήσει για τον καιρό."}
+{"type": "translate", "prompt": "Non, il est amusant.", "answer": "No, he is funny."}
+{"type": "translate", "prompt": "Non, je viens de Lyon, et toi ?", "answer": "No, I am from Lyon, and you?"}
+{"type": "translate", "prompt": "Non, ma sœur est très méchante !", "answer": "No, my sister is very mean!"}
+{"type": "translate", "prompt": "Non, ma tante est très amusante.", "answer": "No, my aunt is very funny."}
+{"type": "translate", "prompt": "Non, mon frère est très méchant !", "answer": "No, my brother is very mean!"}
+{"type": "translate", "prompt": "Of course, he is from Paris.", "answer": "Bien sûr, il vient de Paris."}
+{"type": "translate", "prompt": "Of course, he lives in Paris.", "answer": "Bien sûr, il habite à Paris."}
+{"type": "translate", "prompt": "Of course, my sister is very interesting.", "answer": "Bien sûr, ma sœur est très intéressante."}
+{"type": "translate", "prompt": "Oh Lisa, do you have a son?", "answer": "Oh Lisa, tu as un fils ?"}
+{"type": "translate", "prompt": "Oh Lisa, tu as un fils ?", "answer": "Oh Lisa, do you have a son?"}
+{"type": "translate", "prompt": "Oh Marie, do you have a son?", "answer": "Oh Marie, tu as un fils ?"}
+{"type": "translate", "prompt": "Oh Marie, tu as un fils ?", "answer": "Oh Marie, do you have a son?"}
+{"type": "translate", "prompt": "Oh no, my niece is very funny!", "answer": "Oh non, ma nièce est très amusante !"}
+{"type": "translate", "prompt": "Oh non, ma nièce est très amusante !", "answer": "Oh no, my niece is very funny!"}
+{"type": "translate", "prompt": "Oh of course, he is funny!", "answer": "Oh bien sûr, il est amusant !"}
+{"type": "translate", "prompt": "Oh yes, my niece is funny.", "answer": "Oh oui, ma nièce est amusante."}
+{"type": "translate", "prompt": "Oh, Léo, you have a brother?", "answer": "Oh Léo, tu as un frère ?"}
+{"type": "translate", "prompt": "Oh, he is mean?", "answer": "Oh, il est méchant ?"}
+{"type": "translate", "prompt": "Oh, me too, I have a sister!", "answer": "Oh, moi aussi, j'ai une sœur !"}
+{"type": "translate", "prompt": "Oh, super !", "answer": "Oh, great!"}
+{"type": "translate", "prompt": "Oh, tu as un fils et une fille maintenant ?", "answer": "Oh, you have a son and a daughter now?"}
+{"type": "translate", "prompt": "Oh, tu as un fils ?", "answer": "Oh, you have a son?"}
+{"type": "translate", "prompt": "Oh, tu as un frère ?", "answer": "Oh, you have a brother?"}
+{"type": "translate", "prompt": "Oh, you have a brother?", "answer": "Oh, tu as un frère ?"}
+{"type": "translate", "prompt": "Oh, you have a son and a daughter now?", "answer": "Oh, tu as un fils et une fille maintenant ?"}
+{"type": "translate", "prompt": "Oh, you have a son?", "answer": "Oh, tu as un fils ?"}
+{"type": "translate", "prompt": "Okay!", "answer": "D'accord !"}
+{"type": "translate", "prompt": "Okay, perfect!", "answer": "D'accord, parfait !"}
+{"type": "translate", "prompt": "On the surface.", "answer": "Πάνω στην επιφάνεια."}
+{"type": "translate", "prompt": "On which date do you run?", "answer": "Ποια ημερομηνία τρέχεις;"}
+{"type": "translate", "prompt": "Oui, elle est très amusante.", "answer": "Yes, she is very funny."}
+{"type": "translate", "prompt": "Oui, elle habite à Lyon.", "answer": "Yes, she lives in Lyon."}
+{"type": "translate", "prompt": "Oui, elle habite à New York maintenant.", "answer": "Yes, she lives in New York now."}
+{"type": "translate", "prompt": "Oui, elle vient de New York.", "answer": "Yes, she comes from New York."}
+{"type": "translate", "prompt": "Oui, j'ai un frère à Paris.", "answer": "Yes, I have a brother in Paris."}
+{"type": "translate", "prompt": "Oui, j'ai une fille et un fils maintenant !", "answer": "Yes, I have a daughter and a son now!"}
+{"type": "translate", "prompt": "Oui, je viens de Paris, et toi ?", "answer": "Yes, I am from Paris, and you?"}
+{"type": "translate", "prompt": "Oui, mais il est intéressant.", "answer": "Yes, but he is interesting."}
+{"type": "translate", "prompt": "Oui, mais mon frère est très intéressant.", "answer": "Yes, but my brother is very interesting."}
+{"type": "translate", "prompt": "Oui, moi aussi, j'ai une fille.", "answer": "Yes, me too, I have a daughter."}
+{"type": "translate", "prompt": "Oui, mon fils est très intéressant.", "answer": "Yes, my son is very interesting."}
+{"type": "translate", "prompt": "Oui, un sandwich.", "answer": "Yes, a sandwich."}
+{"type": "translate", "prompt": "Oui, une chemise.", "answer": "Yes, a shirt."}
+{"type": "translate", "prompt": "Oui, une sœur.", "answer": "Yes, a sister."}
+{"type": "translate", "prompt": "Our car is not green.", "answer": "אונדזער אויטאָ איז נישט גרין."}
+{"type": "translate", "prompt": "Our recent discussion.", "answer": "Η πρόσφατη συζήτησή μας."}
+{"type": "translate", "prompt": "Our technique was wrong.", "answer": "Η τεχνική μας ήταν λανθασμένη."}
+{"type": "translate", "prompt": "Pakaian dan tas saya hitam.", "answer": "My clothes and bag are black."}
+{"type": "translate", "prompt": "Parfait, au revoir !", "answer": "Perfect, goodbye!"}
+{"type": "translate", "prompt": "Pas du tout !", "answer": "Not at all!"}
+{"type": "translate", "prompt": "Paul est méchant ?", "answer": "Paul is mean?"}
+{"type": "translate", "prompt": "Paul is mean?", "answer": "Paul est méchant ?"}
+{"type": "translate", "prompt": "Paul, you have a son?", "answer": "Paul, tu as un fils ?"}
+{"type": "translate", "prompt": "People do not change easily!", "answer": "Οι άνθρωποι δεν αλλάζουν εύκολα!"}
+{"type": "translate", "prompt": "Petros studies physics.", "answer": "Ο Πέτρος σπουδάζει Φυσική."}
+{"type": "translate", "prompt": "Press \"delete\".", "answer": "Πατήστε \"διαγραφή\"."}
+{"type": "translate", "prompt": "Press the button on the right.", "answer": "Πατήστε το κουμπί στα δεξιά."}
+{"type": "translate", "prompt": "Proč jsi tam nejel v září, Františku?", "answer": "Why did you not go there in September, František?"}
+{"type": "translate", "prompt": "Proč nenávidíš zimu?", "answer": "Why do you hate winter?"}
+{"type": "translate", "prompt": "Proč nesnášíš zimu?", "answer": "Why can't you stand winter?"}
+{"type": "translate", "prompt": "První duben je zajímavý den.", "answer": "The first of April is an interesting day."}
+{"type": "translate", "prompt": "Raj is going up.", "answer": "राज ऊपर जा रहा है।"}
+{"type": "translate", "prompt": "Sarung tangan merah dan topi hitam itu", "answer": "That red glove and black hat"}
+{"type": "translate", "prompt": "Science offers valuable knowledge.", "answer": "Η επιστήμη προσφέρει πολύτιμη γνώση."}
+{"type": "translate", "prompt": "Sepatu saya hitam.", "answer": "My shoes are black."}
+{"type": "translate", "prompt": "She can cook meat really well.", "answer": "זי קען זייער גוט קאָכן פלייש."}
+{"type": "translate", "prompt": "She is always interesting.", "answer": "Elle est toujours intéressante."}
+{"type": "translate", "prompt": "She is convincing them.", "answer": "היא משכנעת אותם."}
+{"type": "translate", "prompt": "She is funny?", "answer": "Elle est amusante ?"}
+{"type": "translate", "prompt": "She is the joy of the whole family.", "answer": "Αυτή είναι η χαρά όλης της οικογένειας."}
+{"type": "translate", "prompt": "She is very mean?", "answer": "Elle est très méchante ?"}
+{"type": "translate", "prompt": "She is wasting ten peaches for one cake.", "answer": "היא מבזבזת עשרה אפרסקים בשביל עוגה אחת."}
+{"type": "translate", "prompt": "Sinazo izimpahla zabesimame lapha.", "answer": "We have women's clothes here."}
+{"type": "translate", "prompt": "Sir, I would like a coffee, please.", "answer": "Monsieur, je voudrais un café, s'il vous plaît."}
+{"type": "translate", "prompt": "Sir, are you looking for a dress or a shirt?", "answer": "Monsieur, vous cherchez une robe ou une chemise ?"}
+{"type": "translate", "prompt": "Some couples have a common account on social media.", "answer": "Μερικά ζευγάρια έχουν κοινό λογαριασμό στα μέσα κοινωνικής δικτύωσης."}
+{"type": "translate", "prompt": "Spare me the details!", "answer": "Να μου λείπουν οι λεπτομέρειες!"}
+{"type": "translate", "prompt": "Super, une robe bleue avec une ceinture.", "answer": "Great, a blue dress with a belt."}
+{"type": "translate", "prompt": "Technological civilization is very important.", "answer": "Ο τεχνολογικός πολιτισμός είναι πολύ σημαντικός."}
+{"type": "translate", "prompt": "The analysis is correct.", "answer": "Η ανάλυση είναι σωστή."}
+{"type": "translate", "prompt": "The artist's post already has thousands of shares.", "answer": "Η ανάρτηση του καλλιτέχνη έχει ήδη χιλιάδες κοινοποιήσεις."}
+{"type": "translate", "prompt": "The astronaut found an intelligent organism.", "answer": "Ο αστροναύτης βρήκε έναν νοήμονα οργανισμό."}
+{"type": "translate", "prompt": "The bus has low speed.", "answer": "Το λεωφορείο έχει μικρή ταχύτητα."}
+{"type": "translate", "prompt": "The cables are red, green and orange.", "answer": "Τα καλώδια είναι κόκκινα, πράσινα και πορτοκαλί."}
+{"type": "translate", "prompt": "The cat had hidden behind the fridge.", "answer": "Η γάτα είχε κρυφτεί πίσω από το ψυγείο."}
+{"type": "translate", "prompt": "The cat sleeps on top of the dog.", "answer": "बिल्ली कुत्ते के ऊपर सोती है।"}
+{"type": "translate", "prompt": "The cause of the invention.", "answer": "Η αιτία της εφεύρεσης."}
+{"type": "translate", "prompt": "The causes of the war.", "answer": "Οι αιτίες του πολέμου."}
+{"type": "translate", "prompt": "The child clicks on the video.", "answer": "Το παιδί κλικάρει το βίντεο."}
+{"type": "translate", "prompt": "The choreography of the work was not good.", "answer": "Η χορογραφία του έργου δεν ήταν καλή."}
+{"type": "translate", "prompt": "The closer you are to the microphone the better.", "answer": "Όσο πιο κοντά είσαι στο μικρόφωνο, τόσο το καλύτερο."}
+{"type": "translate", "prompt": "The conclusion is difficult.", "answer": "Το συμπέρασμα είναι δύσκολο."}
+{"type": "translate", "prompt": "The conclusion of the scientists is interesting.", "answer": "Το συμπέρασμα των επιστημόνων είναι ενδιαφέρον."}
+{"type": "translate", "prompt": "The contemporary laboratories.", "answer": "Τα σύγχρονα εργαστήρια."}
+{"type": "translate", "prompt": "The currency unit.", "answer": "Η νομισματική μονάδα."}
+{"type": "translate", "prompt": "The definition of electricity.", "answer": "Ο ορισμός του ηλεκτρισμού."}
+{"type": "translate", "prompt": "The definition of recycling.", "answer": "Ο ορισμός της ανακύκλωσης."}
+{"type": "translate", "prompt": "The depth is unknown.", "answer": "Το βάθος είναι άγνωστο."}
+{"type": "translate", "prompt": "The depth of the river is over two meters.", "answer": "Το βάθος του ποταμιού είναι πάνω από δύο μέτρα."}
+{"type": "translate", "prompt": "The details are not important.", "answer": "Οι λεπτομέρειες δεν είναι σημαντικές."}
+{"type": "translate", "prompt": "The disconnection and the deactivation.", "answer": "Η αποσύνδεση και η απενεργοποίηση."}
+{"type": "translate", "prompt": "The dress is very wide.", "answer": "Το φόρεμα είναι πολύ φαρδύ."}
+{"type": "translate", "prompt": "The game's installation took me two hours.", "answer": "Η εγκατάσταση του παιχνιδιού μού πήρε δύο ώρες."}
+{"type": "translate", "prompt": "The girl bought a new mouse.", "answer": "Το κορίτσι αγόρασε ένα νέο ποντίκι."}
+{"type": "translate", "prompt": "The girl has a rabbit as a pet.", "answer": "Το κορίτσι έχει ένα κουνέλι σαν κατοικίδιο."}
+{"type": "translate", "prompt": "The girl is online.", "answer": "Το κορίτσι είναι σε σύνδεση."}
+{"type": "translate", "prompt": "The government passed a new law on common issues.", "answer": "Η κυβέρνηση εξέδωσε νέο νόμο για τα κοινά ζητήματα."}
+{"type": "translate", "prompt": "The gram and the mile.", "answer": "Το γραμμάριο και το μίλι."}
+{"type": "translate", "prompt": "The installation of the application can take some minutes.", "answer": "Η εγκατάσταση της εφαρμογής μπορεί να πάρει μερικά λεπτά."}
+{"type": "translate", "prompt": "The internet connects people from all over the world.", "answer": "Το διαδίκτυο συνδέει ανθρώπους από όλο τον κόσμο."}
+{"type": "translate", "prompt": "The journalist interviews the politician.", "answer": "Ο δημοσιογράφος παίρνει συνέντευξη από τον πολιτικό."}
+{"type": "translate", "prompt": "The keyboard and the screen.", "answer": "Το πληκτρολόγιο και η οθόνη."}
+{"type": "translate", "prompt": "The mass of the water.", "answer": "Η μάζα του νερού."}
+{"type": "translate", "prompt": "The mouse is cheap.", "answer": "Το ποντίκι είναι φτηνό."}
+{"type": "translate", "prompt": "The novel has many details.", "answer": "Το μυθιστόρημα έχει πολλές λεπτομέρειες."}
+{"type": "translate", "prompt": "The payment is made by card or by check.", "answer": "Η πληρωμή γίνεται με κάρτα ή με επιταγή."}
+{"type": "translate", "prompt": "The physicist's research will help a lot of people.", "answer": "Η έρευνα της φυσικού θα βοηθήσει πολύ κόσμο."}
+{"type": "translate", "prompt": "The price of breakfast.", "answer": "Η τιμή του πρωινού."}
+{"type": "translate", "prompt": "The responsible scientist.", "answer": "Ο υπεύθυνος επιστήμονας."}
+{"type": "translate", "prompt": "The scientific article.", "answer": "Το επιστημονικό άρθρο."}
+{"type": "translate", "prompt": "The scientific invention.", "answer": "Η επιστημονική εφεύρεση."}
+{"type": "translate", "prompt": "The scientific team discovered a new material.", "answer": "Η επιστημονική ομάδα ανακάλυψε ένα νέο υλικό."}
+{"type": "translate", "prompt": "The scientist wrote a short but interesting article about modern technology.", "answer": "Ο επιστήμονας έγραψε ένα σύντομο αλλά ενδιαφέρον άρθρο για τη σύγχρονη τεχνολογία."}
+{"type": "translate", "prompt": "The speed limit.", "answer": "Το όριο ταχύτητας."}
+{"type": "translate", "prompt": "The temperature is very low in the winter, even in Greece!", "answer": "Η θερμοκρασία είναι πολύ χαμηλή τον χειμώνα, ακόμα και στην Ελλάδα!"}
+{"type": "translate", "prompt": "The temperature of the water.", "answer": "Η θερμοκρασία του νερού."}
+{"type": "translate", "prompt": "The theatrical performance was not successful.", "answer": "Η θεατρική παράσταση δεν είχε επιτυχία."}
+{"type": "translate", "prompt": "The translator was excellent!", "answer": "Η μεταφράστρια ήταν εξαιρετική!"}
+{"type": "translate", "prompt": "The video has a hundred comments.", "answer": "Το βίντεο έχει εκατό σχόλια."}
+{"type": "translate", "prompt": "There is only one technique for the experiment.", "answer": "Υπάρχει μόνο μία τεχνική για το πείραμα."}
+{"type": "translate", "prompt": "There is water on the surface.", "answer": "Υπάρχει νερό πάνω στην επιφάνεια."}
+{"type": "translate", "prompt": "There's no internet connection.", "answer": "Δεν υπάρχει σύνδεση στο διαδίκτυο."}
+{"type": "translate", "prompt": "They are changing the color of the clothes.", "answer": "הם משנים את הצבע של הבגדים."}
+{"type": "translate", "prompt": "They buy twenty shoes.", "answer": "Mereka membeli dua puluh sepatu."}
+{"type": "translate", "prompt": "They do not like Biology.", "answer": "Δεν τους αρέσει η Βιολογία."}
+{"type": "translate", "prompt": "They like Physics.", "answer": "Τους αρέσει η Φυσική."}
+{"type": "translate", "prompt": "They send me messages all the time.", "answer": "Αυτοί μου στέλνουν μηνύματα όλη την ώρα."}
+{"type": "translate", "prompt": "This is a nickname, not his real name.", "answer": "Αυτό είναι ένα ψευδώνυμο, όχι το πραγματικό του όνομα."}
+{"type": "translate", "prompt": "This is the first sample.", "answer": "Αυτό είναι το πρώτο δείγμα."}
+{"type": "translate", "prompt": "This sheep is very small.", "answer": "Το πρόβατο αυτό είναι αρκετά μικρό."}
+{"type": "translate", "prompt": "This user's account is no longer active.", "answer": "Ο λογαριασμός αυτού του χρήστη δεν είναι πια ενεργός."}
+{"type": "translate", "prompt": "Time is money.", "answer": "Ο χρόνος είναι χρήμα."}
+{"type": "translate", "prompt": "Today we only have tomatoes.", "answer": "הײַנט האָבן מיר נאָר פּאָמידאָרן."}
+{"type": "translate", "prompt": "Tragedy! I lost my musical score!", "answer": "Τραγωδία! Έχασα την παρτιτούρα μου!"}
+{"type": "translate", "prompt": "Tu as un neveu ou une nièce ?", "answer": "You have a nephew or a niece?"}
+{"type": "translate", "prompt": "Type your name and email address.", "answer": "Πληκτρολογείτε το όνομα και τη διεύθυνση ηλεκτρονικού ταχυδρομείου σας."}
+{"type": "translate", "prompt": "Těšíš se na březen?", "answer": "Are you looking forward to March?"}
+{"type": "translate", "prompt": "Un café ?", "answer": "A coffee?"}
+{"type": "translate", "prompt": "Un pull vert ou une robe verte ?", "answer": "A green sweater or a green dress?"}
+{"type": "translate", "prompt": "V březnu jedeme domů.", "answer": "We are going home in March."}
+{"type": "translate", "prompt": "V prosinci pijeme teplý čaj.", "answer": "In December, we drink hot tea."}
+{"type": "translate", "prompt": "V prvním a druhém měsíci jsem ještě jedla všechno.", "answer": "In my first and second month, I was still eating everything."}
+{"type": "translate", "prompt": "Vous cherchez une robe ou un pull ?", "answer": "Are you looking for a dress or a sweater?"}
+{"type": "translate", "prompt": "Vous cherchez une robe verte et un pull bleu ?", "answer": "Are you looking for a green dress and a blue sweater?"}
+{"type": "translate", "prompt": "We are bored when we are at home.", "answer": "Βαριόμαστε όταν είμαστε στο σπίτι."}
+{"type": "translate", "prompt": "We had given him a gift.", "answer": "Εμείς του είχαμε δώσει ένα δώρο."}
+{"type": "translate", "prompt": "We had heard it but we didn't want to say it to her!", "answer": "Το είχαμε ακούσει αλλά δε θέλαμε να της το πούμε!"}
+{"type": "translate", "prompt": "We promise to help you!", "answer": "Υποσχόμαστε να σας βοηθάμε!"}
+{"type": "translate", "prompt": "We were hiding from our parents.", "answer": "Εμείς κρυβόμασταν από τους γονείς μας."}
+{"type": "translate", "prompt": "We work tomorrow.", "answer": "Δουλεύουμε αύριο."}
+{"type": "translate", "prompt": "What are you downloading?", "answer": "Τι κατεβάζεις;"}
+{"type": "translate", "prompt": "What did you paint?", "answer": "Τι ζωγραφίσατε;"}
+{"type": "translate", "prompt": "What is a computer port?", "answer": "Τι είναι μια θύρα υπολογιστή;"}
+{"type": "translate", "prompt": "What is the conclusion?", "answer": "Ποιο είναι το συμπέρασμα;"}
+{"type": "translate", "prompt": "What is the definition?", "answer": "Ποιος είναι ο ορισμός;"}
+{"type": "translate", "prompt": "What is the limit of the speed of light?", "answer": "Ποιο είναι το όριο της ταχύτητας του φωτός;"}
+{"type": "translate", "prompt": "What is the price of this ticket?", "answer": "Ποια είναι η τιμή αυτού του εισιτηρίου;"}
+{"type": "translate", "prompt": "What is the procedure of an experiment?", "answer": "Ποια είναι η διαδικασία ενός πειράματος;"}
+{"type": "translate", "prompt": "What is the process exactly?", "answer": "Ποια είναι η διαδικασία ακριβώς;"}
+{"type": "translate", "prompt": "What is the scientific method?", "answer": "Τι είναι η επιστημονική μέθοδος;"}
+{"type": "translate", "prompt": "What is the temperature?", "answer": "Ποια είναι η θερμοκρασία;"}
+{"type": "translate", "prompt": "What method do the scientists use?", "answer": "Ποια μέθοδο χρησιμοποιούν οι επιστήμονες;"}
+{"type": "translate", "prompt": "What the chemist discovered is scary.", "answer": "Είναι τρομακτικά αυτά που ανακάλυψε η χημικός."}
+{"type": "translate", "prompt": "What time will the rocket leave?", "answer": "Τι ώρα θα φύγει ο πύραυλος;"}
+{"type": "translate", "prompt": "What's your nickname?", "answer": "Ποιο είναι το ψευδώνυμό σου;"}
+{"type": "translate", "prompt": "When had we last gone to England?", "answer": "Πότε είχαμε πάει τελευταία φορά στην Αγγλία;"}
+{"type": "translate", "prompt": "When will the laboratory give us the results?", "answer": "Πότε θα μας δώσει το εργαστήριο τα αποτελέσματα;"}
+{"type": "translate", "prompt": "Where is the money?", "answer": "Πού είναι τα χρήματα;"}
+{"type": "translate", "prompt": "Where were you sitting yesterday?", "answer": "Πού καθόσουν χθες;"}
+{"type": "translate", "prompt": "Which button do I press?", "answer": "Ποιο κουμπί πατάω;"}
+{"type": "translate", "prompt": "Which is the right method?", "answer": "Ποια είναι η σωστή μέθοδος;"}
+{"type": "translate", "prompt": "Which is your own profile?", "answer": "Ποιο είναι το δικό σου προφίλ;"}
+{"type": "translate", "prompt": "Which planet is the little green intelligent being from?", "answer": "Από ποιον πλανήτη είναι το μικρό πράσινο νοήμον ον;"}
+{"type": "translate", "prompt": "Who had this crazy idea to invent school?", "answer": "Ποιος είχε αυτή την τρελή ιδέα, να εφεύρει το σχολείο;"}
+{"type": "translate", "prompt": "Whoever invented this system is very clever!", "answer": "Όποιος επινόησε αυτό το σύστημα είναι πολύ έξυπνος!"}
+{"type": "translate", "prompt": "Why did you block me?", "answer": "Γιατί μου έκανες μπλοκ;"}
+{"type": "translate", "prompt": "Why did you comment on all my photos?", "answer": "Γιατί σχολίασες όλες μου τις φωτογραφίες;"}
+{"type": "translate", "prompt": "Why did you report my profile?", "answer": "Γιατί έκανες αναφορά στο προφίλ μου;"}
+{"type": "translate", "prompt": "Why did you upload the video without asking me?", "answer": "Γιατί ανέβασες το βίντεο χωρίς να με ρωτήσεις;"}
+{"type": "translate", "prompt": "Why do you not read the messages in the group conversation?", "answer": "Γιατί δε διαβάζεις τα μηνύματα στην ομαδική συνομιλία;"}
+{"type": "translate", "prompt": "Why don't you use the social networks?", "answer": "Γιατί δε χρησιμοποιείς τα κοινωνικά δίκτυα;"}
+{"type": "translate", "prompt": "Why had you accepted the charges?", "answer": "Γιατί είχες αποδεχτεί τις κατηγορίες;"}
+{"type": "translate", "prompt": "Why had you spoken to him?", "answer": "Γιατί του είχες μιλήσει;"}
+{"type": "translate", "prompt": "Will we use the article in the sentence?", "answer": "Θα χρησιμοποιήσουμε το άρθρο στην πρόταση;"}
+{"type": "translate", "prompt": "Write the chemical compounds in your notebook.", "answer": "Γράψε τις χημικές ενώσεις στο τετράδιό σου."}
+{"type": "translate", "prompt": "Write your remarks on a sheet of paper.", "answer": "Γράψτε τις παρατηρήσεις σας σε ένα φύλλο χαρτί."}
+{"type": "translate", "prompt": "Yebo, ninayo le ngubo enkulu na?", "answer": "Yes, do you have this dress in large?"}
+{"type": "translate", "prompt": "Yebo, sithengisa izimpahla zabesimame lapha.", "answer": "Yes, we sell women's clothes here."}
+{"type": "translate", "prompt": "Yes, I am looking for a green coat.", "answer": "Oui, je cherche un manteau vert."}
+{"type": "translate", "prompt": "Yes, a nephew and a niece.", "answer": "Oui, un neveu et une nièce."}
+{"type": "translate", "prompt": "Yes, a sister.", "answer": "Oui, une sœur."}
+{"type": "translate", "prompt": "Yes, an eclair.", "answer": "Oui, un éclair."}
+{"type": "translate", "prompt": "Yes, but he is very mean!", "answer": "Oui, mais il est très méchant !"}
+{"type": "translate", "prompt": "Yes, but she is mean.", "answer": "Oui, mais elle est méchante."}
+{"type": "translate", "prompt": "Yes, in New York.", "answer": "Oui, à New York."}
+{"type": "translate", "prompt": "Yes, me too, I have a daughter.", "answer": "Oui, moi aussi, j'ai une fille."}
+{"type": "translate", "prompt": "Yes, me too, I would like a shirt.", "answer": "Oui, moi aussi je voudrais une chemise."}
+{"type": "translate", "prompt": "Yes, my aunt is very mean!", "answer": "Oui, ma tante est très méchante !"}
+{"type": "translate", "prompt": "Yes, my name is Marie, and you?", "answer": "Oui, je m'appelle Marie, et toi ?"}
+{"type": "translate", "prompt": "Yes, my sister is very interesting.", "answer": "Oui, ma sœur est très intéressante."}
+{"type": "translate", "prompt": "Yes, my sister is very mean!", "answer": "Oui, ma sœur est très méchante !"}
+{"type": "translate", "prompt": "Yes, my son is always funny.", "answer": "Oui, mon fils est toujours amusant."}
+{"type": "translate", "prompt": "Yes, my son is very interesting.", "answer": "Oui, mon fils est très intéressant."}
+{"type": "translate", "prompt": "Yes, of course.", "answer": "Oui, bien sûr."}
+{"type": "translate", "prompt": "Yes, she comes from New York.", "answer": "Oui, elle vient de New York."}
+{"type": "translate", "prompt": "Yes, she is very funny.", "answer": "Oui, elle est très amusante."}
+{"type": "translate", "prompt": "Yes, she lives in New York now.", "answer": "Oui, elle habite à New York maintenant."}
+{"type": "translate", "prompt": "You have a brother?", "answer": "Tu as un frère ?"}
+{"type": "translate", "prompt": "You have a nephew or a niece?", "answer": "Tu as un neveu ou une nièce ?"}
+{"type": "translate", "prompt": "You have twenty new notifications and four messages.", "answer": "Έχετε είκοσι νέες ειδοποιήσεις και τέσσερα μηνύματα."}
+{"type": "translate", "prompt": "You need to have an account to send a message.", "answer": "Χρειάζεται να έχεις λογαριασμό για να στείλεις μήνυμα."}
+{"type": "translate", "prompt": "You never pass the ball!", "answer": "Δε δίνεις ποτέ πάσα!"}
+{"type": "translate", "prompt": "You were sold for a little money.", "answer": "Πουλήθηκες για λίγο χρήμα."}
+{"type": "translate", "prompt": "Your assumptions are not correct.", "answer": "Οι υποθέσεις σας δεν είναι σωστές."}
+{"type": "translate", "prompt": "Your computer has many ports.", "answer": "Ο υπολογιστής σου έχει πολλές θύρες."}
+{"type": "translate", "prompt": "Your eyes are poetry.", "answer": "Τα μάτια σου είναι ποίηση."}
+{"type": "translate", "prompt": "a brother", "answer": "un frère"}
+{"type": "translate", "prompt": "a brother and a son", "answer": "un frère et un fils"}
+{"type": "translate", "prompt": "a coffee", "answer": "un café"}
+{"type": "translate", "prompt": "a croissant and a coffee", "answer": "un croissant et un café"}
+{"type": "translate", "prompt": "a daughter and a sister", "answer": "une fille et une sœur"}
+{"type": "translate", "prompt": "a green hat with a green dress", "answer": "un chapeau vert avec une robe verte"}
+{"type": "translate", "prompt": "a green shirt with a green hat", "answer": "une chemise verte avec un chapeau vert"}
+{"type": "translate", "prompt": "a sister and a daughter", "answer": "une sœur et une fille"}
+{"type": "translate", "prompt": "a son and a brother", "answer": "un fils et un frère"}
+{"type": "translate", "prompt": "an eclair", "answer": "un éclair"}
+{"type": "translate", "prompt": "an eclair and a croissant", "answer": "un éclair et un croissant"}
+{"type": "translate", "prompt": "avec une chemise", "answer": "with a shirt"}
+{"type": "translate", "prompt": "my sister and my niece", "answer": "ma sœur et ma nièce"}
+{"type": "translate", "prompt": "the pink telephone", "answer": "το ροζ τηλέφωνο"}
+{"type": "translate", "prompt": "un fils", "answer": "a son"}
+{"type": "translate", "prompt": "un oncle et une tante", "answer": "an uncle and an aunt"}
+{"type": "translate", "prompt": "À Toronto ?", "answer": "In Toronto?"}
+{"type": "translate", "prompt": "Říjen není příliš teplý měsíc.", "answer": "October is not a very warm month."}
+{"type": "translate", "prompt": "Άλλη μια όμορφη ημέρα στην Ελλάδα.", "answer": "Another beautiful day in Greece."}
+{"type": "translate", "prompt": "Έγραψα αυτό το τραγούδι μόνο για εσένα.", "answer": "I wrote this song just for you."}
+{"type": "translate", "prompt": "Έκανα αναφορά σε αυτή τη σελίδα.", "answer": "I reported this page."}
+{"type": "translate", "prompt": "Έκανα αναφορά στο προφίλ σου και μετά σου έκανα μπλοκ.", "answer": "I reported your profile and then blocked you."}
+{"type": "translate", "prompt": "Έκανα μία ανακάλυψη.", "answer": "I made a discovery."}
+{"type": "translate", "prompt": "Ένα γραμμάριο.", "answer": "One gram."}
+{"type": "translate", "prompt": "Ένα λεπτό, παρακαλώ.", "answer": "A minute, please."}
+{"type": "translate", "prompt": "Ένας αστροναύτης πρέπει να μιλάει αγγλικά και ρώσικα.", "answer": "An astronaut must speak English and Russian."}
+{"type": "translate", "prompt": "Έστειλες την ηλεκτρονική αλληλογραφία;", "answer": "Did you send the e-mail?"}
+{"type": "translate", "prompt": "Έχεις ένα βιβλίο.", "answer": "You have a book."}
+{"type": "translate", "prompt": "Έχεις ένα λεπτό;", "answer": "Do you have a minute?"}
+{"type": "translate", "prompt": "Έχετε είκοσι νέες ειδοποιήσεις και τέσσερα μηνύματα.", "answer": "You have twenty new notifications and four messages."}
+{"type": "translate", "prompt": "Έχουμε πολλά κοινά.", "answer": "We have a lot in common."}
+{"type": "translate", "prompt": "Έχω ένα παιδί.", "answer": "I have one child."}
+{"type": "translate", "prompt": "Έχω εκατόν δέκα αιτήματα φιλίας.", "answer": "I have one hundred ten friend requests."}
+{"type": "translate", "prompt": "Έχω ενενήντα δολάρια.", "answer": "I have ninety dollars."}
+{"type": "translate", "prompt": "Έχω κάποια πράγματα.", "answer": "I have some things."}
+{"type": "translate", "prompt": "Έχω μία μικρή παρατήρηση πάνω στο κείμενο.", "answer": "I have a little remark on the text."}
+{"type": "translate", "prompt": "Έχω πάρει την επιστολή σου.", "answer": "I have received your letter."}
+{"type": "translate", "prompt": "Έχω τριάντα ειδοποιήσεις!", "answer": "I have thirty notifications!"}
+{"type": "translate", "prompt": "Έχω υπερβολικά πολύ φαγητό.", "answer": "I have too much food."}
+{"type": "translate", "prompt": "Ήθελε να συνδέσει  τα δύο του ηχεία.", "answer": "He wanted to connect his two speakers."}
+{"type": "translate", "prompt": "Ήρεμα, είμαι με το μέρος σου.", "answer": "Calm down, I'm on your side."}
+{"type": "translate", "prompt": "Ήταν χαρούμενος επειδή νίκησε.", "answer": "He was happy because he won."}
+{"type": "translate", "prompt": "Όλοι οι φίλαθλοι ήταν εναντίον μου!", "answer": "All the fans were against me!"}
+{"type": "translate", "prompt": "Όσο πιο κοντά είσαι στο μικρόφωνο, τόσο το καλύτερο.", "answer": "The closer you are to the microphone the better."}
+{"type": "translate", "prompt": "Όταν λες \"ιστός\", εννοείς το διαδίκτυο ή τον ιστό της αράχνης;", "answer": "When you say \"web\", do you mean the internet or the spider web?"}
+{"type": "translate", "prompt": "Όχι τώρα, βρίσκομαι επί σκηνής.", "answer": "Not now, I am on stage."}
+{"type": "translate", "prompt": "Όχι, αρνούμαι!", "answer": "No, I refuse!"}
+{"type": "translate", "prompt": "Όχι, δεν είχα απογοητευτεί καθόλου με την ταινία.", "answer": "No, I wasn't at all disappointed with the movie."}
+{"type": "translate", "prompt": "Αγόρασα καινούρια ηχεία για τον υπολογιστή μου.", "answer": "I bought new speakers for my computer."}
+{"type": "translate", "prompt": "Αισθάνθηκα άσχημα που τον άφησα.", "answer": "I felt bad for leaving him."}
+{"type": "translate", "prompt": "Ακολουθούμε τις σωστές διαδικασίες.", "answer": "We follow the correct procedures."}
+{"type": "translate", "prompt": "Ακούς ή πρέπει να το πω δυνατά;", "answer": "Do you hear or do I have to say it loudly?"}
+{"type": "translate", "prompt": "Ακούω επειδή αυτός μιλάει.", "answer": "I listen because he speaks."}
+{"type": "translate", "prompt": "Ακόμα και η γιαγιά μου έχει ηλεκτρονικό ταχυδρομείο.", "answer": "Even my grandmother has email."}
+{"type": "translate", "prompt": "Ανέβασα αυτήν τη φωτογραφία χθες.", "answer": "I uploaded this photo yesterday."}
+{"type": "translate", "prompt": "Ανοίξτε τον φυλλομετρητή που θέλετε.", "answer": "Open the browser that you want."}
+{"type": "translate", "prompt": "Ανυπομονώ να τον δω.", "answer": "I am looking forward to seeing him."}
+{"type": "translate", "prompt": "Απάντησα σωστά;", "answer": "Did I answer correctly?"}
+{"type": "translate", "prompt": "Απίστευτο! Υπάρχουν ακόμα αναλογικά τηλέφωνα!", "answer": "Unbelievable! There are still analog phones!"}
+{"type": "translate", "prompt": "Απλώς φαντάσου το.", "answer": "Just imagine it."}
+{"type": "translate", "prompt": "Αποσυνδέει τα τηλέφωνα όταν κοιμάται.", "answer": "She disconnects the phones when she sleeps."}
+{"type": "translate", "prompt": "Αποσύνδεσε τα ηχεία από τον υπολογιστή.", "answer": "He disconnected the speakers from the computer."}
+{"type": "translate", "prompt": "Ας κάνουμε ένα επιστημονικό πείραμα.", "answer": "Let's do a scientific experiment."}
+{"type": "translate", "prompt": "Ας κατεβάσουμε το αγαπημένο της τραγούδι.", "answer": "Let's download her favorite song."}
+{"type": "translate", "prompt": "Ασχολήσου με την πολιτική!", "answer": "Concern yourself with politics!"}
+{"type": "translate", "prompt": "Αυτή είναι ελεύθερο πνεύμα!", "answer": "She is a free spirit!"}
+{"type": "translate", "prompt": "Αυτή είναι η χαρά όλης της οικογένειας.", "answer": "She is the joy of the whole family."}
+{"type": "translate", "prompt": "Αυτή είχε απαντήσει στα αγγλικά.", "answer": "She had answered in English."}
+{"type": "translate", "prompt": "Αυτή η ίδια μιλάει.", "answer": "She herself is speaking."}
+{"type": "translate", "prompt": "Αυτή του διαβάζει μία εφημερίδα.", "answer": "She reads him a newspaper."}
+{"type": "translate", "prompt": "Αυτοί είναι ελέφαντες.", "answer": "These are elephants."}
+{"type": "translate", "prompt": "Αυτοί είχαν ακούσει έναν περίεργο θόρυβο πριν μία ώρα.", "answer": "They had heard a strange noise an hour before."}
+{"type": "translate", "prompt": "Αυτοί είχαν υποσχεθεί να με βοηθήσουν αλλά δεν έκαναν τίποτα!", "answer": "They had promised to help me but they didn't do anything!"}
+{"type": "translate", "prompt": "Αυτοί κολυμπούν εύκολα.", "answer": "They swim easily."}
+{"type": "translate", "prompt": "Αυτοί μου στέλνουν μηνύματα όλη την ώρα.", "answer": "They send me messages all the time."}
+{"type": "translate", "prompt": "Αυτοί τρώνε τα γλυκά.", "answer": "They are eating the sweets."}
+{"type": "translate", "prompt": "Αυτό δεν είναι παρά μία απλή υπόθεση.", "answer": "This is nothing but a simple assumption."}
+{"type": "translate", "prompt": "Αυτό είναι ένα μικρό δείγμα σεβασμού και αγάπης.", "answer": "This is a small token of respect and love."}
+{"type": "translate", "prompt": "Αυτό είναι ένα παράδειγμα εικονικής πραγματικότητας.", "answer": "This is an example of virtual reality."}
+{"type": "translate", "prompt": "Αυτό είναι ένα ψευδώνυμο, όχι το πραγματικό του όνομα.", "answer": "This is a nickname, not his real name."}
+{"type": "translate", "prompt": "Αυτό είναι το πρώτο δείγμα.", "answer": "This is the first sample."}
+{"type": "translate", "prompt": "Αυτό το εστιατόριο έχει καλό και οικονομικό φαγητό.", "answer": "This restaurant has good and economical food."}
+{"type": "translate", "prompt": "Αυτός δε μου δείχνει κανένα ενδιαφέρον.", "answer": "He does not show me any interest."}
+{"type": "translate", "prompt": "Αυτός δεν έχει κανένα προφίλ στα κοινωνικά μέσα.", "answer": "He doesn't have any profile on social media."}
+{"type": "translate", "prompt": "Αυτός είναι ένας σοβαρός άντρας.", "answer": "He is a serious man."}
+{"type": "translate", "prompt": "Αυτός είναι ο ορισμός της Φυσικής.", "answer": "This is the definition of physics."}
+{"type": "translate", "prompt": "Αυτός ερευνά τις αιτίες της καταστροφής.", "answer": "He researches the causes of the destruction."}
+{"type": "translate", "prompt": "Αυτός κοιτάζει στο διάστημα.", "answer": "He is looking into space."}
+{"type": "translate", "prompt": "Αυτός μας διαβάζει ένα βιβλίο.", "answer": "He reads us a book."}
+{"type": "translate", "prompt": "Αυτός ο πολιτικός λέει ότι υποστηρίζει την κυβέρνηση.", "answer": "This politician says that he supports the government."}
+{"type": "translate", "prompt": "Αυτός ο ταχυδρόμος είναι ο θείος σου;", "answer": "Is that mailman your uncle?"}
+{"type": "translate", "prompt": "Αυτός πιθανώς είναι ένας ελέφαντας.", "answer": "It is possibly an elephant."}
+{"type": "translate", "prompt": "Αυτός τρέχει χωρίς όρια.", "answer": "He is running without limits."}
+{"type": "translate", "prompt": "Βαριόμαστε όταν είμαστε στο σπίτι.", "answer": "We are bored when we are at home."}
+{"type": "translate", "prompt": "Βελτίωσε την τεχνική του.", "answer": "He improved his technique."}
+{"type": "translate", "prompt": "Βρήκα τα κοσμήματα που είχα χάσει.", "answer": "I found the jewelry that I had lost."}
+{"type": "translate", "prompt": "Βρήκα την ιστοσελίδα.", "answer": "I found the website."}
+{"type": "translate", "prompt": "Γεμίζεις το ποτήρι;", "answer": "Do you fill the glass?"}
+{"type": "translate", "prompt": "Για μία ώρα.", "answer": "For an hour."}
+{"type": "translate", "prompt": "Για την επιστήμη το βάρος και η μάζα είναι διαφορετικά πράγματα.", "answer": "For science weight and mass are different things."}
+{"type": "translate", "prompt": "Γιατί ανέβασες το βίντεο χωρίς να με ρωτήσεις;", "answer": "Why did you upload the video without asking me?"}
+{"type": "translate", "prompt": "Γιατί βγήκατε από την ομαδική συνομιλία;", "answer": "Why did you leave the group conversation?"}
+{"type": "translate", "prompt": "Γιατί δε βλέπω τις κοινοποιήσεις του;", "answer": "Why don't I see his shares?"}
+{"type": "translate", "prompt": "Γιατί δε διαβάζεις τα μηνύματα στην ομαδική συνομιλία;", "answer": "Why do you not read the messages in the group conversation?"}
+{"type": "translate", "prompt": "Γιατί δε σε άφησε ο βασιλιάς να εκδώσεις αυτό το περιοδικό;", "answer": "Why didn't the king let you publish this magazine?"}
+{"type": "translate", "prompt": "Γιατί δε συνδέετε τα δύο καλώδια;", "answer": "Why don't you connect the two cables?"}
+{"type": "translate", "prompt": "Γιατί δε χρησιμοποιείς τα κοινωνικά δίκτυα;", "answer": "Why don't you use the social networks?"}
+{"type": "translate", "prompt": "Γιατί δεν το δέχεσαι;", "answer": "Why don't you accept it?"}
+{"type": "translate", "prompt": "Γιατί μου έκανες μπλοκ;", "answer": "Why did you block me?"}
+{"type": "translate", "prompt": "Γιατί μου στέλνεις μηνύματα ηλεκτρονικού ταχυδρομείου κάθε μέρα;", "answer": "Why do you send me email messages every day?"}
+{"type": "translate", "prompt": "Γιατί ο λογαριασμός μου δε φαίνεται ενεργός;", "answer": "Why doesn't my account appear to be active?"}
+{"type": "translate", "prompt": "Γιατί σχολίασες όλες μου τις φωτογραφίες;", "answer": "Why did you comment on all my photos?"}
+{"type": "translate", "prompt": "Γράψε τις χημικές ενώσεις στο τετράδιό σου.", "answer": "Write the chemical compounds in your notebook."}
+{"type": "translate", "prompt": "Γράψτε τις παρατηρήσεις σας σε ένα φύλλο χαρτί.", "answer": "Write your remarks on a sheet of paper."}
+{"type": "translate", "prompt": "Δέχεστε πιστωτικές κάρτες;", "answer": "Do you accept credit cards?"}
+{"type": "translate", "prompt": "Δέχτηκε το αίτημα φιλίας;", "answer": "Did he accept the friend request?"}
+{"type": "translate", "prompt": "Δε βλέπω το καλώδιο.", "answer": "I don't see the cord."}
+{"type": "translate", "prompt": "Δε βλέπω τον δρομέα.", "answer": "I don't see the cursor."}
+{"type": "translate", "prompt": "Δε δίνεις ποτέ πάσα!", "answer": "You never pass the ball!"}
+{"type": "translate", "prompt": "Δε θα είμαι εδώ αλλά το πνεύμα μου θα είναι μαζί σας!", "answer": "I will not be here but my spirit will be with you!"}
+{"type": "translate", "prompt": "Δε θυμάμαι το ψευδώνυμό της.", "answer": "I do not remember her nickname."}
+{"type": "translate", "prompt": "Δε μιλάω σε ερασιτέχνες.", "answer": "I don't talk to amateurs."}
+{"type": "translate", "prompt": "Δε χρειάζεται να κοινοποιείς ό,τι βλέπεις.", "answer": "It's not necessary to share whatever you see."}
+{"type": "translate", "prompt": "Δε χρησιμοποιώ τα μέσα κοινωνικής δικτύωσης.", "answer": "I don't use the social media."}
+{"type": "translate", "prompt": "Δείτε το βίντεο!", "answer": "Watch the video!"}
+{"type": "translate", "prompt": "Δεν έχω λογαριασμό σε κανένα μέσο κοινωνικής δικτύωσης.", "answer": "I don't have an account on any social media network."}
+{"type": "translate", "prompt": "Δεν έχω τις απαραίτητες τεχνολογικές γνώσεις για αυτήν τη δουλειά.", "answer": "I do not have the necessary technological knowledge for this job."}
+{"type": "translate", "prompt": "Δεν ασχολούμαστε με τα πολιτικά ζητήματα.", "answer": "We do not concern ourselves with political issues."}
+{"type": "translate", "prompt": "Δεν είμαι εκατό τοις εκατό σίγουρος ότι είναι μαλλί.", "answer": "I am not a hundred percent sure it is wool."}
+{"type": "translate", "prompt": "Δεν είμαστε ίδιοι.", "answer": "We are not the same."}
+{"type": "translate", "prompt": "Δεν είναι το ίδιο.", "answer": "It is not the same."}
+{"type": "translate", "prompt": "Δεν είναι το μόνο παιδί!", "answer": "It is not the only child!"}
+{"type": "translate", "prompt": "Δεν είσαι η μόνη.", "answer": "You are not the only one."}
+{"type": "translate", "prompt": "Δεν είχα πάρει το αυτοκίνητό σου.", "answer": "I had not taken your car."}
+{"type": "translate", "prompt": "Δεν είχαν αρνηθεί ποτέ να μας  βοηθήσουν.", "answer": "They had never refused to help us."}
+{"type": "translate", "prompt": "Δεν κοινοποίησα καμία από τις αναρτήσεις του.", "answer": "I did not share any of his posts."}
+{"type": "translate", "prompt": "Δεν μπορώ να κοιμηθώ  εξαιτίας του θορύβου.", "answer": "I cannot sleep because of the noise."}
+{"type": "translate", "prompt": "Δεν μπορώ να πληκτρολογήσω τόσο γρήγορα!", "answer": "I cannot type so fast!"}
+{"type": "translate", "prompt": "Δεν ξέρω αν αυτό που είδα ήταν τραγωδία ή κωμωδία.", "answer": "I don't know whether what I saw was a tragedy or a comedy."}
+{"type": "translate", "prompt": "Δεν ξέρω ποιος εφηύρε το τηλέφωνο.", "answer": "I do not know who invented the telephone."}
+{"type": "translate", "prompt": "Δεν το θέλω.", "answer": "I don't want it."}
+{"type": "translate", "prompt": "Δεν υπάρχει ήχος για αυτήν την πρόταση!", "answer": "There is no sound for this sentence!"}
+{"type": "translate", "prompt": "Δεν υπάρχει σύνδεση στο διαδίκτυο.", "answer": "There's no internet connection."}
+{"type": "translate", "prompt": "Διαβάζεις ένα βιβλίο.", "answer": "You read a book."}
+{"type": "translate", "prompt": "Διαβάζεις τα γράμματα εύκολα;", "answer": "Do you read the letters easily?"}
+{"type": "translate", "prompt": "Διαβάζω το μενού.", "answer": "I am reading the menu."}
+{"type": "translate", "prompt": "Δουλεύουμε αύριο.", "answer": "We work tomorrow."}
+{"type": "translate", "prompt": "Δουλεύω με μια κοινωνική και συμπαθητική γυναίκα.", "answer": "I'm working with a sociable and likable woman."}
+{"type": "translate", "prompt": "Δώσε μου την επιταγή.", "answer": "Give me the check."}
+{"type": "translate", "prompt": "Είμαι γεμάτος χαρά.", "answer": "I am full of joy."}
+{"type": "translate", "prompt": "Είμαι μόνη.", "answer": "I am alone."}
+{"type": "translate", "prompt": "Είμαι στο σωστό μονοπάτι γιατί έτσι γεννήθηκα.", "answer": "I'm on the right path because I was born this way."}
+{"type": "translate", "prompt": "Είμαι χημικός, δεν ξέρω φυσική!", "answer": "I am a chemist, I don't know physics!"}
+{"type": "translate", "prompt": "Είμαστε οι εαυτοί μας.", "answer": "We are ourselves."}
+{"type": "translate", "prompt": "Είναι Παρασκευή απόγευμα.", "answer": "It is Friday afternoon."}
+{"type": "translate", "prompt": "Είναι έξυπνες οι μαϊμούδες;", "answer": "Are monkeys clever?"}
+{"type": "translate", "prompt": "Είναι δέκα η ώρα.", "answer": "It is ten o'clock."}
+{"type": "translate", "prompt": "Είναι ενεργός, αλλά δε διαβάζει τα μηνύματά μου.", "answer": "He is active, but does not read my messages."}
+{"type": "translate", "prompt": "Είναι η ποσότητα πιο σημαντική από την ποιότητα;", "answer": "Is quantity more important than quality?"}
+{"type": "translate", "prompt": "Είναι θετικό.", "answer": "It is positive."}
+{"type": "translate", "prompt": "Είναι κοινή γνώση πως ο πρωθυπουργός θα φέρει νέο νόμο στο κοινοβούλιο.", "answer": "It is common knowledge that the prime minister will introduce a new law in parliament."}
+{"type": "translate", "prompt": "Είναι ο δρομέας στην οθόνη;", "answer": "Is the cursor on the screen?"}
+{"type": "translate", "prompt": "Είναι πέντε και είκοσι πέντε.", "answer": "It's twenty-five past five."}
+{"type": "translate", "prompt": "Είναι πολύ μακριά.", "answer": "It is very far away."}
+{"type": "translate", "prompt": "Είναι τρομακτικά αυτά που ανακάλυψε η χημικός.", "answer": "What the chemist discovered is scary."}
+{"type": "translate", "prompt": "Είναι υπερβολικά ακριβό για εμένα!", "answer": "It is too expensive for me!"}
+{"type": "translate", "prompt": "Είπε ότι είχε ξεχάσει το βιολί του;", "answer": "Did he say that he had forgotten his violin?"}
+{"type": "translate", "prompt": "Είσαι πολύ αντιπαθητικός!", "answer": "You are very unlikeable!"}
+{"type": "translate", "prompt": "Είσαι υπερβολικά χαρούμενος.", "answer": "You are too happy."}
+{"type": "translate", "prompt": "Είχα ακολουθήσει αυτό το αστέρι, αλλά όχι πια.", "answer": "I had followed this star, but not anymore."}
+{"type": "translate", "prompt": "Είχα προσπαθήσει να σου τηλεφωνήσω πριν τρεις μέρες.", "answer": "I had tried to call you three days ago."}
+{"type": "translate", "prompt": "Είχα φανταστεί ότι  τελειώσατε το μάθημα.", "answer": "I had imagined that you finished the lesson."}
+{"type": "translate", "prompt": "Είχα φύγει από το σχολείο.", "answer": "I had left the school."}
+{"type": "translate", "prompt": "Είχαμε ανησυχήσει ήδη πριν ακούσουμε την είδηση.", "answer": "We had already worried before we heard the news."}
+{"type": "translate", "prompt": "Είχαμε δει το ίδιο άτομο;", "answer": "Had we seen the same person?"}
+{"type": "translate", "prompt": "Είχαμε κέρδος πέρυσι;", "answer": "Did we have a profit last year?"}
+{"type": "translate", "prompt": "Είχαμε φανταστεί ότι η ομάδα μας θα κερδίσει;", "answer": "Had we imagined that our team would win?"}
+{"type": "translate", "prompt": "Είχαμε χάσει τα διαβατήριά μας στο ταξίδι.", "answer": "We had lost our passports on the trip."}
+{"type": "translate", "prompt": "Είχατε φάει ήδη πριν έρθετε;", "answer": "Had you already eaten before you came?"}
+{"type": "translate", "prompt": "Είχε απογοητευτεί από τα αποτελέσματα του αγώνα;", "answer": "Was she disappointed with the results of the game?"}
+{"type": "translate", "prompt": "Είχε ξεχάσει την απάντηση.", "answer": "She had forgotten the answer."}
+{"type": "translate", "prompt": "Είχες επισκεφτεί πολλές ευρωπαϊκές χώρες.", "answer": "You had visited many European countries."}
+{"type": "translate", "prompt": "Είχες νιώσει δυνατός όταν ήσουν νέος;", "answer": "Had you felt strong when you were young?"}
+{"type": "translate", "prompt": "Εγώ γράφω μια επιστολή.", "answer": "I write a letter."}
+{"type": "translate", "prompt": "Εγώ δε μισώ κανένα.", "answer": "I do not hate anybody."}
+{"type": "translate", "prompt": "Εγώ διαβάζω.", "answer": "I read."}
+{"type": "translate", "prompt": "Εγώ ζω μακριά από εδώ.", "answer": "I live far from here."}
+{"type": "translate", "prompt": "Εγώ μισώ τη ζάχαρη.", "answer": "I hate sugar."}
+{"type": "translate", "prompt": "Εγώ σου είχα απαντήσει.", "answer": "I had answered you."}
+{"type": "translate", "prompt": "Εγώ συνήθως δε σχολιάζω στα μέσα κοινωνικής δικτύωσης.", "answer": "I don't usually comment on social media."}
+{"type": "translate", "prompt": "Εκείνη είναι η επίσημη ιστοσελίδα μας.", "answer": "That is our official website."}
+{"type": "translate", "prompt": "Εκείνο το παιδί είναι το μαύρο πρόβατο  στην οικογένειά του.", "answer": "That child is the black sheep of his family."}
+{"type": "translate", "prompt": "Εκείνος είναι ένας χρυσός καθρέφτης.", "answer": "That is a golden mirror."}
+{"type": "translate", "prompt": "Ελπίζω να μη ζήσουμε ποτέ έναν βιολογικό πόλεμο.", "answer": "I hope that we never experience a biological war."}
+{"type": "translate", "prompt": "Εμείς κρυβόμασταν από τους γονείς μας.", "answer": "We were hiding from our parents."}
+{"type": "translate", "prompt": "Εμείς του είχαμε δώσει ένα δώρο.", "answer": "We had given him a gift."}
+{"type": "translate", "prompt": "Επιβάλλεται να ασχολείσαι με τα κοινά ζητήματα.", "answer": "It is imperative that you concern yourself with civic issues."}
+{"type": "translate", "prompt": "Ερωτευτήκαμε ο ένας τον άλλον όταν ήμασταν παιδιά.", "answer": "We fell in love with each other when we were kids."}
+{"type": "translate", "prompt": "Εσείς είχατε αρχίσει πριν εμείς έρθουμε.", "answer": "You had started before we came."}
+{"type": "translate", "prompt": "Η έκπτωση.", "answer": "The discount."}
+{"type": "translate", "prompt": "Η έρευνα της φυσικού θα βοηθήσει πολύ κόσμο.", "answer": "The physicist's research will help a lot of people."}
+{"type": "translate", "prompt": "Η αγαπημένη μου επιστήμη είναι η Χημεία.", "answer": "My favorite science is chemistry."}
+{"type": "translate", "prompt": "Η αδελφή μου έχει μια τεράστια γάτα!", "answer": "My sister has a huge cat!"}
+{"type": "translate", "prompt": "Η αδελφή μου έχει μια τεράστια γάτα.", "answer": "My sister has a huge cat."}
+{"type": "translate", "prompt": "Η αιτία της εφεύρεσης.", "answer": "The cause of the invention."}
+{"type": "translate", "prompt": "Η ανάλυση είναι σωστή.", "answer": "The analysis is correct."}
+{"type": "translate", "prompt": "Η ανάρτηση του καλλιτέχνη έχει ήδη χιλιάδες κοινοποιήσεις.", "answer": "The artist's post already has thousands of shares."}
+{"type": "translate", "prompt": "Η ανακάλυψη και η εφεύρεση δεν είναι το ίδιο πράγμα.", "answer": "Discovery and invention are not the same thing."}
+{"type": "translate", "prompt": "Η ανεξάρτητη οικονομία.", "answer": "The independent economy."}
+{"type": "translate", "prompt": "Η απάντηση είναι αρνητική.", "answer": "The answer is negative."}
+{"type": "translate", "prompt": "Η απενεργοποίηση είναι εύκολη;", "answer": "Is the deactivation easy?"}
+{"type": "translate", "prompt": "Η αποσύνδεση δεν απαγορεύεται.", "answer": "Logging out is not prohibited."}
+{"type": "translate", "prompt": "Η αποσύνδεση και η απενεργοποίηση.", "answer": "The disconnection and the deactivation."}
+{"type": "translate", "prompt": "Η αποσύνδεση.", "answer": "The disconnection."}
+{"type": "translate", "prompt": "Η αποταμίευση βοηθά την οικονομία.", "answer": "Saving money helps the economy."}
+{"type": "translate", "prompt": "Η αφρικανική παραδοσιακή μουσική είναι εξαιρετική.", "answer": "The African traditional music is excellent."}
+{"type": "translate", "prompt": "Η βασίλισσα επέβαλε τον νόμο.", "answer": "The queen imposed the law."}
+{"type": "translate", "prompt": "Η γιαγιά μου έχει ένα  σιδερένιο τηγάνι.", "answer": "My grandmother has an iron frying pan."}
+{"type": "translate", "prompt": "Η γυναίκα κοιμάται το πρωί.", "answer": "The woman sleeps in the morning."}
+{"type": "translate", "prompt": "Η γυναίκα σηκώθηκε από την καρέκλα και άνοιξε το παράθυρο.", "answer": "The woman got up from the chair and opened the window."}
+{"type": "translate", "prompt": "Η γυναίκα του είναι πολύ αρνητική.", "answer": "His wife is very negative."}
+{"type": "translate", "prompt": "Η γυναίκα τού μιλάει.", "answer": "The woman talks to him."}
+{"type": "translate", "prompt": "Η διαδικασία δεν είναι πολύ περίπλοκη.", "answer": "The process is not very complicated."}
+{"type": "translate", "prompt": "Η δουλειά του προπονητή ποδοσφαίρου δεν είναι καθόλου εύκολη.", "answer": "The job of the football coach is not easy at all."}
+{"type": "translate", "prompt": "Η εγκατάσταση του παιχνιδιού μού πήρε δύο ώρες.", "answer": "The game's installation took me two hours."}
+{"type": "translate", "prompt": "Η εικόνα προφίλ.", "answer": "The profile picture."}
+{"type": "translate", "prompt": "Η επιλογή του είχε άσχημες επιπτώσεις.", "answer": "His choice had bad effects."}
+{"type": "translate", "prompt": "Η επιστήμη και η τεχνολογία.", "answer": "Science and technology."}
+{"type": "translate", "prompt": "Η επιστήμη προσφέρει πολύτιμη γνώση.", "answer": "Science offers valuable knowledge."}
+{"type": "translate", "prompt": "Η επιστημονική ανακάλυψη.", "answer": "The scientific discovery."}
+{"type": "translate", "prompt": "Η επιστημονική εφεύρεση.", "answer": "The scientific invention."}
+{"type": "translate", "prompt": "Η επιστημονική ομάδα ανακάλυψε ένα νέο υλικό.", "answer": "The scientific team discovered a new material."}
+{"type": "translate", "prompt": "Η θερμοκρασία είναι πολύ χαμηλή τον χειμώνα, ακόμα και στην Ελλάδα!", "answer": "The temperature is very low in the winter, even in Greece!"}
+{"type": "translate", "prompt": "Η θερμοκρασία του νερού.", "answer": "The temperature of the water."}
+{"type": "translate", "prompt": "Η κοπέλα μου είναι αθλήτρια της ενόργανης γυμναστικής.", "answer": "My girlfriend is an artistic gymnast."}
+{"type": "translate", "prompt": "Η μάζα του νερού.", "answer": "The mass of the water."}
+{"type": "translate", "prompt": "Η μεταφράστρια ήταν εξαιρετική!", "answer": "The translator was excellent!"}
+{"type": "translate", "prompt": "Η μουσική είναι βασικά ήχος.", "answer": "Music is basically sound."}
+{"type": "translate", "prompt": "Η νομισματική μονάδα.", "answer": "The currency unit."}
+{"type": "translate", "prompt": "Η νονά έστειλε το δώρο μου ταχυδρομικώς.", "answer": "The godmother sent my gift by mail."}
+{"type": "translate", "prompt": "Η νονά μου μου έδωσε πενήντα δολάρια.", "answer": "My godmother gave me fifty dollars."}
+{"type": "translate", "prompt": "Η οικονομική επιστήμη είναι πολύ ενδιαφέρουσα.", "answer": "The economic science is very interesting."}
+{"type": "translate", "prompt": "Η ποσότητα του πρωινού.", "answer": "The quantity of the breakfast."}
+{"type": "translate", "prompt": "Η πρόσφατη συζήτησή μας.", "answer": "Our recent discussion."}
+{"type": "translate", "prompt": "Η πυρηνική ενέργεια είναι εξαιρετικά επικίνδυνη.", "answer": "Nuclear energy is extremely dangerous."}
+{"type": "translate", "prompt": "Η πόρτα μας είναι αλουμίνιο.", "answer": "Our door is aluminum."}
+{"type": "translate", "prompt": "Η σκιά του σκύλου είναι πίσω του.", "answer": "The dog's shadow is behind it."}
+{"type": "translate", "prompt": "Η σχέση μας με κάνει να αισθάνομαι ήρεμη.", "answer": "Our relationship makes me feel calm."}
+{"type": "translate", "prompt": "Η σωστή μέθοδος.", "answer": "The right method."}
+{"type": "translate", "prompt": "Η σύγχρονη τεχνολογία.", "answer": "The modern technology."}
+{"type": "translate", "prompt": "Η σύνδεση απαγορεύεται.", "answer": "Logging in is prohibited."}
+{"type": "translate", "prompt": "Η ταχύτητα του αυτοκινήτου είναι ογδόντα χιλιόμετρα ανά ώρα.", "answer": "The car's speed is eighty kilometres an hour."}
+{"type": "translate", "prompt": "Η τελευταία του προσπάθεια  είναι πραγματικά ενδιαφέρουσα.", "answer": "His last attempt is really interesting."}
+{"type": "translate", "prompt": "Η τεχνική μας ήταν λανθασμένη.", "answer": "Our technique was wrong."}
+{"type": "translate", "prompt": "Η τεχνολογία βελτιώνει την ποιότητα της ζωής μας.", "answer": "Technology improves our quality of life."}
+{"type": "translate", "prompt": "Η τεχνολογία βοηθά την επιστήμη.", "answer": "Technology helps science."}
+{"type": "translate", "prompt": "Η τηλεόραση είναι πολύ δυνατά!", "answer": "The TV is very loud!"}
+{"type": "translate", "prompt": "Η φίλη μου ερχόταν να με δει, όταν τη συνάντησες στον δρόμο.", "answer": "My friend was coming to see me, when you came across her on the street."}
+{"type": "translate", "prompt": "Η φτηνή τιμή.", "answer": "The cheap price."}
+{"type": "translate", "prompt": "Η χορογραφία του έργου δεν ήταν καλή.", "answer": "The choreography of the work was not good."}
+{"type": "translate", "prompt": "Θέλουμε να φάμε το εικονικό αχλάδι.", "answer": "We want to eat the virtual pear."}
+{"type": "translate", "prompt": "Θέλω κι άλλο παγωτό!", "answer": "I want more ice cream!"}
+{"type": "translate", "prompt": "Θέλω μερικές μέρες.", "answer": "I want some days."}
+{"type": "translate", "prompt": "Θέλω τη συνταγή αυτού του γεύματος.", "answer": "I want the recipe for this meal."}
+{"type": "translate", "prompt": "Θα ανεβάσω ένα βίντεο.", "answer": "I will upload a video."}
+{"type": "translate", "prompt": "Θα εκδώσουμε έναν νέο νόμο!", "answer": "We will pass a new law!"}
+{"type": "translate", "prompt": "Θα κάνω την κοινοποίησή μου δημόσια.", "answer": "I will make my share public."}
+{"type": "translate", "prompt": "Θα μειώσω την τιμή τον Ιούλιο.", "answer": "I will lower the price in July."}
+{"type": "translate", "prompt": "Θα πάτε στην παράσταση παραδοσιακών χορών;", "answer": "Will you go to the traditional dance performance?"}
+{"type": "translate", "prompt": "Θα σου δώσω την επιταγή.", "answer": "I'll give you the check."}
+{"type": "translate", "prompt": "Θα το ψάξω στον ιστό.", "answer": "I will search it on the web."}
+{"type": "translate", "prompt": "Θα φτιάξω το δικό μου πολιτικό κόμμα.", "answer": "I will make my own political party."}
+{"type": "translate", "prompt": "Θα χρησιμοποιήσουμε το άρθρο στην πρόταση;", "answer": "Will we use the article in the sentence?"}
+{"type": "translate", "prompt": "Κάθε λεπτομέρεια μετράει.", "answer": "Every detail counts."}
+{"type": "translate", "prompt": "Κάθε νότα ήταν υπέροχη!", "answer": "Each note was wonderful!"}
+{"type": "translate", "prompt": "Κάθε πράγμα έχει την ώρα του.", "answer": "Everything has its time."}
+{"type": "translate", "prompt": "Κάνω τις αγορές μου διαδικτυακά.", "answer": "I do my shopping online."}
+{"type": "translate", "prompt": "Κάποιοι είναι ψηλοί, κάποιοι κοντοί.", "answer": "Some are tall, some are short."}
+{"type": "translate", "prompt": "Κάποιος πήρε τον πίνακα ζωγραφικής από το μουσείο.", "answer": "Someone took the painting from the museum."}
+{"type": "translate", "prompt": "Κάποτε είχαμε βρει τα κλειδιά μας μέσα στο ψυγείο.", "answer": "Once we had found our keys in the fridge."}
+{"type": "translate", "prompt": "Κέρδισα ένα ψηφιακό ρολόι.", "answer": "I won a digital watch."}
+{"type": "translate", "prompt": "Και η μπάλα είναι στα δίχτυα!", "answer": "And the ball is in the net!"}
+{"type": "translate", "prompt": "Κανένας δε θέλει σοκολάτα;", "answer": "Doesn't anyone want chocolate?"}
+{"type": "translate", "prompt": "Κανείς δεν ήξερε τι είχε συμβεί.", "answer": "Nobody knew what had happened."}
+{"type": "translate", "prompt": "Κατέβασα αυτήν την ταινία, σου αρέσει;", "answer": "I downloaded this movie, do you like it?"}
+{"type": "translate", "prompt": "Κερδίσαμε για δεκαπέντε πόντους.", "answer": "We won by fifteen points."}
+{"type": "translate", "prompt": "Κλίκαρε εδώ.", "answer": "Click here."}
+{"type": "translate", "prompt": "Κοίτα τις ειδοποιήσεις σου!", "answer": "Look at your notifications!"}
+{"type": "translate", "prompt": "Κοινοποίησα μια αστεία φωτογραφία και όλοι οι φίλοι μου σχολίασαν από κάτω.", "answer": "I shared a funny picture and all my friends commented below."}
+{"type": "translate", "prompt": "Λοιπόν, ένα είναι το συμπέρασμα!", "answer": "Well, the conclusion is one!"}
+{"type": "translate", "prompt": "Μία μεγάλη μάζα ανθρώπων.", "answer": "A great mass of people."}
+{"type": "translate", "prompt": "Μίλησα με τον σκηνοθέτη της ταινίας.", "answer": "I talked with the movie's director."}
+{"type": "translate", "prompt": "Μακάρι η δύναμη να είναι μαζί σου.", "answer": "May the force be with you."}
+{"type": "translate", "prompt": "Με ρώτησε ποια είναι η θύρα στον υπολογιστή.", "answer": "He asked me what the port on the computer is ."}
+{"type": "translate", "prompt": "Με τον ηλεκτρισμό έχουμε ζεστό νερό.", "answer": "With the electricity we have hot water."}
+{"type": "translate", "prompt": "Μελετάμε χημεία επειδή μας βοηθάει  να καταλαβαίνουμε τον κόσμο.", "answer": "We study chemistry because it helps us to understand the world."}
+{"type": "translate", "prompt": "Μερικά ζευγάρια έχουν κοινό λογαριασμό στα μέσα κοινωνικής δικτύωσης.", "answer": "Some couples have a common account on social media."}
+{"type": "translate", "prompt": "Μετά το μεταπτυχιακό μου, θέλω να ασχοληθώ με την έρευνα.", "answer": "After my master's, I want to work in research."}
+{"type": "translate", "prompt": "Μετάνιωσα που έκανα δώρο στον γείτονά μου αυτά τα ηχεία.", "answer": "I regretted giving these speakers to my neighbor as a present."}
+{"type": "translate", "prompt": "Μην κάτσεις εκεί!", "answer": "Do not sit there!"}
+{"type": "translate", "prompt": "Μην κλικάρεις εκεί!", "answer": "Don't click there!"}
+{"type": "translate", "prompt": "Μην πατήσεις το κουμπί της διαγραφής!", "answer": "Don't press the delete button!"}
+{"type": "translate", "prompt": "Μην φοβάσαι, αγάπη μου.", "answer": "Don't be afraid, my love."}
+{"type": "translate", "prompt": "Μιλάω με τους φίλους μου διαδικτυακά.", "answer": "I am talking with my friends online."}
+{"type": "translate", "prompt": "Μιλάω στον άλλον άντρα.", "answer": "I talk to the other man."}
+{"type": "translate", "prompt": "Μιλάω τα ελληνικά πολύ καλά επειδή η μητέρα μου είναι Ελληνίδα.", "answer": "I speak Greek very well because my mother is Greek."}
+{"type": "translate", "prompt": "Μισό μήλο και μισό πορτοκάλι.", "answer": "Half an apple and half an orange."}
+{"type": "translate", "prompt": "Μου αρέσει ο χαρακτήρας του αστείου άντρα.", "answer": "I like the character of the funny man."}
+{"type": "translate", "prompt": "Μου αρέσει το θετικό πνεύμα στη δουλειά μου.", "answer": "I like the positive spirit at my job."}
+{"type": "translate", "prompt": "Μου αρέσει το χρώμα εκείνου του ζώου.", "answer": "I like the color of that animal."}
+{"type": "translate", "prompt": "Μου αρέσουν τα ψευδώνυμα.", "answer": "I like nicknames."}
+{"type": "translate", "prompt": "Μπορείς να αυξήσεις την τιμή;", "answer": "Can you raise the price?"}
+{"type": "translate", "prompt": "Μπορείς να ζωγραφίσεις ένα μόριο νερού, σε παρακαλώ;", "answer": "Can you draw a water molecule, please?"}
+{"type": "translate", "prompt": "Μόλις τελείωσα μια επιστολή.", "answer": "I just finished a letter."}
+{"type": "translate", "prompt": "Ναι, έχω αγόρια.", "answer": "Yes, I have boys."}
+{"type": "translate", "prompt": "Ναι, θυμάμαι.", "answer": "Yes, I remember."}
+{"type": "translate", "prompt": "Νόμιζα ότι αυτή είχε νιώσει το ίδιο.", "answer": "I thought that she had felt the same."}
+{"type": "translate", "prompt": "Ξέρω τι είχες κάνει.", "answer": "I know what you had done."}
+{"type": "translate", "prompt": "Ο Καλός, ο Κακός και ο Άσχημος.", "answer": "The Good, the Bad and the Ugly."}
+{"type": "translate", "prompt": "Ο αγαπημένος μου πίνακας είναι \"Το Φιλί\".", "answer": "My favorite painting is \"The Kiss\"."}
+{"type": "translate", "prompt": "Ο αδελφός μου κοιμάται στο δωμάτιο του.", "answer": "My brother is sleeping in his room."}
+{"type": "translate", "prompt": "Ο αδελφός του είναι πολύ κακός.", "answer": "His brother is very bad."}
+{"type": "translate", "prompt": "Ο αδερφός του φάνηκε να είναι εγωιστής.", "answer": "His brother seemed to be selfish."}
+{"type": "translate", "prompt": "Ο αξιωματικός είναι μόνο τριάντα  χρονών.", "answer": "The officer is only thirty years old."}
+{"type": "translate", "prompt": "Ο αρχηγός της ομάδας σκόραρε.", "answer": "The team's captain scored."}
+{"type": "translate", "prompt": "Ο διευθυντής διαβάζει τα τεχνολογικά νέα στην εφημερίδα.", "answer": "The manager reads the technology news in the newspaper."}
+{"type": "translate", "prompt": "Ο εξοπλισμός του εργαστηρίου.", "answer": "The equipment of the laboratory."}
+{"type": "translate", "prompt": "Ο επιστήμονας έγραψε ένα σύντομο αλλά ενδιαφέρον άρθρο για τη σύγχρονη τεχνολογία.", "answer": "The scientist wrote a short but interesting article about modern technology."}
+{"type": "translate", "prompt": "Ο καθένας έχει το βιβλίο του.", "answer": "Each one has his book."}
+{"type": "translate", "prompt": "Ο καθηγητής ρωτάει αν υπάρχουν νοήμονες μαθητές σε αυτό το σχολείο.", "answer": "The teacher asks if there are intelligent students at this school."}
+{"type": "translate", "prompt": "Ο κακός λύκος.", "answer": "The bad wolf."}
+{"type": "translate", "prompt": "Ο καρχαρίας  έφαγε το χταπόδι.", "answer": "The shark ate the octopus."}
+{"type": "translate", "prompt": "Ο λογαριασμός αυτού του χρήστη δεν είναι πια ενεργός.", "answer": "This user's account is no longer active."}
+{"type": "translate", "prompt": "Ο λύκος σηκώθηκε και με κοίταξε.", "answer": "The wolf got up and looked at me."}
+{"type": "translate", "prompt": "Ο μαθητής έχει τη δική του ιστοσελίδα.", "answer": "The student has his own website."}
+{"type": "translate", "prompt": "Ο μαθητής αγαπά τη χημεία.", "answer": "The student loves chemistry."}
+{"type": "translate", "prompt": "Ο νέος νόμος αφορά τη βία στα σχολεία.", "answer": "The new law concerns violence in schools."}
+{"type": "translate", "prompt": "Ο ορισμός της ανακύκλωσης.", "answer": "The definition of recycling."}
+{"type": "translate", "prompt": "Ο ορισμός του ηλεκτρισμού.", "answer": "The definition of electricity."}
+{"type": "translate", "prompt": "Ο πατέρας μου δε με αποδέχθηκε ποτέ.", "answer": "My father never accepted me."}
+{"type": "translate", "prompt": "Ο πληθωρισμός είναι μία δύσκολη έννοια.", "answer": "Inflation is a difficult concept."}
+{"type": "translate", "prompt": "Ο ποδοσφαιριστής έβαλε την μπάλα στα δίχτυα.", "answer": "The footballer put the ball in the net."}
+{"type": "translate", "prompt": "Ο σύζυγός μου είναι δημοφιλής ζωγράφος.", "answer": "My husband is a popular painter."}
+{"type": "translate", "prompt": "Ο ταχυδρόμος είχε αφήσει  ένα γράμμα για εμένα.", "answer": "The mailman had left a letter for me."}
+{"type": "translate", "prompt": "Ο τεχνολογικός πολιτισμός είναι πολύ σημαντικός.", "answer": "Technological civilization is very important."}
+{"type": "translate", "prompt": "Ο υπεύθυνος επιστήμονας.", "answer": "The responsible scientist."}
+{"type": "translate", "prompt": "Ο υπολογιστής σου έχει πολλές θύρες.", "answer": "Your computer has many ports."}
+{"type": "translate", "prompt": "Ο φυλλομετρητής αυτός είναι πολύ αργός.", "answer": "This browser is very slow."}
+{"type": "translate", "prompt": "Ο φωτογράφος αγόρασε μια νέα κάμερα.", "answer": "The photographer bought a new camera."}
+{"type": "translate", "prompt": "Οι άνθρωποι δεν αλλάζουν εύκολα!", "answer": "People do not change easily!"}
+{"type": "translate", "prompt": "Οι άντρες, οι γυναίκες, τα αγόρια, τα κορίτσια.", "answer": "The men, the women, the boys, the girls."}
+{"type": "translate", "prompt": "Οι αδελφές μου είναι φιλικές και ευγενικές με όλους.", "answer": "My sisters are friendly and kind with everyone."}
+{"type": "translate", "prompt": "Οι αιτίες του πολέμου.", "answer": "The causes of the war."}
+{"type": "translate", "prompt": "Οι γονείς σου σε επισκέφτηκαν πολλές φορές όσο ήσουν στη Γερμανία;", "answer": "Did your parents visit you many times while you were in Germany?"}
+{"type": "translate", "prompt": "Οι γυναίκες διαβάζουν το βιβλίο.", "answer": "The women read the book."}
+{"type": "translate", "prompt": "Οι δημοφιλείς εφαρμογές.", "answer": "The popular applications."}
+{"type": "translate", "prompt": "Οι ελέφαντες πίνουν νερό.", "answer": "The elephants drink water."}
+{"type": "translate", "prompt": "Οι ελέφαντες τρώνε μήλα.", "answer": "The elephants eat apples."}
+{"type": "translate", "prompt": "Οι επιστήμονες εξετάζουν τα βιολογικά λαχανικά στο εργαστήριο.", "answer": "The scientists examine the organic vegetables at the laboratory."}
+{"type": "translate", "prompt": "Οι επιστήμονες προσπαθούν να επινοήσουν ασφαλή αυτοκίνητα χωρίς οδηγό.", "answer": "The scientists try to invent safe cars without a driver."}
+{"type": "translate", "prompt": "Οι επιστήμονες στο πανεπιστήμιο.", "answer": "The scientists at the university."}
+{"type": "translate", "prompt": "Οι παρατηρήσεις σας είναι σημαντικές για την έρευνά μου.", "answer": "Your remarks are important for my research."}
+{"type": "translate", "prompt": "Οι πρόσφατες εφευρέσεις.", "answer": "The recent inventions."}
+{"type": "translate", "prompt": "Οι σοκολάτες είναι γλυκά.", "answer": "The chocolates are sweets."}
+{"type": "translate", "prompt": "Οι τέχνες ήταν σημαντικό μέρος των αρχαίων πολιτισμών.", "answer": "Arts were an important part of ancient civilizations."}
+{"type": "translate", "prompt": "Οι υποθέσεις σας   δεν  είναι  σωστές.", "answer": "Your assumptions are not correct."}
+{"type": "translate", "prompt": "Οι υψηλές θερμοκρασίες.", "answer": "The high temperatures."}
+{"type": "translate", "prompt": "Οι φίλαθλοι ήρθαν να βοηθήσουν.", "answer": "The fans came to help."}
+{"type": "translate", "prompt": "Οι φίλαθλοι θέλουν να σκοράρεις!", "answer": "The fans want you to score!"}
+{"type": "translate", "prompt": "Πάντα διαβάζω τα σχόλια πριν γράψω το δικό μου.", "answer": "I always read the comments before writing mine."}
+{"type": "translate", "prompt": "Πάνω στην επιφάνεια.", "answer": "On the surface."}
+{"type": "translate", "prompt": "Πήρα μερικές πληροφορίες από αυτό το επιστημονικό περιοδικό.", "answer": "I took some information from this science magazine."}
+{"type": "translate", "prompt": "Πίνω μισό ποτήρι γάλα το πρωί.", "answer": "I drink half a glass of milk in the morning."}
+{"type": "translate", "prompt": "Παίρνει μία επιστολή.", "answer": "She receives a letter."}
+{"type": "translate", "prompt": "Πατήστε \"διαγραφή\".", "answer": "Press \"delete\"."}
+{"type": "translate", "prompt": "Πατήστε το κουμπί στα δεξιά.", "answer": "Press the button on the right."}
+{"type": "translate", "prompt": "Περίπου εκατό διερμηνείς δουλεύουν στον διεθνή οργανισμό.", "answer": "About one hundred interpreters work in the international organization."}
+{"type": "translate", "prompt": "Πιθανώς", "answer": "Possibly"}
+{"type": "translate", "prompt": "Πιθανώς να βρέχει το Σάββατο.", "answer": "It will probably rain on Saturday."}
+{"type": "translate", "prompt": "Πληκτρολογείτε το όνομα και τη διεύθυνση ηλεκτρονικού  ταχυδρομείου σας.", "answer": "Type your name and email address."}
+{"type": "translate", "prompt": "Ποια βιβλία είχαν χαθεί;", "answer": "Which books had gotten lost?"}
+{"type": "translate", "prompt": "Ποια είναι η αξία εκείνου  του σπιτιού;", "answer": "What is the value of that house?"}
+{"type": "translate", "prompt": "Ποια είναι η διαδικασία ακριβώς;", "answer": "What is the process exactly?"}
+{"type": "translate", "prompt": "Ποια είναι η διαδικασία ενός πειράματος;", "answer": "What is the procedure of an experiment?"}
+{"type": "translate", "prompt": "Ποια είναι η θερμοκρασία;", "answer": "What is the temperature?"}
+{"type": "translate", "prompt": "Ποια είναι η ιστοσελίδα σου;", "answer": "What is your website?"}
+{"type": "translate", "prompt": "Ποια είναι η καλύτερη εποχή για παρατήρηση φαλαινών;", "answer": "What is the best season for whale watching?"}
+{"type": "translate", "prompt": "Ποια είναι η σωστή μέθοδος;", "answer": "Which is the right method?"}
+{"type": "translate", "prompt": "Ποια είναι η τιμή αυτού του εισιτηρίου;", "answer": "What is the price of this ticket?"}
+{"type": "translate", "prompt": "Ποια ημερομηνία τρέχεις;", "answer": "On which date do you run?"}
+{"type": "translate", "prompt": "Ποια μέθοδο χρησιμοποιούν οι επιστήμονες;", "answer": "What method do the scientists use?"}
+{"type": "translate", "prompt": "Ποιο είναι το δικό σου προφίλ;", "answer": "Which is your own profile?"}
+{"type": "translate", "prompt": "Ποιο είναι το κουμπί της απενεργοποίησης;", "answer": "Which is the deactivation button?"}
+{"type": "translate", "prompt": "Ποιο είναι το πιο δημοφιλές μέσο κοινωνικής δικτύωσης για τους νεαρούς χρήστες;", "answer": "What is the most popular social media for the young users?"}
+{"type": "translate", "prompt": "Ποιο είναι το συμπέρασμα;", "answer": "What is the conclusion?"}
+{"type": "translate", "prompt": "Ποιο είναι το ψευδώνυμό σου;", "answer": "What's your nickname?"}
+{"type": "translate", "prompt": "Ποιο είναι το όριο της ταχύτητας του φωτός;", "answer": "What is the limit of the speed of light?"}
+{"type": "translate", "prompt": "Ποιο κουμπί πατάω;", "answer": "Which button do I press?"}
+{"type": "translate", "prompt": "Ποιος ήπιε από την κεραμική κούπα μου;", "answer": "Who drank from my ceramic mug?"}
+{"type": "translate", "prompt": "Ποιος ανακάλυψε αυτό το φάρμακο;", "answer": "Who discovered this medicine?"}
+{"type": "translate", "prompt": "Ποιος είναι ο αγαπημένος σου φυλλομετρητής;", "answer": "Which is your favorite browser?"}
+{"type": "translate", "prompt": "Ποιος είναι ο ορισμός;", "answer": "What is the definition?"}
+{"type": "translate", "prompt": "Ποιος είχε έρθει;", "answer": "Who had come?"}
+{"type": "translate", "prompt": "Ποιος είχε αυτή την τρελή ιδέα, να εφεύρει το σχολείο;", "answer": "Who had this crazy idea to invent school?"}
+{"type": "translate", "prompt": "Ποιος είχε εξαφανιστεί;", "answer": "Who had disappeared?"}
+{"type": "translate", "prompt": "Ποιος είχε νικήσει;", "answer": "Who had won?"}
+{"type": "translate", "prompt": "Ποιος είχε φύγει;", "answer": "Who had left?"}
+{"type": "translate", "prompt": "Ποιος επινόησε αυτή τη διαδικασία;", "answer": "Who devised this procedure?"}
+{"type": "translate", "prompt": "Ποιος θέλει να πάρει μέρος σε ένα ελάχιστα επικίνδυνο βιολογικό πείραμα;", "answer": "Who wants to take part in a slightly dangerous biological experiment?"}
+{"type": "translate", "prompt": "Πολλά πράγματα είχαν γίνει πέρυσι, τα περισσότερα άσχημα.", "answer": "Many things had happened last year, most of them bad."}
+{"type": "translate", "prompt": "Πολλοί άνθρωποι χρησιμοποιούν ακόμα αναλογικά ρολόγια.", "answer": "Many people still use analog watches."}
+{"type": "translate", "prompt": "Ποτέ δε σου είχα υποσχεθεί νέο ποδήλατο.", "answer": "I had never promised you a new bike."}
+{"type": "translate", "prompt": "Πού είναι το διάστημα;", "answer": "Where is the space?"}
+{"type": "translate", "prompt": "Πού είναι το εργαστήριο Βιολογίας;", "answer": "Where is the Biology laboratory?"}
+{"type": "translate", "prompt": "Πού είναι το ποντίκι;", "answer": "Where is the mouse?"}
+{"type": "translate", "prompt": "Πού είχες κρυφτεί όλο αυτόν τον καιρό;", "answer": "Where had you hidden all this time?"}
+{"type": "translate", "prompt": "Πού είχες πάει;", "answer": "Where had you been?"}
+{"type": "translate", "prompt": "Πού είχες χαθεί;", "answer": "Where had you gotten lost?"}
+{"type": "translate", "prompt": "Πού καθόσουν χθες;", "answer": "Where were you sitting yesterday?"}
+{"type": "translate", "prompt": "Πού μπορούμε να βρούμε λίγη ηρεμία;", "answer": "Where can we find some peace?"}
+{"type": "translate", "prompt": "Πρέπει να μάθουμε όλους τους ορισμούς στη Φυσική.", "answer": "We must learn all the definitions in Physics."}
+{"type": "translate", "prompt": "Πρέπει να μείνεις ήρεμη.", "answer": "You have to stay calm."}
+{"type": "translate", "prompt": "Προτιμάς τα αναλογικά ή τα ψηφιακά ρολόγια;", "answer": "Do you prefer analog or digital watches?"}
+{"type": "translate", "prompt": "Πόσα άτομα είναι μέσα στον πύραυλο;", "answer": "How many people are there in the rocket?"}
+{"type": "translate", "prompt": "Πόσα άτομα είναι στην ομαδική συνομιλία;", "answer": "How many people are there in the group conversation?"}
+{"type": "translate", "prompt": "Πόσα βιβλία επιστημονικής φαντασίας έχεις διαβάσει;", "answer": "How many science fiction books have you read?"}
+{"type": "translate", "prompt": "Πόσα χημικά στοιχεία ξέρεις;", "answer": "How many chemical elements do you know?"}
+{"type": "translate", "prompt": "Πόσες εφαρμογές έχεις στο κινητό σου;", "answer": "How many apps do you have on your mobile phone?"}
+{"type": "translate", "prompt": "Πόσες κοινοποιήσεις έχει η ανάρτηση μέχρι στιγμής;", "answer": "How many shares does the post have so far?"}
+{"type": "translate", "prompt": "Πόσες κοινοποιήσεις έχει η φωτογραφία;", "answer": "How many shares does the photo have?"}
+{"type": "translate", "prompt": "Πόσες μονάδες θεραπείας υπάρχουν στο νοσοκομείο;", "answer": "How many treatment units are there in the hospital?"}
+{"type": "translate", "prompt": "Πόσες πληρωμές υπάρχουν;", "answer": "How many payments are there?"}
+{"type": "translate", "prompt": "Πόσες ώρες κοιμήθηκαν οι αδερφές σου αυτήν την εβδομάδα;", "answer": "How many hours did your sisters sleep this week?"}
+{"type": "translate", "prompt": "Πόσο είναι ο φόρος για το κρασί;", "answer": "How much is the tax on the wine?"}
+{"type": "translate", "prompt": "Πόσοι επιστήμονες εργάζονται σε αυτό τον οργανισμό;", "answer": "How many scientists work in this organization?"}
+{"type": "translate", "prompt": "Πόσοι χρήστες είναι ενεργοί αυτή τη στιγμή;", "answer": "How many users are active at the moment?"}
+{"type": "translate", "prompt": "Πότε γεννήθηκες;", "answer": "When were you born?"}
+{"type": "translate", "prompt": "Πότε θα μας δώσει το εργαστήριο τα αποτελέσματα;", "answer": "When will the laboratory give us the results?"}
+{"type": "translate", "prompt": "Πότε μάθατε να πληκτρολογείτε;", "answer": "When did you learn to type?"}
+{"type": "translate", "prompt": "Πώς λέμε \"δρομέας\" στα αγγλικά;", "answer": "How do we say \"cursor\" in English?"}
+{"type": "translate", "prompt": "Σήμερα είναι Κυριακή, δε διαβάζω.", "answer": "Today is Sunday, I don't study."}
+{"type": "translate", "prompt": "Σήμερα το απόγευμα.", "answer": "This afternoon."}
+{"type": "translate", "prompt": "Σίγουρα ήταν ο ταχυδρόμος;", "answer": "Are you sure it was the postman?"}
+{"type": "translate", "prompt": "Σε περίμενα γιατί είχες υποσχεθεί να έρθεις.", "answer": "I waited for you because you had promised to come."}
+{"type": "translate", "prompt": "Σου έστειλα αίτημα φιλίας.", "answer": "I sent you a friend request."}
+{"type": "translate", "prompt": "Σου αρέσουν τα πράσινα γυαλιά που αγόρασα χθες;", "answer": "Do you like the green glasses that I bought yesterday?"}
+{"type": "translate", "prompt": "Σου εύχομαι καλό καλοκαίρι!", "answer": "I wish you a happy summer!"}
+{"type": "translate", "prompt": "Σπουδάζουμε μουσική στο πανεπιστήμιο.", "answer": "We study music at university."}
+{"type": "translate", "prompt": "Συνάντησα τον αγαπημένο μου αθλητικογράφο.", "answer": "I met my favourite sportswriter."}
+{"type": "translate", "prompt": "Συνήθως βλέπω ταινίες διαδικτυακά.", "answer": "I usually watch movies online."}
+{"type": "translate", "prompt": "Συνδέσετε το μικρόφωνο στον υπολογιστή;", "answer": "Did you connect the microphone to the computer?"}
+{"type": "translate", "prompt": "Τα αγόρια και τα κορίτσια.", "answer": "The boys and the girls."}
+{"type": "translate", "prompt": "Τα αποτελέσματα ήρθαν ταχυδρομικώς.", "answer": "The results came by mail."}
+{"type": "translate", "prompt": "Τα γλυκά.", "answer": "The sweets."}
+{"type": "translate", "prompt": "Τα δέντρα είναι ζωντανοί οργανισμοί.", "answer": "Trees are living organisms."}
+{"type": "translate", "prompt": "Τα ηχεία μου έπεσαν μέσα στο νερό!", "answer": "My speakers fell into the water!"}
+{"type": "translate", "prompt": "Τα καλώδια είναι κόκκινα, πράσινα και πορτοκαλί.", "answer": "The cables are red, green and orange."}
+{"type": "translate", "prompt": "Τα κεφάλαια της Φυσικής.", "answer": "The chapters of physics."}
+{"type": "translate", "prompt": "Τα κορίτσια πίνουν νερό.", "answer": "The girls drink water."}
+{"type": "translate", "prompt": "Τα μάτια σου είναι ποίηση.", "answer": "Your eyes are poetry."}
+{"type": "translate", "prompt": "Τα παιδιά διαβάζουν.", "answer": "The children read."}
+{"type": "translate", "prompt": "Τα παιδιά λατρεύουν τα παιχνίδια εικονικής πραγματικότητας.", "answer": "Children love virtual reality games."}
+{"type": "translate", "prompt": "Τα παιδιά που χάθηκαν βρέθηκαν!", "answer": "The kids that got lost were found!"}
+{"type": "translate", "prompt": "Τα σύγχρονα εργαστήρια.", "answer": "The contemporary laboratories."}
+{"type": "translate", "prompt": "Τα σύννεφα είχαν εξαφανιστεί.", "answer": "The clouds had disappeared."}
+{"type": "translate", "prompt": "Τα όριά μου.", "answer": "My limits."}
+{"type": "translate", "prompt": "Της έστειλα μήνυμα και μου έκανε μπλοκ.", "answer": "I sent her a message and she blocked me."}
+{"type": "translate", "prompt": "Της δείχνω τα παπούτσια.", "answer": "I show her the shoes."}
+{"type": "translate", "prompt": "Τι έδειξε η ανάλυση;", "answer": "What did the analysis show?"}
+{"type": "translate", "prompt": "Τι είναι η επιστημονική μέθοδος;", "answer": "What is the scientific method?"}
+{"type": "translate", "prompt": "Τι είναι μια θύρα υπολογιστή;", "answer": "What is a computer port?"}
+{"type": "translate", "prompt": "Τι είχε γίνει;", "answer": "What had happened?"}
+{"type": "translate", "prompt": "Τι είχε πει ο γιατρός, δε θυμάμαι!", "answer": "What had the doctor said, I don't remember!"}
+{"type": "translate", "prompt": "Τι είχες μαγειρέψει χθες;", "answer": "What had you cooked yesterday?"}
+{"type": "translate", "prompt": "Τι ερευνούν οι χημικοί;", "answer": "What are the chemists investigating?"}
+{"type": "translate", "prompt": "Τι ζωγραφίσατε;", "answer": "What did you paint?"}
+{"type": "translate", "prompt": "Τι ημερομηνία είναι σήμερα;", "answer": "What date is it today?"}
+{"type": "translate", "prompt": "Τι κατεβάζεις;", "answer": "What are you downloading?"}
+{"type": "translate", "prompt": "Τι σημαίνει αποσύνδεση;", "answer": "What does logout mean?"}
+{"type": "translate", "prompt": "Τι σημαίνει πληθωρισμός;", "answer": "What does inflation mean?"}
+{"type": "translate", "prompt": "Τι ώρα είναι;", "answer": "What time is it?"}
+{"type": "translate", "prompt": "Τι ώρα θα φύγει ο πύραυλος;", "answer": "What time will the rocket leave?"}
+{"type": "translate", "prompt": "Το άρθρο αναφέρεται στη χημεία.", "answer": "The article refers to chemistry."}
+{"type": "translate", "prompt": "Το άρθρο μας.", "answer": "Our article."}
+{"type": "translate", "prompt": "Το άσπρο πρόβατο.", "answer": "The white sheep."}
+{"type": "translate", "prompt": "Το ίδιο μου το παιδί!", "answer": "My own child!"}
+{"type": "translate", "prompt": "Το αγόρι έπεσε δυνατά πάνω στην πόρτα.", "answer": "The boy fell hard against the door."}
+{"type": "translate", "prompt": "Το αγόρι δεν είναι υπεύθυνο.", "answer": "The boy is not responsible."}
+{"type": "translate", "prompt": "Το αγόρι κοιμάται.", "answer": "The boy sleeps."}
+{"type": "translate", "prompt": "Το βάθος είναι άγνωστο.", "answer": "The depth is unknown."}
+{"type": "translate", "prompt": "Το γεράκι έχει τέλεια όραση.", "answer": "The falcon has perfect vision."}
+{"type": "translate", "prompt": "Το γραμμάριο και το κιλό είναι μονάδες βάρους.", "answer": "The gram and the kilo are units of weight."}
+{"type": "translate", "prompt": "Το δάνειο μου", "answer": "My loan"}
+{"type": "translate", "prompt": "Το διαγώνισμα Βιολογίας.", "answer": "The Biology exam."}
+{"type": "translate", "prompt": "Το διαδίκτυο και ο ιστός είναι περίπου το ίδιο πράγμα.", "answer": "The internet and the web are almost the same thing."}
+{"type": "translate", "prompt": "Το διαδίκτυο συνδέει ανθρώπους από  όλο τον κόσμο.", "answer": "The internet connects people from all over the world."}
+{"type": "translate", "prompt": "Το επιστημονικό άρθρο.", "answer": "The scientific article."}
+{"type": "translate", "prompt": "Το εργαστήριο είναι στο βάθος αυτού του διαδρόμου.", "answer": "The laboratory is at the end of this corridor."}
+{"type": "translate", "prompt": "Το ευρώ είναι ένα βασικό νόμισμα.", "answer": "The euro is a basic currency."}
+{"type": "translate", "prompt": "Το κάνω εγώ η ίδια.", "answer": "I do it myself."}
+{"type": "translate", "prompt": "Το κάνω μόνος μου.", "answer": "I do it by myself."}
+{"type": "translate", "prompt": "Το κοινοποίησα πολλές φορές αλλά ελάχιστοι το είδαν.", "answer": "I shared it many times but very few saw it."}
+{"type": "translate", "prompt": "Το κορίτσι έχει ένα κουνέλι σαν κατοικίδιο.", "answer": "The girl has a rabbit as a pet."}
+{"type": "translate", "prompt": "Το κορίτσι θέλει τα παπούτσια επειδή είναι μαύρα.", "answer": "The girl wants the shoes because they are black."}
+{"type": "translate", "prompt": "Το κόστος είναι μεγάλο.", "answer": "The cost is high."}
+{"type": "translate", "prompt": "Το λεωφορείο έχει μικρή ταχύτητα.", "answer": "The bus has low speed."}
+{"type": "translate", "prompt": "Το μουσικό θέατρο δεν είναι δημοφιλές στην Ελλάδα.", "answer": "Musical theater is not popular in Greece."}
+{"type": "translate", "prompt": "Το μυθιστόρημα έχει πολλές λεπτομέρειες.", "answer": "The novel has many details."}
+{"type": "translate", "prompt": "Το μωρό είναι μόνο του.", "answer": "The baby is alone."}
+{"type": "translate", "prompt": "Το πήρα ταχυδρομικώς.", "answer": "I got it by mail."}
+{"type": "translate", "prompt": "Το παιδί έχει πολλή ενέργεια.", "answer": "The child has a lot of energy."}
+{"type": "translate", "prompt": "Το παιδί δε βρήκε το ποντίκι.", "answer": "The child did not find the mouse."}
+{"type": "translate", "prompt": "Το παιδί είχε βρει πέντε βιβλία.", "answer": "The child had found five books."}
+{"type": "translate", "prompt": "Το παιδί θέλει να γίνει αστροναύτης.", "answer": "The child wants to become an astronaut."}
+{"type": "translate", "prompt": "Το παιδί κλικάρει το βίντεο.", "answer": "The child clicks on the video."}
+{"type": "translate", "prompt": "Το παιδί λέει ότι ο βάτραχος είναι άσχημος.", "answer": "The child says that the frog is ugly."}
+{"type": "translate", "prompt": "Το πανεπιστήμιο έχει ηλεκτρισμό.", "answer": "The university has electricity."}
+{"type": "translate", "prompt": "Το πληκτρολόγιο και η οθόνη.", "answer": "The keyboard and the screen."}
+{"type": "translate", "prompt": "Το ποντίκι είναι φτηνό.", "answer": "The mouse is cheap."}
+{"type": "translate", "prompt": "Το προφίλ μου είναι ιδιωτικό.", "answer": "My profile is private."}
+{"type": "translate", "prompt": "Το στερεό μόριο.", "answer": "The solid molecule."}
+{"type": "translate", "prompt": "Το συμπέρασμα είναι δύσκολο.", "answer": "The conclusion is difficult."}
+{"type": "translate", "prompt": "Το συμπέρασμα των επιστημόνων είναι ενδιαφέρον.", "answer": "The conclusion of the scientists is interesting."}
+{"type": "translate", "prompt": "Το τέλειο εργαστήριο.", "answer": "The perfect laboratory."}
+{"type": "translate", "prompt": "Το φόρεμα έχει έκπτωση είκοσι τοις εκατό.", "answer": "The dress has a twenty percent discount."}
+{"type": "translate", "prompt": "Το φόρεμα είναι πολύ φαρδύ.", "answer": "The dress is very wide."}
+{"type": "translate", "prompt": "Το χταπόδι έχει οκτώ πόδια;", "answer": "Does the octopus have eight tentacles?"}
+{"type": "translate", "prompt": "Το χταπόδι είναι στη θάλασσα.", "answer": "The octopus is in the sea."}
+{"type": "translate", "prompt": "Τον αγαπάει η γυναίκα σου;", "answer": "Does your wife love him?"}
+{"type": "translate", "prompt": "Τον αγαπώ.", "answer": "I love him."}
+{"type": "translate", "prompt": "Τον μισώ, αλλά τι μπορώ να κάνω;", "answer": "I hate him, but what can I do?"}
+{"type": "translate", "prompt": "Τον χειμώνα ονειρευόμαστε το καλοκαίρι.", "answer": "In the winter we dream of the summer."}
+{"type": "translate", "prompt": "Του αρέσουν οι Επιστήμες Υγείας.", "answer": "He likes Health Sciences."}
+{"type": "translate", "prompt": "Τους αρέσει η Φυσική.", "answer": "They like Physics."}
+{"type": "translate", "prompt": "Τους είχα δώσει τα κλειδιά.", "answer": "I had given them the keys."}
+{"type": "translate", "prompt": "Τους τα δίνω.", "answer": "I give them to them."}
+{"type": "translate", "prompt": "Τριάντα δευτερόλεπτα είναι μισό λεπτό.", "answer": "Thirty seconds is half a minute."}
+{"type": "translate", "prompt": "Τρώω το γεύμα εκείνου του ζώου.", "answer": "I eat that animal's meal."}
+{"type": "translate", "prompt": "Τώρα μιλάς σωστά.", "answer": "Now you are speaking correctly."}
+{"type": "translate", "prompt": "Υποσχεθείτε μας πως θα είστε εδώ για πάντα.", "answer": "Promise us that you will be here forever."}
+{"type": "translate", "prompt": "Υποσχόμαστε να σας βοηθάμε!", "answer": "We promise to help you!"}
+{"type": "translate", "prompt": "Φάνηκε σαν να σκεφτόσουν κάτι.", "answer": "It seemed like you were thinking of something."}
+{"type": "translate", "prompt": "Φαντάσου όλους τους ανθρώπους.", "answer": "Imagine all the people."}
+{"type": "translate", "prompt": "Χάρηκαν για το δώρο.", "answer": "They were glad about the gift."}
+{"type": "translate", "prompt": "Χάσαμε για τριάντα δύο πόντους!", "answer": "We lost by thirty-two points!"}
+{"type": "translate", "prompt": "Χθες τα μεσάνυχτα.", "answer": "Yesterday at midnight."}
+{"type": "translate", "prompt": "Χθες, σήμερα και αύριο.", "answer": "Yesterday, today and tomorrow."}
+{"type": "translate", "prompt": "Χθες.", "answer": "Yesterday."}
+{"type": "translate", "prompt": "Χρειάζεται να έχεις λογαριασμό για να στείλεις μήνυμα.", "answer": "You need to have an account to send a message."}
+{"type": "translate", "prompt": "Χρειάζομαι καλώδιο για το τηλέφωνό μου.", "answer": "I need a cord for my telephone."}
+{"type": "translate", "prompt": "Χρειάζομαι νέο μικρόφωνο.", "answer": "I need a new microphone."}
+{"type": "translate", "prompt": "Χρησιμοποίησαν τις αποταμιεύσεις τους να αγοράσουν  δώρα για τα παιδιά.", "answer": "They used their savings to buy gifts for the children."}
+{"type": "translate", "prompt": "Χρησιμοποιώ τα κοινωνικά δίκτυα με ασφάλεια.", "answer": "I use social networks safely."}
+{"type": "translate", "prompt": "אַלע עלטערן פון אַלע משפּחות זענען דאָ.", "answer": "All the parents from all the families are here."}
+{"type": "translate", "prompt": "איך האָב צוויי זין און צוועלף טעכטער.", "answer": "I have two sons and twelve daughters."}
+{"type": "translate", "prompt": "איך עס כּמעט נישט קיין וועטשערע.", "answer": "I hardly eat any dinner."}
+{"type": "translate", "prompt": "איך עס נאָר כּשר.", "answer": "I eat only kosher food."}
+{"type": "translate", "prompt": "איך פאַרשטיי נישט פאַר וואָס.", "answer": "I do not understand why."}
+{"type": "translate", "prompt": "אנחנו מאשרים לכם את התשובה.", "answer": "We are confirming the answer for you."}
+{"type": "translate", "prompt": "אתן מברכות?", "answer": "Do you bless?"}
+{"type": "translate", "prompt": "ביידע מײַנע עלטער־זיידעס זענען פון דער ליטע.", "answer": "Both of my great-grandfathers are from Lithuania."}
+{"type": "translate", "prompt": "דו קענסט עסן דאָס קרעפּל, איך וויל עס נישט.", "answer": "You can eat the dumpling, I don't want it."}
+{"type": "translate", "prompt": "הגבר לא משקר.", "answer": "The man is not lying."}
+{"type": "translate", "prompt": "היא מבקרת ספרים בשביל העיתון.", "answer": "She reviews books for the newspaper."}
+{"type": "translate", "prompt": "הכלב מאמץ חתול.", "answer": "The dog adopts a cat."}
+{"type": "translate", "prompt": "הם מגלים שצהוב וכחול יוצרים ירוק.", "answer": "They discover that yellow and blue create green."}
+{"type": "translate", "prompt": "זי קען זייער גוט קאָכן פלייש.", "answer": "She can cook meat really well."}
+{"type": "translate", "prompt": "יאָ, איך בין אַ וועגעטאַריערין; איך עס  נישט קיין פלייש.", "answer": "Yes, I am a vegetarian; I do not eat meat."}
+{"type": "translate", "prompt": "למה אתה מספר לי את זה?", "answer": "Why are you telling me this?"}
+{"type": "translate", "prompt": "מה אתם מאחלים לנו?", "answer": "What are you wishing us?"}
+{"type": "translate", "prompt": "מײַן טאַטע איז דײַן זיידע.", "answer": "My father is your grandfather."}
+{"type": "translate", "prompt": "מײַן פעטער הייסט וועלוול.", "answer": "My uncle is called Velvl."}
+{"type": "translate", "prompt": "עס מוז זײַן אַ כּשרער פילם!", "answer": "It has to be a kosher movie!"}
+{"type": "translate", "prompt": "ער האָט נישט קיין טאַטן, נאָר צוויי מאַמעס.", "answer": "He does not have a father, but two mothers."}
+{"type": "translate", "prompt": "קען איך דיך עסן, מײַן טײַער קניידל?", "answer": "Can I eat you, my precious kneidel?"}
+{"type": "translate", "prompt": "קענען זיי אונדז פאַרשטיין?", "answer": "Can they understand us?"}
+{"type": "translate", "prompt": "अपने पीछे देखो।", "answer": "Look behind you."}
+{"type": "translate", "prompt": "इस बिल्ली को गर्मी लग रही है।", "answer": "This cat is feeling hot."}
+{"type": "translate", "prompt": "उन्हें गर्मी नहीं लगती है।", "answer": "They do not feel hot."}
+{"type": "translate", "prompt": "क़मीज़ और पतलून पहनो।", "answer": "Put on the shirt and pants."}
+{"type": "translate", "prompt": "क्या तुम्हें ठंड नहीं लगती?", "answer": "Do you not feel cold?"}
+{"type": "translate", "prompt": "तुम दिल्ली के पास हो।", "answer": "You are near Delhi."}
+{"type": "translate", "prompt": "तुम यह क़मीज़ पहनो।", "answer": "Put on this shirt."}
+{"type": "translate", "prompt": "दिल्ली में बहुत लोग हैं।", "answer": "There are a lot of people in Delhi."}
+{"type": "translate", "prompt": "बिल्ली कुत्ते के ऊपर सोती है।", "answer": "The cat sleeps on top of the dog."}
+{"type": "translate", "prompt": "यह उसकी क़मीज़ नहीं है।", "answer": "This is not her shirt."}
+{"type": "translate", "prompt": "यह गली छोटी है।", "answer": "This street is short."}
+{"type": "translate", "prompt": "यह जगह दिल्ली में है ।", "answer": "This place is in Delhi."}
+{"type": "translate", "prompt": "यहाँ बहुत ठंड है।", "answer": "It is very cold here."}
+{"type": "translate", "prompt": "राज बाहर नहीं है ।", "answer": "Raj is not outside."}
+{"type": "translate", "prompt": "वहाँ कौनसा गाँव है?", "answer": "Which village is there?"}
+{"type": "translate", "prompt": "सर्दी में पीटर नहीं खेलता।", "answer": "Peter does not play in winter."}
