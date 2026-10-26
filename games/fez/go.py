@@ -56,6 +56,26 @@ def settle(s):
     return s
 
 
+def mover_under(s):
+    """The bobbing platform Gomez stands on, as (bridge mover, its peak top y), or None."""
+    bob = plan.bobbers(s["level"]); x, fy, z = s["pos"]
+    for m in s.get("movers", []):
+        if m["id"] in bob and m["from"][0] - 0.3 <= x <= m["to"][0] + 0.3 and m["from"][2] - 0.3 <= z <= m["to"][2] + 0.3 and abs(m["to"][1] - fy) < 0.8:
+            cells, rise = bob[m["id"]]; return m, max(y for _, y, _ in cells) + 1 + rise
+    return None
+
+
+def ride_to_peak(timeout=5):
+    """On a bobbing pillar, wait for the top of its swing before jumping (Zu City, 2026-10-25)."""
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        s = fez.state(); m = mover_under(s)
+        if m is None: return
+        mm = next(q for q in s["movers"] if q["id"] == m[0]["id"])
+        if mm["to"][1] >= m[1] - 0.12: return
+        time.sleep(0.03)
+
+
 def step(kind, v, c, y):
     s = fez.state()
     if "Climb" in s["action"] and kind not in ("climb", "release", "vinejump") and not kind.startswith("turn"):   # standing moves need ground
@@ -142,6 +162,7 @@ def step(kind, v, c, y):
         return fez.state() if fez.state()["action"] == "Bouncing" else settle(landed())
     if kind == "hop":
         up = y - here[2]
+        if up > 0: ride_to_peak(); s = fez.state()
         if s["action"] in ("Treading", "Swimming") or up >= 3:   # +3 (and out of water) only by catching the ledge: hold Up, long jump (Nature Hub, 2026-10-25)
             fez.edge("up", True); s = fez.hop(target, jump_ms=600, lead=0.5); fez.edge("up", False); return settle(landed(2))
         return settle(fez.hop(target, jump_ms=450 if up > 0 else 250 if up == 0 else 120, lead=0.5))
@@ -164,6 +185,9 @@ def go(goal, goal_view=None, tries=8, item=None):
         if goal is not None and (c, y) == goal and goal_view in (None, v): return s
         p = plan.find_item(s["level"], v, (c, y, dep), item) if item else plan.find(s["level"], v, (c, y, dep), goal, goal_view)
         if p == []: return s
+        if p is None and any(b[0] == s["level"] for b in plan.BANNED):   # bans can be timing flukes (bobbing pillars): forgive them once
+            plan.BANNED -= {b for b in plan.BANNED if b[0] == s["level"]}; plan.BANS.write_text("".join(repr(b) + "\n" for b in plan.BANNED))
+            print("no path with bans: cleared this level's bans", flush=True); continue
         if p is None:
             if any(h["on"] for h in s.get("holes", [])) and attempt < tries - 1:   # black holes re-roll on every level load
                 print("no path while black holes are on: restarting FEZ to re-roll them", flush=True)
@@ -183,7 +207,8 @@ def go(goal, goal_view=None, tries=8, item=None):
             if got[0] == vv and got[2] == yy and abs(got[1] - cc) == 1 and s["grounded"]:   # right floor, one column off: walk the rest
                 s = fez.walk(cc + 0.5); got = node(s)
             close = (kind in ("grab", "climb", "dropgrab") and "Climb" in s["action"] and got[0] == vv and abs(got[1] - cc) <= 1 and abs(got[2] - yy) <= 1) \
-                or (s["action"] == "Bouncing" and got[0] == vv and abs(got[1] - cc) <= 1)
+                or (s["action"] == "Bouncing" and got[0] == vv and abs(got[1] - cc) <= 1) \
+                or (mover_under(s) is not None and got[0] == vv and got[1] == cc and abs(got[2] - yy) <= 1)
             if (got[0], got[1], got[2]) != (vv, cc, yy) and not close:
                 plan.ban((s["level"], prev, kind, (vv, cc, yy)))   # never plan this exact move from here again
                 print(f"  {kind} to {vv} {cc},{yy} landed {got} ({s['action']}), banned, replanning"); break

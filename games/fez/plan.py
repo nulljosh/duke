@@ -56,6 +56,23 @@ def triles(name):
     return out
 
 
+def bobbers(name):
+    """Groups that move straight up on a looping path (Zu City's floating pillars): {gid: (top triles, rise)}."""
+    out = {}
+    for gid, g in fezmap.level(name)["Groups"].items():
+        path = g.get("Path")
+        if not isinstance(path, dict) or path.get("NeedsTrigger"): continue
+        segs = [sg["Destination"] for sg in path["Segments"]]
+        if any(dx or dz for dx, _, dz in segs) or not g["Triles"]: continue
+        rise = iround(sum(dy for _, dy, _ in segs if dy > 0))
+        if rise <= 0: continue
+        cols = {}
+        for x, y, z in g["Triles"]:
+            if (x, z) not in cols or y > cols[(x, z)]: cols[(x, z)] = y
+        out[int(gid)] = ([(x, y, z) for (x, z), y in cols.items()], rise)
+    return out
+
+
 def grid(name, view):
     """(col, y) -> 'top' | 'wall' | 'climb', using the same projection as fezmap.view."""
     d = fezmap.level(name); ts = fezmap.tileset(d["TrileSetName"]); hi, hs, di, ds = fezmap.VIEWS[view]
@@ -96,6 +113,10 @@ def grid(name, view):
     for cell in [k for k, v in g.items() if v == "top"]:
         x, y, z = front[cell][1]["Position"]
         if (x, y + 1, z) in filled: del g[cell]   # a top covered at the same depth is no floor: Mine A's stacked walls (2026-10-25)
+    for gid, (cells, rise) in bobbers(name).items():   # a platform that bobs on a path also holds at the top of its swing
+        for x, y, z in cells:
+            cell = (int((((x, y, z)[hi]) + 0.5) * hs // 1), y + rise)
+            if g.get(cell) is None: g[cell] = "top"; deps.setdefault(cell, set()).add(int((x, y, z)[di] // 1))
     d = fezmap.level(name)
     if d.get("WaterType") not in (None, "None") and d.get("WaterHeight"):
         g.water = iround(d["WaterHeight"] - 0.5 - 0.4)   # the node row Gomez floats at (measured: y 8.5 under water at 9)
@@ -185,7 +206,7 @@ def moves(g, c, y, lo, cl=None, dep=0):
                 for up in range(JUMP_UP + (1 if across <= 3 else 0), -5, -1):   # +3 only by catching the ledge
                     # landing lower must be the first floor met falling down that column (floors only pass from below)
                     if across > 5 - max(up, 0): continue   # measured: +2 up and 5 across falls short (Mine A, 2026-10-25)
-                    if up == 3 and g.get((cc, y + 1)) is not None: continue   # +3 needs a bare ledge face to catch, not a stack of shelves
+                    if up == 3 and (g.get((cc, y + 1)) is not None or any(g.get((c, y + k)) for k in (1, 2, 3))): continue   # +3 needs a bare ledge to catch, and open sky over Gomez (Zu City)
                     if standable(g, cc, y + up) and not (across == 1 and up == 0) and (up >= 0 or land(g, cc, y + 2, lo) == y + up):
                         yield ("hop", cc, y + up, None), 3 + across
                         break
