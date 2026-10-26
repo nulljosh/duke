@@ -17,7 +17,7 @@ a { color: var(--link); }
 .center { text-align: center; }
 h1, h2, h3, .label { font-family: var(--display); }
 h1, h2, h3 { text-wrap: balance; }
-h1 { font-size: clamp(80px, 16vw, 176px); line-height: 1; font-weight: 700; letter-spacing: -.04em; }
+h1 { font-size: clamp(48px, 9vw, 120px); line-height: 1.02; font-weight: 700; letter-spacing: -.04em; }
 h2 { font-size: clamp(40px, 6vw, 72px); line-height: 1.04; font-weight: 600; letter-spacing: -.022em; }
 h3 { font-size: 22px; line-height: 28px; font-weight: 600; letter-spacing: -.01em; }
 .label { font-size: 13px; line-height: 16px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); margin-bottom: var(--sp-4); }
