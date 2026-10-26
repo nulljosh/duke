@@ -34,6 +34,7 @@ HOLES = {}     # level -> [(from, to)] black holes the bridge reports as on; the
 
 class Grid(dict):
     water = None   # node row of the water surface, if the level has water
+    cols = (0, 0)  # leftmost and rightmost column with a trile: the water ends there
 
 
 def triles(name):
@@ -94,11 +95,13 @@ def grid(name, view):
     d = fezmap.level(name)
     if d.get("WaterType") not in (None, "None") and d.get("WaterHeight"):
         g.water = iround(d["WaterHeight"] - 0.5 - 0.4)   # the node row Gomez floats at (measured: y 8.5 under water at 9)
+    if g: g.cols = (min(c for c, _ in g), max(c for c, _ in g))
     return g
 
 
 def swimming(g, c, y):
-    return getattr(g, "water", None) == y and g.get((c, y)) != "wall"
+    # unbounded, the surface went on forever and the search ate all memory (Nature Hub, 2026-10-25)
+    return g.water == y and g.cols[0] - 4 <= c <= g.cols[1] + 4 and g.get((c, y)) != "wall"
 
 
 def standable(g, c, y):
@@ -146,8 +149,9 @@ def moves(g, c, y, lo, cl=None, dep=0):
         for dc in (-1, 1):
             if swimming(g, c + dc, y): yield ("swim", c + dc, y, None), 1
         for dc in range(-3, 4):
-            for up in (2, 1):   # a jump out of water peaks about 2.9 up, so a 3-high ledge is out of reach
-                if standable(g, c + dc, y + up): yield ("hop", c + dc, y + up, None), 3 + abs(dc); break
+            for up in (3, 2, 1):   # a jump out of water peaks about 2.9 up; a 3-high ledge only by catching its edge
+                if up == 3 and abs(dc) > 2: continue
+                if standable(g, c + dc, y + up): yield ("hop", c + dc, y + up, None), 3 + abs(dc) + (up == 3); break
         return
     if bouncy(g, c, y):   # bouncing on a mushroom: steer up to 4 columns while coming down from the apex
         for dc in range(-5, 6):
@@ -254,6 +258,7 @@ def find(name, view, start, goal, goal_view=None, done=None):
             nv = ORDER[(ORDER.index(v) + step) % 4]; nhi, nhs, ndi, _ = fezmap.VIEWS[nv]
             nc, nd_ = int(pos[nhi] * nhs // 1), int(pos[ndi] // 1)
             if standable(grids[nv], nc, y) and standable(grids[v], c, y): nxt.append(((nv, nc, y, nd_), "turn-" + nv, 3))
+            elif swimming(grids[v], c, y) and swimming(grids[nv], nc, y): nxt.append(((nv, nc, y, nd_), "turn-" + nv, 3))   # the camera turns while treading water
             elif bouncy(grids[v], c, y) and bouncy(grids[nv], nc, y): nxt.append(((nv, nc, y, nd_), "turn-" + nv, 3))   # turning mid-bounce
             elif vine_dep(CLIMB[(name, v)], (c, y), dep) is not None:   # turning while hanging on a vine
                 vd = vine_dep(CLIMB[(name, nv)], (nc, y), nd_)
