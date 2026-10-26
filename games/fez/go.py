@@ -131,7 +131,9 @@ def step(kind, v, c, y):
     if s["grounded"] and s.get("door") is not None and (kind in ("climb", "grab") or kind == "hop" and y - here[2] >= 3):
         s = step_out(s, 1 if target > fez.h(s) else -1); here = node(s)   # these press Up, which in a doorway walks him through the door
     if kind.startswith("turn"): return turn_to(v)
-    if kind in ("walk", "swim"): return fez.walk(target)
+    if kind in ("walk", "swim"):
+        if "Climb" in s["action"]: letgo()   # on a vine over the floor: Right/Left only slides along it (Big Tower)
+        return fez.walk(target)
     if kind == "climb":   # along a vine: up/down until the height matches, sideways until the column does
         if y != here[2]:
             k = "up" if y > here[2] else "down"; fez.edge(k, True); t0 = time.time()
@@ -224,6 +226,9 @@ def step(kind, v, c, y):
         if (abs(target - fez.h(s)) >= 4 and up >= 1 or abs(target - fez.h(s)) >= 2.5 and up >= 2) and plan.standable(plan.grid(s["level"], v), here[1] - sign, here[2]):   # long jump: take a run-up
             fez.walk(here[1] + 0.5 - sign * 0.9, tol=0.2)
             return settle(fez.runjump(here[1] + 0.5 + sign * 0.4, target, jump_ms=500))
+        g = plan.grid(s["level"], v)
+        if up >= 1 and abs(target - fez.h(s)) >= 2.5 and not plan.standable(g, here[1] + sign, here[2]):   # a short step: jump from its edge (Big Tower spiral)
+            s = fez.walk(here[1] + 0.5 + sign * 0.4, tol=0.15)
         if s["action"] in ("Treading", "Swimming") or up >= 3:   # +3 (and out of water) only by catching the ledge: hold Up, long jump (Nature Hub, 2026-10-25)
             fez.edge("up", True); s = fez.hop(target, jump_ms=600, lead=0.5); fez.edge("up", False); return settle(landed(2))
         return settle(fez.hop(target, jump_ms=450 if up > 0 else 250 if up == 0 else 120, lead=0.5))
@@ -274,7 +279,7 @@ def go(goal, goal_view=None, tries=14, item=None):
         if "Climb" in s["action"] and first not in ("climb", "release", "vinejump") and not first.startswith("turn"):
             letgo(); continue
         print(f"plan {attempt}: " + " | ".join(f"{k} {vv} {cc},{yy}" for k, (vv, cc, yy, _) in plan.compress(p)))
-        prev = (v, c, y, dep)
+        prev = (v, c, y, dep); want = prev[:3]   # want: where the plan thought he was (bans key on the plan's own edge too)
         for kind, (vv, cc, yy, _) in plan.compress(p):
             s = step(kind, vv, cc, yy)
             t1 = time.time()
@@ -288,14 +293,14 @@ def go(goal, goal_view=None, tries=14, item=None):
                 or (mover_under(s) is not None and got[0] == vv and got[1] == cc and abs(got[2] - yy) <= 1) \
                 or (kind.startswith("turn") and got[0] == vv and got[2] == yy)
             if close and kind.startswith("turn") and got[1] != cc:   # the camera turned but FEZ moved Gomez in depth: replan from where he is
-                plan.ban((s["level"], prev[:3], kind, (vv, cc, yy)))   # the same turn lands him in the same wrong spot every time
+                for k in {prev[:3], want}: plan.ban((s["level"], k, kind, (vv, cc, yy)))   # the same turn lands him in the same wrong spot every time
                 print(f"  turned to {vv}, Gomez at {got[1]} not {cc}: banned, replanning", flush=True); break
             if (got[0], got[1], got[2]) != (vv, cc, yy) and not close:
                 if kind == "walk" and got[0] == vv and got[2] == yy and got[1] != cc:   # a merged walk: ban the single step he could not take
                     step1 = 1 if cc > got[1] else -1; plan.ban((s["level"], got[:3], "walk", (vv, got[1] + step1, yy)))
                 else: plan.ban((s["level"], prev[:3], kind, (vv, cc, yy)))   # never plan this exact move from here again
                 print(f"  {kind} to {vv} {cc},{yy} landed {got} ({s['action']}), banned, replanning"); break
-            prev = got
+            prev, want = got, (vv, cc, yy)
         else:
             return fez.state()
     return None
