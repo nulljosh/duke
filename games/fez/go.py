@@ -89,6 +89,38 @@ def step_out(s, toward):
     return s
 
 
+K, G, TERM = 73.0, 0.58, -0.408   # position units/s per velocity unit; dvy/dt; terminal vy (measured in TREE)
+
+
+def eta(y, vy, ty):
+    """Seconds until the fall crosses height ty, or None if it never comes back down to it."""
+    t = 0.0
+    while t < 4:
+        t += 0.01; vy = max(TERM, vy - G * 0.01); y += K * vy * 0.01
+        if vy < 0 and y <= ty: return t
+    return None
+
+
+def aim(tx, ty, timeout=6, tol=0.25):
+    """Keep the projected crossing of height ty at screen column tx; stop at the next bounce or landing."""
+    t0 = time.time(); held = None; fell = False
+    while time.time() - t0 < timeout:
+        s = fez.state(); i, sign = fez.AXIS[s["view"]]
+        vx, vy = s["vel"][i] * sign, s["vel"][1]
+        t = eta(s["pos"][1], vy, ty)
+        px = fez.h(s) + K * vx * t if t else fez.h(s)
+        want = None if t is None or abs(px - tx) < tol else ("left" if px > tx else "right")
+        if want != held:
+            if held: fez.edge(held, False)
+            if want: fez.edge(want, True)
+            held = want
+        if vy < -0.02: fell = True
+        if fell and (s["grounded"] or vy > 0.05 or s["action"].startswith(("Grab", "Dying"))): break
+        time.sleep(0.02)
+    if held: fez.edge(held, False)
+    return fez.state()
+
+
 def step(kind, v, c, y):
     s = fez.state()
     if "Climb" in s["action"] and kind not in ("climb", "release", "vinejump") and not kind.startswith("turn"):   # standing moves need ground
@@ -135,15 +167,8 @@ def step(kind, v, c, y):
             if s["grounded"] or s["action"].startswith(("Grab", "Dying")): break
             time.sleep(0.02)
         fez.edge(back, False); return settle(landed())
-    if kind == "bounce":   # Gomez is bouncing on a mushroom: on the way down, steer to the target column
-        d = "right" if target > fez.h(s) else "left"; sign = 1 if d == "right" else -1; t0 = time.time(); held = False
-        while time.time() - t0 < 5:
-            s = fez.state()
-            if not held and not s["grounded"]: fez.edge(d, True); held = True   # steer from the launch, as in the hand trace
-            if held and (fez.h(s) - target) * sign >= -0.8: fez.edge(d, False)   # momentum carries the last ~0.8
-            if held and time.time() - t0 > 0.4 and (s["grounded"] or s["action"] in ("Bouncing", "Dying")) and abs(fez.h(s) - target) < 1.2: break
-            time.sleep(0.02)
-        fez.edge(d, False); time.sleep(0.2); return fez.state()
+    if kind == "bounce":   # Gomez is bouncing on a mushroom: steer so his fall crosses the target height over the target column
+        return aim(target, y + 0.5)
     if kind == "dropgrab":   # walk off the edge holding Up, steer over the vine column, catch it
         d = "right" if target > fez.h(s) else "left"; sign = 1 if d == "right" else -1
         y0 = s["pos"][1]; fez.edge(d, True); t0 = time.time(); up = False

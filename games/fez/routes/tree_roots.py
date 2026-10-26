@@ -18,5 +18,13 @@ def up():
     return fez.state()
 
 
+def down():
+    """The way back: from the Tree door round the ring and drop-grab the vine (Back -18,42); the planner takes it from
+    there. The plank ends short of the vine, so walking on in the Right view falls to the y35 floor and dies.
+    Black holes sit over the vine top when they roll on: nature_hub.reroll_holes() from the door first."""
+    go.turn_to("Back"); fez.walk(-16.6, tol=0.15)
+    return go.go((-16, 42), "Right", tries=4)
+
+
 if __name__ == "__main__":
     s = up(); print(s and (s["level"], s["pos"]))

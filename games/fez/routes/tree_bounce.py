@@ -6,38 +6,9 @@ From the y85 ledge, go.go((-35, 73), 'Right') gets him onto the y77 ledge (drop-
 import sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import fez
+import fez, go
 
-K, G, TERM = 73.0, 0.58, -0.408   # position units/s per velocity unit; dvy/dt; terminal vy (measured in TREE)
-
-
-def eta(y, vy, ty):
-    """Seconds until the fall crosses height ty, or None if it never comes back down to it."""
-    t = 0.0
-    while t < 4:
-        t += 0.01; vy = max(TERM, vy - G * 0.01); y += K * vy * 0.01
-        if vy < 0 and y <= ty: return t
-    return None
-
-
-def aim(tx, ty, timeout=6, tol=0.25):
-    """Keep the projected crossing of height ty at screen column tx; stop at the next bounce or landing."""
-    t0 = time.time(); held = None; fell = False
-    while time.time() - t0 < timeout:
-        s = fez.state(); i, sign = fez.AXIS[s["view"]]
-        vx, vy = s["vel"][i] * sign, s["vel"][1]
-        t = eta(s["pos"][1], vy, ty)
-        px = fez.h(s) + K * vx * t if t else fez.h(s)
-        want = None if t is None or abs(px - tx) < tol else ("left" if px > tx else "right")
-        if want != held:
-            if held: fez.edge(held, False)
-            if want: fez.edge(want, True)
-            held = want
-        if vy < -0.02: fell = True
-        if fell and (s["grounded"] or vy > 0.05 or s["action"].startswith(("Grab", "Dying"))): break
-        time.sleep(0.02)
-    if held: fez.edge(held, False)
-    return fez.state()
+aim = go.aim
 
 
 def down():
@@ -48,6 +19,29 @@ def down():
     fez.key("d", 100); time.sleep(0.4)       # Right -> Back
     aim(-14.5, 59.5); aim(-17.6, 58.5)       # y58 mushroom, then the y58 floor
     time.sleep(1.5); return fez.state()
+
+
+def to_roots_door():
+    """From the y58 floor to the Tree Roots door (Front x21, y53). The door sits in a notch under the y57 slab, so
+    the planner's dropbacks never leave the slab: hang off the slab's left end (x17) in the Front view and steer
+    right as he falls; he catches the notch's corner ledge and pulls up."""
+    if go.go((18, 58), "Front") is None: return None
+    go.turn_to("Front"); fez.walk(17.5, tol=0.15)
+    for _ in range(16):   # creep: a full walk runs straight off the edge
+        s = fez.state()
+        if "Teeter" in s["action"] or not s["grounded"]: break
+        fez.key("left", 40); time.sleep(0.25)
+    fez.edge("down", True); time.sleep(0.3); fez.edge("down", False); time.sleep(0.8)
+    if not fez.state()["action"].startswith("Grab"): return None
+    fez.edge("down", True); time.sleep(0.12); fez.edge("down", False); time.sleep(0.12)
+    fez.edge("right", True); t0 = time.time()
+    while time.time() - t0 < 2:
+        s = fez.state()
+        if s["pos"][0] > 18.2: fez.edge("right", False)
+        if s["grounded"] or s["action"].startswith(("Grab", "Dying")): break
+        time.sleep(0.02)
+    fez.edge("right", False)
+    go.settle(go.landed()); return fez.walk(21.5, tol=0.15)
 
 
 if __name__ == "__main__":
