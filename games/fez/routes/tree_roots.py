@@ -19,7 +19,7 @@ def up():
 
 
 def down():
-    """The way back: from the Tree door round the ring and drop-grab the vine (Back -18,42); the planner takes it from
+    """The way back: from the Tree door (Left, z15.2) round the ring and drop-grab the vine (Back -18,42); the planner takes it from
     there. The plank ends short of the vine, so walking on in the Right view falls to the y35 floor and dies.
     Black holes sit over the vine top when they roll on: nature_hub.reroll_holes() from the door first."""
     go.turn_to("Back"); fez.walk(-16.6, tol=0.15)
@@ -29,8 +29,12 @@ def down():
         if not s["grounded"]: fez.edge("left", False)
         if "Climb" in s["action"] or not s["grounded"] and s["pos"][1] < 38: break
         time.sleep(0.02)
-    fez.edge("up", False); fez.edge("left", False)
-    return go.go((-16, 42), "Right", tries=4)
+    fez.edge("up", False); fez.edge("left", False); time.sleep(0.4)
+    fez.key("a", 100); time.sleep(0.8)   # Back -> Right on the vine; in Back, Down walks him off it, in Left he slides off the foot and dies
+    fez.edge("down", True); t0 = time.time()
+    while time.time() - t0 < 3 and fez.state()["pos"][1] > 41.6: time.sleep(0.02)
+    fez.edge("down", False); time.sleep(0.3)
+    return fez.state()   # on the vine at Right -16,41: trip.py travel NATURE_HUB takes it from here
 
 
 if __name__ == "__main__":
