@@ -20,7 +20,8 @@ def iround(v):
 SOLID = ("TopOnly", "TopNoStraightLedge", "AllSides")
 
 
-DEPTHS = {}   # (level, view) -> {(col, y): sorted depth coordinates of the solid triles in that cell}
+DEPTHS = {}   # (level, view) -> {(col, y): depth of the front-most solid trile in that cell}
+ALLDEPTHS = {}   # (level, view) -> {(col, y): depths of every solid trile in that cell (Gomez keeps his depth if one is there)}
 CLIMB = {}    # (level, view) -> {(col, y): {depths}} cells with a vine or ladder Gomez can climb from this camera
 FLAT = {}     # (level, view) -> {(col, y): {depths}} the subset facing toward or away from the camera: these allow shimmying sideways
 # A vine's Face is rotated by Phi quarter turns; measured in the Observatory 2026-10-25 (phi 1 sits on -x sides).
@@ -79,7 +80,7 @@ def grid(name, view):
     """(col, y) -> 'top' | 'wall' | 'climb', using the same projection as fezmap.view."""
     d = fezmap.level(name); ts = fezmap.tileset(d["TrileSetName"]); hi, hs, di, ds = fezmap.VIEWS[view]
     key = (name, view, tuple(sorted(ROTATED.get(name, {}).items())))
-    DEPTHS[(name, view)] = {}; CLIMB[(name, view)] = {}; FLAT[(name, view)] = {}
+    DEPTHS[(name, view)] = {}; CLIMB[(name, view)] = {}; FLAT[(name, view)] = {}; alld = ALLDEPTHS[(name, view)] = {}
     g = Grid(); deps = DEPTHS[(name, view)]; cl = CLIMB[(name, view)]
     front = {}   # cell -> (closeness to camera, trile, entry): FEZ collides with the front-most block the camera sees
     vines = {}
@@ -89,6 +90,7 @@ def grid(name, view):
         # a trile at P spans [P, P+1]; take its centre so mirrored views (sign -1) land in the right column
         cell = (int((t["Position"][hi] + 0.5) * hs // 1), iround(t["Position"][1]))   # some triles sit off-grid (y 13.9375)
         k = t["Position"][di] * ds
+        if e["Faces"].get(view, "None") in SOLID: alld.setdefault(cell, set()).add(int(t["Position"][di] // 1))
         if e["Type"] in ("Vine", "Ladder"):   # vines don't hide what's behind them; keep the nearest one separately
             if cell not in vines or k > vines[cell][0]: vines[cell] = (k, t, e)
         elif cell not in front or k > front[cell][0]: front[cell] = (k, t, e)
@@ -248,8 +250,9 @@ ORDER = ["Front", "Right", "Back", "Left"]   # one press of D steps Right -> Bac
 
 def settle_depth(name, view, c, y, dep):
     """Depth after landing at (c, y): stay put if there is a trile at Gomez's depth, else snap to the front-most one."""
+    if dep in ALLDEPTHS[(name, view)].get((c, y - 1), ()): return dep   # a floor under Gomez at his own depth: he stays there (house interiors)
     D = DEPTHS[(name, view)].get((c, y - 1), ())
-    if dep in D or not D: return dep
+    if not D: return dep
     ds = fezmap.VIEWS[view][3]
     return max(D, key=lambda d: d * ds)
 

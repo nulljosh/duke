@@ -243,7 +243,9 @@ def collect():
         s = go(None, item=it["pos"])
         if s is not None: break
     else: return None
-    for _ in range(3):
+    for i in range(4):
+        hi, hs, _, _ = fezmap.VIEWS[s["view"]]
+        fez.walk((it["pos"][hi] + 0.5) * hs + (0, 0.3, -0.3, 0)[i], tol=0.1)   # stand right under it: a jump off-centre can miss
         fez.key("space", 300); time.sleep(1.2); s = fez.state()
         if (s["cubes"], s["anti"], s["bits"]) != before: print("collected!", s["cubes"], s["anti"], s["bits"]); return s
     return s
