@@ -168,7 +168,7 @@ def step(kind, v, c, y):
         return settle(fez.hop(target, jump_ms=450 if up > 0 else 250 if up == 0 else 120, lead=0.5))
 
 
-def go(goal, goal_view=None, tries=8, item=None):
+def go(goal, goal_view=None, tries=14, item=None):
     for attempt in range(tries):
         s = fez.state()
         t0 = time.time()   # wait out falls and respawns; hanging on a vine or ledge counts as settled
@@ -210,7 +210,10 @@ def go(goal, goal_view=None, tries=8, item=None):
                 s = fez.walk(cc + 0.5); got = node(s)
             close = (kind in ("grab", "climb", "dropgrab") and "Climb" in s["action"] and got[0] == vv and abs(got[1] - cc) <= 1 and abs(got[2] - yy) <= 1) \
                 or (s["action"] == "Bouncing" and got[0] == vv and abs(got[1] - cc) <= 1) \
-                or (mover_under(s) is not None and got[0] == vv and got[1] == cc and abs(got[2] - yy) <= 1)
+                or (mover_under(s) is not None and got[0] == vv and got[1] == cc and abs(got[2] - yy) <= 1) \
+                or (kind.startswith("turn") and got[0] == vv and got[2] == yy)
+            if close and kind.startswith("turn") and got[1] != cc:   # the camera turned but FEZ moved Gomez in depth: replan from where he is
+                print(f"  turned to {vv}, Gomez at {got[1]} not {cc}: replanning", flush=True); break
             if (got[0], got[1], got[2]) != (vv, cc, yy) and not close:
                 plan.ban((s["level"], prev, kind, (vv, cc, yy)))   # never plan this exact move from here again
                 print(f"  {kind} to {vv} {cc},{yy} landed {got} ({s['action']}), banned, replanning"); break
