@@ -2,7 +2,7 @@ Mirage on Duke. The goal is the ending, played for real: the water back on the m
 
 ## The game
 
-Mirage is our own desert platformer. It runs inside Joshua Tree, Joshua's from-scratch OS, on the PC build and the Pi. Wren climbs out of the town of Arroyo, through Red Canyon, up the Cholla Caves for the salt gate's key, across the Salt Flats and onto the mesa, where the Dust King sits on the spring. The code, art and story live in the joshuatree repo: `user/mirage_core.h` (the world) and `user/mirage.c` (the drawing).
+Mirage is our own desert platformer. It runs inside Joshua Tree, Joshua's from-scratch OS, on the PC build and the Pi. Wren climbs out of the town of Dry Creek, through Red Canyon, up the Cholla Caves for the salt gate's key, across the Salt Flats and onto the mesa, where the Dust King sits on the spring. The code, art and story live in the joshuatree repo: `user/mirage_core.h` (the world) and `user/mirage.c` (the drawing).
 
 ## How it plays
 
