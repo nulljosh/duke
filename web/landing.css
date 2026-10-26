@@ -1,9 +1,11 @@
-/* Duke landing, after Hermes and the Apple rules. Colour, type, space and radii come from tokens.css (brand/, copied
-   in by deploy.sh). This file only adds the page: the grain band, Walter Crane's Neptune's Horses (1892, public domain)
-   as a halftone mask, and the demo's own colours. */
+/* Duke landing, dressed after Nous Research like Hermes: a thin blue frame round the page, tiny caps labels, small square
+   buttons, and blue bands under film grain where the art sits as dot masks in scanlines: Hokusai's Great Wave (c. 1831)
+   behind the live demo, Duke Kahanamoku with his board (c. 1915) beside the band head, both public domain.
+   Colour, type, space and radii come from tokens.css (brand/, copied in by deploy.sh). */
 :root {
   --display: var(--font);
   --demo-bg: #fff; --demo-tile: #eef0f3; --demo-text: #1c1d22; --demo-text2: rgba(28, 29, 34, .55); --demo-tile2: rgba(28, 29, 34, .06);
+  --scan: repeating-linear-gradient(to bottom, #000 0 1.5px, transparent 1.5px 3px);  /* scanlines for the art */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .28 0 0 0 -.06'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 @media (prefers-color-scheme: dark) {
@@ -21,7 +23,7 @@ h1 { font-size: clamp(48px, 9vw, 120px); line-height: 1.02; font-weight: 700; le
 h2 { font-size: clamp(40px, 6vw, 72px); line-height: 1.04; font-weight: 600; letter-spacing: -.022em; }
 h3 { font-size: 22px; line-height: 28px; font-weight: 600; letter-spacing: -.01em; }
 .label { font-size: 13px; line-height: 16px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); margin-bottom: var(--sp-4); }
-.btn { height: var(--control); padding: 0 var(--sp-5); border-radius: var(--r-pill); display: inline-flex; align-items: center; font-weight: 600; font-size: 17px; text-decoration: none; transition: background var(--motion); }
+.btn { height: var(--control); padding: 0 var(--sp-5); border-radius: 8px; display: inline-flex; align-items: center; font-weight: 600; font-size: 17px; text-decoration: none; transition: background var(--motion); }
 .btn-solid { background: var(--btn); color: #fff; }
 .btn-solid:hover { background: color-mix(in srgb, var(--btn) 82%, #fff); }
 .btn-ghost { background: var(--surface); color: var(--text); }
@@ -43,7 +45,11 @@ a:focus-visible, .btn:focus-visible, select:focus-visible { outline: 4px solid v
 
 /* The live demo sits straight on the band: no window, no device. */
 .stage { position: relative; overflow: hidden; margin: var(--sp-8) clamp(0px, 3vw, 44px) 0; background: var(--grain), var(--band); padding: clamp(32px, 7vw, 96px) var(--sp-5); }
-.stage-art { position: absolute; inset: 0; background: var(--band-art); opacity: .6; -webkit-mask: url(art/neptune.png) center / cover no-repeat; mask: url(art/neptune.png) center / cover no-repeat; }
+.stage-art { position: absolute; inset: 0; background: var(--band-art); opacity: .7;
+  -webkit-mask: var(--scan), url(art/great-wave.png) 70% 40% / cover no-repeat; -webkit-mask-composite: source-in;
+  mask: var(--scan), url(art/great-wave.png) 70% 40% / cover no-repeat; mask-composite: intersect; }
+/* the frame round the whole page, the Nous way */
+body::after { content: ""; position: fixed; inset: 8px; border: 1px solid color-mix(in srgb, var(--band-art) 45%, transparent); pointer-events: none; z-index: 30; }
 .app-demo { position: relative; max-width: 320px; margin: 0 auto; background: var(--demo-bg); color: var(--demo-text); border-radius: var(--r-card); padding: var(--sp-5) var(--sp-4); text-align: center; }
 .demo-hint { margin-top: var(--sp-3); font-size: 13px; line-height: 16px; color: var(--sub); text-align: center; }
 .app-demo h4 { font-size: .95rem; font-weight: 700; margin-bottom: .3rem; }
@@ -76,7 +82,15 @@ a:focus-visible, .btn:focus-visible, select:focus-visible { outline: 4px solid v
 /* Band: how it works, then the features as ruled cells */
 .band { margin: 0 clamp(0px, 3vw, 44px); background: var(--grain), var(--band); color: #fff; overflow: hidden; }
 .band .label { color: var(--band-sub); }
-.band-head { padding: var(--sp-9) var(--sp-5) var(--sp-8); text-align: center; }
+.band-head { position: relative; padding: var(--sp-9) var(--sp-5) var(--sp-8); text-align: center; }
+.duke-art { position: absolute; right: 5%; bottom: 0; width: 26%; height: 96%; background: var(--band-sub); opacity: .9;
+  -webkit-mask: var(--scan), url(art/duke.png) center bottom / contain no-repeat; -webkit-mask-composite: source-in;
+  mask: var(--scan), url(art/duke.png) center bottom / contain no-repeat; mask-composite: intersect; }
+@media (min-width: 1001px) {   /* the art gets its own column beside a left-set head */
+  .band-head { text-align: left; padding-left: 6%; padding-right: 34%; }
+  .band .band-head p:not(.label) { margin: var(--sp-5) 0 0; }
+}
+@media (max-width: 1000px) { .duke-art { display: none; } }
 .band-head h2 { font-size: clamp(40px, 7vw, 88px); }
 .band-head p:not(.label) { margin: var(--sp-5) auto 0; max-width: 600px; color: var(--band-sub); }
 .cells { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--band-line); }
