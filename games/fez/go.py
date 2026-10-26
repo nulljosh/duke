@@ -163,9 +163,16 @@ def step(kind, v, c, y):
     if kind == "hop":
         up = y - here[2]
         if up > 0: ride_to_peak(); s = fez.state()
+        sign = 1 if target > fez.h(s) else -1
+        if abs(target - fez.h(s)) >= 4 and up >= 1 and plan.standable(plan.grid(s["level"], v), here[1] - sign, here[2]):   # long jump: take a run-up
+            fez.walk(here[1] + 0.5 - sign * 0.9, tol=0.2)
+            return settle(fez.runjump(here[1] + 0.5 + sign * 0.4, target, jump_ms=500))
         if s["action"] in ("Treading", "Swimming") or up >= 3:   # +3 (and out of water) only by catching the ledge: hold Up, long jump (Nature Hub, 2026-10-25)
             fez.edge("up", True); s = fez.hop(target, jump_ms=600, lead=0.5); fez.edge("up", False); return settle(landed(2))
         return settle(fez.hop(target, jump_ms=450 if up > 0 else 250 if up == 0 else 120, lead=0.5))
+
+
+FORGIVEN = set()
 
 
 def go(goal, goal_view=None, tries=14, item=None):
@@ -187,7 +194,8 @@ def go(goal, goal_view=None, tries=14, item=None):
         if goal is not None and (c, y) == goal and goal_view in (None, v): return s
         p = plan.find_item(s["level"], v, (c, y, dep), item) if item else plan.find(s["level"], v, (c, y, dep), goal, goal_view)
         if p == []: return s
-        if p is None and any(b[0] == s["level"] for b in plan.BANNED):   # bans can be timing flukes (bobbing pillars): forgive them once
+        if p is None and s["level"] not in FORGIVEN and any(b[0] == s["level"] for b in plan.BANNED):   # bans can be timing flukes (bobbing pillars): forgive them once
+            FORGIVEN.add(s["level"])
             plan.BANNED -= {b for b in plan.BANNED if b[0] == s["level"]}; plan.BANS.write_text("".join(repr(b) + "\n" for b in plan.BANNED))
             print("no path with bans: cleared this level's bans", flush=True); continue
         if p is None:
@@ -215,7 +223,7 @@ def go(goal, goal_view=None, tries=14, item=None):
             if close and kind.startswith("turn") and got[1] != cc:   # the camera turned but FEZ moved Gomez in depth: replan from where he is
                 print(f"  turned to {vv}, Gomez at {got[1]} not {cc}: replanning", flush=True); break
             if (got[0], got[1], got[2]) != (vv, cc, yy) and not close:
-                plan.ban((s["level"], prev, kind, (vv, cc, yy)))   # never plan this exact move from here again
+                plan.ban((s["level"], prev[:3], kind, (vv, cc, yy)))   # never plan this exact move from here again
                 print(f"  {kind} to {vv} {cc},{yy} landed {got} ({s['action']}), banned, replanning"); break
             prev = got
         else:

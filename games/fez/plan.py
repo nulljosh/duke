@@ -217,7 +217,6 @@ def moves(g, c, y, lo, cl=None, dep=0):
                 if any(g.get((c + dc * k, y + 2)) == "wall" for k in range(1, across + 1)): break
                 for up in range(JUMP_UP + (1 if across <= 3 else 0), -5, -1):   # +3 only by catching the ledge
                     # landing lower must be the first floor met falling down that column (floors only pass from below)
-                    if across > 5 - max(up, 0): continue   # measured: +2 up and 5 across falls short (Mine A, 2026-10-25)
                     if up == 3 and g.get((cc, y + 1)) is not None: continue   # +3 needs a bare ledge face to catch, not a stack of shelves
                     if standable(g, cc, y + up) and not (across == 1 and up == 0) and (up >= 0 or land(g, cc, y + 2, lo) == y + up):
                         yield ("hop", cc, y + up, None), 3 + across
@@ -311,7 +310,7 @@ def find(name, view, start, goal, goal_view=None, done=None):
                 vd = vine_dep(CLIMB[(name, nv)], (nc, y), nd_)
                 if vd is not None: nxt.append(((nv, nc, y, vd), "turn-" + nv, 3))
         for node, kind, cost in nxt:
-            if (name, cur, kind, node[:3]) in BANNED: continue
+            if (name, cur[:3], kind, node[:3]) in BANNED: continue   # bans ignore depth: the same failed hop from any depth
             nd = d0 + cost
             if nd < dist.get(node, 1e9): dist[node] = nd; prev[node] = (cur, kind); heapq.heappush(q, (nd, node))
     if end is None: return None
