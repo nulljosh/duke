@@ -52,6 +52,7 @@ def letgo():
 
 def settle(s):
     if s["action"].startswith("Grab"): fez.key("up", 150); time.sleep(1.3); s = fez.state()
+    elif s["action"].startswith("PullUp"): time.sleep(1.0); s = fez.state()   # already climbing over the ledge
     return s
 
 
@@ -141,6 +142,8 @@ def step(kind, v, c, y):
         return fez.state() if fez.state()["action"] == "Bouncing" else settle(landed())
     if kind == "hop":
         up = y - here[2]
+        if s["action"] in ("Treading", "Swimming"):   # out of water only by catching the ledge: hold Up, long jump (Nature Hub, 2026-10-25)
+            fez.edge("up", True); s = fez.hop(target, jump_ms=600, lead=0.5); fez.edge("up", False); return settle(landed(2))
         return settle(fez.hop(target, jump_ms=450 if up > 0 else 250 if up == 0 else 120, lead=0.5))
 
 
@@ -169,11 +172,14 @@ def go(goal, goal_view=None, tries=8, item=None):
         prev = (v, c, y, dep)
         for kind, (vv, cc, yy, _) in plan.compress(p):
             s = step(kind, vv, cc, yy)
+            if s["action"].startswith(("Grab", "PullUp")) and kind not in ("grab", "climb", "dropgrab"): s = settle(s)   # caught a ledge: pull up first
             got = node(s)
+            if got[0] == vv and got[2] == yy and abs(got[1] - cc) == 1 and s["grounded"]:   # right floor, one column off: walk the rest
+                s = fez.walk(cc + 0.5); got = node(s)
             close = (kind in ("grab", "climb", "dropgrab") and "Climb" in s["action"] and got[0] == vv and abs(got[1] - cc) <= 1 and abs(got[2] - yy) <= 1) \
                 or (s["action"] == "Bouncing" and got[0] == vv and abs(got[1] - cc) <= 1)
             if (got[0], got[1], got[2]) != (vv, cc, yy) and not close:
-                plan.BANNED.add((s["level"], prev, kind, (vv, cc, yy)))   # never plan this exact move from here again
+                plan.ban((s["level"], prev, kind, (vv, cc, yy)))   # never plan this exact move from here again
                 print(f"  {kind} to {vv} {cc},{yy} landed {got} ({s['action']}), banned, replanning"); break
             prev = got
         else:

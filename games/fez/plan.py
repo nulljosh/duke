@@ -4,7 +4,7 @@ The level is flattened to a 2D grid the way the camera sees it (collision is per
 Moves: walk, step off a ledge (fall at most MAX_DROP), hop (up to JUMP_UP, across up to JUMP_ACROSS), climb, turn.
   plan.py LEVEL VIEW FROM_H FROM_Y FROM_DEPTH TO_H TO_Y [TO_VIEW]      prints the move list
 Grid columns are screen-horizontal units (fez.h), rows are the y of the floor Gomez stands on."""
-import collections, heapq, math, sys
+import ast, collections, heapq, math, pathlib, sys
 import fezmap
 
 MAX_DROP = 6        # stepping off from rest turns into deadly FreeFalling after ~7 (Zu Library trace); jumps first eat into it
@@ -233,7 +233,13 @@ def find_item(name, view, start, item):
     return find(name, view, start, None, None, near)
 
 
-BANNED = set()   # (level, from node, kind, to (view, col, y)) moves the executor saw fail; the planner skips them
+BANS = pathlib.Path(__file__).with_name("bans.txt")   # one repr per line, so a failed move stays banned across runs
+BANNED = {ast.literal_eval(l) for l in BANS.read_text().splitlines()} if BANS.exists() else set()   # (level, from node, kind, to (view, col, y))
+
+
+def ban(key):
+    BANNED.add(key)
+    with BANS.open("a") as f: f.write(repr(key) + "\n")
 
 
 def find(name, view, start, goal, goal_view=None, done=None):

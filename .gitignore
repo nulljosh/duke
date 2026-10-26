@@ -22,3 +22,4 @@ stalled.json
 scripts/voice.wav
 scripts/voice.aiff
 .wrangler/
+games/fez/bans.txt
