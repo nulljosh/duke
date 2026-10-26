@@ -91,7 +91,7 @@ def grid(name, view):
         # a trile at P spans [P, P+1]; take its centre so mirrored views (sign -1) land in the right column
         cell = (int((t["Position"][hi] + 0.5) * hs // 1), iround(t["Position"][1]))   # some triles sit off-grid (y 13.9375)
         k = t["Position"][di] * ds
-        if any(f in SOLID for f in e["Faces"].values()): alld.setdefault(cell, set()).add(int(t["Position"][di] // 1))   # solid from any side holds him at its depth
+        if any(f in SOLID for f in e["Faces"].values()): alld.setdefault(cell, set()).add(int(t["Position"][di] // 1))
         if e["Type"] in ("Vine", "Ladder"):   # vines don't hide what's behind them; keep the nearest one separately
             if cell not in vines or k > vines[cell][0]: vines[cell] = (k, t, e)
         elif cell not in front or k > front[cell][0]: front[cell] = (k, t, e)
@@ -140,10 +140,10 @@ ALLNOW, DEPNOW = {}, None   # set by find(): the view's solid triles by depth, a
 
 
 def standable(g, c, y):
-    """Gomez can stand at column c with feet at y: something solid under him, no wall where his body is.
-    A floor hidden behind the front layer still holds him when he is at its depth (Zu City's back terraces, 2026-10-25)."""
+    """Gomez can stand at column c with feet at y. Blocks at his own depth count even behind the front layer (Zu City)."""
     floor = g.get((c, y - 1)) in ("top", "wall") or (DEPNOW is not None and DEPNOW in ALLNOW.get((c, y - 1), ()))
-    return floor and g.get((c, y)) != "wall" and g.get((c, y + 1)) != "wall"
+    body = DEPNOW is None or not (DEPNOW in ALLNOW.get((c, y), ()) or DEPNOW in ALLNOW.get((c, y + 1), ()))
+    return floor and body and g.get((c, y)) != "wall" and g.get((c, y + 1)) != "wall"
 
 
 BOUNCE = 7          # a bouncer mushroom throws Gomez about 7 up (Tree trace, 2026-10-25)
