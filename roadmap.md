@@ -72,6 +72,20 @@ Compared against the App Store screens of Duolingo, Babbel, Busuu, Memrise, Drop
 ## Blocked on Joshua
 - Run `sudo pmset -a autorestart 1` once at the Mac (needs the password). Without it the Mac stays off after a power cut and the runner with it. Asked 2026-10-05, he was away from the desk.
 
+## Next games (ranked 2026-10-26, 142 owned on Steam)
+Ranked for Duke: Mac native, state it can read (a mod or the save), turn-based or pausable, and a real ending.
+1. Papers, Please (installed): days of read, compare, stamp; deterministic, a few hours, 20 endings.
+2. Stardew Valley: SMAPI mods on Mac give full state, like SurfBridge did for FEZ; goal is the Community Center.
+3. FTL: pausable, text events, a run is an hour; goal is beating the Flagship.
+4. Plague Inc: Evolved: one decision screen, short games, clear win.
+5. Oxygen Not Included (installed): Harmony mods read the colony; goal is the rocket or Temporal Tear.
+6. Undertale: GameMaker, a short pacifist route; bullet hell is the hard part.
+7. Civilization V: turn-based, long, needs a strategy brain.
+8. Terraria: tModLoader on Mac, long, the Moon Lord is the end.
+9. Cities: Skylines: sandbox, milestones only.
+10. Don't Starve: survival, no ending; Adventure Mode is the goal.
+Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geometry Dash, Super Hexagon, VVVVVV), story walks (Firewatch, Gone Home, Stanley Parable), multiplayer (Rust, Dota 2, Don't Starve Together), and the 47 games without a Mac build.
+
 ## Open
 - [ ] Brand 2 (board on a breaking wave, 2026-10-26) is live on the landing and the Mac menu bar app. The iPhone and Watch apps need a new build to carry the new icon.
 - [ ] FEZ: beat the 32-cube ending for real from Joshua's 67.6% save (slot 3 copy). Status lives in games/fez/README.md. Then add FEZ to the landing next to Duolingo and Factorio.
