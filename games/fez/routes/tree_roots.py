@@ -9,6 +9,9 @@ import fez, go
 
 
 def up():
+    if any(h["on"] for h in fez.state()["holes"]):   # holes over the vine top: re-roll them from the Nature Hub door
+        import nature_hub
+        if nature_hub.reroll_holes(8) is None: return None
     s = go.go((-17, 45), "Right")
     if s is None: return None
     fez.hop(fez.h(fez.state()) + 1.2, jump_ms=300, lead=0.3)   # vine top onto the x17 plank
