@@ -176,7 +176,7 @@ The live `/loop` (QA of the Duke landing and menu bar app, Jony Ive pass, repeat
 
 ## Games (merged 2026-10-25)
 
-Duke is the one autopilot for games and software. Duolingo lives in `scripts/` and `app/`. Conveyer was folded in on 2026-10-25 as a clean copy (its history stays in the archived `nulljosh/conveyer`): `games/factorio/` (Factorio via FLE, its own CLAUDE.md and docs/LOOP-HANDOFF.md still apply), `games/gdt/` (Game Dev Tycoon bridge mod and driver), `games/fez/`. Ignored local state (`.env`, `.fle`, `models`, `.gdt-save-backup`, `runs`) moved with them and stays gitignored.
+Duke is the one autopilot for games and software. Duolingo lives in `scripts/` and `app/`. Conveyer was folded in on 2026-10-25 as a clean copy (its history stays in the archived `nulljosh/conveyer`): `games/factorio/` (Factorio via FLE, its own CLAUDE.md and docs/LOOP-HANDOFF.md still apply), `games/gdt/` (Game Dev Tycoon bridge mod and driver), `games/fez/`. `games/mirage/` (2026-10-26) plays Mirage, our own platformer inside Joshua Tree, from the state lines the game prints; its route feeds joshuatree's checks. Ignored local state (`.env`, `.fle`, `models`, `.gdt-save-backup`, `runs`) moved with them and stays gitignored.
 
 Hard rules that came along:
 - Never touch Game Dev Tycoon save slot 3, it is Joshua's real 2014 save. Our studio plays in slot 5.
