@@ -66,8 +66,10 @@ def bobbers(name):
         if any(dx or dz for dx, _, dz in segs) or not g["Triles"]: continue
         rise = iround(sum(dy for _, dy, _ in segs if dy > 0))
         if rise <= 0: continue
+        d = fezmap.level(name); ts = fezmap.tileset(d["TrileSetName"])
+        solid = {tuple(t["Position"]) for t in d["Triles"] if (e := ts.get(t["Id"])) and any(f in SOLID for f in e["Faces"].values())}
         cols = {}
-        for x, y, z in g["Triles"]:
+        for x, y, z in (p for p in g["Triles"] if tuple(p) in solid):   # the pillar's top solid trile, not a decoration on it
             if (x, z) not in cols or y > cols[(x, z)]: cols[(x, z)] = y
         out[int(gid)] = ([(x, y, z) for (x, z), y in cols.items()], rise)
     return out
@@ -206,7 +208,7 @@ def moves(g, c, y, lo, cl=None, dep=0):
                 for up in range(JUMP_UP + (1 if across <= 3 else 0), -5, -1):   # +3 only by catching the ledge
                     # landing lower must be the first floor met falling down that column (floors only pass from below)
                     if across > 5 - max(up, 0): continue   # measured: +2 up and 5 across falls short (Mine A, 2026-10-25)
-                    if up == 3 and (g.get((cc, y + 1)) is not None or any(g.get((c, y + k)) for k in (1, 2, 3))): continue   # +3 needs a bare ledge to catch, and open sky over Gomez (Zu City)
+                    if up == 3 and g.get((cc, y + 1)) is not None: continue   # +3 needs a bare ledge face to catch, not a stack of shelves
                     if standable(g, cc, y + up) and not (across == 1 and up == 0) and (up >= 0 or land(g, cc, y + 2, lo) == y + up):
                         yield ("hop", cc, y + up, None), 3 + across
                         break
