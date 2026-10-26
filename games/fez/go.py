@@ -183,6 +183,8 @@ def go(goal, goal_view=None, tries=14, item=None):
         t0 = time.time()   # wait out falls and respawns; hanging on a vine or ledge counts as settled
         while (s["action"] in ("Dying", "FreeFalling") or not (s["grounded"] or s["action"] in ("Bouncing", "Treading", "Swimming") or "Climb" in s["action"] or s["action"].startswith("Grab"))) and time.time() - t0 < 10:
             time.sleep(0.3); s = fez.state()
+        if s.get("bg") and s["grounded"]:   # behind the scenery FEZ ignores vines and doors: face him from the other side
+            s = turn_to(plan.ORDER[(plan.ORDER.index(s["view"]) + 2) % 4]); print("  Gomez was in the background: turned around", flush=True)
         plan.HOLES[s["level"]] = [(h["from"], h["to"]) for h in s.get("holes", []) if h["on"]]
         v, c, y, dep = node(s)
         if s["grounded"] and not plan.standable(plan.grid(s["level"], v), c, y):   # this view's grid misreads the floor: try another camera
