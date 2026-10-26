@@ -174,6 +174,16 @@ def start(slot=3):
             return s
 
 
+SPIN = {"Up": "up", "Down": "down", "Left": "left", "Right": "right", "Jump": "space", "SpinLeft": "a", "SpinRight": "d"}
+
+
+def code(pattern):
+    """Enter a code (a volume's CodePattern from the level data) while Gomez stands inside its volume."""
+    for c in pattern:
+        key(SPIN[c], 60); time.sleep(0.8 if c.startswith("Spin") else 0.35)   # a spin waits out the camera turn
+    time.sleep(2); return state()
+
+
 def responsive():
     """FEZ sometimes stops taking movement keys while the console key still works (twice on 2026-10-26).
     Nudge left and right: if Gomez can stand and nothing moves him, input is dead."""
