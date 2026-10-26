@@ -10,7 +10,7 @@ Every game Duke plays, and the queue. Duke plays for real: it reads the game's s
 | Factorio | `factorio/` | Beaten |
 | Game Dev Tycoon | `gdt/` | Playing in slot 5 |
 | FEZ | `fez/` | 29 of 32 cubes, finishing at the Star Gate |
-| Arroyo (Joshua Tree's platformer) | `arroyo/` | Started by the Joshua Tree loop |
+| Mirage (Joshua Tree's platformer) | `mirage/` | Played by the Joshua Tree loop |
 
 ## Queue
 
