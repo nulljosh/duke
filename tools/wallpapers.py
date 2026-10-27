@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draw the Duke and FEZ wallpapers into brand/wallpapers/ (desktop 5120x2880, phone 1320x2868).
+"""Draw the Duke, FEZ and Papers, Please wallpapers into brand/wallpapers/ (desktop 5120x2880, phone 1320x2868).
   python3 tools/wallpapers.py
 FEZ is original pixel art in the game's spirit (no sprites from the install): a floating island at night,
 the golden cube and its eight bits, ordered-dithered with scanlines and grain. Duke is dressed like the Hermes landing
@@ -13,6 +13,7 @@ OUT = ROOT / "brand" / "wallpapers"
 
 
 from fezart import SIZES, dither, fez, hexc   # noqa: E402  the FEZ art lives in its own file
+from papersart import papers                  # noqa: E402  Papers, Please art, original, in the game's palette
 
 
 # ---------- Duke: the brand tile, Neptune's Horses and one glyph per game ----------
@@ -141,4 +142,5 @@ if __name__ == "__main__":
     for kind in SIZES:
         fez(kind).save(OUT / f"fez-{kind}.png", optimize=True)
         duke(kind).save(OUT / f"duke-{kind}.png", optimize=True)
+        papers(kind).save(OUT / f"papers-{kind}.png", optimize=True)
     print("\n".join(str(p) for p in sorted(OUT.glob("*.png"))))
