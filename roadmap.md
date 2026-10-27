@@ -2,6 +2,16 @@
 
 > Priority tier 5 (2026-10-17): exploratory, this year. Order: live blockers, ship pushes, active features, portfolio, exploratory. See ~/Documents/Code/LOOP-HANDOFF.md.
 
+## Papers, Please (active, 2026-10-27)
+
+Day 5 of 31 replaying from the day 5 save. `games/papers/play.py <day>` plays a day; GUIDE.md has the rules by day and the run log; docs/BENCHMARKS.md has every game's numbers.
+
+- [ ] Night automation: read the ledger and family status by OCR and buy in order: medicine for VERY SICK, food, heat, then medicine for SICK. Never end below zero (ending 1).
+- [ ] Day runner: sleep, newspaper, walk, file the bulletin, entrants, night, a line in progress.jsonl, redraw progress.svg, send the graph. One command per day.
+- [ ] Speed: from 45 seconds an entrant down to 25. Fewer drag steps, shorter waits, time each phase in the log.
+- [ ] Day 6: work pass for permits with purpose WORK (name, work-until date). Day 7: search Kolechians. Day 8: diplomatic authorization. Day 13: ID supplement. Day 14: wanted list. Day 18: reason for denial (interrogate first).
+- [ ] Read the audio transcript so a purpose or duration that differs from the permit is caught (day 4 citation).
+
 ## Benchmarks: finishing Duolingo (measured 2026-10-02)
 "Finished" means every course on the account at 100%, plus math and chess. Run
 `node scripts/bench.mjs` for the live numbers; it reads `log.jsonl` only.
