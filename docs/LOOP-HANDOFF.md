@@ -36,3 +36,9 @@ Rules for every tick:
 /loop until fez and Duolingo beat
 ```
 Read `games/fez/README.md` (progress log at the bottom) and this file first.
+
+## Papers, Please (active, 2026-10-27)
+
+Joshua said yes to launching it. One instance runs from the LaCie (`open .../PapersPlease.app`), window id from `games/fez/win list <pid>`, title "PapersPlease". No story save yet: start a new game. Plan and recon are in `games/papers/README.md` (Unity IL2CPP, so screen OCR plus real mouse drags with the window in front). Settings save is backed up in `games/papers/.save-backup/`. Next: screenshot the title screen, start day 1, and build the read, check, stamp loop.
+
+GitHub Actions on nulljosh/duke stopped starting jobs on 2026-10-26 ("recent account payments have failed or your spending limit needs to be increased"). Tests and the docs check pass locally (68/68). It is a billing fix on Joshua's side, not code.
