@@ -23,14 +23,14 @@ GLYPHS = {   # 5x7 pixel font, only the letters the wallpaper prints
 LAYOUT = {   # low-res coordinates. The phone keeps y < 70 (the clock) sky only, and y > 660 (the dock) dark desk
     "phone": dict(
         yard=dict(win=(14, 6, 316, 398), hor=205, wall=26, yb=470, gate=205, gw=30, towers=[42, 288], ctop=134, tu=1, posts=[110, 160, 250],
-                  beams=[(150, 330, 46), (110, 270, 40), (210, 360, 50), (170, 255, 36)], h0=6, h1=128, near_x=96, amp=96, bends=4.3, calm=70, barrels=[(36, 300, 1.5), (290, 352, 2.3)]),
-        scale=1, dtop=405, pool=(175, 540, 190, 135), pp=(192, 536, 98, 126, -3), bul=(66, 518, 82, 112, 6), stamp=(194, 582, 3, -10),
-        tool=(282, 532, 1.5, 24), lamp=(66, 410, 46, 646, 41), coins=[(116, 636), (132, 642), (124, 648)], pad=(190, 646), mug=(278, 612)),
+                  beams=[(150, 330, 46), (110, 270, 40), (210, 360, 50), (170, 255, 36)], h0=6, h1=128, gap=.26, near_x=96, amp=96, bends=4.3, calm=70, barrels=[(36, 300, 1.5), (290, 352, 2.3)]),
+        scale=1, dtop=405, pool=(160, 540, 205, 140), pp=(192, 536, 98, 126, -3), bul=(66, 518, 82, 112, 6), stamp=(194, 582, 3, -10),
+        tool=(282, 532, 1.5, 24), lamp=(66, 410, 46, 646, 41)),
     "desktop": dict(
         yard=dict(win=(22, 10, 618, 212), hor=122, wall=22, yb=292, gate=330, gw=22, towers=[96, 560], ctop=72, tu=.7, posts=[190, 250, 440],
                   beams=[(250, 190, 34), (210, 160, 30), (420, 200, 36), (370, 168, 28)], h0=4, h1=78, gap=.15, near_x=150, amp=200, bends=3.2, calm=0, barrels=[(70, 170, 1.1), (580, 190, 1.5)]),
         scale=1.5, dtop=219, pool=(335, 292, 250, 90), pp=(345, 288, 72, 88, -3), bul=(240, 292, 56, 80, 7), stamp=(347, 322, 2, -10),
-        tool=(430, 300, 1.0, 16), lamp=(178, 232, 150, 350, 38), coins=[(470, 332), (484, 337), (477, 342)], pad=(540, 320), mug=(95, 318)),
+        tool=(430, 300, 1.0, 16), lamp=(178, 232, 150, 350, 38)),
 }
 
 
@@ -120,7 +120,7 @@ def lamp_light(img, D, H):
     px = img.load(); cx, cy, rx, ry = D["pool"]
     for y in range(D["dtop"] - 7, H):
         for x in range(img.width):
-            q = math.hypot((x - cx) / rx, (y - cy) / ry); i = max(0, 1 - q) ** 1.1; f = .34 + .66 * i; r, g, b = px[x, y]
+            q = math.hypot((x - cx) / rx, (y - cy) / ry); i = max(0, 1 - q) ** 1.1; f = .1 + .9 * i ** 1.15; r, g, b = px[x, y]
             px[x, y] = (min(255, int(r * f * (1 + .22 * i))), min(255, int(g * f * (1 + .02 * i))), int(b * f * (1 - .3 * i)))
 
 
@@ -143,7 +143,6 @@ def papers(kind):
     W, H = SIZES[kind]; desktop = kind == "desktop"; scale = 8 if desktop else 4; w, h = W // scale, H // scale
     D = LAYOUT[kind]; G = D["yard"]; x0, y0, x1, y1 = G["win"]; dtop = D["dtop"]; rng = random.Random(41)
     img = Image.new("RGB", (w, h), hexc("#07090d")); d = ImageDraw.Draw(img); yard(img, G, rng, D["scale"]); d = ImageDraw.Draw(img)
-    sl = "GLORY TO ARSTOTZKA"; text(d, 69 if not desktop else 366, G["hor"] - 9, sl, mix(CREAM, DOLIVE, .45), 1)   # painted on the wall
     for r in ([0, 0, w, y0 - 1], [0, 0, x0 - 1, h], [x1 + 1, 0, w, h], [0, y1 + 1, w, h]): d.rectangle(r, fill=hexc("#07090d"))
     d.rectangle([x0 - 3, y0 - 3, x1 + 3, y1 + 3], outline=hexc("#2a3344"), width=2); d.rectangle([x0 - 1, y0 - 1, x1 + 1, y1 + 1], outline=hexc("#0b0e14"))
     for _ in range(int(2400 * D["scale"])):   # frost creeping in from the edges of the glass
@@ -159,12 +158,6 @@ def papers(kind):
     sx, sy, ss, sa = D["stamp"]; put(img, imprint(ss, rng), sx, sy, sa, (0, 0)); sp = ImageDraw.Draw(img)
     splatter(sp, sx, sy, width("DENIED", ss) * .62, rng, 70 if not desktop else 50)
     tx, ty, tk, ta = D["tool"]; put(img, tool(tk), tx, ty, ta, (7, 10))
-    for cx, cy in D["coins"]:
-        sp.ellipse([cx - 4, cy - 2, cx + 4, cy + 2], fill=hexc("#8a6a2c")); sp.ellipse([cx - 4, cy - 3, cx + 4, cy + 1], fill=hexc("#e8c27a")); sp.line([(cx - 2, cy - 2), (cx + 1, cy - 2)], fill=(255, 244, 205))
-    px, py = D["pad"]; sp.rectangle([px - 16, py - 8, px + 16, py + 8], fill=hexc("#14171c"), outline=hexc("#4a566a")); sp.rectangle([px - 12, py - 5, px + 12, py + 5], fill=RED); sp.line([(px - 11, py - 4), (px + 5, py - 4)], fill=hexc("#e8506a"))
-    mx, my = D["mug"]; sp.ellipse([mx - 9, my + 12, mx + 10, my + 17], fill=hexc("#1a1008")); sp.rectangle([mx - 8, my, mx + 8, my + 14], fill=hexc("#aeb7a0")); sp.ellipse([mx - 8, my + 10, mx + 8, my + 16], fill=hexc("#aeb7a0"))
-    sp.arc([mx + 4, my + 3, mx + 15, my + 12], 270, 90, fill=hexc("#aeb7a0"), width=2); sp.ellipse([mx - 8, my - 3, mx + 8, my + 3], fill=hexc("#d8dcc4")); sp.ellipse([mx - 6, my - 2, mx + 6, my + 2], fill=hexc("#2a1a10")); sp.line([(mx - 7, my + 2), (mx - 7, my + 12)], fill=hexc("#e8ecd8"))
-    for k in range(14): sp.point((mx + int(2.5 * math.sin(k * .7)) - 1, my - 6 - k), hexc("#8a96a8") if k % 2 else hexc("#c4ccd8"))   # steam
     lamp_light(img, D, h)
     lp = D["lamp"]; lx, ly = lp[0] + math.cos(math.radians(lp[4])) * 30, lp[1] + math.sin(math.radians(lp[4])) * 30
     beam(img, Image.new("L", img.size), lx, ly, D["pool"][0] - 20, D["pool"][1] + 10, 120 if not desktop else 90, .32, (0, D["dtop"], w, h), WARM)
@@ -174,5 +167,7 @@ def papers(kind):
     lamp(img, D, rng)
     f = 6 if desktop else 4
     vignette(img, f); ImageDraw.Draw(img).rectangle([f, f, w - 1 - f, h - 1 - f], outline=OLIVE)
+    sl = "GLORY TO ARSTOTZKA"; sx0, sy0 = (78, G["hor"] - 9) if not desktop else (366, G["hor"] - 10)   # painted on the wall, over the lighting so it stays crisp
+    text(ImageDraw.Draw(img), sx0 + 1, sy0 + 1, sl, hexc("#0a0e0a"), 1); text(ImageDraw.Draw(img), sx0, sy0, sl, mix(CREAM, WARM, .15), 1)
     img = dither(img.resize((w * 2, h * 2), Image.NEAREST), 6)
     return grain(scanlines(img.resize((W, H), Image.NEAREST), scale))

@@ -45,7 +45,29 @@ def beam(img, lit, sx, sy, tx, ty, wid, k, box, col=COLD):
             if not 0 < s < 1: continue
             hw = 1 + wid * s / 2; p = abs(-dx * uy + dy * ux)
             if p < hw: lighten(img, lit, x, y, k * (1 - p / hw) ** 1.4 * (1 - .4 * s), col)
-    if col == COLD: pool(img, lit, tx, ty, wid * 1.5, wid * .42, COLD, .9, box)
+    if col == COLD: pool(img, lit, tx, ty, wid * 1.5, wid * .42, COLD, .5, box); landing(img, lit, tx, ty, wid * 1.3, wid * .36, box)
+
+
+def landing(img, lit, cx, cy, rx, ry, box):
+    """Where a beam hits the snow: a soft dithered ellipse in three rings, dense in the middle and sparse at the rim."""
+    px = img.load()
+    for y in range(max(box[1], int(cy - ry)), min(box[3], int(cy + ry) + 1)):
+        for x in range(max(box[0], int(cx - rx)), min(box[2], int(cx + rx) + 1)):
+            q = math.hypot((x - cx) / rx, (y - cy) / ry)
+            if q >= 1: continue
+            dens, a = (.95, .5) if q < .36 else ((.6, .32) if q < .68 else (.3, .2))
+            if dens * 16 > BAYER[y % 4][x % 4]: px[x, y] = mix(px[x, y], COLD, a)
+            lit.putpixel((x, y), max(lit.getpixel((x, y)), int(255 * (1 - q) * .9)))
+
+
+def fog(img, G, rng):
+    """A low band of ground fog along the foot of the wall, drifting in patches, dithered."""
+    x0, y0, x1, y1 = G["win"]; hor = G["hor"]; fh = int(G["wall"] * 1.1); ph = [rng.uniform(0, 6.28) for _ in range(3)]; px = img.load()
+    for y in range(hor - 5, hor + fh):
+        f = (1 - (y - hor) / fh) ** 1.5 if y >= hor else 1 - (hor - y) / 6
+        for x in range(x0, x1):
+            i = f * (.5 + .28 * math.sin(x * .045 + ph[0]) + .22 * math.sin(x * .12 + y * .25 + ph[1]))
+            if i > 0: px[x, y] = mix(px[x, y], hexc("#7a889e"), .5 if i * 16 > BAYER[y % 4][x % 4] else .14)
 
 
 def skyline(d, G, rng):
@@ -97,58 +119,75 @@ def gate(d, G):
 
 
 def person(img, lit, x, foot, h, kind, side, rng, far=0.0):
-    """One silhouette seen from behind in a heavy coat, drawn as a mask, filled near black and edged with floodlight on its lit side."""
-    h = max(5, int(h)); W, Hh = int(h * .9) + 10, h + 8; mk = Image.new("L", (W, Hh)); d = ImageDraw.Draw(mk); cx, t = W // 2, 4; big = h >= 30
+    """One figure seen from behind in a heavy coat: shoulders, collar, hat and something carried, drawn as a mask, filled
+    near black and edged with a bright rim of floodlight on the lit side (a faint one on the other) so each one separates."""
+    h = max(5, int(h)); W, Hh = int(h * 1.2) + 12, h + 8; mk = Image.new("L", (W, Hh)); d = ImageDraw.Draw(mk); cx, t = W // 2, 4; big = h >= 28
     def P(a, b): return (cx + a * h, t + b * h)
     def r(a, b, c, e): d.rectangle([cx + a * h, t + b * h, cx + max(a, c) * h, t + max(b, e) * h], fill=255)
     def o(a, b, c, e): d.ellipse([cx + a * h, t + b * h, cx + c * h, t + e * h], fill=255)
-    w = {3: .2, 4: .22}.get(kind, .23)
-    d.polygon([P(-.17, .2), P(.17, .2), P(w + .01, .84), P(-w - .01, .84)], fill=255); o(-.2, .17, .2, .36)   # coat and sloped shoulders
-    r(-.12, .8, -.02, 1); r(.02, .8, .12, 1); o(-.07, .04, .07, .2); r(-.04, .17, .04, .24)    # boots, head, neck
-    if big:
-        d.line([P(-.2, .36), P(-w - .01, .8)], fill=0, width=1); d.line([P(.2, .36), P(w + .01, .8)], fill=0, width=1)   # a gap between arm and coat
-        r(-w - .03, .62, -w + .01, .8); r(w - .01, .62, w + .03, .8)   # hands
-    if kind == 0: o(-.115, -.01, .115, .12); o(-.125, .05, .125, .17)   # fur hat with flaps
-    elif kind == 1: o(-.125, -.01, .125, .25); o(-.08, .15, .08, .3)   # a big hood and scarf
-    elif kind == 2: o(-.1, -.01, .1, .09); r(-.13, .06, .13, .08)   # brimmed cap
-    elif kind == 3: r(.2, .64, .36, .86); d.line([P(.28, .64), P(.28, .56)], fill=255)   # a suitcase
-    elif kind == 4: o(-.3, .42, -.14, .72); r(-.14, .26, -.1, .5)   # a bag on the hip
-    elif kind == 5: o(-.1, -.1, .1, .08); o(-.12, .0, .12, .1)   # a tall fur hat
-    elif kind == 6: o(-.1, -.02, .1, .09); d.line([P(.2, .82), P(.13, -.04)], fill=255, width=max(1, h // 18))   # cap and rifle
+    if kind == 7:   # a child in a bobble hat
+        d.polygon([P(-.2, .32), P(.2, .32), P(.27, .86), P(-.27, .86)], fill=255); o(-.15, .06, .15, .36); o(-.04, -.03, .04, .08); r(-.15, .84, -.03, 1); r(.03, .84, .15, 1)
+    else:
+        w = .22 if kind == 3 else .25
+        d.polygon([P(-.05, .19), P(.05, .19), P(.2, .27), P(.23, .5), P(w + .02, .84), P(-w - .02, .84), P(-.23, .5), P(-.2, .27)], fill=255)   # coat with sloped shoulders
+        o(-.12, .15, .12, .28); o(-.07, .03, .07, .2); r(-.12, .8, -.02, 1); r(.02, .8, .12, 1)   # collar, head, boots
+        if big:
+            d.line([P(-.18, .34), P(-w - .02, .8)], fill=0, width=1); d.line([P(.18, .34), P(w + .02, .8)], fill=0, width=1)   # a gap between arm and coat
+            o(-w - .04, .6, -w + .02, .72); o(w - .02, .6, w + .04, .72)   # hands
+        if kind in (0, 3): o(-.115, -.01, .115, .12); o(-.125, .05, -.06, .17); o(.06, .05, .125, .17); r(-.02, -.04, .02, 0)   # fur hat, flaps down
+        elif kind == 1: o(-.125, -.01, .125, .25); o(-.1, .15, .1, .29)   # a hood and scarf
+        elif kind == 2: o(-.1, 0, .1, .09); r(-.12, .06, .12, .1)   # flat cap
+        elif kind == 4: o(-.32, .06, -.1, .34); d.line([P(-.22, .24), P(-.15, .5)], fill=255, width=max(1, h // 25))   # a bundle on a stick over the shoulder
+        elif kind == 5: o(-.1, -.1, .1, .08); o(-.12, 0, .12, .1)   # a tall fur hat
+        elif kind == 6: o(-.1, -.02, .1, .09); r(-.13, .06, .13, .09); d.line([P(.21, .8), P(.14, -.04)], fill=255, width=max(1, h // 18))   # cap and rifle
+        elif kind == 8: o(-.11, 0, .11, .1); o(-.125, .05, .125, .15); d.line([P(.2, .3), P(.43, .63)], fill=255, width=max(2, h // 12)); o(.4, .58, .47, .68)   # reaching for a child's hand
+        if kind == 3: r(.2, .66, .4, .88); d.line([P(.3, .66), P(.3, .6)], fill=255, width=max(1, h // 28)); d.line([P(.23, .74), P(.37, .74)], fill=0)   # a suitcase
     body = mix(hexc("#06080c"), hexc("#2a3344"), far * .75)   # far figures sit in the haze, near ones are black
-    img.paste(Image.new("RGB", mk.size, body), (int(x - cx), int(foot - t - h)), mk)
+    ox, oy = int(x - cx), int(foot - t - h)
+    img.paste(Image.new("RGB", mk.size, body), (ox, oy), mk)
     if h < 9: return
     k = .62 + .38 * lit.getpixel((int(min(max(x, 0), img.width - 1)), int(min(foot - h // 2, img.height - 1)))) / 255; w = 1 + h // 30
-    for n in range(w + 2):   # a bright edge on the lit side, then a soft fall-off into the coat
-        e = ImageChops.subtract(mk, ImageChops.offset(mk, side * (n + 1), 0)).point(lambda v: 255 if v > 100 else 0); d2 = ImageDraw.Draw(e); d2.rectangle([0, t + int(.86 * h), mk.width, mk.height], fill=0)
-        kk = k if n < w else k * (.3 if n == w else .15)
-        if n < w + (1 if h > 25 else 0): img.paste(Image.new("RGB", mk.size, mix(body, COLD, kk)), (int(x - cx), int(foot - t - h)), e)
-    top = ImageChops.subtract(mk, ImageChops.offset(mk, 0, 1)).point(lambda v: 255 if v > 100 else 0)
-    img.paste(Image.new("RGB", mk.size, mix(body, COLD, k * .6)), (int(x - cx), int(foot - t - h)), top)
+    def edge(dx, dy, kk):
+        e = ImageChops.subtract(mk, ImageChops.offset(mk, dx, dy)).point(lambda v: 255 if v > 100 else 0); ImageDraw.Draw(e).rectangle([0, t + int(.86 * h), mk.width, mk.height], fill=0)
+        img.paste(Image.new("RGB", mk.size, mix(body, COLD, kk)), (ox, oy), e)
+    for n in range(w + 1): edge(side * (n + 1), 0, k if n < w else k * .3)
+    if h >= 25: edge(-side, 0, k * .4)
+    edge(0, 1, k * .6)
+
+
+def prints(img, pts):
+    """Footprints in the snow: pairs of small dents with a faint lip, along a list of (x, y, h)."""
+    d = ImageDraw.Draw(img)
+    for x, y, h in pts:
+        for s in (-1, 1):
+            fx, fy = x + s * .09 * h, y - (.06 if s > 0 else -.06) * h; c = img.getpixel((int(fx), int(min(fy, img.height - 1))))
+            d.ellipse([fx - .03 * h - .5, fy - .018 * h - .5, fx + .03 * h + .5, fy + .018 * h + .5], fill=mix(c, INK, .45)); d.point((fx + 1, fy + .03 * h + 1), mix(c, COLD, .25))
 
 
 def queue(img, lit, G, rng):
     hor, yb, y1 = G["hor"], G["yb"], G["win"][3]
     def at(u):
         return G["gate"] + (G["near_x"] - G["gate"]) * u + G["amp"] * math.sin(u * G["bends"] * math.pi) * u ** .6, hor + (yb - hor) * u, G["h0"] + (G["h1"] - G["h0"]) * u
-    d = ImageDraw.Draw(img); steps = []; u = .012
+    d = ImageDraw.Draw(img); steps = []; trail = []; u = .012; gap = G.get("gap", .3)
     while True:
         x, y, h = at(u)
         if y > y1 + h * .6: break
-        steps.append((x, y, h)); u += G.get("gap", .25) * h / (yb - hor) * rng.uniform(.85, 1.15)
-    items = []
+        steps.append((x, y, h)); u += gap * h / (yb - hor) * rng.uniform(.85, 1.15) * (2.1 if rng.random() < .22 else 1)   # a few bigger gaps
+    uu = .012
+    while uu < u: trail.append(at(uu)); uu += .12 * at(uu)[2] / (yb - hor)
+    for bx, by, bs in G["barrels"]:   # tracks lead off the lane to the burn barrels
+        sx, sy, sh = at(.42 if bx < G["win"][2] / 2 else .6)
+        for f in [i / 9 for i in range(1, 9)]: trail.append((sx + (bx - sx) * f, sy + (by - sy) * f, sh * (1 - f) + 14 * f))
+    prints(img, trail); items = []
     for n, (x, y, h) in enumerate(steps):
-        kid = rng.random() < .1; hh = h * (.62 if kid else rng.uniform(.9, 1.08))
-        items.append((y, "p", x + rng.uniform(-.14, .14) * h, hh, rng.choice([0, 0, 1, 1, 2, 3, 4, 5]), 1 if x < G["win"][2] / 2 else -1))
-        if n % 7 == 4:   # a guard on the flank, rifle slung
-            items.append((y + .2, "p", x + (1 if n % 2 else -1) * .8 * h, h, 6, 1 if x < G["win"][2] / 2 else -1))
-    for it in sorted(items, key=lambda i: i[0]):
-        y, kind = it[0], it[1]
-        if kind == "p":
-            _, _, x, h, k, side = it
-            g = img.getpixel((int(x), min(int(y), img.height - 1)))   # a long shadow thrown away from the floodlight
-            d.polygon([(x - .12 * h, y), (x + .12 * h, y), (x + side * 1.0 * h, y + .1 * h)], fill=mix(g, INK, .55))
-            person(img, lit, x, y, h, k, side, rng, max(0, 1 - h / G["h1"]) ** 1.5)
+        kind = rng.choice([0, 0, 1, 1, 2, 2, 3, 4, 5]); hh = h * rng.uniform(.84, 1.12); side = 1 if x < G["win"][2] / 2 else -1; jx = x + rng.uniform(-.2, .2) * h
+        if n % 6 == 2 and hh >= 20: kind = 8; items.append((y + .1, jx + .52 * hh, hh * .54, 7, side))   # a child holding a hand
+        items.append((y, jx, hh, kind, side))
+        if n % 7 == 4: items.append((y + .2, x + (1 if n % 2 else -1) * .9 * h, h, 6, side))   # a guard on the flank, rifle slung
+    for y, x, h, k, side in sorted(items, key=lambda i: i[0]):
+        g = img.getpixel((int(x), min(int(y), img.height - 1)))   # a long shadow thrown away from the floodlight
+        d.polygon([(x - .12 * h, y), (x + .12 * h, y), (x + side * 1.0 * h, y + .1 * h)], fill=mix(g, INK, .55))
+        person(img, lit, x, y, h, k, side, rng, max(0, 1 - h / G["h1"]) ** 1.5)
 
 
 def barrel(img, lit, x, y, s, rng, box):
@@ -196,6 +235,7 @@ def yard(img, G, rng, scale):
         h = 2 + rng.randrange(3); d.ellipse([x - 5, hor + 1 - h, x + 5, hor + 3], fill=mix(hexc("#46526a"), COLD, .15))
     for lx in G["posts"]:   # small lamps along the wall
         d.line([(lx, top - 5), (lx, top)], fill=INK); d.rectangle([lx - 2, top - 7, lx + 2, top - 5], fill=(255, 246, 215)); heads.append((lx, top - 6))
+    fog(img, G, rng)
     for (hx, hy), (tx, ty, wd) in zip(heads[:4], G["beams"]): beam(img, lit, hx, hy, tx, ty, wd, .9, box)
     for hx, hy in heads: pool(img, lit, hx, hy, 15 * u, 10 * u, COLD, .8, box)
     pool(img, lit, G["gate"], hor + 4, 26 * u, 9 * u, WARM, .7, box)
