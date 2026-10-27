@@ -132,13 +132,13 @@ def entrant(day, base):
         at_ = doc_on_counter(shot(), base)
         if not at_: break
         drag(at_, spot); spots.append(spot); time.sleep(1.0)
-    return decide(day, spots)
+    return decide(day, spots, base)
 
 
 def missing_passport():
     """No passport: highlight the rule and the empty counter in inspect mode, then click the transcript printer to
     interrogate (the INTERROGATE label is only a hint). The entrant then hands over a temporary visa slip to deny on."""
-    drag((253, 615), (450, 420)); time.sleep(1.2)   # rule book onto the desk; it opens where it was left
+    drag((253, 615), (730, 420)); time.sleep(1.2)   # rule book onto the desk, far enough right to read both pages
     shot(); ws = ocr()
     toc = next((w for w in ws if "BASIC" in w["t"].upper()), None)
     if toc: click((toc["x"], toc["y"])); time.sleep(1.2); shot(); ws = ocr()
@@ -151,14 +151,14 @@ def missing_passport():
     if book: drag((book["x"], book["y"] + 10), (253, 615)); time.sleep(1.0)   # file the book again
 
 
-def decide(day, spots):
+def decide(day, spots, base=None):
     """Read the desk, stamp the passport, hand every document back."""
     shot(); words = ocr(); v = verdict(words, day)
     if day >= 3 and not any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words):
         missing_passport(); shot(); words = ocr(); v = "deny"
     visa = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
     if visa:   # the passport: slide its visa box under the chosen stamp
-        grab = (visa["x"], visa["y"] + 150)
+        grab = (visa["x"], min(visa["y"] + 150, 580))   # a temporary visa slip sits low on the desk
         drop = (grab[0] + STAMP_X[v] - visa["x"], grab[1])
         drag(grab, drop); time.sleep(0.5)
         click(TRAY_OPEN); time.sleep(0.7); click((STAMP_X[v], 330)); time.sleep(0.7); click(TRAY_CLOSE); time.sleep(0.5)
@@ -166,6 +166,10 @@ def decide(day, spots):
     for spot in spots:   # everything else goes back too (the passport's old spot is empty by now)
         drag(spot, ENTRANT); time.sleep(0.5)
     time.sleep(1)
+    for _ in range(3):   # a paper dropped short lands on the counter; the entrant waits until it is handed up
+        left = base is not None and doc_on_counter(shot(), base)
+        if not left: break
+        drag(left, ENTRANT); time.sleep(1.0)
     return v, [w["t"] for w in words if w["x"] > 360 and w["y"] > 236]
 
 
