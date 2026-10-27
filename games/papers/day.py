@@ -1,0 +1,92 @@
+"""One command per day: the night's budget, sleep, the walk to work, the booth, a line in progress.jsonl and the graph.
+Run it from the night screen of the day before: `python3 day.py <next day>`."""
+import json, re, subprocess, sys, time
+from PIL import Image
+import play
+
+RADIO_X = 801
+COSTS = {"FOOD": 20, "HEAT": 10, "MEDIC": 5, "UPGRADE": 5}
+WHO = {"WIFE": ("WIFE", "IFE"), "SON": ("SON", "SOH"), "MIL": ("MIL",), "UNCLE": ("UNCLE", "NCLE", "UHCLE")}
+FAMILY = [("WIFE", 187), ("SON", 273), ("MIL", 359), ("UNCLE", 445)]   # status circles, right of the ledger
+
+
+def status(rgb, rows):
+    """Who is sick (the ledger only offers medicine for them) and who is very sick (their middle circle turns red)."""
+    sick = {r["who"] for r in rows if "MEDIC" in r["t"]}
+    return {who: {"sick": who in sick, "very": rgb.getpixel((1038, y))[0] > 150 and rgb.getpixel((1038, y))[1] < 80}
+            for who, y in FAMILY}
+
+
+def ledger(words):
+    """Optional rows: label, cost and the row's y, plus the night total."""
+    rows = []
+    for w in words:
+        t = w["t"].upper()
+        if 360 < w["x"] < 600 and w["y"] > 220 and re.search(r"FOOD|HEAT|MEDIC|UPGRADE", t):
+            cost = next(v for k, v in COSTS.items() if k in t)   # ponytail: fixed prices; read the -N column if they ever change
+            who = next((k for k, alts in WHO.items() if any(a in t for a in alts)), None)
+            rows.append({"t": t, "y": w["y"], "cost": cost, "who": who})
+    total = next((int(re.sub(r"[^\d-]", "", w["t"]) or 0) for w in words if re.fullmatch(r"[$S]-?\d+", w["t"]) and w["y"] > 520), 0)
+    return rows, total
+
+
+def plan(rows, total, checked, fam):
+    """Pick rows to buy: medicine for the very sick, then the sick, then food, then heat. Never end below zero."""
+    money = total + sum(r["cost"] for r, c in zip(rows, checked) if c)
+    want = []
+    order = [r for r in rows if "MEDIC" in r["t"] and r["who"] and fam[r["who"]]["very"]] \
+        + [r for r in rows if "MEDIC" in r["t"] and r["who"] and fam[r["who"]]["sick"] and not fam[r["who"]]["very"]] \
+        + [r for r in rows if "FOOD" in r["t"]] + [r for r in rows if "HEAT" in r["t"]]
+    for r in order:
+        if r["cost"] <= money and r not in want: want.append(r); money -= r["cost"]
+    return want, money
+
+
+def night():
+    img = play.shot(); rgb = Image.open(play.SHOT).convert("RGB"); words = play.ocr()
+    rows, total = ledger(words)
+    checked = [rgb.getpixel((RADIO_X, round(r["y"])))[0] > 150 for r in rows]
+    want, left = plan(rows, total, checked, status(rgb, rows))
+    for r, c in zip(rows, checked):
+        if (r in want) != c: play.click((RADIO_X, round(r["y"]))); time.sleep(0.4)
+    return left, [r["t"] for r in want]
+
+
+def morning():
+    """Sleep, then click through whatever comes before the booth (letters, the newspaper) until WALK TO WORK."""
+    play.click((1055, 602)); time.sleep(5)
+    for _ in range(8):
+        play.shot(); words = play.ocr()
+        btn = next((w for w in words if re.search(r"WALK TO WORK|NEXT|CONTINUE", w["t"].upper()) and w["y"] > 560), None)
+        if btn and "WALK" in btn["t"].upper(): play.click((btn["x"], btn["y"])); time.sleep(10); return True
+        play.click((btn["x"], btn["y"]) if btn else (568, 627)); time.sleep(3)
+    return False
+
+
+def graph():
+    subprocess.run([sys.executable, str(play.HERE / "progress.py")], capture_output=True)
+    subprocess.run(["rsvg-convert", str(play.HERE / "progress.svg"), "-o", "/tmp/papers-progress.png"])
+
+
+def _check():
+    rows = [{"t": "FOOD", "y": 1, "cost": 20, "who": None}, {"t": "HEAT", "y": 2, "cost": 10, "who": None},
+            {"t": "MEDICINE (UNCLE)", "y": 3, "cost": 5, "who": "UNCLE"}, {"t": "MEDICINE (SON)", "y": 4, "cost": 5, "who": "SON"}]
+    fam = {k: {"very": k == "UNCLE", "sick": k in ("UNCLE", "SON"), "cold": True, "hungry": True} for k in ("WIFE", "SON", "MIL", "UNCLE")}
+    want, left = plan(rows, 15, [False] * 4, fam)
+    assert [r["t"] for r in want] == ["MEDICINE (UNCLE)", "MEDICINE (SON)"] and left == 5
+    want, left = plan(rows, 40, [False] * 4, fam)
+    assert [r["t"] for r in want] == ["MEDICINE (UNCLE)", "MEDICINE (SON)", "FOOD", "HEAT"] and left == 0
+
+
+if __name__ == "__main__":
+    _check()
+    day = int(sys.argv[1])
+    left, bought = night(); print("night", left, bought, flush=True)
+    if not morning(): sys.exit("stuck before the booth")
+    log = subprocess.run([sys.executable, str(play.HERE / "play.py"), str(day)], capture_output=True, text=True).stdout
+    n = sum(1 for l in log.splitlines() if "('approve'" in l or "('deny'" in l)
+    play.shot(); words = play.ocr(); rows, total = ledger(words)
+    fam = status(Image.open(play.SHOT).convert("RGB"), rows)
+    note = ", ".join(f"{k.lower()} {'very sick' if v['very'] else 'sick' if v['sick'] else 'ok'}" for k, v in fam.items())
+    with open(play.HERE / "progress.jsonl", "a") as f: f.write(json.dumps({"day": day, "entrants": n, "money": total, "family": note}) + "\n")
+    graph(); print("day", day, "entrants", n, "total before buying", total, note)

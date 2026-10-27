@@ -79,11 +79,12 @@ def passport(toks):
     for t in toks:
         country = country or near(t, list(CITIES)) or ("UNITED FEDERATION" if "FEDERATION" in t else None)
         bare = re.sub(r"^[^A-Z]*[A-Z0-9]{2,4}[.,]\s*", "", t) if re.match(r"^\S{3,4}[.,]\s", t) else t
-        for c in [c for cs in CITIES.values() for c in cs]:   # the pixel font OCRs badly: keep the best city above 0.55
+        if near(t, list(CITIES)): continue   # the country line is not a city ("ANTEGRIA" is close to "GLORIAN")
+        for c in [c for cs in CITIES.values() for c in cs]:   # the pixel font OCRs badly: keep the best city above 0.6
             r = difflib.SequenceMatcher(None, bare, c).ratio()
-            if r > 0.55 and r > best: best, city = r, c
+            if r >= 0.6 and r > best: best, city = r, c
         name = name or (t if re.match(r"^[A-Z' -]+, [A-Z' -]+$", t) else None)
-    dates = sorted(re.findall(DATE, " ".join(toks)))
+    dates = sorted(d for d in re.findall(DATE, " ".join(toks)) if d[0] >= "1975")   # older dates are birthdays
     country = country or next((c for c, cs in CITIES.items() if city in cs), None)   # OCR can miss the country line
     num = next(iter(re.findall(PNUM, " ".join(toks))), None)
     return country, city, (".".join(dates[-1]) if dates else None), name, num
@@ -99,14 +100,15 @@ def verdict(words, day):
     country, city, exp, name, num = passport(mine)
     if day == 1: return "approve" if country == "ARSTOTZKA" else "deny"
     today = (datetime.date(1982, 11, 22) + datetime.timedelta(day)).strftime("%Y.%m.%d")
-    ok = country and city in CITIES[country] and exp and exp > today
+    # deny only on readable evidence: the pixel font often garbles a valid city or date, and most entrants are valid
+    ok = bool(country) and (city is None or city in CITIES[country]) and (exp is None or exp > today)
     text = re.sub(DATE, r"\1.\2.\3", " ".join(rest))
     if day == 3 and country != "ARSTOTZKA":
         ok = ok and "TICKET" in text and today in text
     if day >= 4 and country == "ARSTOTZKA":   # the ID card prints a district, height and weight; it may overlap the passport
         ok = ok and bool(re.search(r"IDENTITY|DISTRIC|\d\s?CM\b|\d\s?KG\b", " ".join(mine + rest)))
     if day >= 4 and country != "ARSTOTZKA":   # OCR mangles the pixel font: an unreadable field passes, a readable mismatch fails
-        sur = next((m.group(1) for t in mine for m in [re.match(r"^([A-Z']{3,})[,.]", t)] if m), None)
+        sur = next((m.group(1) for t in mine for m in [re.match(r"^([A-Z']{3,})[,.]\s+[A-Z]", t)] if m), None)
         holder_ok = not sur or any(same(sur, wd, 0.6) for t in rest for wd in t.split())
         alnum = lambda s: re.sub(r"[^A-Z0-9]", "", s)
         pn = next((alnum(t) for t in mine if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)), None)
@@ -200,6 +202,9 @@ def _check():
     assert passport(["ENHUO", "IMPOR"])[1] == "ENKYO" and passport(["JUFKO LITU"])[1] == "YURKO CITY"
     assert passport(["OBRISTAN", "TSUNKEIDO"])[:2] == ("OBRISTAN", "TSUNKEIDO")
     assert verdict([{"t": "STAMP HERE", "x": 700, "y": 300}, {"t": "COBRASTAN", "x": 700, "y": 400}], 4) == "deny"
+    pyotr = w("ANTEGRIA", "DDE. 1945.10.21", "Touse", "984.00", "Vostok, Pyptı", "DR90N-DAP6C")
+    assert verdict(pyotr + o("is hereby granted to", "PYOTR VOSTOH", "DR90N-DHP6C", "1982.12.15"), 5) == "approve"
+    assert verdict(w("STAMP HERE", "COBRASTAN", "1923.5.31", "Festbun"), 5) == "deny"
     assert verdict(w("ISS. Vedor", "EXP 1985.01.01", "IMPOR"), 2) == "deny"
 
 
