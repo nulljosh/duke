@@ -9,6 +9,7 @@ HERE = Path(__file__).resolve().parent
 FEZ = HERE.parent / "fez"
 SHOT = Path("/tmp/papers-shot.png")
 HORN, TRAY_OPEN, TRAY_CLOSE = (347, 181), (1128, 340), (588, 340)
+INSPECT, PRINTER = (1108, 640), (178, 612)   # inspect-mode toggle; the transcript printer is the interrogate button
 COUNTER, DESK, ENTRANT = (176, 518), (700, 400), (180, 350)
 STAMP_X = {"approve": 975, "deny": 735}   # stamp centres when the tray is open; the visa box goes under one
 
@@ -104,12 +105,15 @@ def verdict(words, day):
         ok = ok and "TICKET" in text and today in text
     if day >= 4 and country == "ARSTOTZKA":   # the ID card prints height and weight
         ok = ok and bool(re.search(r"HEIGHT|WEIGHT|DISTRICT", text))
-    if day >= 4 and country != "ARSTOTZKA":
-        pnums = re.findall(PNUM, text)
-        holder = " ".join(reversed(name.split(", "))) if name else None
+    if day >= 4 and country != "ARSTOTZKA":   # OCR mangles the pixel font: an unreadable field passes, a readable mismatch fails
+        sur = next((m.group(1) for t in mine for m in [re.match(r"^([A-Z']{3,})[,.]", t)] if m), None)
+        holder_ok = not sur or any(same(sur, wd, 0.6) for t in rest for wd in t.split())
+        alnum = lambda s: re.sub(r"[^A-Z0-9]", "", s)
+        pn = next((alnum(t) for t in mine if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)), None)
+        others = [alnum(t) for t in rest if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)]
+        num_ok = not pn or not others or any(same(pn, o, 0.6) for o in others)
         enter_by = max(re.findall(r"19\d\d\.\d\d\.\d\d", text) or ["0"])
-        ok = ok and ("GRANTED" in text or "PERMIT" in text) and any(same(n, num, 0.8) for n in pnums) \
-            and any(same(holder, t) for t in rest) and enter_by >= today
+        ok = ok and ("GRANTED" in text or "PERMIT" in text) and holder_ok and num_ok and enter_by >= today
     return "approve" if ok else "deny"
 
 
@@ -131,9 +135,27 @@ def entrant(day, base):
     return decide(day, spots)
 
 
+def missing_passport():
+    """No passport: highlight the rule and the empty counter in inspect mode, then click the transcript printer to
+    interrogate (the INTERROGATE label is only a hint). The entrant then hands over a temporary visa slip to deny on."""
+    drag((253, 615), (450, 420)); time.sleep(1.2)   # rule book onto the desk; it opens where it was left
+    shot(); ws = ocr()
+    toc = next((w for w in ws if "BASIC" in w["t"].upper()), None)
+    if toc: click((toc["x"], toc["y"])); time.sleep(1.2); shot(); ws = ocr()
+    rule = next((w for w in ws if re.search(r"MU[SA]T HAVE", w["t"].upper())), None)
+    if rule:
+        click(INSPECT); time.sleep(1.0); click((rule["x"], rule["y"] + 8)); time.sleep(0.8)
+        click((300, 550)); time.sleep(2.5); click(PRINTER); time.sleep(6)
+    shot(); ws = ocr()
+    book = next((w for w in ws if w["t"].upper() == "RULES"), None)
+    if book: drag((book["x"], book["y"] + 10), (253, 615)); time.sleep(1.0)   # file the book again
+
+
 def decide(day, spots):
     """Read the desk, stamp the passport, hand every document back."""
     shot(); words = ocr(); v = verdict(words, day)
+    if day >= 3 and not any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words):
+        missing_passport(); shot(); words = ocr(); v = "deny"
     visa = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
     if visa:   # the passport: slide its visa box under the chosen stamp
         grab = (visa["x"], visa["y"] + 150)
@@ -165,6 +187,9 @@ def _check():
     assert verdict(kol + o("is hereby granted to", "MARTA KOWALSKA", "1T609-T0H4R", "1982.12.08"), 4) == "deny"
     assert verdict(kol + o("is hereby granted to", "RIRUS CLAASSENS", "AB123-CD456", "1982.12.08"), 4) == "deny"
     assert verdict(kol, 4) == "deny"
+    vos = w("Vostok, Pyptr", "ANTEGRIA", "St. Marmerg", "1984.10.22", "P4SE7-FGOX6")
+    assert verdict(vos + o("is hereby granted to", "PYOTR VOSTOH", "PLSED-FGG-6", "1982.12.21"), 5) == "approve"
+    assert verdict(w("Gray. Edward", "ANTEGRIA", "St. Marmero", "1984.10.25", "R308L-SHL28") + o("granted", "EDHRO GRHY", "R308L-3KL28", "1982.12.11"), 5) == "approve"
     assert verdict(w("Paradizna", "1983.11.23", "ARSTOTZKA") + o("HEIGHT 170cm"), 4) == "approve"
     assert verdict(w("Paradizna", "1983.11.23", "ARSTOTZKA"), 4) == "deny"
     assert passport(["ENHUO", "IMPOR"])[1] == "ENKYO" and passport(["JUFKO LITU"])[1] == "YURKO CITY"
