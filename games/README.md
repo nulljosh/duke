@@ -9,12 +9,13 @@ Every game Duke plays, and the queue. Duke plays for real: it reads the game's s
 | Duolingo (languages, math, chess, music) | `../scripts` | Runs around the clock |
 | Factorio | `factorio/` | Beaten |
 | Game Dev Tycoon | `gdt/` | Playing in slot 5 |
-| FEZ | `fez/` | Beaten 2026-10-26 (32 of 32 cubes, Star Gate ending); maxing out to 100% next |
+| FEZ | `fez/` | Beaten 2026-10-26 (32 of 32 cubes, Star Gate ending). New Game+ max-out parked at 18 gold, 15 anti, 2 bits |
+| Papers, Please | `papers/` | Starting |
 | Mirage (Joshua Tree's platformer) | `mirage/` | Played by the Joshua Tree loop |
 
 ## Queue
 
-Ranked for Duke from the Steam library (142 games, 2026-10-26): Mac native, readable state, turn-based or pausable, and a real ending. Papers, Please starts as soon as FEZ is beaten.
+Ranked for Duke from the Steam library (142 games, 2026-10-26): Mac native, readable state, turn-based or pausable, and a real ending. Papers, Please is next, started 2026-10-27.
 
 1. Papers, Please (installed). Days of read, compare and stamp; 20 endings.
 2. Stardew Valley. SMAPI mods on Mac give full state; the goal is the Community Center.

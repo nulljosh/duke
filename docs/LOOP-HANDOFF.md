@@ -24,7 +24,7 @@ Rules for every tick:
 - Duke 1.1 shipped (daily goal ring). The Mac app signs with Developer ID now, so rebuilds don't re-prompt.
 
 ## Next, in order
-1. FEZ is beaten. Max it out: every gold cube, anti-cube and heart cube left. `python3 games/fez/fezsave.py ~/Library/Application\ Support/FEZ/SaveSlot2` lists what's left per room.
+1. FEZ is beaten; the New Game+ max-out is parked at 18 gold, 15 anti, 2 bits (Joshua: "you decide", 2026-10-27), and Papers, Please is the active game. To resume FEZ: most of what is left sits behind Memory Core volume 5, a secret passage to Pivot Watertower at x17-18 z24-25 y48 that never registers Gomez (he stands 3 units in front of it); the rest is puzzles (graveyard lightning platforms, the owl statues for Big Owl, Mine Wrap bombs). Big Tower, Tree Roots and the Waterfall now have hand routes in `routes/`. `python3 games/fez/fezsave.py ~/Library/Application\ Support/FEZ/SaveSlot2` lists what's left per room.
 2. Rooms behind doors not yet opened: Pivot Watertower, Industrial Superspin, Pivot One/Two/Three, Triple Pivot Cave, the Sewers. `fezmap.py route` throws KeyError for them until a way in exists.
 3. Mine Wrap gold cube: find the intended climb. The Steam guides that cover it rate-limit fetches, so try again later.
 4. Puzzles still blocked from before: Lighthouse climb, Quantum, CMY, Weightswitch Temple, Fractal, Tree climb.
