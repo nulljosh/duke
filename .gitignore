@@ -24,3 +24,4 @@ scripts/voice.aiff
 .wrangler/
 games/fez/bans.txt
 games/fez/blocked.txt
+games/papers/.save-backup/
