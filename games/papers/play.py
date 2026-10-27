@@ -68,7 +68,7 @@ PNUM = r"\b[A-Z0-9]{5}[-_][A-Z0-9]{5}\b"
 def split(words):
     """Passport tokens (inside the box around its ENTRY VISA label) and every other desk token, upper-cased."""
     v = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)   # fake passports say STAMP HERE
-    inside = (lambda w: abs(w["x"] - v["x"]) < 150 and -150 < w["y"] - v["y"] < 210) if v else (lambda w: False)
+    inside = (lambda w: abs(w["x"] - v["x"]) < 125 and -150 < w["y"] - v["y"] < 210) if v else (lambda w: False)
     desk = [w for w in words if w["x"] > 360 and w["y"] > 236 and "DOCUMENTS" not in w["t"].upper()]
     return [w["t"].upper() for w in desk if inside(w)], [w["t"].upper() for w in desk if not inside(w)]
 
@@ -103,8 +103,8 @@ def verdict(words, day):
     text = re.sub(DATE, r"\1.\2.\3", " ".join(rest))
     if day == 3 and country != "ARSTOTZKA":
         ok = ok and "TICKET" in text and today in text
-    if day >= 4 and country == "ARSTOTZKA":   # the ID card prints height and weight
-        ok = ok and bool(re.search(r"HEIGHT|WEIGHT|DISTRICT", text))
+    if day >= 4 and country == "ARSTOTZKA":   # the ID card prints a district, height and weight; it may overlap the passport
+        ok = ok and bool(re.search(r"IDENTITY|DISTRIC|\d\s?CM\b|\d\s?KG\b", " ".join(mine + rest)))
     if day >= 4 and country != "ARSTOTZKA":   # OCR mangles the pixel font: an unreadable field passes, a readable mismatch fails
         sur = next((m.group(1) for t in mine for m in [re.match(r"^([A-Z']{3,})[,.]", t)] if m), None)
         holder_ok = not sur or any(same(sur, wd, 0.6) for t in rest for wd in t.split())
@@ -117,7 +117,7 @@ def verdict(words, day):
     return "approve" if ok else "deny"
 
 
-SPOTS = [(650, 400), (920, 380), (460, 600)]   # where each handed-over document goes on the desk
+SPOTS = [(650, 400), (965, 380), (460, 600)]   # where each handed-over document goes on the desk
 
 
 def entrant(day, base):
@@ -192,6 +192,7 @@ def _check():
     assert verdict(w("Gray. Edward", "ANTEGRIA", "St. Marmero", "1984.10.25", "R308L-SHL28") + o("granted", "EDHRO GRHY", "R308L-3KL28", "1982.12.11"), 5) == "approve"
     assert verdict(w("Paradizna", "1983.11.23", "ARSTOTZKA") + o("HEIGHT 170cm"), 4) == "approve"
     assert verdict(w("Paradizna", "1983.11.23", "ARSTOTZKA"), 4) == "deny"
+    assert verdict(w("Bylund, Henrik", "SRSTOTZKA IDENTITY CARD", "179 cm", "Paradizna", "1984.04.38", "ARSTOTZHA"), 5) == "approve"
     assert passport(["ENHUO", "IMPOR"])[1] == "ENKYO" and passport(["JUFKO LITU"])[1] == "YURKO CITY"
     assert passport(["OBRISTAN", "TSUNKEIDO"])[:2] == ("OBRISTAN", "TSUNKEIDO")
     assert verdict([{"t": "STAMP HERE", "x": 700, "y": 300}, {"t": "COBRASTAN", "x": 700, "y": 400}], 4) == "deny"
