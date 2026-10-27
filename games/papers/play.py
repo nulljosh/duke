@@ -1,9 +1,9 @@
 """Play Papers, Please days from screenshots: call the next entrant, read the passport, stamp, hand it back.
 The game window must be in front: Unity only takes the real cursor (cliclick), not events posted to its pid.
 Coordinates are window points, top-left of the content under the title bar included (same as the screenshot)."""
-import json, subprocess, sys, time
+import datetime, difflib, json, re, subprocess, sys, time
 from pathlib import Path
-from PIL import Image, ImageStat
+from PIL import Image, ImageChops
 
 HERE = Path(__file__).resolve().parent
 FEZ = HERE.parent / "fez"
@@ -41,35 +41,100 @@ def shot():
 def ocr(): return json.loads(subprocess.run([str(FEZ / "ocr"), str(SHOT)], capture_output=True, text=True).stdout or "[]")
 
 
-def doc_on_counter(img):   # the empty counter is one flat olive; a document breaks it up
-    return ImageStat.Stat(img.crop((110, 470, 250, 570))).stddev[0] > 25
+CBOX = (0, 455, 356, 580)   # the counter between the entrant and the desk
 
 
-def verdict(words):
-    """Day 1: Arstotzkan citizens only. The issuing country is printed on every passport."""
-    desk = " ".join(w["t"].upper() for w in words if w["x"] > 360 and w["y"] > 236)
-    return "approve" if "ARSTOTZ" in desk.replace(" ", "") else "deny"
+def doc_on_counter(img, base):
+    """Centre of whatever sits on the counter that was not there when it was empty, or None."""
+    m = ImageChops.difference(img.crop(CBOX), base).point(lambda v: 255 if v > 40 else 0).getbbox()
+    return ((m[0] + m[2]) // 2, CBOX[1] + (m[1] + m[3]) // 2) if m and (m[2] - m[0]) * (m[3] - m[1]) > 200 else None
 
 
-def entrant():
+CITIES = {"ANTEGRIA": ["ST. MARMERO", "GLORIAN", "OUTER GROUSE"], "ARSTOTZKA": ["ORVECH VONOR", "EAST GRESTIN", "PARADIZNA"],
+          "IMPOR": ["ENKYO", "HAIHAN", "TSUNKEIDO"], "KOLECHIA": ["YURKO CITY", "VEDOR", "WEST GRESTIN"],
+          "OBRISTAN": ["SKAL", "LORNDAZ", "MERGEROUS"], "REPUBLIA": ["TRUE GLORIAN", "LESRENADI", "BOSTAN"],
+          "UNITED FEDERATION": ["GREAT RAPID", "SHINGLETON", "KORISTA CITY"]}
+
+
+def near(s, options, cut=0.75):
+    m = difflib.get_close_matches(s, options, 1, cut); return m[0] if m else None
+
+
+def passport(words):
+    """Country, issuing city and expiry from the OCR of an open passport. OCR misreads ISS. as 155., so match loosely."""
+    v = next((w for w in words if "VISA" in w["t"].replace(" ", "").upper()), None)
+    inside = (lambda w: abs(w["x"] - v["x"]) < 150 and -150 < w["y"] - v["y"] < 210) if v else (lambda w: w["x"] > 360 and w["y"] > 236)
+    toks = [w["t"].upper() for w in words if inside(w)]   # only the passport: a newspaper on the desk says "Grestin" too
+    country = city = None
+    for t in toks:
+        country = country or near(t, list(CITIES)) or ("UNITED FEDERATION" if "FEDERATION" in t else None)
+        bare = re.sub(r"^[^A-Z]*[A-Z0-9]{2,4}[.,]\s*", "", t) if re.match(r"^\S{3,4}[.,]\s", t) else t
+        city = city or near(bare, [c for cs in CITIES.values() for c in cs], 0.8)
+    dates = sorted(re.findall(r"(19\d\d)[.,\s](\d\d)[.,\s](\d\d)", " ".join(toks)))
+    country = country or next((c for c, cs in CITIES.items() if city in cs), None)   # OCR can miss the country line
+    return country, city, (".".join(dates[-1]) if dates else None)
+
+
+def verdict(words, day):
+    """Day 1: Arstotzkans only. Day 2 on: any known country, its own issuing city, not expired."""
+    country, city, exp = passport(words)
+    if day == 1: return "approve" if country == "ARSTOTZKA" else "deny"
+    today = (datetime.date(1982, 11, 22) + datetime.timedelta(day)).strftime("%Y.%m.%d")
+    ok = country and city in CITIES[country] and exp and exp > today
+    if day >= 3 and country != "ARSTOTZKA":   # foreigners need an entry ticket valid on today's date
+        text = " ".join(w["t"].upper() for w in words if w["x"] > 360 and w["y"] > 236)
+        ok = ok and "TICKET" in text and today in re.sub(r"(19\d\d)[.,\s](\d\d)[.,\s](\d\d)", r"\1.\2.\3", text)
+    return "approve" if ok else "deny"
+
+
+SPOTS = [(650, 400), (990, 330), (990, 520)]   # where each handed-over document goes on the desk
+
+
+def entrant(day):
+    base = shot().crop(CBOX)
     click(HORN)
     t0 = time.time()
-    while not doc_on_counter(shot()):
-        if time.time() - t0 > 15: return None
+    while not doc_on_counter(shot(), base):
+        if time.time() - t0 > 25: return None
         time.sleep(0.5)
-    time.sleep(0.8); drag(COUNTER, DESK); time.sleep(1.2)
-    shot(); words = ocr(); v = verdict(words)
-    visa = next((w for w in words if "VISA" in w["t"].upper()), {"x": 697, "y": 367})
-    grab = (visa["x"], visa["y"] + 150)
-    drop = (grab[0] + STAMP_X[v] - visa["x"], grab[1])
-    drag(grab, drop); time.sleep(0.5)
-    click(TRAY_OPEN); time.sleep(1.0); click((STAMP_X[v], 330)); time.sleep(1.0); click(TRAY_CLOSE); time.sleep(0.8)
-    drag(drop, ENTRANT); time.sleep(3)
+    spots = []
+    for spot in SPOTS:   # the entrant slides papers over one at a time
+        time.sleep(1.0)
+        at_ = doc_on_counter(shot(), base)
+        if not at_: break
+        drag(at_, spot); spots.append(spot); time.sleep(1.0)
+    shot(); words = ocr(); v = verdict(words, day)
+    visa = next((w for w in words if "VISA" in w["t"].replace(" ", "").upper()), None)
+    if visa:   # the passport: slide its visa box under the chosen stamp
+        grab = (visa["x"], visa["y"] + 150)
+        drop = (grab[0] + STAMP_X[v] - visa["x"], grab[1])
+        drag(grab, drop); time.sleep(0.5)
+        click(TRAY_OPEN); time.sleep(1.0); click((STAMP_X[v], 330)); time.sleep(1.0); click(TRAY_CLOSE); time.sleep(0.8)
+        drag(drop, ENTRANT); time.sleep(1.0)
+    for spot in spots:   # everything else goes back too (the passport's old spot is empty by now)
+        drag(spot, ENTRANT); time.sleep(1.0)
+    time.sleep(2)
     return v, [w["t"] for w in words if w["x"] > 360 and w["y"] > 236]
 
 
+def _check():
+    w = lambda *ts: [{"t": t, "x": 700, "y": 400} for t in ts]
+    assert passport([{"t": "At Grestin!", "x": 1000, "y": 300}, {"t": "ENTRY VISA", "x": 650, "y": 300}, {"t": "Lorndaz", "x": 700, "y": 400}])[:2] == ("OBRISTAN", "LORNDAZ")
+    assert passport(w("155. Lesrenadi", "ENP. 1984.04.23", "REPUBLIA", "DOE. 1951.08.05")) == ("REPUBLIA", "LESRENADI", "1984.04.23")
+    assert verdict(w("ISS. Haihan", "EXP 1983.11.23", "HMPOR", "1948.06.29"), 2) == "approve"
+    assert verdict(w("ISS. Haihan", "EXP 1982.11.20", "IMPOR"), 2) == "deny"
+    assert verdict(w("Tsunheido", "1984.02.03", "1955.12.30"), 2) == "approve"
+    assert verdict(w("Mergeroue", "HP. 1983 08.23", "OBR"), 2) == "approve"
+    assert verdict(w("Haihan", "1983.11.23", "IMPOR", "ENTRY TICKET", "1982.11.25"), 3) == "approve"
+    assert verdict(w("Haihan", "1983.11.23", "IMPOR", "ENTRY TICKET", "1982.11.24"), 3) == "deny"
+    assert verdict(w("Paradizna", "1983.11.23", "ARSTOTZKA"), 3) == "approve"
+    assert verdict(w("ISS. Vedor", "EXP 1985.01.01", "IMPOR"), 2) == "deny"
+
+
 if __name__ == "__main__":
-    for n in range(int(sys.argv[1]) if len(sys.argv) > 1 else 30):
-        r = entrant()
+    _check()
+    day = int(sys.argv[1])
+    for n in range(int(sys.argv[2]) if len(sys.argv) > 2 else 40):
+        r = entrant(day)
         print(n, r, flush=True)
         if r is None: break
