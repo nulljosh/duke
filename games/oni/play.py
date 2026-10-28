@@ -86,7 +86,7 @@ def printables(s):
     oni.cmd(op="printables"); time.sleep(2); offers = oni.cmd(op="printables")
     if not isinstance(offers, list): return
     pick = next((i for i, o in enumerate(offers) if o.startswith("package") and any(f in o for f in FOOD_PACKAGES)), None)
-    if pick is None and s["foodKcal"] > 8000 and len(s["dupes"]) < 4: pick = next((i for i, o in enumerate(offers) if o.startswith("dupe")), None)
+    if pick is None and (s["foodKcal"] > 8000 and len(s["dupes"]) < 4 or s["foodKcal"] > 30000 and len(s["dupes"]) < 6): pick = next((i for i, o in enumerate(offers) if o.startswith("dupe")), None)
     if pick is not None: log("print", offers[pick], oni.cmd(op="print", index=pick))
     else: oni.cmd(op="invoke", type="ImmigrantScreen", method="OnPressBack"); log("pod offers passed", offers)
     oni.cmd(op="speed", speed=2)
