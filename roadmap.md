@@ -86,7 +86,7 @@ Ranked for Duke: Mac native, state it can read (a mod or the save), turn-based o
 2. Stardew Valley: SMAPI mods on Mac give full state, like SurfBridge did for FEZ; goal is the Community Center.
 3. FTL: pausable, text events, a run is an hour; goal is beating the Flagship.
 4. Plague Inc: Evolved: one decision screen, short games, clear win.
-5. Oxygen Not Included (installed): Harmony mods read the colony; goal is the rocket or Temporal Tear.
+5. Oxygen Not Included (playing now): the Duke Bridge mod reads the colony; goal is Home Sweet Home or the Temporal Tear rocket.
 6. Undertale: GameMaker, a short pacifist route; bullet hell is the hard part.
 7. Civilization V: turn-based, long, needs a strategy brain.
 8. Terraria: tModLoader on Mac, long, the Moon Lord is the end.
@@ -97,7 +97,7 @@ Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geom
 ## Open
 - [ ] Brand 2 (board on a breaking wave, 2026-10-26) is live on the landing and the Mac menu bar app. The iPhone and Watch apps need a new build to carry the new icon.
 - [ ] FEZ: beat the 32-cube ending for real from Joshua's 67.6% save (slot 3 copy). Status lives in games/fez/README.md. Then add FEZ to the landing next to Duolingo and Factorio.
-- [ ] Oxygen Not Included is the next game after FEZ, then Don't Starve (Steam marked it damaged on 2026-10-05; reinstall first).
+- [ ] Oxygen Not Included (active since 2026-10-28): win Home Sweet Home (cycle 200, 12 dupes, Great Monument) or the Great Escape, headless through the Duke Bridge. Colony 5 is running; status and lessons in docs/LOOP-HANDOFF.md, rules in games/oni/VICTORY.md. ETA a few days. Don't Starve after it (Steam marked it damaged on 2026-10-05; reinstall first).
 - [ ] Landing refresh once FEZ is beaten: Hermes' layout, styled for video games instead of Greek gods. Photos from FEZ and Factorio, and Duolingo too. Supported games listed: Duolingo, FEZ, Factorio.
 - [ ] `duke play <game>`: one entry point for duolingo, factorio, gdt and fez.
 - [ ] Hermes Sans (~/Documents/Code/hermes) likely has the same comma bug (feathers in every comma). Same fix as Duke Sans: tools/gen_font.py, with a check. Hermes has no roadmap.md yet, so the item lives here.
