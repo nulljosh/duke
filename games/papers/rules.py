@@ -38,13 +38,19 @@ def passport(toks):
             r = difflib.SequenceMatcher(None, bare, c).ratio()
             if r >= 0.6 and r > best: best, city = r, c
         name = name or (t if re.match(r"^[A-Z' -]+, [A-Z' -]+$", t) else None)
-    dates = sorted(d for d in re.findall(DATE, " ".join(toks)) if d[0] >= "1975")   # older dates are birthdays
+    joined = re.sub(r"(?<![\d])(9\d\d[.,]\d\d[.,]\d\d)", r"1\1", " ".join(toks))   # OCR drops the 1 of 1982 at a field's edge
+    dates = sorted(d for d in re.findall(DATE, joined) if d[0] >= "1975")   # older dates are birthdays
     country = country or next((c for c, cs in CITIES.items() if city in cs), None)   # OCR can miss the country line
     num = next(iter(re.findall(PNUM, " ".join(toks))), None)
     return country, city, (".".join(dates[-1]) if dates else None), name, num
 
 
 def same(a, b, cut=0.75): return bool(a and b) and difflib.SequenceMatcher(None, a, b).ratio() >= cut
+
+
+WORDS = {"ENTRY VISA", "ENTRY PERMIT", "WORK PASS", "IDENTITY CARD", "ARSTOTZKA", "KOLECHIA", "ANTEGRIA", "OBRISTAN", "REPUBLIA",
+         "ACCOUNTING", "AGRICULTURE", "ARCHITECTURE", "AVIATION", "CONSTRUCTION", "DENTISTRY", "DRAFTING", "ENGINEERING", "FINE ARTS",
+         "FISHING", "FOOD SERVICE", "GENERAL LABOR", "HEALTHCARE", "MANUFACTURING", "RESEARCH", "STATISTICS", "SURVEYING", "PURPOSE", "DURATION"}   # never names
 
 
 def verdict(words, day):
@@ -77,8 +83,8 @@ def verdict(words, day):
     if day >= 6 and any(re.fullmatch(r"WOR[KH]", t) for t in rest):   # purpose WORK needs the Ministry of Labor's work pass
         ok = ok and bool(re.search(r"LAB[OE]R|HOLDER|FIELD", text))   # ponytail: work-until vs duration not checked yet
         sur = next((m.group(1) for t in mine for m in [re.match(r"^([A-Z']{3,})[,.]\s+[A-Z]", t)] if m), None)
-        names = [t for t in rest if re.fullmatch(r"[A-Z']{3,} [A-Z']{3,}", t) and t not in ("ENTRY VISA", "ENTRY PERMIT", "WORK PASS", "IDENTITY CARD")]
-        ok = ok and (not sur or all(any(same(sur, wd, 0.6) for wd in t.split()) for t in names))   # the pass names someone else
+        names = [t for t in rest if re.fullmatch(r"[A-Z']{3,} ?[A-Z']{3,}", t) and len(t) >= 7 and not near(t, list(WORDS), 0.75)]   # OCR misspells fields too
+        ok = ok and (not sur or all(any(same(sur, wd, 0.6) for wd in t.split()) or sur[:4] in t.replace(" ", "") for t in names))   # the pass names someone else
     return "approve" if ok else "deny"
 
 
@@ -127,7 +133,9 @@ def _check():
     assert verdict(w("Haihan", "1983.11.23", "IMPOR") + o("is hereby granted to", "1982.11.20"), 7) == "deny"   # a readable stale enter-by still fails
     aza = w("ANTEGRIA", "Hudsonsho, Rzg", "S90LT-HJ160") + o("hereby granted to", "AZA HUDSONSHA", "590LT-H-130", "WORH", "1982.12.20", "Minirtry ef Laber", "HOLDER")
     assert verdict(w("UNITED FEDERATION", "Shingleton") + o("DIPLOMATIC AUTHORIZATION", "ARSTOTZKA"), 8) == "approve" and verdict(w("UNITED FEDERATION", "Shingleton"), 8) == "deny"
-    assert verdict(aza + o("MICHE PIETROWSHA", "MAHUFACTURING"), 7) == "deny" and verdict(aza + o("AZA HUDSONSHO", "FISHING"), 7) == "approve"
+    assert verdict(w("UNITED FEDERATION", "Baherova, Maria", "Horista City") + o("granted to", "MARIA BAHEROVA", "WORH", "Minirtry of Laber", "LILIVASILAUSHIS", "STATISTICS", "1983.12.01"), 7) == "deny"
+    assert passport(["UNITED FEDERATION", "reat Hapid", "982.11.03"])[2] == "1982.11.03"
+    assert verdict(aza + o("MICHE PIETROWSHA", "MAHUFACTURING"), 7) == "deny" and verdict(aza + o("AZA HUDSONSHO", "MAHUFACTURING"), 7) == "approve" and verdict(aza + o("AZA HUDSONSHO", "FISHING"), 7) == "approve"
 
 
 
