@@ -26,7 +26,8 @@ def ledger(words):
             amt = next((int(re.sub(r"\D", "", v["t"])) for v in words if v["x"] > 650 and abs(v["y"] - w["y"]) < 10 and re.search(r"\d", v["t"])), 0)
             rows.append({"t": t, "y": w["y"], "cost": -amt, "who": None})   # income: a negative cost
         if 360 < w["x"] < 600 and w["y"] > 220 and re.search(r"FOOD|HEAT|MEDIC|UPGRADE", t):
-            cost = next(v for k, v in COSTS.items() if k in t)   # ponytail: fixed prices; read the -N column if they ever change
+            price = next((int(re.sub(r"\D", "", v["t"])) for v in words if 650 < v["x"] < 790 and abs(v["y"] - w["y"]) < 10 and re.search(r"\d", v["t"])), None)
+            cost = price or next(v for k, v in COSTS.items() if k in t)   # food is 5 a head, so it falls as the family does
             who = next((k for k, alts in WHO.items() if any(a in t for a in alts)), None)
             rows.append({"t": t, "y": w["y"], "cost": cost, "who": who})
     total = next((int(re.sub(r"[^\d-]", "", w["t"]) or 0) for w in words if re.fullmatch(r"[$S]-?\d+", w["t"]) and w["y"] > 520), 0)
