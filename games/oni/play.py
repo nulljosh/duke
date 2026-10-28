@@ -31,6 +31,14 @@ UPPER = [[x, y] for y in range(124, 128) for x in range(177, 190)]   # air volum
 def log(*a): print(time.strftime("%H:%M:%S"), *a, flush=True)
 
 
+def topup(have, element, low, n=15):
+    """Dirt feeds research, mush and planters; algae the diffuser. When stock runs low, dig the nearest few cells of it
+    that touch no liquid, at normal priority (colony 1 starved behind 225 digs at priority 9)."""
+    if have.get(element, 0) >= low: return
+    near = sorted(oni.cells(element, 166, 108, 212, 134), key=lambda c: abs(c[0] - 190) + 2 * abs(c[1] - 121))
+    log("topup", element, oni.cmd(op="dig", cells=oni.safe(near[:n * 2])[:n], prio=5))
+
+
 def run(until):
     done, tries, last_cycle, mush, planted, t_link = set(), {}, None, False, set(), 0
     for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): log("dig", oni.cmd(op="dig", cells=oni.safe(cells), prio=prio))
@@ -63,6 +71,7 @@ def run(until):
                 if tries[item] in (1, 61): log("waiting", item, r.get("error"))
         if time.time() - t_link > 60:   # wires placed one at a time join nothing until linked; a reload drops the links too
             oni.cmd(op="link", cells=WIRES); oni.cmd(op="mop", cells=[[x, 120] for x in range(177, 203)]); t_link = time.time()
+            topup(s["have"], "Dirt", 400); topup(s["have"], "Algae", 300)
         if not mush and oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush = True; log("mush bars queued")
         for x in (198, 200):
             if x not in planted and oni.cmd(op="plant", x=x, y=125, seed="BasicPlantSeed").get("ok"): planted.add(x); log("mealwood ordered", x)
