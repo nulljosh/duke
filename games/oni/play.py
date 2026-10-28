@@ -32,7 +32,8 @@ PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         *[("Ladder", 180, y, 6) for y in range(100, 108)], *[("Ladder", 189, y, 5) for y in range(126, 138)],   # the mine grid's spines
         ("MicrobeMusher", 201, 121, 8),
         *[("Tile", x, 119, 8) for x in (169, 170, 171, 173, 175)],   # the west wing's floor has gaps
-        ("AdvancedResearchCenter", 174, 120, 8), ("Generator", 170, 120, 7)]   # Super Computer: research stalls without its points   # a second musher on the pool ledge: one can't cook for six   # between the terrariums, on the bedroom floor
+        ("AdvancedResearchCenter", 174, 120, 8), ("Generator", 170, 120, 7),
+        ("MassageTable", 176, 120, 8)]   # stress relief; the generator's wires pass under it   # Super Computer: research stalls without its points   # a second musher on the pool ledge: one can't cook for six   # between the terrariums, on the bedroom floor
 ROOM = [[x, y] for y in range(120, 124) for x in [*range(177, 183), *range(191, 201)]]
 BEDROOM = [[190, 124]] + [[x, y] for y in (125, 126) for x in range(190, 201)]
 LEDGE = [[201, y] for y in (121, 122, 123)] + [[202, y] for y in (121, 122, 123)]   # over a one-tile dam at y120: the pool keeps most of its water
@@ -88,11 +89,13 @@ def seeds():
 
 
 def skills():
-    """Spend skill points: one dupe takes Advanced Research (the Super Computer needs it), the rest dig faster."""
+    """One dupe takes Advanced Research (the Super Computer needs it) and nobody learns anything else: every skill raises a
+    dupe's morale need, and colony 5's two skills each drove everyone to stress 100."""
     dupes = oni.cmd(op="skills"); researcher = any("Researching1" in d["mastered"] for d in dupes)
     for d in dupes:
         if d["points"] < 1: continue
-        want = "Researching1" if not researcher else "Mining1" if "Mining1" not in d["mastered"] else "Building1"
+        if researcher: break
+        want = "Researching1"
         r = oni.cmd(op="learn", name=d["name"], skill=want); log("skill", d["name"], want, r)
         researcher = researcher or (want == "Researching1" and r.get("ok"))
 
