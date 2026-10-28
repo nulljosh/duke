@@ -177,7 +177,8 @@ def decide(day, spots, base=None):
     """Read the desk, stamp the passport, hand every document back."""
     shot(); words = ocr(); v = verdict(words, day)
     if day >= 3 and not any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words):
-        late = base is not None and doc_on_counter(shot(), base)   # a passport still on the counter is late, not missing
+        t = time.time()   # a passport still coming over the counter is late, not missing: give it 3 seconds
+        while base is not None and not (late := doc_on_counter(shot(), base)) and time.time() - t < 3: time.sleep(0.3)
         if late and len(spots) < 5:
             spot = (700, 560); drag(late, spot); spots.append(spot); time.sleep(0.6); return decide(day, spots, base)
         seen = reveal(spots, words)
