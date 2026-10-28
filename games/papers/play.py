@@ -32,12 +32,16 @@ def idle():
 
 
 def mine():
-    """Wait until the game is in front. The real cursor is Joshua's too: if he has another app up, only take it back once he's been idle two minutes."""
+    """Wait until the game is in front. The real cursor is Joshua's too: if he has another app up, take it back only
+    once the mouse has sat still for 90 seconds (a 10-second synthetic event keeps HIDIdleTime from ever growing)."""
+    still, pos = time.time(), None
     while True:
         front = subprocess.run(["lsappinfo", "info", "-only", "name", subprocess.run(["lsappinfo", "front"], capture_output=True, text=True).stdout.strip()],
                                capture_output=True, text=True).stdout
         if "PapersPlease" in front: return
-        if "Steam" in front or idle() > 120:   # Steam's store window is our own launch popping up, not his
+        now = subprocess.run(["cliclick", "p"], capture_output=True, text=True).stdout.strip()
+        if now != pos: still, pos = time.time(), now
+        if "Steam" in front or idle() > 120 or time.time() - still > 90:   # Steam's store window is our own launch popping up
             subprocess.run(["osascript", "-e", 'tell application "System Events" to set frontmost of (first process whose name is "PapersPlease") to true']); time.sleep(1)
         else: time.sleep(5)
 
