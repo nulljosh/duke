@@ -55,8 +55,10 @@ def verdict(words, day):
     if day == 1: return "approve" if country == "ARSTOTZKA" else "deny"
     today = (datetime.date(1982, 11, 22) + datetime.timedelta(day)).strftime("%Y.%m.%d")
     # deny only on readable evidence: the pixel font often garbles a valid city or date, and most entrants are valid
-    ok = bool(country) and (city is None or city in CITIES[country]) and (exp is None or exp > today)
     text = re.sub(DATE, r"\1.\2.\3", " ".join(rest))
+    if country == "ARSTOTZKA" and re.search(r"GRANTED|PERMIT", text): country = None   # a permit's ARSTOTZKA header lying over the passport
+    fake = any("STAMP HE" in t for t in mine)   # forged passports print STAMP HERE where real ones say ENTRY VISA
+    ok = not fake and (country is None or city is None or city in CITIES[country]) and (exp is None or exp > today) and (day < 4 or bool(country) or "GRANTED" in text or "PERMIT" in text)
     if day == 3 and country != "ARSTOTZKA":
         ok = ok and "TICKET" in text and today in text
     if day >= 4 and country == "ARSTOTZKA":   # the ID card prints a district, height and weight; it may overlap the passport
@@ -68,7 +70,7 @@ def verdict(words, day):
         pn = next((alnum(t) for t in mine if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)), None)
         others = [alnum(t) for t in rest if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)]
         num_ok = not pn or not others or any(same(pn, o, 0.6) for o in others)
-        enter_by = max(re.findall(r"19\d\d\.\d\d\.\d\d", text) or ["0"])
+        enter_by = max([d for d in re.findall(r"19\d\d\.\d\d\.\d\d", text) if d >= "1982"] or [today])   # cut off the desk: passes
         ok = ok and ("GRANTED" in text or "PERMIT" in text) and holder_ok and num_ok and enter_by >= today
     if day == 7 and country == "KOLECHIA": ok = False   # search every Kolechian; denying unsearched costs no citation (ponytail: no scanner yet)
     if day >= 6 and any(re.fullmatch(r"WOR[KH]", t) for t in rest):   # purpose WORK needs the Ministry of Labor's work pass
@@ -114,6 +116,11 @@ def _check():
     assert verdict(kov + o("Minirtry ef Laber", "prk Pass", "HOLDER", "FIELD"), 6) == "approve"
     assert verdict(kov, 6) == "deny" and verdict(kov, 5) == "approve"
     assert verdict(kol + permit, 7) == "deny" and verdict(kol + permit, 8) == "approve"
+    # day 7 citations: enter-by cut off the desk, and a permit header read as the passport's country
+    assert verdict(w("Zopenho, Carlota", "1936.04.23", "Tsunheido", "1983.09.13", "400T4-RRMSH") + o("is hereby granted to", "CARLOTA 20PENHO", "40QT4-RRMSV", "IMMIGRATE", "FOREVER"), 7) == "approve"
+    assert verdict(w("Risa, Misha", "1936.11.28", "True Glorian", "1983.12.18", "REPUBLI", "SHFG5-BRKAG") + o("Permit", "is hereby granted to", "MISHA RISA", "SHFG5-BRKAG", "IMMIGRATE", "FOREVER"), 7) == "approve"
+    assert verdict(w("ARSTOTZKA", "Entry Permit", "Goyetsky, Andrei", "ORYAM-5RGHG") + o("hereby granted to", "AMDREI GOYETSE", "ORYAM-5RGHG", "1982.12.20"), 7) == "approve"
+    assert verdict(w("Haihan", "1983.11.23", "IMPOR") + o("is hereby granted to", "1982.11.20"), 7) == "deny"   # a readable stale enter-by still fails
 
 
 

@@ -71,7 +71,7 @@ def doc_on_counter(img, base):
 
 DBOX, PARK = (360, 236, 1110, 668), (1000, 650)   # the desk; papers nobody takes back get parked bottom right
 FACEBOX, FACE = (60, 250, 300, 445), None
-SAME, EMPTY = 0, None   # the desk as it looks with nothing new on it, refreshed before each entrant
+SAME, EMPTY, PENALTIES = 0, None, 0   # the desk as it looks with nothing new on it, refreshed before each entrant
 
 
 def parked(x, y): return x > 850 and y > 540
@@ -90,9 +90,13 @@ def blob(img, base, box, skip=()):
 
 def keep_gifts():
     """Park the papers that are ours by their printed title, so the sweep hands back only what the entrant owns."""
+    global PENALTIES
     for _ in range(4):
-        shot(); w = next((w for w in ocr() if re.search(KEEP, w["t"].upper()) and not parked(w["x"], w["y"]) and w["x"] > 360 and w["y"] > 236), None)
+        shot(); ws = [w for w in ocr() if not parked(w["x"], w["y"]) and w["x"] > 360 and w["y"] > 236]
+        w = next((w for w in ws if re.search(KEEP, w["t"].upper())), None)
         if not w: return
+        PENALTIES += any(re.search(r"PEN.?LTY", v["t"].upper()) for v in ws)   # counted while the slip is fresh mid-desk, before it is parked
+        if PENALTIES >= 2: raise SystemExit("two penalties: stop and replay the day")
         drag((w["x"], min(w["y"] + 15, 650)), PARK); time.sleep(0.6)
 
 
@@ -116,7 +120,6 @@ def entrant(day, base):
     global EMPTY, SAME, FACE
     if not at_booth(shot()): return None
     keep_gifts(); time.sleep(0.4); EMPTY = shot().crop(DBOX)   # the last citation goes to the corner; the desk as it is now is the baseline
-    if sum("PENALTY" in w["t"].upper() for w in ocr()) >= 2: raise SystemExit("two penalties: stop and replay the day")
     click(HORN)
     t0 = time.time()
     while not doc_on_counter(img := shot(), base):
