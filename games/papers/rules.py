@@ -2,7 +2,7 @@
 import datetime, difflib, re
 
 
-KEEP = r"CIT.{1,3}TION|PROTOCOL|PENALTY|WARNING|PINK|FANTAS|НАН|BROTHEL|TRUST HI"   # citations, the Pink Vice ad, the note: ours to keep
+KEEP = r"EZIC|CIT.{1,3}TION|PROTOCOL|PENALTY|WARNING|PINK|FANTAS|НАН|BROTHEL|TRUST HI"   # citations, the Pink Vice ad, the note: ours to keep
 
 
 CITIES = {"ANTEGRIA": ["ST. MARMERO", "GLORIAN", "OUTER GROUSE"], "ARSTOTZKA": ["ORVECH VONOR", "EAST GRESTIN", "PARADIZNA"],
