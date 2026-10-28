@@ -35,7 +35,7 @@ def mine():
         front = subprocess.run(["lsappinfo", "info", "-only", "name", subprocess.run(["lsappinfo", "front"], capture_output=True, text=True).stdout.strip()],
                                capture_output=True, text=True).stdout
         if "PapersPlease" in front: return
-        if idle() > 120:
+        if "Steam" in front or idle() > 120:   # Steam's store window is our own launch popping up, not his
             subprocess.run(["osascript", "-e", 'tell application "System Events" to set frontmost of (first process whose name is "PapersPlease") to true']); time.sleep(1)
         else: time.sleep(5)
 
