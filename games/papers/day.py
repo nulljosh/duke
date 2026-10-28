@@ -90,10 +90,12 @@ def reload(day):
         time.sleep(2)
     else: subprocess.run(["pkill", "-x", "PapersPlease"]); time.sleep(3)
     subprocess.run(["open", "steam://run/239030"])
-    for _ in range(30):
+    for i in range(60):   # Steam can take a couple of minutes; ask it again halfway
         time.sleep(3)
         pid = subprocess.run(["pgrep", "PapersPlease"], capture_output=True, text=True).stdout.split()
         if pid: break
+        if i == 30: subprocess.run(["open", "steam://run/239030"])
+    else: sys.exit("Steam never started the game")
     time.sleep(12)
     subprocess.run(["osascript", "-e", f'tell application "System Events" to set frontmost of (first process whose unix id is {pid[0]}) to true'])
     open_day(day)
