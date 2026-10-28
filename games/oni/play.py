@@ -25,11 +25,14 @@ PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         *[("Ladder", 180, y, 6) for y in range(108, 120)],
         *[("Tile", x, 109, 9) for x in (181, 182, 183)],   # the corridor crosses an open cavity there
         ("LiquidPumpingStation", 189, 105, 8), ("Ladder", 188, 108, 7), ("Ladder", 188, 109, 7),   # the second pool, under the corridor
-        *[("Ladder", 184, y, 7) for y in range(112, 119)]]   # up from the corridor through a streak of dirt   # between the terrariums, on the bedroom floor
+        *[("Ladder", 184, y, 7) for y in range(112, 119)],   # up from the corridor through a streak of dirt
+        *[("Ladder", 180, y, 6) for y in range(100, 108)], *[("Ladder", 189, y, 5) for y in range(126, 138)]]   # the mine grid's spines   # between the terrariums, on the bedroom floor
 ROOM = [[x, y] for y in range(120, 124) for x in [*range(177, 183), *range(191, 201)]]
 BEDROOM = [[190, 124]] + [[x, y] for y in (125, 126) for x in range(190, 201)]
 LEDGE = [[201, y] for y in (121, 122, 123)] + [[202, y] for y in (121, 122, 123)]   # over a one-tile dam at y120: the pool keeps most of its water
-SHAFT = [[180, y] for y in range(119, 107, -1)]   # down to the dirt below the floor: a ladder in every cell, so nobody gets stuck
+SHAFT = [[180, y] for y in range(119, 99, -1)]   # down to the dirt below the floor: a ladder in every cell, so nobody gets stuck
+SPINE = [[189, y] for y in range(124, 138)]   # up from the bedroom level, the same way
+MINES = [[x, y] for y0 in (101, 105, 129, 133) for y in (y0, y0 + 1) for x in range(155, 216)]   # corridors off the shaft and spine
 LOWER = [[x, y] for y in (110, 111) for x in range(150, 220)]   # a corridor off the bottom of the shaft, both ways
 UPPER = [[x, y] for y in range(124, 128) for x in range(177, 190)]   # air volume above the west room, so the diffuser never hits max pressure
 
@@ -104,9 +107,9 @@ def run(until):
         if s["cycle"] != last_cycle:
             last_cycle = s["cycle"]
             oni.cmd(op="camera", x=BASE[0], y=BASE[1], zoom=14); time.sleep(1)
-            shot = HERE / "shots" / f"c4-cycle-{s['cycle']:03d}.png"; shot.parent.mkdir(exist_ok=True)
+            shot = HERE / "shots" / f"c5-cycle-{s['cycle']:03d}.png"; shot.parent.mkdir(exist_ok=True)
             shutil.copy(oni.shot(), shot)
-            row = {"colony": 4, "cycle": s["cycle"], "dupes": len(s["dupes"]), "foodKcal": round(s["foodKcal"]), "research": s["research"],
+            row = {"colony": 5, "cycle": s["cycle"], "dupes": len(s["dupes"]), "foodKcal": round(s["foodKcal"]), "research": s["research"],
                    "done": len(s["researchDone"]), "buildings": len(s["buildings"]),
                    "worst": min(((d["name"], round(d["breath"]), round(d["stress"]), round(d["kcal"])) for d in s["dupes"]), key=lambda d: d[3])}
             with open(HERE / "progress.jsonl", "a") as f: f.write(json.dumps(row) + "\n")
@@ -125,7 +128,8 @@ def run(until):
         if time.time() - t_link > 60:   # wires placed one at a time join nothing until linked; a reload drops the links too
             oni.cmd(op="link", cells=WIRES); oni.cmd(op="mop", cells=[[x, 120] for x in range(177, 203)]); t_link = time.time()
             for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): oni.cmd(op="safedig", cells=cells, floor=119, prio=prio)   # more come in reach as the room opens up
-            oni.cmd(op="safedig", cells=SHAFT, floor=107, prio=6); oni.cmd(op="safedig", cells=LOWER, floor=109, prio=5)
+            oni.cmd(op="safedig", cells=SHAFT, floor=99, prio=6); oni.cmd(op="safedig", cells=LOWER, floor=109, prio=5)
+            oni.cmd(op="safedig", cells=SPINE, floor=119, prio=5); oni.cmd(op="safedig", cells=near(MINES, 999), floor=100, prio=4, max=20)
             oni.cmd(op="dig", cells=[[188, 109], [188, 108]], prio=8)   # the ladder down to the second pump; touches the pool on purpose
             oni.cmd(op="safedig", cells=[[184, y] for y in range(112, 119)] + [[179, 109], [179, 108]], floor=100, prio=8)   # dirt beside the ladders
             topup(s["have"], "Dirt", 600); topup(s["have"], "Algae", 300); floor(); explore(s); seeds(); printables(s)

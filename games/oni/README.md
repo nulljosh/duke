@@ -20,3 +20,7 @@ Colony 3 is the best so far: 6 dupes at the peak, 11 techs, everyone alive to cy
 What the bridge does now because of them: one safe-dig filter (reachable, no liquid next to it, nothing built on or above it, never under the floor line), a ladder shaft and a corridor for anything deeper, idle dupes dig the nearest safe rock, the musher at priority 9 and research at 1 when food runs low, food care packages first, no new dupes past 4.
 
 What killed colony 3: water. One pool fed the musher for 15 cycles. The second pool sat under a cavity that needed a bridge, and its pump finished as the last dupe starved. Colony 4 builds both pumps, the shaft and the bridge from cycle 1.
+
+## Colony 4 (same seed)
+
+Everyone alive to cycle 20, last one gone at cycle 22, 9 techs: the best run. Two pumps fixed water. It starved for dirt instead: everything reachable got dug by cycle 14, and a dirt cell is two or three cycles of mush. Colony 5 digs a mine grid from the start: ladder spines up and down from the base, corridors every few rows off them.
