@@ -11,13 +11,16 @@ def cmd(**op): return json.load(urllib.request.urlopen(urllib.request.Request(UR
 
 
 def shot(path="/tmp/oni-shot.png"):
-    """The game window by id, even behind his other windows."""
-    pid = subprocess.run(["pgrep", "-f", "MacOS/Oxygen Not Included"], capture_output=True, text=True).stdout.split()
-    win = Path(__file__).resolve().parent.parent / "fez" / "win"
-    for p in pid:
-        for line in subprocess.run([str(win), "list", p], capture_output=True, text=True).stdout.splitlines():
-            if line.endswith("Oxygen Not Included"): subprocess.run(["screencapture", "-x", "-o", "-l", line.split()[0], path]); return path
+    """The frame as the game drew it, from inside the game: the window itself is transparent and shows nothing."""
+    Path(path).unlink(missing_ok=True); cmd(op="shot", path=path)
+    for _ in range(50):
+        if Path(path).exists() and Path(path).stat().st_size: time.sleep(0.3); return path
+        time.sleep(0.1)
 
+
+def hide():
+    """Cmd-H the game until the bridge takes over: it starts as a normal window for the half minute before mods load."""
+    subprocess.run(["osascript", "-e", 'tell application "System Events" to set visible of (every process whose name is "Oxygen Not Included") to false'], capture_output=True)
 
 
 def cells(element, x0, y0, x1, y1):
@@ -47,13 +50,13 @@ def launch():
     """Through Steam (the Steam API refuses a direct launch), then hand the front back to whatever Joshua had up."""
     front = subprocess.run(["lsappinfo", "info", "-only", "bundleID", subprocess.run(["lsappinfo", "front"], capture_output=True, text=True).stdout.strip()], capture_output=True, text=True).stdout.split('"')[-2]
     subprocess.run(["open", "-g", "steam://run/457140"])
-    for _ in range(120):
-        time.sleep(2)
+    for _ in range(240):
+        time.sleep(0.5)
         if subprocess.run(["pgrep", "-f", "MacOS/Oxygen Not Included"], capture_output=True).returncode == 0: break
-    time.sleep(3); subprocess.run(["open", "-b", front])
-    for _ in range(120):
-        if up(): subprocess.run(["open", "-b", front]); return   # the window grabs focus again once it finishes loading
-        time.sleep(3)
+    for _ in range(200):   # hidden and behind until the mod makes it transparent and drops it from the Dock
+        hide(); subprocess.run(["open", "-g", "-b", front]) if _ % 10 == 0 else None
+        if up(): subprocess.run(["open", "-b", front]); return
+        time.sleep(1)
     sys.exit("the bridge never answered")
 
 

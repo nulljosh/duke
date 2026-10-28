@@ -42,8 +42,11 @@ public class DukeBridge : UserMod2
 
 public class DukePump : MonoBehaviour
 {
+    float nextHide;
+
     void Update()
     {
+        if (Time.unscaledTime > nextHide) { nextHide = Time.unscaledTime + 5f; try { Headless.Apply(); } catch (Exception) { } }   // Unity remakes its window on resolution changes
         while (DukeBridge.Inbox.TryDequeue(out var job))
         {
             string reply;
@@ -256,6 +259,11 @@ public static class Ops
                 plot.CreateOrder(new Tag((string)j["seed"]), Tag.Invalid);
                 return new { ok = true };
             }
+            case "window":   // {"show": true|false}: headless by default; show it to debug
+                Headless.On = !(bool)j["show"]; return new { ok = true, windows = Headless.Apply() };
+            case "shot":   // {"path"}: a PNG of the frame as the game drew it, UI included; written at the end of this frame
+                if (File.Exists((string)j["path"])) File.Delete((string)j["path"]);
+                ScreenCapture.CaptureScreenshot((string)j["path"]); return new { ok = true };
             case "speed": SpeedControlScreen.Instance.SetSpeed((int)j["speed"]); if ((bool?)j["play"] ?? true) SpeedControlScreen.Instance.Unpause(false); return new { ok = true };
             case "pause": SpeedControlScreen.Instance.Pause(false); return new { ok = true };
             case "research":
