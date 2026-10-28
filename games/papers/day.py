@@ -88,11 +88,18 @@ def reload(day):
 def open_day(day):
     """From the title screen: Story, the day's slot, continue, walk to work."""
     for _ in range(5):   # the menu shows straight away or after a click; a blind click can land on the credits
-        play.shot(); story = next((w for w in play.ocr() if w["t"].upper().strip() == "STORY"), None)
+        play.shot(); ws = play.ocr(); story = next((w for w in ws if w["t"].upper().strip() == "STORY"), None)
+        if any("SELECT DAY" in w["t"].upper() for w in ws): break   # already on the day picker
         if story: play.click((story["x"], story["y"])); time.sleep(3); break
         play.click((568, 450)); time.sleep(2)
     else: sys.exit("no STORY button on the title screen")   # past the title, then STORY
-    play.click((70 + 140 * (day - 1), 205)); time.sleep(3); play.click((568, 437)); time.sleep(5)   # ponytail: one row of days; a second row past day 8 needs its y
+    play.shot(); ws = play.ocr()   # replays branch into more rows and the list scrolls: find the day's column, take its newest save
+    col = next((w for w in ws if w["t"].strip() == str(day) and w["y"] < 180), None) \
+        or next((w for w in ws if "LATEST" in w["t"].upper()), None)   # the big digits OCR badly; the newest day is marked LATEST
+    if not col: sys.exit(f"day {day} not on the day picker")
+    box = max((w for w in ws if re.match(r"\d+/\d+", w["t"]) and abs(w["x"] - col["x"]) < 60), key=lambda w: w["y"], default=None)
+    if not box: sys.exit(f"no save under day {day}")
+    play.click((box["x"], box["y"] + 8)); time.sleep(3); play.click((568, 437)); time.sleep(5)
     play.click((568, 627)); time.sleep(10)
 
 
