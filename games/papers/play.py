@@ -60,7 +60,12 @@ def shot():
     subprocess.run(["screencapture", "-x", f"-R{OX},{OY},1140,668", str(SHOT)]); return Image.open(SHOT).convert("L")
 
 
-def ocr(): return json.loads(subprocess.run([str(FEZ / "ocr"), str(SHOT)], capture_output=True, text=True).stdout or "[]")
+def ocr(path=SHOT): return json.loads(subprocess.run([str(FEZ / "ocr"), str(path)], capture_output=True, text=True).stdout or "[]")
+
+
+def ocr_bright():
+    """The night ledger draws unticked rows in dim grey that OCR skips: lift anything off the black before reading."""
+    p = SHOT.with_name("papers-bright.png"); Image.open(SHOT).convert("L").point(lambda v: 255 if v > 45 else 0).save(p); return ocr(p)
 
 
 CBOX = (0, 455, 356, 580)   # the counter between the entrant and the desk

@@ -51,6 +51,8 @@ def night():
     play.cli(f"m:{play.at(600, 650)}"); time.sleep(0.3)   # off the radios first: a hidden dot reads as unchecked
     img = play.shot(); rgb = Image.open(play.SHOT).convert("RGB"); words = play.ocr()
     rows, total = ledger(words)
+    more, _ = ledger(play.ocr_bright())   # dim unticked rows (food, heat) only show up brightened
+    rows += [r for r in more if not any(abs(r["y"] - q["y"]) < 10 for q in rows)]; rows.sort(key=lambda r: r["y"])
     checked = [rgb.getpixel((RADIO_X, round(r["y"])))[0] > 150 for r in rows]
     fam = status(rgb, rows); want, left = plan(rows, total, checked, fam)
     print("ledger", total, [(r["t"], r["who"], c) for r, c in zip(rows, checked)], {k: v for k, v in fam.items() if v["sick"]}, flush=True)   # why a row was or wasn't bought
