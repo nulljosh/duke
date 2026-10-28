@@ -61,6 +61,8 @@ def verdict(words, day):
     if day == 1: return "approve" if country == "ARSTOTZKA" else "deny"
     today = (datetime.date(1982, 11, 22) + datetime.timedelta(day)).strftime("%Y.%m.%d")
     if exp is None and "1982" in mine: exp = "1982"   # day 4 Alina Ruchumova: only the year read, and a 1982 expiry is nearly always past
+    part = re.search(r"\b(198[2-9])[.,](\d\d)\b", " ".join(mine)) if exp is None else None
+    if part: exp = part[1] + "." + part[2]   # day 4 Hubert Maciejewicz: "1982.11.1" with the day cut off still expired
     # deny only on readable evidence: the pixel font often garbles a valid city or date, and most entrants are valid
     text = re.sub(DATE, r"\1.\2.\3", " ".join(rest))
     if country == "ARSTOTZKA" and re.search(r"GRANTED|PERMIT", text): country = None   # a permit's ARSTOTZKA header lying over the passport
@@ -145,6 +147,7 @@ def _check():
     # day 4 citations: a stranger's permit, a 1982 expiry read as the bare year, an ID card born 18 years earlier
     assert verdict(w("Schiavon, Giorgio", "Horista City", "1983.06.10", "EBEON-6HLRR") + o("is hereby granted to", "ABDULLAH YURINOV", "EBEON-6HLRR", "1982.12.08"), 4) == "deny"
     assert verdict(w("huchumova, Alina", "1947.03.15", "Enhyo", "1982", "CHE40-GUAH2") + o("is hereby granted to", "ALINA RUCHUMOVA", "1982.12.16"), 4) == "deny"
+    assert verdict(w("-KOLECHIA", "Maciejewicz, Hubert", "Yurko Citu", "1982.11.1šŚ", "8MQA7-X6LVG") + o("is hereby granted to", "HUBERT MACIEJEWICZ", "8MQA7-X6LVG", "1982.12.20"), 4) == "deny"
     norma = w("Tarnoff, Norma", "| 1938.03.15", "East Grestin", "1983.06.12", "ARSTOTZKA")
     assert verdict(norma + o("IDENTITY CARD", "7920.03.15"), 4) == "deny" and verdict(norma + o("IDENTITY CARD", "1938.03.15"), 4) == "approve"
     assert verdict(aza + o("MICHE PIETROWSHA", "MAHUFACTURING"), 7) == "deny" and verdict(aza + o("AZA HUDSONSHO", "MAHUFACTURING"), 7) == "approve" and verdict(aza + o("AZA HUDSONSHO", "FISHING"), 7) == "approve"

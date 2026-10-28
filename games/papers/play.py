@@ -104,6 +104,7 @@ def keep_gifts():
         shot(); ws = [w for w in ocr() if not parked(w["x"], w["y"]) and w["x"] > 360 and w["y"] > 236]
         w = next((w for w in ws if re.search(KEEP, w["t"].upper())), None)
         if not w: return
+        if re.search(r"CIT.{1,3}TION", w["t"].upper()): print("citation", [v["t"] for v in ws if abs(v["x"] - w["x"]) < 160 and 0 <= v["y"] - w["y"] < 200], flush=True)   # the reason line, for the next rule
         PENALTIES += any(re.search(r"ASSESS|CREDITS", v["t"].upper()) for v in ws)   # counted while the slip is fresh mid-desk, before it is parked
         if PENALTIES >= 2: raise SystemExit("two penalties: stop and replay the day")
         drag((w["x"], min(w["y"] + 15, 650)), PARK); time.sleep(0.6)
