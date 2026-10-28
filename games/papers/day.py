@@ -50,6 +50,7 @@ def night():
     for _ in range(3):   # click, then read the radios back: a missed click here is a dead family member tomorrow
         for r, c in zip(rows, checked):
             if (r in want) != c: play.click((RADIO_X, round(r["y"]))); time.sleep(0.4)
+        play.cli(f"m:{play.at(600, 650)}"); time.sleep(0.3)   # the cursor over a radio hides its dot
         play.shot(); rgb = Image.open(play.SHOT).convert("RGB")
         checked = [rgb.getpixel((RADIO_X, round(r["y"])))[0] > 150 for r in rows]
         if all((r in want) == c for r, c in zip(rows, checked)): break
