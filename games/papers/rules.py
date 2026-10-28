@@ -2,7 +2,7 @@
 import datetime, difflib, re
 
 
-KEEP = r"EZIC|CIT.{1,3}TION|PROTOCOL|PENALTY|WARNING|PINK|FANTAS|НАН|BROTHEL|TRUST HI"   # citations, the Pink Vice ad, the note: ours to keep
+KEEP = r"EZIC|CIT.{1,3}TION|PROTOCOL|PENALTY|WARNING|PINK|FANTAS|НАН|BROTHEL|TRUST HI|\w\*\w|^[A-Z0-9]{14,}$"   # citations, the Pink Vice ad, the note: ours to keep
 
 
 CITIES = {"ANTEGRIA": ["ST. MARMERO", "GLORIAN", "OUTER GROUSE"], "ARSTOTZKA": ["ORVECH VONOR", "EAST GRESTIN", "PARADIZNA"],
@@ -114,7 +114,7 @@ def verdict(words, day):
 
 
 def _check():
-    assert all(re.search(KEEP, t.upper()) for t in ("M.O.H. CITHTION", "The Pink", "А нан наннеа Далі"))
+    assert all(re.search(KEEP, t.upper()) for t in ("M.O.H. CITHTION", "The Pink", "А нан наннеа Далі", "PPC*ER3THCJBOA", "PNSMA51IKU7P6AMB90LMDF"))   # Drex's cipher stays ours
     assert not any(re.search(KEEP, t.upper()) for t in ("ENTRY VISA", "Ludum, Dari", "Minirtry of Laber"))
     w = lambda *ts: [{"t": "ENTRY VISA", "x": 700, "y": 300}] + [{"t": t, "x": 700, "y": 400} for t in ts]
     o = lambda *ts: [{"t": t, "x": 950, "y": 400} for t in ts]   # tokens on a second document

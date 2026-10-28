@@ -84,7 +84,7 @@ SAID = []   # the entrant's spoken answers, read while the papers slide over: th
 SAME, EMPTY, PENALTIES = 0, None, 0   # the desk as it looks with nothing new on it, refreshed before each entrant
 
 
-def parked(x, y): return x > 850 and y > 540
+def parked(x, y): return (x > 850 and y > 540) or (x > 990 and y > 480)   # the corner, and the tall EZIC cipher pushed into it
 
 
 def blob(img, base, box, skip=()):
@@ -156,6 +156,8 @@ def entrant(day, base):
     face = shot().crop(FACEBOX)
     same = FACE is not None and ImageStat.Stat(ImageChops.difference(face, FACE)).mean[0] < 8
     SAME, FACE = (SAME + 1 if same else 0), face   # the same face back at the booth: the last entrant never left
+    det = SAME >= 1 and next((w for w in ocr() if "DETAIN" in w["t"].upper() and w["y"] < 300), None)
+    if det: click((det["x"], det["y"])); time.sleep(5); return "detained"   # day 10: denied, he refuses to leave; the guards take him
     if SAME >= 2: raise SystemExit("same entrant three times: stop and replay the day")
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time, sometimes the passport last and slow
