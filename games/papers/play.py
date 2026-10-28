@@ -170,7 +170,7 @@ def at_booth(img):   # the counter strip is olive in the booth and black on the 
 
 
 def entrant(day, base):
-    global EMPTY
+    global EMPTY, SAME, FACE
     if not at_booth(shot()): return None
     sweep(PARK, 3) if EMPTY is not None else None; time.sleep(0.4); EMPTY = shot().crop(DBOX)   # citations and orphans go to the corner and become part of the desk
     if sum("PENALTY" in w["t"].upper() for w in ocr()) >= 2: raise SystemExit("two penalties: stop and replay the day")
@@ -178,10 +178,11 @@ def entrant(day, base):
     t0 = time.time()
     while not doc_on_counter(img := shot(), base):
         if not at_booth(img): return None
-        if time.time() - t0 > 40: return "nobody came"   # still in the booth (a citation, a missed horn): call again
+        if time.time() - t0 > 40:   # still in the booth: a missed horn, or someone waiting on a paper we parked
+            if not FACE or ImageStat.Stat(ImageChops.difference(img.crop(FACEBOX), FACE)).mean[0] < 8: drag(PARK, ENTRANT)
+            return "nobody came"
         time.sleep(0.3)
     walk = time.time() - t0
-    global SAME, FACE
     face = shot().crop(FACEBOX)
     same = FACE is not None and ImageStat.Stat(ImageChops.difference(face, FACE)).mean[0] < 8
     SAME, FACE = (SAME + 1 if same else 0), face   # the same face back at the booth: the last entrant never left
