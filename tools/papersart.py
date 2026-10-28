@@ -93,7 +93,7 @@ def bulletin(w, h):
     im, d = layer(w, h); d.rectangle([0, 0, w - 1, h - 1], fill=PAPER); d.rectangle([0, 0, w - 1, 12], fill=RED); text(d, w // 2 - width("BULLETIN", 1) // 2, 3, "BULLETIN", CREAM, 1)
     rows = [json.loads(l) for l in RUN.read_text().splitlines() if l.strip()] if RUN.exists() else []
     day = f"DAY {rows[-1]['day']}" if rows else "DAY 1"; ds = 2 if w >= 70 else 1; text(d, 6, 18, day, RED, ds)   # left: the passport covers the right edge
-    per = (w - 12) // 14 * 5; cap = per * ((h - 22 - 9 * ds) // 10); n = sum(r["entrants"] for r in rows)
+    per = (w - 12) // 14 * 5; cap = per * max(1, (h - 52 - 9 * ds) // 10); n = sum(r["entrants"] for r in rows)   # rows stop above the box at the foot
     for i in range(n // -(-n // cap) if n else 0):   # once the run outgrows the paper, each mark stands for a few entrants
         g, k = divmod(i % per, 5); x, y = 6 + g * 14 + k * 2, 22 + 9 * ds + (i // per) * 10
         if k < 4: d.line([(x, y), (x, y + 6)], fill=DOLIVE)
