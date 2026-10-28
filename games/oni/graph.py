@@ -4,7 +4,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 HERE = Path(__file__).resolve().parent
-COLOURS = {1: (176, 96, 80), 2: (70, 140, 200)}
+COLOURS = {1: (176, 96, 80), 2: (70, 140, 200), 3: (90, 160, 90), 4: (200, 150, 40)}
 
 
 def runs():

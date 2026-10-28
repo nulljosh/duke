@@ -96,9 +96,9 @@ def run(until):
         if s["cycle"] != last_cycle:
             last_cycle = s["cycle"]
             oni.cmd(op="camera", x=BASE[0], y=BASE[1], zoom=14); time.sleep(1)
-            shot = HERE / "shots" / f"c3-cycle-{s['cycle']:03d}.png"; shot.parent.mkdir(exist_ok=True)
+            shot = HERE / "shots" / f"c4-cycle-{s['cycle']:03d}.png"; shot.parent.mkdir(exist_ok=True)
             shutil.copy(oni.shot(), shot)
-            row = {"colony": 3, "cycle": s["cycle"], "dupes": len(s["dupes"]), "foodKcal": round(s["foodKcal"]), "research": s["research"],
+            row = {"colony": 4, "cycle": s["cycle"], "dupes": len(s["dupes"]), "foodKcal": round(s["foodKcal"]), "research": s["research"],
                    "done": len(s["researchDone"]), "buildings": len(s["buildings"]),
                    "worst": min(((d["name"], round(d["breath"]), round(d["stress"]), round(d["kcal"])) for d in s["dupes"]), key=lambda d: d[3])}
             with open(HERE / "progress.jsonl", "a") as f: f.write(json.dumps(row) + "\n")

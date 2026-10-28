@@ -11,3 +11,12 @@ What killed it, so colony 2 doesn't repeat it:
 - The pool was opened at floor level and drained across the base. Gas pressure went up, the Oxygen Diffuser stopped at max pressure, and CO2 filled the bedroom.
 - Bulk digs at priority 9 (225 cells) took all the labor. Lindsay got trapped in a water pit one of them opened (cycle 9). Nobody cooked, and Nisbet, Otto and Stinky starved (cycles 12 to 15).
 - Food is the clock: 16,000 kcal is about 5 cycles for 3 dupes. The Mush Bar chain (pump, bottle, deliver dirt and water, cook, crank power) has to be running by cycle 3, with Mealwood planted as soon as Basic Farming lands.
+
+## Colonies 2 and 3 (2026-10-28, same seed)
+
+Colony 2 kept all 3 dupes to cycle 13 and lost the last near the end of cycle 15. A tunnel dug the floor out from under the Microbe Musher.
+Colony 3 is the best so far: 6 dupes at the peak, 11 techs, everyone alive to cycle 16, the last one gone at cycle 20.
+
+What the bridge does now because of them: one safe-dig filter (reachable, no liquid next to it, nothing built on or above it, never under the floor line), a ladder shaft and a corridor for anything deeper, idle dupes dig the nearest safe rock, the musher at priority 9 and research at 1 when food runs low, food care packages first, no new dupes past 4.
+
+What killed colony 3: water. One pool fed the musher for 15 cycles. The second pool sat under a cavity that needed a bridge, and its pump finished as the last dupe starved. Colony 4 builds both pumps, the shaft and the bridge from cycle 1.
