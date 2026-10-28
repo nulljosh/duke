@@ -27,6 +27,17 @@ def cells(element, x0, y0, x1, y1):
     return [[x0 + i, y1 - r] for r, row in enumerate(g["rows"]) for i, ch in enumerate(row) if ch == code]
 
 
+def safe(cells):
+    """Drop dig cells that touch liquid: one breached pool drowned a dupe and flooded the base in colony 1."""
+    if not cells: return []
+    xs, ys = [c[0] for c in cells], [c[1] for c in cells]
+    x0, y0, x1, y1 = min(xs) - 1, min(ys) - 1, max(xs) + 1, max(ys) + 1
+    g = cmd(op="grid", x0=x0, y0=y0, x1=x1, y1=y1)
+    wet = {k for k, v in g["legend"].items() if v.endswith("liquid")}
+    at = lambda x, y: g["rows"][y1 - y][x - x0]
+    return [c for c in cells if not any(at(c[0] + dx, c[1] + dy) in wet for dx in (-1, 0, 1) for dy in (-1, 0, 1))]
+
+
 def up():
     try: return state()
     except OSError: return None

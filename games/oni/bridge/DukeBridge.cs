@@ -249,6 +249,13 @@ public static class Ops
                 foreach (var c in j["cells"]) m.Invoke(MopTool.Instance, new object[] { Grid.XYToCell((int)c[0], (int)c[1]), 0 });
                 return new { ok = true };
             }
+            case "plant":   // {"x", "y", "seed": "BasicPlantSeed"}: ask for that seed in the planter there (Mealwood is BasicPlantSeed)
+            {
+                var plot = Grid.Objects[Grid.XYToCell((int)j["x"], (int)j["y"]), (int)ObjectLayer.Building]?.GetComponent<PlantablePlot>();
+                if (plot == null) return new { error = "no planter there" };
+                plot.CreateOrder(new Tag((string)j["seed"]), Tag.Invalid);
+                return new { ok = true };
+            }
             case "speed": SpeedControlScreen.Instance.SetSpeed((int)j["speed"]); if ((bool?)j["play"] ?? true) SpeedControlScreen.Instance.Unpause(false); return new { ok = true };
             case "pause": SpeedControlScreen.Instance.Pause(false); return new { ok = true };
             case "research":
