@@ -101,6 +101,7 @@ if __name__ == "__main__":
         left, bought = night(); print("night", left, bought, flush=True)
         if not morning(): sys.exit("stuck before the booth")
     log = subprocess.run([sys.executable, str(play.HERE / "play.py"), str(day)], capture_output=True, text=True).stdout
+    (play.HERE / "runs").mkdir(exist_ok=True); (play.HERE / "runs" / f"day{day}.log").write_text(log)   # each entrant's OCR, to write the next day's rules from
     n = sum(1 for l in log.splitlines() if "('approve'" in l or "('deny'" in l)
     play.shot(); words = play.ocr(); rows, total = ledger(words)
     fam = status(Image.open(play.SHOT).convert("RGB"), rows)
