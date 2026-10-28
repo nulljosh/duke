@@ -80,6 +80,7 @@ def doc_on_counter(img, base):
 
 DBOX, PARK = (360, 236, 1110, 668), (1000, 650)   # the desk; papers nobody takes back get parked bottom right
 FACEBOX, FACE, BOOTH = (60, 250, 300, 445), None, None   # BOOTH: the window with nobody in it
+SAID = []   # the entrant's spoken answers, read while the papers slide over: the bubbles are gone by decide time
 SAME, EMPTY, PENALTIES = 0, None, 0   # the desk as it looks with nothing new on it, refreshed before each entrant
 
 
@@ -162,6 +163,7 @@ def entrant(day, base):
         while not (at_ := doc_on_counter(shot(), base)) and time.time() - t < 1.5: time.sleep(0.2)   # a slow passport is caught again in decide
         if not at_: break
         drag(at_, spot); spots.append(spot); time.sleep(0.3)
+    global SAID; SAID = [w for w in ocr() if not (w["x"] > 360 and w["y"] > 236)]   # day 8 Cosmo Letski said a purpose his permit didn't
     t1 = time.time(); r = decide(day, spots, base)
     print(f"walk {walk:.1f}s slide {t1 - t0 - walk:.1f}s decide {time.time() - t1:.1f}s", flush=True)   # where the seconds go
     return r
@@ -196,7 +198,7 @@ def reveal(spots, words):
 
 def decide(day, spots, base=None):
     """Read the desk, stamp the passport, hand every document back."""
-    shot(); words = ocr(); v = verdict(words, day)
+    shot(); words = ocr() + SAID; v = verdict(words, day)
     if day >= 3 and not any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words):
         keep_gifts()   # day 8 Lillian Lao: a citation printed late lay over her passport
         for y in (495, 530): drag((176, y), (965, 380)); time.sleep(0.4)   # day 4 Quinn Noxilova: a passport the counter check misses still comes with a blind grab
