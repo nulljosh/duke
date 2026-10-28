@@ -202,12 +202,15 @@ def decide(day, spots, base=None):
     if day >= 3 and not any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words):
         keep_gifts()   # day 8 Lillian Lao: a citation printed late lay over her passport
         for y in (495, 530): drag((176, y), (965, 380)); time.sleep(0.4)   # day 4 Quinn Noxilova: a passport the counter check misses still comes with a blind grab
-        shot(); words = ocr(); v = verdict(words, day)
-        if any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words): spots.append((965, 380)); return decide(day, spots, base)
+        shot(); words = ocr() + SAID; v = verdict(words, day)
+        if any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words) and len(spots) < 5: spots.append((965, 380)); return decide(day, spots, base)
         t, late = time.time(), None   # late, not missing: some entrants answer purpose and duration out loud before the passport comes over
         while base is not None and not (late := doc_on_counter(shot(), base)) and time.time() - t < 8: time.sleep(0.3)
-        if late and len(spots) < 5:
-            spot = (700, 560); drag(late, spot); spots.append(spot); time.sleep(0.6); return decide(day, spots, base)
+        if late and len(spots) < 5:   # onto the open right of the desk: dropped at (700, 560) it slid under the permit (day 8 Timofey Sokolov)
+            spot = (965, 380); drag(late, spot); spots.append(spot); time.sleep(0.6); return decide(day, spots, base)
+        for y in (495, 530): drag((176, y), (965, 380)); time.sleep(0.4)   # and blind once more, after the wait
+        shot(); words = ocr() + SAID; v = verdict(words, day)
+        if any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words) and len(spots) < 5: spots.append((965, 380)); return decide(day, spots, base)
         (HERE / "runs").mkdir(exist_ok=True); shot().save(HERE / "runs" / f"nopass-{time.strftime('%H%M%S')}.png")   # what it saw, for the next fix
         seen = reveal(spots, words)
         if seen: words = seen; v = verdict(words, day)
