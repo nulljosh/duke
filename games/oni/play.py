@@ -77,7 +77,8 @@ def explore(s):
 
 
 def seeds():
-    wild = [[x, y] for name, x, y in oni.cmd(op="plants") if "BasicSingleHarvestPlant" in name and abs(x - 190) < 40 and abs(y - 121) < 25]
+    wild = [[x, y] for name, x, y in oni.cmd(op="plants") if "BasicSingleHarvestPlant" in name and abs(x - 190) < 40 and abs(y - 121) < 25
+            and not (x in (198, 200) and y in (125, 126))]   # the planter boxes' own Mealwood: uprooting it every minute starved colony 5
     if wild: log("uproot mealwood", oni.cmd(op="uproot", cells=wild))
 
 
@@ -142,6 +143,7 @@ def run(until):
             oni.cmd(op="safedig", cells=SHAFT, floor=99, prio=6); oni.cmd(op="safedig", cells=LOWER, floor=109, prio=5)
             oni.cmd(op="safedig", cells=SPINE, floor=119, prio=5); oni.cmd(op="safedig", cells=near(MINES, 999), floor=100, prio=4, max=20)
             oni.cmd(op="dig", cells=[[188, 109], [188, 108]], prio=8)   # the ladder down to the second pump; touches the pool on purpose
+            oni.cmd(op="dig", cells=[[189, y] for y in range(104, 100, -1)], prio=9)   # a pitcher pump reads both columns below it; sand at x189 left pump 2 dry beside water
             oni.cmd(op="safedig", cells=[[184, y] for y in range(112, 119)] + [[179, 109], [179, 108]], floor=100, prio=8)   # dirt beside the ladders
             topup(s["have"], "Dirt", 600); topup(s["have"], "Algae", 300); floor(); explore(s); seeds(); printables(s); skills()
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
