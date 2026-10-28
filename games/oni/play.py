@@ -22,7 +22,8 @@ PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         ("Bed", 191, 125, 5), ("Bed", 193, 125, 5), ("Bed", 195, 125, 5),
         ("AlgaeHabitat", 197, 125, 5), ("AlgaeHabitat", 199, 125, 5),
         ("PlanterBox", 198, 125, 5), ("PlanterBox", 200, 125, 5),
-        *[("Ladder", 180, y, 6) for y in range(108, 120)]]   # between the terrariums, on the bedroom floor
+        *[("Ladder", 180, y, 6) for y in range(108, 120)],
+        ("LiquidPumpingStation", 189, 105, 8), ("Ladder", 188, 108, 7), ("Ladder", 188, 109, 7)]   # the second pool, under the corridor   # between the terrariums, on the bedroom floor
 ROOM = [[x, y] for y in range(120, 124) for x in [*range(177, 183), *range(191, 201)]]
 BEDROOM = [[190, 124]] + [[x, y] for y in (125, 126) for x in range(190, 201)]
 LEDGE = [[201, y] for y in (121, 122, 123)] + [[202, y] for y in (121, 122, 123)]   # over a one-tile dam at y120: the pool keeps most of its water
