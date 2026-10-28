@@ -39,6 +39,7 @@ def passport(toks):
             if r >= 0.6 and r > best: best, city = r, c
         name = name or (t if re.match(r"^[A-Z' -]+, [A-Z' -]+$", t) else None)
     joined = re.sub(r"(?<![\d])(9\d\d[.,]\d\d[.,]\d\d)", r"1\1", " ".join(toks))   # OCR drops the 1 of 1982 at a field's edge
+    joined = re.sub(r"(?<![\d])9\d2[.,]\s+(\d\d)[.,](\d\d)\b", r"1982.\1.\2", joined)   # day 8 Maxime Chastang: "962." "11.04" is 1982.11.04, expired
     dates = sorted(d for d in re.findall(DATE, joined) if d[0] >= "1975")   # older dates are birthdays
     country = country or next((c for c, cs in CITIES.items() if city in cs), None)   # OCR can miss the country line
     num = next(iter(re.findall(PNUM, " ".join(toks))), None)
@@ -87,6 +88,8 @@ def verdict(words, day):
         granted = next((rest[i + 1] for i, t in enumerate(rest[:-1]) if re.search(r"GRANTED\s*TO|HEREBY", t)), "")   # the permit's holder line, not a diplomat's "be granted upon presentation" (day 8 Anne Mahnumus)
         words_ = granted.split()   # day 4 Schiavon held Abdullah Yurinov's permit; day 8 an "invalid name" slipped through on one matching name
         holder_ok = not pname or not words_ or (any(same(pname[0], wd, 0.6) for wd in words_) and (len(pname[1]) <= 3 or any(same(pname[1], wd, 0.5) for wd in words_)))
+        swapped = lambda a, b: len(a) == len(b) and any(x == "A" and y == "U" for x, y in zip(a, b))   # the font reads a permit's changed letter as U (Cucinova, Zulestin, Tuirvoshu): a real typo
+        holder_ok = holder_ok and not (pname and any(swapped(pname[0], wd) for wd in words_))
         alnum = lambda s: re.sub(r"[^A-Z0-9]", "", s)
         pn = next((alnum(t) for t in mine if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)), None)
         others = [alnum(t) for t in rest if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)]
@@ -170,6 +173,8 @@ def _check():
     assert verdict(kar, 8) == "approve" and verdict(kar + [{"t": "I am here to visit.", "x": 150, "y": 120}], 8) == "deny" and verdict(kar + [{"t": "I plan to Horh.", "x": 150, "y": 120}], 8) == "approve"
     assert verdict(w("Yates, Frank", "DOE.", "SEM", "1943.03.19", "Paradizna", "1984.08.06", "ARSTOTZHA") + o("IDENTITY CARD", "YATES,", "FRANK", "943.03.19"), 8) == "approve"
     assert verdict(w("-KOLECHIA", "Mahnumus, Anne", "Wlest Grestin", "1984.11.16", "POPRS-PRHGU") + o("Authorization", "diplomatic entity", "ANNE HAHHUMUS", "be granted upon presentation.", "ARSTOTZHA, HOLECHIA,"), 8) == "approve"
+    assert verdict(w("ANTEGRIA", "Outer Grouse", "962.", "11.04", "Chastang, Maxime", "0JU6T-CT8R0") + o("is hereby granted to", "MARIME CHASTANG", "8 U6T-CT8RG", "1982.12.14"), 8) == "deny"
+    assert verdict(w("Tuirvoska, Lumina", "Shingleton", "1983.08.09", "FL404-05C4C") + o("is hereby granted to", "LUMINA TUIRVOSHU", "FL4 14-05C40", "1982.12.17"), 8) == "deny"
     norma = w("Tarnoff, Norma", "| 1938.03.15", "East Grestin", "1983.06.12", "ARSTOTZKA")
     assert verdict(norma + o("IDENTITY CARD", "7920.03.15"), 4) == "deny" and verdict(norma + o("IDENTITY CARD", "1938.03.15"), 4) == "approve"
     assert verdict(aza + o("MICHE PIETROWSHA", "MAHUFACTURING"), 7) == "deny" and verdict(aza + o("AZA HUDSONSHO", "MAHUFACTURING"), 7) == "approve" and verdict(aza + o("AZA HUDSONSHO", "FISHING"), 7) == "approve"
