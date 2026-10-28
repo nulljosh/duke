@@ -132,6 +132,8 @@ def verdict(words, day):
         num_ok = not pn or not others or any(same(pn, o, 0.6) for o in others)
         enter_by = max(re.findall(r"19\d\d\.\d\d\.\d\d", text) or ["0"])
         ok = ok and ("GRANTED" in text or "PERMIT" in text) and holder_ok and num_ok and enter_by >= today
+    if day >= 6 and any(re.fullmatch(r"WOR[KH]", t) for t in rest):   # purpose WORK needs the Ministry of Labor's work pass
+        ok = ok and bool(re.search(r"LAB[OE]R|HOLDER|FIELD", text))   # ponytail: name and work-until vs duration not checked yet
     return "approve" if ok else "deny"
 
 
@@ -152,9 +154,9 @@ def entrant(day, base):
         time.sleep(0.3)
     walk = time.time() - t0
     spots = []
-    for spot in SPOTS:   # the entrant slides papers over one at a time
-        time.sleep(0.8)
-        at_ = doc_on_counter(shot(), base)
+    for spot in SPOTS:   # the entrant slides papers over one at a time, sometimes the passport last and slow
+        t = time.time()
+        while not (at_ := doc_on_counter(shot(), base)) and time.time() - t < 2.5: time.sleep(0.3)
         if not at_: break
         drag(at_, spot); spots.append(spot); time.sleep(0.6)
     t1 = time.time(); r = decide(day, spots, base)
@@ -182,6 +184,9 @@ def decide(day, spots, base=None):
     """Read the desk, stamp the passport, hand every document back."""
     shot(); words = ocr(); v = verdict(words, day)
     if day >= 3 and not any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words):
+        late = base is not None and doc_on_counter(shot(), base)   # a passport still on the counter is late, not missing
+        if late and len(spots) < 5:
+            spot = (700, 560); drag(late, spot); spots.append(spot); time.sleep(0.6); return decide(day, spots, base)
         missing_passport(); shot(); words = ocr(); v = "deny"
     visa = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
     if visa:   # the passport: slide its visa box under the chosen stamp
@@ -231,6 +236,9 @@ def _check():
     assert verdict(pyotr + o("is hereby granted to", "PYOTR VOSTOH", "DR90N-DHP6C", "1982.12.15"), 5) == "approve"
     assert verdict(w("STAMP HERE", "COBRASTAN", "1923.5.31", "Festbun"), 5) == "deny"
     assert verdict(w("ISS. Vedor", "EXP 1985.01.01", "IMPOR"), 2) == "deny"
+    kov = w("ANTEGRIA", "1944.11.27", "St. Marmero", "1983.09.20") + o("is hereby granted to", "ODAH HOVARS", "FP931-H375V", "Purpose", "WORH", "1 MONTH", "1982.12.22")
+    assert verdict(kov + o("Minirtry ef Laber", "prk Pass", "HOLDER", "FIELD"), 6) == "approve"
+    assert verdict(kov, 6) == "deny" and verdict(kov, 5) == "approve"
 
 
 if __name__ == "__main__":

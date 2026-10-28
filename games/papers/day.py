@@ -97,6 +97,7 @@ if __name__ == "__main__":
     _check()
     day = int(sys.argv[1])
     if "--replay" in sys.argv: reload(day)
+    elif "--resume" in sys.argv: pass   # already in the booth mid-day
     else:
         left, bought = night(); print("night", left, bought, flush=True)
         if not morning(): sys.exit("stuck before the booth")
