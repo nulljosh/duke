@@ -48,9 +48,8 @@ def click(p): cli(f"m:{at(*p)}", "w:120", f"c:{at(*p)}")
 
 def drag(a, b):
     """Unity samples the cursor once a frame: move in small timed steps and send the release twice."""
-    steps = [f"m:{at(a[0] + (b[0] - a[0]) * i / 4, a[1] + (b[1] - a[1]) * i / 4)}" for i in range(1, 5)]
-    cli(f"m:{at(*a)}", "w:100", f"dd:{at(*a)}", "w:120", *[s for st in steps for s in (st, "w:50")], "w:100", f"du:{at(*b)}")
-    time.sleep(0.1); cli(f"du:{at(*b)}")
+    mid = at((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+    cli(f"m:{at(*a)}", f"dd:{at(*a)}", f"m:{mid}", f"m:{at(*b)}", f"du:{at(*b)}", f"du:{at(*b)}")   # cliclick spaces each event ~0.1 s, enough for Unity's frame sampling
 
 
 def shot():
