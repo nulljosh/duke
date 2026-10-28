@@ -24,7 +24,8 @@ def window():
     raise SystemExit("no PapersPlease window")
 
 
-OX, OY = window()
+subprocess.run(["osascript", "-e", 'tell application "System Events" to set position of window 1 of (first process whose name is "PapersPlease") to {390, 50}'])
+OX, OY = window()   # pinned at (390, 50) first: the window once slid down 126 px mid-day and every click missed
 def at(x, y): return f"{round(OX + x)},{round(OY + y)}"
 def idle():
     out = subprocess.run(["ioreg", "-c", "IOHIDSystem"], capture_output=True, text=True).stdout
