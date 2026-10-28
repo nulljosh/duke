@@ -65,7 +65,7 @@ def morning():
 
 def reload(day):
     """Replay a day from its morning save: quit without sleeping, relaunch through Steam, Story, pick the day."""
-    subprocess.run(["osascript", "-e", 'tell application "System Events" to keystroke "q" using command down']); time.sleep(4)
+    play.mine(); subprocess.run(["osascript", "-e", 'tell application "System Events" to keystroke "q" using command down']); time.sleep(4)   # Cmd+Q must hit the game, never his app
     subprocess.run(["open", "steam://run/239030"])
     for _ in range(30):
         time.sleep(3)

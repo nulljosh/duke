@@ -24,7 +24,23 @@ def window():
 
 OX, OY = window()
 def at(x, y): return f"{round(OX + x)},{round(OY + y)}"
-def cli(*a): subprocess.run(["cliclick", *a])
+def idle():
+    out = subprocess.run(["ioreg", "-c", "IOHIDSystem"], capture_output=True, text=True).stdout
+    return int(re.search(r'"HIDIdleTime" = (\d+)', out)[1]) / 1e9
+
+
+def mine():
+    """Wait until the game is in front. The real cursor is Joshua's too: if he has another app up, only take it back once he's been idle two minutes."""
+    while True:
+        front = subprocess.run(["lsappinfo", "info", "-only", "name", subprocess.run(["lsappinfo", "front"], capture_output=True, text=True).stdout.strip()],
+                               capture_output=True, text=True).stdout
+        if "PapersPlease" in front: return
+        if idle() > 120:
+            subprocess.run(["osascript", "-e", 'tell application "System Events" to set frontmost of (first process whose name is "PapersPlease") to true']); time.sleep(1)
+        else: time.sleep(5)
+
+
+def cli(*a): mine(); subprocess.run(["cliclick", *a])
 def click(p): cli(f"m:{at(*p)}", "w:120", f"c:{at(*p)}")
 
 
