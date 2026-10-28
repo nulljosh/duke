@@ -10,7 +10,8 @@ Day 8 done; day 9 running. The first run lost the whole family on day 7 (ending 
 - [x] Speed: about 24 seconds an entrant (was 45).
 - [x] Day 6 work pass, day 7 Kolechians denied unsearched, day 8 diplomats.
 - [ ] Booth: measure height against the wall lines (day 7 ID card penalty), work-until vs duration, the spoken purpose vs the permit.
-- [ ] Day 9 on: RULES.md, one rule per day, each from a real citation.
+- [ ] Day 9 on: RULES.md, one rule per day, each from a real citation. Hard days: 13 (ID supplement), 14 (wanted faces), 18 (denial reasons), 23 and 31 (attacks: aim and shoot).
+- [ ] Target ending 20 on day 31: deny every EZIC task, burn both gifts, shoot the two attackers before the charge.
 
 ## Benchmarks: finishing Duolingo (measured 2026-10-02)
 "Finished" means every course on the account at 100%, plus math and chess. Run
