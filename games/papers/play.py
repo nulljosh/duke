@@ -197,6 +197,9 @@ def decide(day, spots, base=None):
     """Read the desk, stamp the passport, hand every document back."""
     shot(); words = ocr(); v = verdict(words, day)
     if day >= 3 and not any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words):
+        for y in (495, 530): drag((176, y), (965, 380)); time.sleep(0.4)   # day 4 Quinn Noxilova: a passport the counter check misses still comes with a blind grab
+        shot(); words = ocr(); v = verdict(words, day)
+        if any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words): spots.append((965, 380)); return decide(day, spots, base)
         t = time.time()   # late, not missing: some entrants answer purpose and duration out loud before the passport comes over
         while base is not None and not (late := doc_on_counter(shot(), base)) and time.time() - t < 8: time.sleep(0.3)
         if late and len(spots) < 5:
