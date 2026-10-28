@@ -73,6 +73,11 @@ def reload(day):
         if pid: break
     time.sleep(12)
     subprocess.run(["osascript", "-e", f'tell application "System Events" to set frontmost of (first process whose unix id is {pid[0]}) to true'])
+    open_day(day)
+
+
+def open_day(day):
+    """From the title screen: Story, the day's slot, continue, walk to work."""
     play.click((568, 634)); time.sleep(2); play.click((568, 518)); time.sleep(3)   # past the title, then STORY
     play.click((70 + 140 * (day - 1), 205)); time.sleep(3); play.click((568, 437)); time.sleep(5)   # ponytail: one row of days; a second row past day 8 needs its y
     play.click((568, 627)); time.sleep(10)
@@ -100,6 +105,7 @@ if __name__ == "__main__":
     day = int(sys.argv[1])
     if "--replay" in sys.argv: reload(day)
     elif "--resume" in sys.argv: pass   # already in the booth mid-day
+    elif "--title" in sys.argv: open_day(day)   # the game was just launched and sits on its title screen
     else:
         left, bought = night(); print("night", left, bought, flush=True)
         if left < 0: sys.exit("night ends below zero: sleeping is game over. Cmd+Q and replay the day before")
