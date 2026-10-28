@@ -150,13 +150,16 @@ def entrant(day, base):
         if not at_booth(img): return None
         if time.time() - t0 > 40: return "nobody came"   # still in the booth (a citation, a missed horn): call again
         time.sleep(0.3)
+    walk = time.time() - t0
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time
         time.sleep(0.8)
         at_ = doc_on_counter(shot(), base)
         if not at_: break
         drag(at_, spot); spots.append(spot); time.sleep(0.6)
-    return decide(day, spots, base)
+    t1 = time.time(); r = decide(day, spots, base)
+    print(f"walk {walk:.1f}s slide {t1 - t0 - walk:.1f}s decide {time.time() - t1:.1f}s", flush=True)   # where the seconds go
+    return r
 
 
 def missing_passport():
