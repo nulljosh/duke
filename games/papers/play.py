@@ -73,7 +73,7 @@ def doc_on_counter(img, base):
 
 
 DBOX, PARK = (360, 236, 1110, 668), (1000, 650)   # the desk; papers nobody takes back get parked bottom right
-FACEBOX, FACE = (60, 250, 300, 445), None
+FACEBOX, FACE, BOOTH = (60, 250, 300, 445), None, None   # BOOTH: the window with nobody in it
 SAME, EMPTY, PENALTIES = 0, None, 0   # the desk as it looks with nothing new on it, refreshed before each entrant
 
 
@@ -119,6 +119,10 @@ def at_booth(img):   # the counter strip is olive in the booth and black on the 
     return ImageStat.Stat(img.crop(CBOX)).mean[0] > 60 and not night()
 
 
+def at_booth_face():   # someone is standing at the window: the face box is far from the dark empty booth wall
+    return ImageStat.Stat(shot().crop(FACEBOX)).mean[0] > 50   # empty booth measures ~33
+
+
 def night():   # the ledger is up: one stray click near SLEEP on a negative night is game over
     return any(re.search(r"SAVINGS|SLEEP|SALARY", w["t"].upper()) for w in ocr())
 
@@ -129,7 +133,7 @@ def entrant(day, base):
     keep_gifts()   # the last citation goes to the corner
     for _ in range(3):   # a paper left on the counter by someone who has walked off (Calensk's envelope) is ours: park it
         img = shot(); left = doc_on_counter(img, base)
-        if not left or (FACE is not None and ImageStat.Stat(ImageChops.difference(img.crop(FACEBOX), FACE)).mean[0] < 8): break
+        if not left or BOOTH is None or ImageStat.Stat(ImageChops.difference(img.crop(FACEBOX), BOOTH)).mean[0] > 8: break   # only with nobody in the booth
         drag(left, PARK); time.sleep(0.3)
     time.sleep(0.4); EMPTY = shot().crop(DBOX)   # the desk as it is now is the baseline
     click(HORN)
@@ -226,7 +230,7 @@ if __name__ == "__main__":
     base.save(HERE / '.counter.png')
     shot(); b = next((w for w in ocr() if re.search(r"BULLETIN|INSPECTOR", w["t"].upper())), {"x": 745, "y": 460})
     drag((b["x"], b["y"] + 100), (105, 612)); time.sleep(1)   # file the day's bulletin, wherever it lands, so it stays out of the OCR
-    EMPTY = shot().crop(DBOX)
+    EMPTY = shot().crop(DBOX); BOOTH = shot().crop(FACEBOX) if not at_booth_face() else None
     for n in range(int(sys.argv[2]) if len(sys.argv) > 2 else 80):
         r = entrant(day, base)
         print(n, r, flush=True)
