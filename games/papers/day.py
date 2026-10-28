@@ -6,7 +6,7 @@ import play
 
 RADIO_X = 801
 COSTS = {"FOOD": 20, "HEAT": 10, "MEDIC": 5, "UPGRADE": 5}
-WHO = {"WIFE": ("WIFE", "IFE"), "SON": ("SON", "SOH"), "MIL": ("MIL",), "UNCLE": ("UNCLE", "NCLE", "UHCLE")}
+WHO = {"WIFE": ("WIFE", "IFE"), "SON": ("SON", "SOH", "SOI", "S0N"), "MIL": ("MIL",), "UNCLE": ("UNCLE", "NCLE", "UHCLE")}
 FAMILY = [("WIFE", 187), ("SON", 273), ("MIL", 359), ("UNCLE", 445)]   # status circles, right of the ledger
 
 
