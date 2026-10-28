@@ -72,7 +72,7 @@ def verdict(words, day):
         ok = ok and "TICKET" in text and today in text
     if day >= 4 and country == "ARSTOTZKA":   # the ID card prints a district, height and weight; it may overlap the passport
         ok = ok and bool(re.search(r"IDENTITY|DISTRIC|\d\s?CM\b|\d\s?KG\b", " ".join(mine + rest)))
-        births = {"19" + d[0][2:] + "." + d[1] + "." + d[2] for d in re.findall(r"([17]9\d\d)[.,\s](\d\d)[.,\s](\d\d)", " ".join(mine + rest)) if d[0][2:] < "75"}   # the pixel font reads 1 as 7
+        births = {".".join(d) for d in re.findall(r"(\d\d)[.,\s](\d\d)[.,\s](\d\d)\b", " ".join(mine + rest)) if d[0] < "75"}   # by the year's last two digits: the 19 reads as 79 or P
         ok = ok and not any(sum(x != y for x, y in zip(a, b)) >= 2 for a in births for b in births)   # day 4 Norma Tarnoff: ID card 1920, passport 1938. ponytail: a 1-digit gap passes as OCR noise
     if day >= 4 and country != "ARSTOTZKA":   # OCR mangles the pixel font: an unreadable field passes, a readable mismatch fails
         pname = next((m.groups() for t in mine + rest for m in [re.match(r"^([A-Z']{3,})[,.]\s+([A-Z']{3,})", t)] if m), None)
@@ -81,7 +81,7 @@ def verdict(words, day):
         alnum = lambda s: re.sub(r"[^A-Z0-9]", "", s)
         pn = next((alnum(t) for t in mine if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)), None)
         others = [alnum(t) for t in rest if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)]
-        num_ok = not pn or not others or any(same(pn, o, 0.6) for o in others)
+        num_ok = not pn or not others or any(same(pn, o, 0.45) for o in others)   # day 5 Vince Lestrade: TDW50-9HDFT read as TOMSU-9HOFT on his own permit
         enter_by = max([d for d in re.findall(r"19\d\d\.\d\d\.\d\d", text) if d >= "1982"] or [today])   # cut off the desk: passes
         papers = "GRANTED" in text or "PERMIT" in text or (day >= 8 and bool(re.search(r"DIPLOMAT|AUTHORI", text)))   # diplomats bring an authorization instead
         ok = ok and papers and holder_ok and num_ok and enter_by >= today
@@ -148,6 +148,8 @@ def _check():
     assert verdict(w("Schiavon, Giorgio", "Horista City", "1983.06.10", "EBEON-6HLRR") + o("is hereby granted to", "ABDULLAH YURINOV", "EBEON-6HLRR", "1982.12.08"), 4) == "deny"
     assert verdict(w("huchumova, Alina", "1947.03.15", "Enhyo", "1982", "CHE40-GUAH2") + o("is hereby granted to", "ALINA RUCHUMOVA", "1982.12.16"), 4) == "deny"
     assert verdict(w("-KOLECHIA", "Maciejewicz, Hubert", "Yurko Citu", "1982.11.1šŚ", "8MQA7-X6LVG") + o("is hereby granted to", "HUBERT MACIEJEWICZ", "8MQA7-X6LVG", "1982.12.20"), 4) == "deny"
+    assert verdict(w("Lestrade, Vince", "True Glorian", "1984.05.04", "REPUBLIA", "TDW50-9HDFT") + o("is hereby granted to", "PINCE LESTRADE", "TOMSU-9HOFT", "1982.12.23"), 5) == "approve"
+    assert verdict(w("Funke, Sabrina", "1943.03.16", "Paradizna", "1983.08.28", "ARSTOTZKA") + o("IDENTITY CARD", "DOE.P43.05.24"), 5) == "deny"
     norma = w("Tarnoff, Norma", "| 1938.03.15", "East Grestin", "1983.06.12", "ARSTOTZKA")
     assert verdict(norma + o("IDENTITY CARD", "7920.03.15"), 4) == "deny" and verdict(norma + o("IDENTITY CARD", "1938.03.15"), 4) == "approve"
     assert verdict(aza + o("MICHE PIETROWSHA", "MAHUFACTURING"), 7) == "deny" and verdict(aza + o("AZA HUDSONSHO", "MAHUFACTURING"), 7) == "approve" and verdict(aza + o("AZA HUDSONSHO", "FISHING"), 7) == "approve"
