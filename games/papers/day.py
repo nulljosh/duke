@@ -6,7 +6,7 @@ import play
 
 RADIO_X = 801
 COSTS = {"FOOD": 20, "HEAT": 10, "MEDIC": 5, "UPGRADE": 5}
-WHO = {"WIFE": ("WIFE", "IFE"), "SON": ("SON", "SOH", "SOI", "S0N"), "MIL": ("MIL",), "UNCLE": ("UNCLE", "NCLE", "UHCLE")}
+WHO = {"WIFE": ("WIFE", "IFE", "HFE"), "SON": ("SON", "SOH", "SOI", "S0N"), "MIL": ("MIL",), "UNCLE": ("UNCLE", "NCLE", "UHCLE")}
 FAMILY = [("WIFE", 187), ("SON", 273), ("MIL", 359), ("UNCLE", 445)]   # status circles, right of the ledger
 
 
@@ -26,7 +26,7 @@ def ledger(words):
             amt = next((int(re.sub(r"\D", "", v["t"])) for v in words if v["x"] > 650 and abs(v["y"] - w["y"]) < 10 and re.search(r"\d", v["t"])), 0)
             rows.append({"t": t, "y": w["y"], "cost": -amt, "who": None})   # income: a negative cost
         if 360 < w["x"] < 600 and w["y"] > 220 and re.search(r"FOOD|HEAT|MEDIC|UPGRADE", t):
-            price = next((int(re.sub(r"\D", "", v["t"])) for v in words if 650 < v["x"] < 790 and abs(v["y"] - w["y"]) < 10 and re.search(r"\d", v["t"])), None)
+            price = next((int(re.search(r"\d+", v["t"])[0]) for v in words if 650 < v["x"] < 790 and abs(v["y"] - w["y"]) < 10 and re.search(r"\d", v["t"])), None)
             cost = price or next(v for k, v in COSTS.items() if k in t)   # food is 5 a head, so it falls as the family does
             who = next((k for k, alts in WHO.items() if any(a in t for a in alts)), None)
             rows.append({"t": t, "y": w["y"], "cost": cost, "who": who})
