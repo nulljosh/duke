@@ -122,7 +122,12 @@ def night():   # the ledger is up: one stray click near SLEEP on a negative nigh
 def entrant(day, base):
     global EMPTY, SAME, FACE
     if not at_booth(shot()): return None
-    keep_gifts(); time.sleep(0.4); EMPTY = shot().crop(DBOX)   # the last citation goes to the corner; the desk as it is now is the baseline
+    keep_gifts()   # the last citation goes to the corner
+    for _ in range(3):   # a paper left on the counter by someone who has walked off (Calensk's envelope) is ours: park it
+        img = shot(); left = doc_on_counter(img, base)
+        if not left or (FACE is not None and ImageStat.Stat(ImageChops.difference(img.crop(FACEBOX), FACE)).mean[0] < 8): break
+        drag(left, PARK); time.sleep(0.3)
+    time.sleep(0.4); EMPTY = shot().crop(DBOX)   # the desk as it is now is the baseline
     click(HORN)
     t0 = time.time()
     while not doc_on_counter(img := shot(), base):
