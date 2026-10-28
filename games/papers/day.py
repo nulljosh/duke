@@ -81,6 +81,10 @@ def morning():
 def reload(day):
     """Replay a day from its morning save: quit without sleeping, relaunch through Steam, Story, pick the day."""
     play.mine(); subprocess.run(["osascript", "-e", 'tell application "System Events" to keystroke "q" using command down']); time.sleep(4)   # Cmd+Q must hit the game, never his app
+    for _ in range(10):   # it can hang windowless after Cmd+Q, and a fresh launch then finds the old pid (2026-10-27)
+        if subprocess.run(["pgrep", "PapersPlease"], capture_output=True).returncode: break
+        time.sleep(2)
+    else: subprocess.run(["pkill", "-x", "PapersPlease"]); time.sleep(3)
     subprocess.run(["open", "steam://run/239030"])
     for _ in range(30):
         time.sleep(3)
