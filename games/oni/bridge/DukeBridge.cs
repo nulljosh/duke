@@ -232,6 +232,9 @@ public static partial class Ops
                 var navs = Components.LiveMinionIdentities.Items.Select(m => m.GetComponent<Navigator>()).Where(n => n != null).ToList();
                 return j["cells"].Where(c => navs.Any(n => n.CanReach(Grid.XYToCell((int)c[0], (int)c[1]), Around))).ToArray();
             }
+            case "safedig": return SafeDig(j);
+            case "plants": return Plants();
+            case "uproot": return Uproot(j);
             case "speed": SpeedControlScreen.Instance.SetSpeed((int)j["speed"]); if ((bool?)j["play"] ?? true) SpeedControlScreen.Instance.Unpause(false); return new { ok = true };
             case "pause": SpeedControlScreen.Instance.Pause(false); return new { ok = true };
             case "research":

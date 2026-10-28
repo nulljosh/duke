@@ -31,24 +31,54 @@ UPPER = [[x, y] for y in range(124, 128) for x in range(177, 190)]   # air volum
 def log(*a): print(time.strftime("%H:%M:%S"), *a, flush=True)
 
 
+FOOD_PACKAGES = ("MushBar", "BasicPlantFood", "FieldRation", "Meat", "CookedMeat", "Pacu", "BasicPlantSeed", "PrickleFruit", "SwampFruit", "ColdWheatSeed")
+
+
+def near(cells, n): return sorted(cells, key=lambda c: abs(c[0] - 190) + 2 * abs(c[1] - 121))[:n]
+
+
 def topup(have, element, low, n=15):
-    """Dirt feeds research, mush and planters; algae the diffuser. When stock runs low, dig the nearest few cells of it
-    that touch no liquid, at normal priority (colony 1 starved behind 225 digs at priority 9)."""
+    """Dirt feeds research, mush and planters; algae the diffuser. Low stock digs the nearest safe cells of it; if none
+    are reachable, tunnel through the safe rock closest to the seam."""
     if have.get(element, 0) >= low: return
-    near = sorted(oni.cells(element, 166, 108, 212, 134), key=lambda c: abs(c[0] - 190) + 2 * abs(c[1] - 121))
-    ok = oni.cmd(op="reach", cells=oni.safe(near[:200]))   # a dig no dupe can stand next to just sits there (colony 2, cycle 12)
-    if len(ok) < 5 and near:   # walled in: tunnel through whatever reachable rock lies closest to the nearest seam
-        g = oni.cmd(op="grid", x0=166, y0=108, x1=212, y1=134); solid = {k for k, v in g["legend"].items() if v.endswith("solid")}
-        rock = [[166 + i, 134 - r] for r, row in enumerate(g["rows"]) for i, ch in enumerate(row) if ch in solid]
-        rock = oni.cmd(op="reach", cells=oni.safe(sorted(rock, key=lambda c: abs(c[0] - 190) + abs(c[1] - 121))[:300]))
-        gap = lambda c: min(abs(c[0] - t[0]) + abs(c[1] - t[1]) for t in near[:40])
-        ok += sorted(rock, key=gap)[:8]
-    log("topup", element, len(ok), "reachable", oni.cmd(op="dig", cells=ok[:n], prio=5))
+    seam = near(oni.cells(element, 160, 100, 220, 140), 300)
+    r = oni.cmd(op="safedig", cells=seam, floor=119, prio=6, max=n)
+    if r["placed"] < 3 and seam:
+        g = oni.cmd(op="grid", x0=160, y0=119, x1=220, y1=140); solid = {k for k, v in g["legend"].items() if v.endswith("solid")}
+        rock = [[160 + i, 140 - k] for k, row in enumerate(g["rows"]) for i, ch in enumerate(row) if ch in solid]
+        gap = lambda c: min(abs(c[0] - t[0]) + abs(c[1] - t[1]) for t in seam[:40])
+        r = oni.cmd(op="safedig", cells=sorted(rock, key=gap)[:400], floor=119, prio=6, max=8)
+    log("topup", element, r)
+
+
+def explore(s):
+    """Idle dupes are wasted labor: give them the nearest safe rock at low priority, so the base grows and digs turn up seams."""
+    if sum(d["chore"] in (None, "IdleChore") for d in s["dupes"]) < 2: return
+    g = oni.cmd(op="grid", x0=165, y0=119, x1=215, y1=140); solid = {k for k, v in g["legend"].items() if v.endswith("solid")}
+    rock = near([[165 + i, 140 - k] for k, row in enumerate(g["rows"]) for i, ch in enumerate(row) if ch in solid], 400)
+    log("explore", oni.cmd(op="safedig", cells=rock, floor=119, prio=3, max=12))
+
+
+def seeds():
+    wild = [[x, y] for name, x, y in oni.cmd(op="plants") if "BasicSingleHarvestPlant" in name and abs(x - 190) < 40 and abs(y - 121) < 25]
+    if wild: log("uproot mealwood", oni.cmd(op="uproot", cells=wild))
+
+
+def printables(s):
+    """Every few cycles the pod offers dupes or packages: take food, and no new mouths while the larder is thin."""
+    if not s["immigrants"]: return
+    oni.cmd(op="printables"); time.sleep(2); offers = oni.cmd(op="printables")
+    if not isinstance(offers, list): return
+    pick = next((i for i, o in enumerate(offers) if o.startswith("package") and any(f in o for f in FOOD_PACKAGES)), None)
+    if pick is None and s["foodKcal"] > 8000: pick = next((i for i, o in enumerate(offers) if o.startswith("dupe")), None)
+    if pick is not None: log("print", offers[pick], oni.cmd(op="print", index=pick))
+    else: oni.cmd(op="invoke", type="ImmigrantScreen", method="OnPressBack"); log("pod offers passed", offers)
+    oni.cmd(op="speed", speed=2)
 
 
 def run(until):
     done, tries, last_cycle, mush, planted, t_link, clock = set(), {}, None, False, set(), 0, None
-    for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): log("dig", oni.cmd(op="dig", cells=oni.safe(cells), prio=prio))
+    for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): log("dig", oni.cmd(op="safedig", cells=cells, floor=119, prio=prio))
     log("ledge", oni.cmd(op="dig", cells=LEDGE, prio=6))   # touches the pool on purpose
     while True:
         s = oni.state()
@@ -61,9 +91,9 @@ def run(until):
         if s["cycle"] != last_cycle:
             last_cycle = s["cycle"]
             oni.cmd(op="camera", x=BASE[0], y=BASE[1], zoom=14); time.sleep(1)
-            shot = HERE / "shots" / f"c2-cycle-{s['cycle']:03d}.png"; shot.parent.mkdir(exist_ok=True)
+            shot = HERE / "shots" / f"c3-cycle-{s['cycle']:03d}.png"; shot.parent.mkdir(exist_ok=True)
             shutil.copy(oni.shot(), shot)
-            row = {"colony": 2, "cycle": s["cycle"], "dupes": len(s["dupes"]), "foodKcal": round(s["foodKcal"]), "research": s["research"],
+            row = {"colony": 3, "cycle": s["cycle"], "dupes": len(s["dupes"]), "foodKcal": round(s["foodKcal"]), "research": s["research"],
                    "done": len(s["researchDone"]), "buildings": len(s["buildings"]),
                    "worst": min(((d["name"], round(d["breath"]), round(d["stress"]), round(d["kcal"])) for d in s["dupes"]), key=lambda d: d[3])}
             with open(HERE / "progress.jsonl", "a") as f: f.write(json.dumps(row) + "\n")
@@ -81,9 +111,10 @@ def run(until):
                 if tries[item] in (1, 61): log("waiting", item, r.get("error"))
         if time.time() - t_link > 60:   # wires placed one at a time join nothing until linked; a reload drops the links too
             oni.cmd(op="link", cells=WIRES); oni.cmd(op="mop", cells=[[x, 120] for x in range(177, 203)]); t_link = time.time()
-            topup(s["have"], "Dirt", 400); topup(s["have"], "Algae", 300)
-            hungry = s["foodKcal"] < 3000   # research and the musher both eat dirt; food wins when the larder runs low
-            oni.cmd(op="prio", x=196, y=120, p=9 if hungry else 6); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
+            for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): oni.cmd(op="safedig", cells=cells, floor=119, prio=prio)   # more come in reach as the room opens up
+            topup(s["have"], "Dirt", 600); topup(s["have"], "Algae", 300); explore(s); seeds(); printables(s)
+            hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
+            oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
         if not mush and oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush = True; log("mush bars queued")
         for x in (198, 200):
             if x not in planted and oni.cmd(op="plant", x=x, y=125, seed="BasicPlantSeed").get("ok"): planted.add(x); log("mealwood ordered", x)
