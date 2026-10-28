@@ -79,6 +79,8 @@ def verdict(words, day):
         enter_by = max([d for d in re.findall(r"19\d\d\.\d\d\.\d\d", text) if d >= "1982"] or [today])   # cut off the desk: passes
         papers = "GRANTED" in text or "PERMIT" in text or (day >= 8 and bool(re.search(r"DIPLOMAT|AUTHORI", text)))   # diplomats bring an authorization instead
         ok = ok and papers and holder_ok and num_ok and enter_by >= today
+    if 13 <= day <= 26 and country != "ARSTOTZKA":   # foreigners show an ID supplement (height, weight, description, thumbprint)
+        ok = ok and bool(re.search(r"SUPPLEM|DESCRIPT|THUMB", text))   # ponytail: its height, weight and expiry not checked yet
     if day == 7 and country == "KOLECHIA": ok = False   # search every Kolechian; denying unsearched costs no citation (ponytail: no scanner yet)
     if day >= 6 and any(re.fullmatch(r"WOR[KH]", t) for t in rest):   # purpose WORK needs the Ministry of Labor's work pass
         ok = ok and bool(re.search(r"LAB[OE]R|HOLDER|FIELD", text))   # ponytail: work-until vs duration not checked yet
@@ -126,6 +128,7 @@ def _check():
     assert verdict(kov + o("Minirtry ef Laber", "prk Pass", "HOLDER", "FIELD"), 6) == "approve"
     assert verdict(kov, 6) == "deny" and verdict(kov, 5) == "approve"
     assert verdict(kol + permit, 7) == "deny" and verdict(kol + permit, 8) == "approve"
+    assert verdict(kol + permit, 13) == "deny" and verdict(kol + permit + o("ID SUPPLEMENT", "DESCRIPTION"), 13) == "approve"
     # day 7 citations: enter-by cut off the desk, and a permit header read as the passport's country
     assert verdict(w("Zopenho, Carlota", "1936.04.23", "Tsunheido", "1983.09.13", "400T4-RRMSH") + o("is hereby granted to", "CARLOTA 20PENHO", "40QT4-RRMSV", "IMMIGRATE", "FOREVER"), 7) == "approve"
     assert verdict(w("Risa, Misha", "1936.11.28", "True Glorian", "1983.12.18", "REPUBLI", "SHFG5-BRKAG") + o("Permit", "is hereby granted to", "MISHA RISA", "SHFG5-BRKAG", "IMMIGRATE", "FOREVER"), 7) == "approve"
