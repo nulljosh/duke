@@ -42,12 +42,35 @@ def rock(img, rng, top, bot):
             if rng.random() < .25: d.point((ox - 1, oy - 2), tuple(min(255, v + 40) for v in c))
 
 
-def dupe(d, x, y, s, rng):
-    """A round-headed little colonist, arms out, standing on y."""
-    skin, suit = rng.choice([hexc("#f2c79a"), hexc("#c98e62"), hexc("#8a5a3a")]), rng.choice([hexc("#d04a3a"), hexc("#3a6ad0"), hexc("#d0a03a")])
-    d.rectangle([x - 2 * s, y - 5 * s, x + 2 * s, y - 1], fill=suit); d.rectangle([x - 2 * s, y - s, x - s, y], fill=INK); d.rectangle([x + s, y - s, x + 2 * s, y], fill=INK)
-    d.ellipse([x - 4 * s, y - 13 * s, x + 4 * s, y - 5 * s], fill=skin, outline=INK)
-    d.point((x - 2 * s, y - 9 * s), INK); d.point((x + s, y - 9 * s), INK); d.line([(x - s, y - 7 * s), (x + s, y - 7 * s)], fill=INK)
+def dupe(d, x, y, s, rng, i=0):
+    """A colonist drawn in the game's proportions: a head as wide as two bodies, ears, big dark eyes with a glint, the
+    wide open grin, a small shirt with mitten hands, stubby boots, and one of three hairdos. Standing on y, centred on x."""
+    skin = (hexc("#f2c79a"), hexc("#d79b6c"), hexc("#9a6440"))[i % 3]; shirt = (hexc("#4a8ad0"), hexc("#d05a4a"), hexc("#e0b040"))[i % 3]
+    hair = (hexc("#1e1a24"), hexc("#e08ab8"), hexc("#6a3e22"))[i % 3]; o = INK
+    hw, hh = 11 * s, 9 * s; hy = y - 12 * s - hh   # head centre
+    d.rectangle([x - 2 * s, y - 3 * s, x - s, y], fill=o); d.rectangle([x + s, y - 3 * s, x + 2 * s, y], fill=o)   # boots
+    d.rounded_rectangle([x - 5 * s, y - 11 * s, x + 5 * s, y - 3 * s], radius=2 * s, fill=shirt, outline=o)   # shirt
+    d.line([(x - 2 * s, y - 11 * s), (x, y - 9 * s), (x + 2 * s, y - 11 * s)], fill=o)   # collar
+    for sx in (-1, 1): d.ellipse([x + sx * 6 * s - 2 * s, y - 8 * s, x + sx * 6 * s + 2 * s, y - 4 * s], fill=skin, outline=o)   # mitten hands
+    for sx in (-1, 1): d.ellipse([x + sx * hw - 3 * s, hy - s, x + sx * hw + 2 * s - (sx < 0) * -1, hy + 4 * s], fill=skin, outline=o)   # ears
+    d.ellipse([x - hw, hy - hh, x + hw, hy + hh], fill=skin, outline=o)
+    if i % 3 == 0:   # spiky black
+        d.chord([x - hw, hy - hh - 2 * s, x + hw, hy + hh * .3], 180, 360, fill=hair, outline=o)
+        for k in range(-3, 4): d.polygon([(x + k * 3 * s - 2 * s, hy - hh + s), (x + k * 3 * s, hy - hh - 4 * s), (x + k * 3 * s + 2 * s, hy - hh + s)], fill=hair)
+    elif i % 3 == 1:   # a pink cloud of curls
+        for a in range(0, 360, 30):
+            cxh, cyh = x + math.cos(math.radians(a)) * hw * .75, hy - hh * .45 + math.sin(math.radians(a)) * hh * .45
+            if cyh < hy - hh * .35: d.ellipse([cxh - 4 * s, cyh - 4 * s, cxh + 4 * s, cyh + 4 * s], fill=hair, outline=o)   # curls stay above the eyes
+        d.chord([x - hw + s, hy - hh, x + hw - s, hy + hh * .1], 180, 360, fill=hair)
+    else:   # a brown cap of hair with a bun
+        d.ellipse([x - 3 * s, hy - hh - 5 * s, x + 3 * s, hy - hh + s], fill=hair, outline=o)
+        d.chord([x - hw, hy - hh - s, x + hw, hy + hh * .2], 180, 360, fill=hair, outline=o)
+    for sx in (-1, 1):   # eyes: dark ovals with a glint
+        ex = x + sx * 4 * s; d.ellipse([ex - 1.5 * s, hy - 1.5 * s, ex + 1.5 * s, hy + 2.5 * s], fill=o); d.point((ex - .5 * s, hy - .5 * s), (255, 255, 255))
+    d.arc([x - s, hy + s, x + s, hy + 3 * s], 200, 340, fill=o)   # nose
+    d.chord([x - 4 * s, hy + 2 * s, x + 4 * s, hy + 8 * s], 0, 180, fill=hexc("#5a1a22"), outline=o)   # the grin
+    d.chord([x - 2 * s, hy + 5 * s, x + 2 * s, hy + 8 * s], 0, 180, fill=hexc("#e06a7a"))   # tongue
+    d.line([(x - 3 * s, hy + 5 * s), (x + 3 * s, hy + 5 * s)], fill=(250, 246, 236))   # teeth
 
 
 def base(img, rng, x0, y0, x1, y1, alive):
@@ -77,12 +100,12 @@ def base(img, rng, x0, y0, x1, y1, alive):
         d.rectangle([cx - r - 3 + t * (2 * r - 1), gy, cx - r + 4 + t * (2 * r - 1), y1], fill=hexc("#d8ceb4"), outline=INK)
     d.arc([cx - r - 3, gy - r - 3, cx + r + 3, gy + r + 3], 180, 360, fill=hexc("#d8ceb4"), width=7); d.arc([cx - r - 3, gy - r - 3, cx + r + 3, gy + r + 3], 180, 360, fill=INK, width=1)
     d.ellipse([cx - 6, gy - r - 9, cx + 6, gy - r + 3], fill=WARM, outline=INK)
-    sz = 2 if (y1 - y0) > 90 else 1
-    furnish(d, x0, x1, y1, cx, r, sz)
-    spots = [cx - r - 5 * sz, cx + r + 7 * sz, x1 - 8 * sz, x0 + 6 * sz]   # in the gaps: cot to arch, arch to desk, past the planter
-    for i in range(alive): dupe(d, spots[i % len(spots)], y1, sz, rng)
+    sz = 1.6 if (y1 - y0) > 90 else 1   # about two thirds of the room, like the game's colonists
+    furnish(d, x0, x1, y1, cx, r, 2)
+    spots = [cx - r - 20 * sz / 1.6, cx + r + 22 * sz / 1.6, x1 - 18 * sz / 1.6, x0 + 18]   # in front of the cot, by the desk, past the planter
+    for i in range(alive): dupe(d, spots[i % len(spots)], y1, sz, rng, i)
     for i in range(12):   # oxygen rising off the diffuser by the planter, wobbling as it goes
-        t = i / 12; bx = x1 - 14 * sz + 5 * math.sin(i * 1.7) * sz; by = y1 - 16 * sz - t * (y1 - y0 - 26 * sz); rr = (2 + (i % 3 == 0)) * sz // 2 + 1
+        t = i / 12; bx = x1 - 44 + 5 * math.sin(i * 1.7); by = y1 - 26 - t * (y1 - y0 - 36); rr = 2 + (i % 3 == 0)
         d.ellipse([bx - rr, by - rr, bx + rr, by + rr], outline=AIR); d.point((bx - rr // 2, by - rr // 2), (255, 255, 255))
     d.rectangle([x0 - 2, y0 - 6, x1 + 2, y0 - 1], fill=hexc("#cfc6b0"), outline=INK)   # a tiled ceiling and dark rims, so the room is dug, not pasted
     for x in range(x0, x1, 8): d.line([(x, y0 - 5), (x, y0 - 2)], fill=hexc("#9a917c"))

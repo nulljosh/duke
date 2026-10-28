@@ -73,6 +73,8 @@ def run(until):
         if time.time() - t_link > 60:   # wires placed one at a time join nothing until linked; a reload drops the links too
             oni.cmd(op="link", cells=WIRES); oni.cmd(op="mop", cells=[[x, 120] for x in range(177, 203)]); t_link = time.time()
             topup(s["have"], "Dirt", 400); topup(s["have"], "Algae", 300)
+            hungry = s["foodKcal"] < 3000   # research and the musher both eat dirt; food wins when the larder runs low
+            oni.cmd(op="prio", x=196, y=120, p=9 if hungry else 6); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
         if not mush and oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush = True; log("mush bars queued")
         for x in (198, 200):
             if x not in planted and oni.cmd(op="plant", x=x, y=125, seed="BasicPlantSeed").get("ok"): planted.add(x); log("mealwood ordered", x)

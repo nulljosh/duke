@@ -264,6 +264,12 @@ public static class Ops
             case "shot":   // {"path"}: a PNG of the frame as the game drew it, UI included; written at the end of this frame
                 if (File.Exists((string)j["path"])) File.Delete((string)j["path"]);
                 ScreenCapture.CaptureScreenshot((string)j["path"]); return new { ok = true };
+            case "prio":   // {"x", "y", "p"}: the errand priority of the building there, 1 to 9
+            {
+                var pr = Grid.Objects[Grid.XYToCell((int)j["x"], (int)j["y"]), (int)ObjectLayer.Building]?.GetComponent<Prioritizable>();
+                if (pr == null) return new { error = "nothing prioritizable there" };
+                pr.SetMasterPriority(new PrioritySetting(PriorityScreen.PriorityClass.basic, (int)j["p"])); return new { ok = true };
+            }
             case "speed": SpeedControlScreen.Instance.SetSpeed((int)j["speed"]); if ((bool?)j["play"] ?? true) SpeedControlScreen.Instance.Unpause(false); return new { ok = true };
             case "pause": SpeedControlScreen.Instance.Pause(false); return new { ok = true };
             case "research":
