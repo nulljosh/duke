@@ -34,14 +34,15 @@ def ledger(words):
     return rows, total
 
 
-def plan(rows, total, checked, fam):
+def plan(rows, total, checked, fam, hungry=True):
     """Pick rows to buy: medicine for the very sick, food (hunger is what keeps making them sick), medicine for the sick,
     weakest first (wiki: uncle lasts 3 sick days, son and mother-in-law 4, wife 5), then heat. Never end below zero."""
     money = total + sum(r["cost"] for r, c in zip(rows, checked) if c)
     want = []
     meds = lambda very: sorted((r for r in rows if "MEDIC" in r["t"] and r["who"] and fam[r["who"]]["very"] == very and fam[r["who"]]["sick"]),
                                key=lambda r: ["UNCLE", "SON", "MIL", "WIFE"].index(r["who"]))
-    order = meds(True) + [r for r in rows if "FOOD" in r["t"]] + meds(False) + [r for r in rows if "HEAT" in r["t"]]
+    food = [r for r in rows if "FOOD" in r["t"]]
+    order = meds(True) + (food + meds(False) if hungry else meds(False) + food) + [r for r in rows if "HEAT" in r["t"]]   # fed today: one hungry night beats a third sick day
     for r in order:
         if r["cost"] <= money and r not in want: want.append(r); money -= r["cost"]
     return want, money
@@ -55,7 +56,8 @@ def night():
     total = total or bright   # day 4: the plain pass missed "$25"
     rows += [r for r in more if not any(abs(r["y"] - q["y"]) < 10 for q in rows)]; rows.sort(key=lambda r: r["y"])
     checked = [rgb.getpixel((RADIO_X, round(r["y"])))[0] > 150 for r in rows]
-    fam = status(rgb, rows); want, left = plan(rows, total, checked, fam)
+    hungry = any("HUNG" in w["t"].upper() for w in words)
+    fam = status(rgb, rows); want, left = plan(rows, total, checked, fam, hungry)
     print("ledger", total, [(r["t"], r["who"], c) for r, c in zip(rows, checked)], {k: v for k, v in fam.items() if v["sick"]}, flush=True)   # why a row was or wasn't bought
     for _ in range(3):   # click, then read the radios back: a missed click here is a dead family member tomorrow
         for r, c in zip(rows, checked):
@@ -132,6 +134,8 @@ def _check():
     assert gift not in want and left == 0
     want, left = plan(rows, 40, [False] * 4, fam)
     assert [r["t"] for r in want] == ["MEDICINE (UNCLE)", "FOOD", "MEDICINE (SON)", "HEAT"] and left == 0
+    want, left = plan(rows, 25, [False] * 4, fam, hungry=False)   # day 5 night: nobody hungry, three sick
+    assert [r["t"] for r in want] == ["MEDICINE (UNCLE)", "MEDICINE (SON)", "HEAT"] and left == 5
 
 
 if __name__ == "__main__":
