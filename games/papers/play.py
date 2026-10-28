@@ -67,6 +67,27 @@ def doc_on_counter(img, base):
     return ((m[0] + m[2]) // 2, CBOX[1] + (m[1] + m[3]) // 2) if m and (m[2] - m[0]) * (m[3] - m[1]) > 200 else None
 
 
+DBOX, PARK = (360, 236, 1110, 668), (1000, 650)   # the desk; papers nobody takes back get parked bottom right
+SAME, EMPTY = 0, None   # the desk as it looks with nothing new on it, refreshed before each entrant
+
+
+def blob(img, base, box):
+    """Centre of the busiest cell of whatever changed inside box, so a grab lands on paper and not between two sheets."""
+    diff = ImageChops.difference(img.crop(box), base).point(lambda v: 255 if v > 40 else 0)
+    if not diff.getbbox(): return None
+    w, h = diff.size; cw, ch = w // 8, h // 6
+    score, cx, cy = max((ImageStat.Stat(diff.crop((x, y, x + cw, y + ch))).mean[0], x, y) for x in range(0, w - cw + 1, cw) for y in range(0, h - ch + 1, ch))
+    return (box[0] + cx + cw // 2, box[1] + cy + ch // 2) if score > 60 else None
+
+
+def sweep(to, tries=6):
+    """Drag everything new on the desk to `to` (the entrant, or the parking corner)."""
+    for _ in range(tries):
+        p = blob(shot(), EMPTY, DBOX)
+        if not p: return
+        drag(p, to); time.sleep(0.6)
+
+
 CITIES = {"ANTEGRIA": ["ST. MARMERO", "GLORIAN", "OUTER GROUSE"], "ARSTOTZKA": ["ORVECH VONOR", "EAST GRESTIN", "PARADIZNA"],
           "IMPOR": ["ENKYO", "HAIHAN", "TSUNKEIDO"], "KOLECHIA": ["YURKO CITY", "VEDOR", "WEST GRESTIN"],
           "OBRISTAN": ["SKAL", "LORNDAZ", "MERGEROUS"], "REPUBLIA": ["TRUE GLORIAN", "LESRENADI", "BOSTAN"],
@@ -145,7 +166,10 @@ def at_booth(img):   # the counter strip is olive in the booth and black on the 
 
 
 def entrant(day, base):
+    global EMPTY
     if not at_booth(shot()): return None
+    sweep(PARK, 3); time.sleep(0.4); EMPTY = shot().crop(DBOX)   # citations and orphans go to the corner and become part of the desk
+    if sum("PENALTY" in w["t"].upper() for w in ocr()) >= 2: raise SystemExit("two penalties: stop and replay the day")
     click(HORN)
     t0 = time.time()
     while not doc_on_counter(img := shot(), base):
@@ -153,6 +177,9 @@ def entrant(day, base):
         if time.time() - t0 > 40: return "nobody came"   # still in the booth (a citation, a missed horn): call again
         time.sleep(0.3)
     walk = time.time() - t0
+    global SAME
+    SAME = SAME + 1 if walk < 1.0 else 0   # papers back on the counter at once: the last entrant never left
+    if SAME >= 2: raise SystemExit("same entrant twice: stop and replay the day")
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time, sometimes the passport last and slow
         t = time.time()
@@ -176,6 +203,7 @@ def missing_passport():
         click(INSPECT); time.sleep(1.0); click((rule["x"], rule["y"] + 8)); time.sleep(0.8)
         click((300, 550)); time.sleep(2.5); click(PRINTER); time.sleep(6)
     shot(); ws = ocr()
+    if any("HIGHLIGHT" in w["t"].upper() for w in ws): click(INSPECT); time.sleep(1.0); shot(); ws = ocr()   # papers don't move in inspect mode
     book = next((w for w in ws if w["t"].upper() == "RULES"), None)
     if book: drag((book["x"], book["y"] + 10), (253, 615)); time.sleep(1.0)   # file the book again
 
@@ -195,8 +223,9 @@ def decide(day, spots, base=None):
         drag(grab, drop); time.sleep(0.5)
         click(TRAY_OPEN); time.sleep(0.7); click((STAMP_X[v], 330)); time.sleep(0.7); click(TRAY_CLOSE); time.sleep(0.5)
         drag(drop, ENTRANT); time.sleep(0.5)
-    for spot in spots:   # everything else goes back too (the passport's old spot is empty by now)
-        drag(spot, ENTRANT); time.sleep(0.5)
+    if EMPTY is not None: sweep(ENTRANT)   # everything else goes back too, notes and cards included
+    else:
+        for spot in spots: drag(spot, ENTRANT); time.sleep(0.5)
     time.sleep(1)
     for _ in range(3):   # a paper dropped short lands on the counter; the entrant waits until it is handed up
         left = base is not None and doc_on_counter(shot(), base)
@@ -206,6 +235,8 @@ def decide(day, spots, base=None):
 
 
 def _check():
+    empty, frame = Image.new("L", (750, 432)), Image.new("L", (1140, 668)); frame.paste(255, (660, 336, 860, 486))
+    x, y = blob(frame, empty, DBOX); assert 660 <= x <= 860 and 336 <= y <= 486 and blob(Image.new("L", (1140, 668)), empty, DBOX) is None
     w = lambda *ts: [{"t": "ENTRY VISA", "x": 700, "y": 300}] + [{"t": t, "x": 700, "y": 400} for t in ts]
     o = lambda *ts: [{"t": t, "x": 950, "y": 400} for t in ts]   # tokens on a second document
     assert passport(split([{"t": "At Grestin!", "x": 1000, "y": 300}, {"t": "ENTRY VISA", "x": 650, "y": 300}, {"t": "Lorndaz", "x": 700, "y": 400}])[0])[:2] == ("OBRISTAN", "LORNDAZ")
@@ -247,7 +278,9 @@ if __name__ == "__main__":
     base = Image.open(HERE / '.counter.png') if (HERE / '.counter.png').exists() else shot().crop(CBOX)   # the empty counter
     base.save(HERE / '.counter.png')
     drag((745, 560), (105, 612)); time.sleep(1)   # file the day's bulletin so it stays out of the OCR
-    for n in range(int(sys.argv[2]) if len(sys.argv) > 2 else 40):
+    EMPTY = shot().crop(DBOX)
+    for n in range(int(sys.argv[2]) if len(sys.argv) > 2 else 80):
         r = entrant(day, base)
         print(n, r, flush=True)
         if r is None: break
+    else: raise SystemExit("still in the booth after the cap")
