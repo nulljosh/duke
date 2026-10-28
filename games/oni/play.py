@@ -29,7 +29,7 @@ ROOM = [[x, y] for y in range(120, 124) for x in [*range(177, 183), *range(191, 
 BEDROOM = [[190, 124]] + [[x, y] for y in (125, 126) for x in range(190, 201)]
 LEDGE = [[201, y] for y in (121, 122, 123)] + [[202, y] for y in (121, 122, 123)]   # over a one-tile dam at y120: the pool keeps most of its water
 SHAFT = [[180, y] for y in range(119, 107, -1)]   # down to the dirt below the floor: a ladder in every cell, so nobody gets stuck
-LOWER = [[x, y] for y in (110, 111) for x in range(168, 206)]   # a corridor off the bottom of the shaft
+LOWER = [[x, y] for y in (110, 111) for x in range(150, 220)]   # a corridor off the bottom of the shaft, both ways
 UPPER = [[x, y] for y in range(124, 128) for x in range(177, 190)]   # air volume above the west room, so the diffuser never hits max pressure
 
 
@@ -66,9 +66,9 @@ def floor():
 def explore(s):
     """Idle dupes are wasted labor: give them the nearest safe rock at low priority, so the base grows and digs turn up seams."""
     if sum(d["chore"] in (None, "IdleChore") for d in s["dupes"]) < 2: return
-    g = oni.cmd(op="grid", x0=165, y0=119, x1=215, y1=140); solid = {k for k, v in g["legend"].items() if v.endswith("solid")}
-    rock = near([[165 + i, 140 - k] for k, row in enumerate(g["rows"]) for i, ch in enumerate(row) if ch in solid], 400)
-    log("explore", oni.cmd(op="safedig", cells=rock, floor=119, prio=3, max=12))
+    g = oni.cmd(op="grid", x0=150, y0=110, x1=225, y1=140); solid = {k for k, v in g["legend"].items() if v.endswith("solid")}
+    rock = near([[150 + i, 140 - k] for k, row in enumerate(g["rows"]) for i, ch in enumerate(row) if ch in solid], 600)
+    log("explore", oni.cmd(op="safedig", cells=rock, floor=109, prio=3, max=12))   # the corridor level counts too
 
 
 def seeds():
