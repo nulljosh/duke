@@ -208,6 +208,16 @@ def missing_passport():
     if book: drag((book["x"], book["y"] + 10), (253, 615)); time.sleep(1.0)   # file the book again
 
 
+def reveal(spots, words):
+    """Three papers overlap on this desk. Slide the top ones down out of the way, newest first, until the passport
+    shows; keep what was read before unless the passport now covers it."""
+    for spot in reversed(spots[1:]):
+        drag(spot, (spot[0], spot[1] + 230)); time.sleep(0.5); shot(); now = ocr()
+        v = next((w for w in now if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
+        if v: return now + [w for w in words if not (abs(w["x"] - v["x"]) < 125 and -150 < w["y"] - v["y"] < 210)]
+    return None
+
+
 def decide(day, spots, base=None):
     """Read the desk, stamp the passport, hand every document back."""
     shot(); words = ocr(); v = verdict(words, day)
@@ -215,7 +225,9 @@ def decide(day, spots, base=None):
         late = base is not None and doc_on_counter(shot(), base)   # a passport still on the counter is late, not missing
         if late and len(spots) < 5:
             spot = (700, 560); drag(late, spot); spots.append(spot); time.sleep(0.6); return decide(day, spots, base)
-        missing_passport(); shot(); words = ocr(); v = "deny"
+        seen = reveal(spots, words)
+        if seen: words = seen; v = verdict(words, day)
+        else: missing_passport(); shot(); words = ocr(); v = "deny"
     visa = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
     if visa:   # the passport: slide its visa box under the chosen stamp
         grab = (visa["x"], min(visa["y"] + 150, 580))   # a temporary visa slip sits low on the desk
