@@ -68,6 +68,7 @@ def doc_on_counter(img, base):
 
 
 DBOX, PARK = (360, 236, 1110, 668), (1000, 650)   # the desk; papers nobody takes back get parked bottom right
+FACEBOX, FACE = (60, 250, 300, 445), None
 SAME, EMPTY = 0, None   # the desk as it looks with nothing new on it, refreshed before each entrant
 
 
@@ -177,9 +178,11 @@ def entrant(day, base):
         if time.time() - t0 > 40: return "nobody came"   # still in the booth (a citation, a missed horn): call again
         time.sleep(0.3)
     walk = time.time() - t0
-    global SAME
-    SAME = SAME + 1 if walk < 1.0 else 0   # papers back on the counter at once: the last entrant never left
-    if SAME >= 2: raise SystemExit("same entrant twice: stop and replay the day")
+    global SAME, FACE
+    face = shot().crop(FACEBOX)
+    same = FACE is not None and ImageStat.Stat(ImageChops.difference(face, FACE)).mean[0] < 8
+    SAME, FACE = (SAME + 1 if same else 0), face   # the same face back at the booth: the last entrant never left
+    if SAME >= 2: raise SystemExit("same entrant three times: stop and replay the day")
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time, sometimes the passport last and slow
         t = time.time()
