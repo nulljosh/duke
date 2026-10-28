@@ -3,7 +3,7 @@ The game window must be in front: Unity only takes the real cursor (cliclick), n
 Coordinates are window points, top-left of the content under the title bar included (same as the screenshot)."""
 import datetime, difflib, json, re, subprocess, sys, time
 from pathlib import Path
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageStat
 
 HERE = Path(__file__).resolve().parent
 FEZ = HERE.parent / "fez"
@@ -30,9 +30,9 @@ def click(p): cli(f"m:{at(*p)}", "w:120", f"c:{at(*p)}")
 
 def drag(a, b):
     """Unity samples the cursor once a frame: move in small timed steps and send the release twice."""
-    steps = [f"m:{at(a[0] + (b[0] - a[0]) * i / 6, a[1] + (b[1] - a[1]) * i / 6)}" for i in range(1, 7)]
-    cli(f"m:{at(*a)}", "w:150", f"dd:{at(*a)}", "w:200", *[s for st in steps for s in (st, "w:80")], "w:150", f"du:{at(*b)}")
-    time.sleep(0.2); cli(f"du:{at(*b)}")
+    steps = [f"m:{at(a[0] + (b[0] - a[0]) * i / 4, a[1] + (b[1] - a[1]) * i / 4)}" for i in range(1, 5)]
+    cli(f"m:{at(*a)}", "w:100", f"dd:{at(*a)}", "w:120", *[s for st in steps for s in (st, "w:50")], "w:100", f"du:{at(*b)}")
+    time.sleep(0.1); cli(f"du:{at(*b)}")
 
 
 def shot():
@@ -122,18 +122,24 @@ def verdict(words, day):
 SPOTS = [(650, 400), (965, 380), (460, 600)]   # where each handed-over document goes on the desk
 
 
+def at_booth(img):   # the counter strip is olive in the booth and black on the night screen
+    return ImageStat.Stat(img.crop(CBOX)).mean[0] > 60
+
+
 def entrant(day, base):
+    if not at_booth(shot()): return None
     click(HORN)
     t0 = time.time()
-    while not doc_on_counter(shot(), base):
-        if time.time() - t0 > 40: return None
-        time.sleep(0.5)
+    while not doc_on_counter(img := shot(), base):
+        if not at_booth(img): return None
+        if time.time() - t0 > 40: return "nobody came"   # still in the booth (a citation, a missed horn): call again
+        time.sleep(0.3)
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time
-        time.sleep(1.0)
+        time.sleep(0.8)
         at_ = doc_on_counter(shot(), base)
         if not at_: break
-        drag(at_, spot); spots.append(spot); time.sleep(1.0)
+        drag(at_, spot); spots.append(spot); time.sleep(0.6)
     return decide(day, spots, base)
 
 

@@ -63,6 +63,21 @@ def morning():
     return False
 
 
+def reload(day):
+    """Replay a day from its morning save: quit without sleeping, relaunch through Steam, Story, pick the day."""
+    subprocess.run(["osascript", "-e", 'tell application "System Events" to keystroke "q" using command down']); time.sleep(4)
+    subprocess.run(["open", "steam://run/239030"])
+    for _ in range(30):
+        time.sleep(3)
+        pid = subprocess.run(["pgrep", "PapersPlease"], capture_output=True, text=True).stdout.split()
+        if pid: break
+    time.sleep(12)
+    subprocess.run(["osascript", "-e", f'tell application "System Events" to set frontmost of (first process whose unix id is {pid[0]}) to true'])
+    play.click((568, 634)); time.sleep(2); play.click((568, 518)); time.sleep(3)   # past the title, then STORY
+    play.click((70 + 140 * (day - 1), 205)); time.sleep(3); play.click((568, 437)); time.sleep(5)   # ponytail: one row of days; a second row past day 8 needs its y
+    play.click((568, 627)); time.sleep(10)
+
+
 def graph():
     subprocess.run([sys.executable, str(play.HERE / "progress.py")], capture_output=True)
     subprocess.run(["rsvg-convert", str(play.HERE / "progress.svg"), "-o", "/tmp/papers-progress.png"])
@@ -81,8 +96,10 @@ def _check():
 if __name__ == "__main__":
     _check()
     day = int(sys.argv[1])
-    left, bought = night(); print("night", left, bought, flush=True)
-    if not morning(): sys.exit("stuck before the booth")
+    if "--replay" in sys.argv: reload(day)
+    else:
+        left, bought = night(); print("night", left, bought, flush=True)
+        if not morning(): sys.exit("stuck before the booth")
     log = subprocess.run([sys.executable, str(play.HERE / "play.py"), str(day)], capture_output=True, text=True).stdout
     n = sum(1 for l in log.splitlines() if "('approve'" in l or "('deny'" in l)
     play.shot(); words = play.ocr(); rows, total = ledger(words)
