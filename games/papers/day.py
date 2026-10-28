@@ -78,7 +78,11 @@ def reload(day):
 
 def open_day(day):
     """From the title screen: Story, the day's slot, continue, walk to work."""
-    play.click((568, 634)); time.sleep(2); play.click((568, 518)); time.sleep(3)   # past the title, then STORY
+    for _ in range(5):   # the menu shows straight away or after a click; a blind click can land on the credits
+        play.shot(); story = next((w for w in play.ocr() if w["t"].upper().strip() == "STORY"), None)
+        if story: play.click((story["x"], story["y"])); time.sleep(3); break
+        play.click((568, 450)); time.sleep(2)
+    else: sys.exit("no STORY button on the title screen")   # past the title, then STORY
     play.click((70 + 140 * (day - 1), 205)); time.sleep(3); play.click((568, 437)); time.sleep(5)   # ponytail: one row of days; a second row past day 8 needs its y
     play.click((568, 627)); time.sleep(10)
 
@@ -114,6 +118,7 @@ if __name__ == "__main__":
     (play.HERE / "runs").mkdir(exist_ok=True); (play.HERE / "runs" / f"day{day}-{time.strftime('%H%M')}.log").write_text(log + booth.stderr)   # each entrant's OCR, to write the next day's rules from
     if booth.returncode: sys.exit(f"stuck in the booth: {booth.stderr.strip().splitlines()[-1:]}; quit before Sleep and run --replay")
     n = sum(1 for l in log.splitlines() if "('approve'" in l or "('deny'" in l)
+    if not n: sys.exit("nobody processed: not a real day, nothing logged")
     play.shot(); words = play.ocr(); rows, total = ledger(words)
     fam = status(Image.open(play.SHOT).convert("RGB"), rows)
     note = ", ".join(f"{k.lower()} {'very sick' if v['very'] else 'sick' if v['sick'] else 'ok'}" for k, v in fam.items())
