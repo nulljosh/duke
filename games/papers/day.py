@@ -31,12 +31,13 @@ def ledger(words):
 
 
 def plan(rows, total, checked, fam):
-    """Pick rows to buy: medicine for the very sick, then the sick, then food, then heat. Never end below zero."""
+    """Pick rows to buy: medicine for the very sick, food (hunger is what keeps making them sick), medicine for the sick,
+    weakest first (wiki: uncle lasts 3 sick days, son and mother-in-law 4, wife 5), then heat. Never end below zero."""
     money = total + sum(r["cost"] for r, c in zip(rows, checked) if c)
     want = []
-    order = [r for r in rows if "MEDIC" in r["t"] and r["who"] and fam[r["who"]]["very"]] \
-        + [r for r in rows if "MEDIC" in r["t"] and r["who"] and fam[r["who"]]["sick"] and not fam[r["who"]]["very"]] \
-        + [r for r in rows if "FOOD" in r["t"]] + [r for r in rows if "HEAT" in r["t"]]
+    meds = lambda very: sorted((r for r in rows if "MEDIC" in r["t"] and r["who"] and fam[r["who"]]["very"] == very and fam[r["who"]]["sick"]),
+                               key=lambda r: ["UNCLE", "SON", "MIL", "WIFE"].index(r["who"]))
+    order = meds(True) + [r for r in rows if "FOOD" in r["t"]] + meds(False) + [r for r in rows if "HEAT" in r["t"]]
     for r in order:
         if r["cost"] <= money and r not in want: want.append(r); money -= r["cost"]
     return want, money
@@ -106,9 +107,9 @@ def _check():
             {"t": "MEDICINE (UNCLE)", "y": 3, "cost": 5, "who": "UNCLE"}, {"t": "MEDICINE (SON)", "y": 4, "cost": 5, "who": "SON"}]
     fam = {k: {"very": k == "UNCLE", "sick": k in ("UNCLE", "SON"), "cold": True, "hungry": True} for k in ("WIFE", "SON", "MIL", "UNCLE")}
     want, left = plan(rows, 15, [False] * 4, fam)
-    assert [r["t"] for r in want] == ["MEDICINE (UNCLE)", "MEDICINE (SON)"] and left == 5
+    assert [r["t"] for r in want] == ["MEDICINE (UNCLE)", "MEDICINE (SON)"] and left == 5   # food (20) doesn't fit, the son's medicine does
     want, left = plan(rows, 40, [False] * 4, fam)
-    assert [r["t"] for r in want] == ["MEDICINE (UNCLE)", "MEDICINE (SON)", "FOOD", "HEAT"] and left == 0
+    assert [r["t"] for r in want] == ["MEDICINE (UNCLE)", "FOOD", "MEDICINE (SON)", "HEAT"] and left == 0
 
 
 if __name__ == "__main__":
