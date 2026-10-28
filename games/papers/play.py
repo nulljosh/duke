@@ -177,8 +177,8 @@ def decide(day, spots, base=None):
     """Read the desk, stamp the passport, hand every document back."""
     shot(); words = ocr(); v = verdict(words, day)
     if day >= 3 and not any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words):
-        t = time.time()   # a passport still coming over the counter is late, not missing: give it 3 seconds
-        while base is not None and not (late := doc_on_counter(shot(), base)) and time.time() - t < 3: time.sleep(0.3)
+        t = time.time()   # late, not missing: some entrants answer purpose and duration out loud before the passport comes over
+        while base is not None and not (late := doc_on_counter(shot(), base)) and time.time() - t < 8: time.sleep(0.3)
         if late and len(spots) < 5:
             spot = (700, 560); drag(late, spot); spots.append(spot); time.sleep(0.6); return decide(day, spots, base)
         (HERE / "runs").mkdir(exist_ok=True); shot().save(HERE / "runs" / f"nopass-{time.strftime('%H%M%S')}.png")   # what it saw, for the next fix
