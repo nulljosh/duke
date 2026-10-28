@@ -72,21 +72,24 @@ FACEBOX, FACE = (60, 250, 300, 445), None
 SAME, EMPTY = 0, None   # the desk as it looks with nothing new on it, refreshed before each entrant
 
 
-def blob(img, base, box):
+def blob(img, base, box, skip=()):
     """Centre of the busiest cell of whatever changed inside box, so a grab lands on paper and not between two sheets."""
     diff = ImageChops.difference(img.crop(box), base).point(lambda v: 255 if v > 40 else 0)
     if not diff.getbbox(): return None
     w, h = diff.size; cw, ch = w // 8, h // 6
-    score, cx, cy = max((ImageStat.Stat(diff.crop((x, y, x + cw, y + ch))).mean[0], x, y) for x in range(0, w - cw + 1, cw) for y in range(0, h - ch + 1, ch))
-    return (box[0] + cx + cw // 2, box[1] + cy + ch // 2) if score > 60 else None
+    cells = [(ImageStat.Stat(diff.crop((x, y, x + cw, y + ch))).mean[0], box[0] + x + cw // 2, box[1] + y + ch // 2)
+             for x in range(0, w - cw + 1, cw) for y in range(0, h - ch + 1, ch)]
+    score, cx, cy = max([c for c in cells if c[1:] not in skip] or [(0, 0, 0)])
+    return (cx, cy) if score > 60 else None
 
 
 def sweep(to, tries=6):
     """Drag everything new on the desk to `to` (the entrant, or the parking corner)."""
+    tried = []
     for _ in range(tries):
-        p = blob(shot(), EMPTY, DBOX)
+        p = blob(shot(), EMPTY, DBOX, tried)
         if not p: return
-        drag(p, to); time.sleep(0.6)
+        drag(p, to); tried.append(p); time.sleep(0.6)   # a paper that won't go stays put: try the next busiest spot
 
 
 CITIES = {"ANTEGRIA": ["ST. MARMERO", "GLORIAN", "OUTER GROUSE"], "ARSTOTZKA": ["ORVECH VONOR", "EAST GRESTIN", "PARADIZNA"],
@@ -169,7 +172,7 @@ def at_booth(img):   # the counter strip is olive in the booth and black on the 
 def entrant(day, base):
     global EMPTY
     if not at_booth(shot()): return None
-    sweep(PARK, 3); time.sleep(0.4); EMPTY = shot().crop(DBOX)   # citations and orphans go to the corner and become part of the desk
+    sweep(PARK, 3) if EMPTY is not None else None; time.sleep(0.4); EMPTY = shot().crop(DBOX)   # citations and orphans go to the corner and become part of the desk
     if sum("PENALTY" in w["t"].upper() for w in ocr()) >= 2: raise SystemExit("two penalties: stop and replay the day")
     click(HORN)
     t0 = time.time()
@@ -242,10 +245,10 @@ def decide(day, spots, base=None):
     else:
         for spot in spots: drag(spot, ENTRANT); time.sleep(0.5)
     time.sleep(1)
-    for _ in range(3):   # a paper dropped short lands on the counter; the entrant waits until it is handed up
+    for i in range(3):   # a paper dropped short lands on the counter: hand it up. Offered again, it is a gift (a note, a card): keep it
         left = base is not None and doc_on_counter(shot(), base)
         if not left: break
-        drag(left, ENTRANT); time.sleep(1.0)
+        drag(left, ENTRANT if i == 0 else PARK); time.sleep(1.0)
     return v, [w["t"] for w in words if w["x"] > 360 and w["y"] > 236]
 
 
