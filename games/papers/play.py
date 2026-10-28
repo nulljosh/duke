@@ -106,7 +106,7 @@ def sweep(to, tries=6):
     for _ in range(tries):
         p = blob(shot(), EMPTY, DBOX, tried)
         if not p: return
-        drag(p, to); tried.append(p); time.sleep(0.6)   # a paper that won't go stays put: try the next busiest spot
+        drag(p, to); tried.append(p); time.sleep(0.3)   # a paper that won't go stays put: try the next busiest spot
 
 
 SPOTS = [(650, 400), (965, 380), (460, 600)]   # where each handed-over document goes on the desk
@@ -138,9 +138,9 @@ def entrant(day, base):
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time, sometimes the passport last and slow
         t = time.time()
-        while not (at_ := doc_on_counter(shot(), base)) and time.time() - t < 2.5: time.sleep(0.3)
+        while not (at_ := doc_on_counter(shot(), base)) and time.time() - t < 1.5: time.sleep(0.2)   # a slow passport is caught again in decide
         if not at_: break
-        drag(at_, spot); spots.append(spot); time.sleep(0.6)
+        drag(at_, spot); spots.append(spot); time.sleep(0.3)
     t1 = time.time(); r = decide(day, spots, base)
     print(f"walk {walk:.1f}s slide {t1 - t0 - walk:.1f}s decide {time.time() - t1:.1f}s", flush=True)   # where the seconds go
     return r
@@ -190,15 +190,15 @@ def decide(day, spots, base=None):
     if visa:   # the passport: slide its visa box under the chosen stamp
         grab = (visa["x"], min(visa["y"] + 150, 580))   # a temporary visa slip sits low on the desk
         drop = (grab[0] + STAMP_X[v] - visa["x"], grab[1])
-        drag(grab, drop); time.sleep(0.5)
-        click(TRAY_OPEN); time.sleep(0.7); click((STAMP_X[v], 330)); time.sleep(0.7); click(TRAY_CLOSE); time.sleep(0.5)
-        drag(drop, ENTRANT); time.sleep(0.5)
+        drag(grab, drop); time.sleep(0.3)
+        click(TRAY_OPEN); time.sleep(0.5); click((STAMP_X[v], 330)); time.sleep(0.5); click(TRAY_CLOSE); time.sleep(0.3)
+        drag(drop, ENTRANT); time.sleep(0.3)
     def give_back():
         if EMPTY is None:
             for spot in spots: drag(spot, ENTRANT); time.sleep(0.5)
         else: keep_gifts(); sweep(ENTRANT)   # everything the entrant owns goes back; citations, ads and notes stay
     if night(): return v, []
-    give_back(); time.sleep(1)
+    give_back(); time.sleep(0.5)
     for _ in range(3):   # something on the counter: a paper dropped short, or a gift handed over at the end (the note)
         left = base is not None and doc_on_counter(shot(), base)
         if not left: break
