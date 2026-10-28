@@ -181,6 +181,7 @@ def decide(day, spots, base=None):
         while base is not None and not (late := doc_on_counter(shot(), base)) and time.time() - t < 3: time.sleep(0.3)
         if late and len(spots) < 5:
             spot = (700, 560); drag(late, spot); spots.append(spot); time.sleep(0.6); return decide(day, spots, base)
+        (HERE / "runs").mkdir(exist_ok=True); shot().save(HERE / "runs" / f"nopass-{time.strftime('%H%M%S')}.png")   # what it saw, for the next fix
         seen = reveal(spots, words)
         if seen: words = seen; v = verdict(words, day)
         elif day == 3 or not spots or SAME >= 1: missing_passport(); shot(); words = ocr(); v = "deny"   # no passport twice from the same face: really none, interrogate
