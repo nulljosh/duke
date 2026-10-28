@@ -47,8 +47,13 @@ def night():
     rows, total = ledger(words)
     checked = [rgb.getpixel((RADIO_X, round(r["y"])))[0] > 150 for r in rows]
     want, left = plan(rows, total, checked, status(rgb, rows))
-    for r, c in zip(rows, checked):
-        if (r in want) != c: play.click((RADIO_X, round(r["y"]))); time.sleep(0.4)
+    for _ in range(3):   # click, then read the radios back: a missed click here is a dead family member tomorrow
+        for r, c in zip(rows, checked):
+            if (r in want) != c: play.click((RADIO_X, round(r["y"]))); time.sleep(0.4)
+        play.shot(); rgb = Image.open(play.SHOT).convert("RGB")
+        checked = [rgb.getpixel((RADIO_X, round(r["y"])))[0] > 150 for r in rows]
+        if all((r in want) == c for r, c in zip(rows, checked)): break
+    else: sys.exit("night purchases did not take")
     return left, [r["t"] for r in want]
 
 
