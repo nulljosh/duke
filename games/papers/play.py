@@ -186,8 +186,8 @@ def missing_passport():
 def reveal(spots, words):
     """Three papers overlap on this desk. Lift each one, newest first, to the open middle of the desk until the passport
     shows; keep what was read before unless the passport now covers it."""
-    for spot in reversed(spots):
-        drag(spot, (700, 330)); time.sleep(0.5); shot(); now = ocr()
+    for spot in reversed(spots):   # a permit is wider than a passport: lift it clear across the desk, not just nudge it (day 4 Emili Shinzinova)
+        drag(spot, (spot[0] + 330 if spot[0] < 735 else spot[0] - 330, 330)); time.sleep(0.5); shot(); now = ocr()
         v = next((w for w in now if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
         if v: return now + [w for w in words if not (abs(w["x"] - v["x"]) < 125 and -150 < w["y"] - v["y"] < 210)]
     return None
