@@ -81,6 +81,8 @@ def reload(day):
 def graph():
     subprocess.run([sys.executable, str(play.HERE / "progress.py")], capture_output=True)
     subprocess.run(["rsvg-convert", str(play.HERE / "progress.svg"), "-o", "/tmp/papers-progress.png"])
+    tools = play.HERE.parent.parent / "tools"   # the wallpaper bulletin carries the day and the tally, so redraw it too
+    subprocess.run([sys.executable, "-c", "from papersart import papers\nfor k in ('phone', 'desktop'): papers(k).save(f'../brand/wallpapers/papers-{k}.png', optimize=True)"], cwd=tools)
 
 
 def _check():

@@ -2,7 +2,8 @@
 from the install). The inspector's booth at night: through the window a floodlit checkpoint yard in falling snow with a long
 queue (papersyard.py); on the desk, under one warm lamp, a bulletin, a passport with a red DENIED stamp mid-impact and the
 ink splatter. Drawn low, scaled up with NEAREST and finished like the FEZ art: dither, scanlines, grain."""
-import math, random
+import json, math, random
+from pathlib import Path
 from PIL import Image, ImageDraw
 from fezart import BAYER, SIZES, dither, grain, scanlines, vignette
 from papersyard import COLD, DOLIVE, INK, OLIVE, RED, WARM, beam, mix, pool, yard
@@ -19,7 +20,13 @@ GLYPHS = {   # 5x7 pixel font, only the letters the wallpaper prints
     "S": (".####", "#....", "#....", ".###.", "....#", "....#", "####."), "T": ("#####", "..#..", "..#..", "..#..", "..#..", "..#..", "..#.."),
     "U": ("#...#", "#...#", "#...#", "#...#", "#...#", "#...#", ".###."), "V": ("#...#", "#...#", "#...#", "#...#", "#...#", ".#.#.", "..#.."),
     "Y": ("#...#", "#...#", ".#.#.", "..#..", "..#..", "..#..", "..#.."), " ": (".....",) * 7,
+    "0": (".###.", "#...#", "#..##", "#.#.#", "##..#", "#...#", ".###."), "1": ("..#..", ".##..", "..#..", "..#..", "..#..", "..#..", ".###."),
+    "2": (".###.", "#...#", "....#", "...#.", "..#..", ".#...", "#####"), "3": ("####.", "....#", "....#", ".###.", "....#", "....#", "####."),
+    "4": ("#...#", "#...#", "#...#", "#####", "....#", "....#", "....#"), "5": ("#####", "#....", "####.", "....#", "....#", "#...#", ".###."),
+    "6": (".###.", "#....", "#....", "####.", "#...#", "#...#", ".###."), "7": ("#####", "....#", "...#.", "..#..", ".#...", ".#...", ".#..."),
+    "8": (".###.", "#...#", "#...#", ".###.", "#...#", "#...#", ".###."), "9": (".###.", "#...#", "#...#", ".####", "....#", "....#", ".###."),
 }
+RUN = Path(__file__).resolve().parent.parent / "games" / "papers" / "progress.jsonl"   # the real run: one row per finished day
 LAYOUT = {   # low-res coordinates. The phone keeps y < 70 (the clock) sky only, and y > 660 (the dock) dark desk
     "phone": dict(
         yard=dict(win=(14, 6, 316, 398), hor=205, wall=26, yb=470, gate=205, gw=30, towers=[42, 288], ctop=134, tu=1, posts=[110, 160, 250],
@@ -82,10 +89,15 @@ def passport(pw, ph):
 
 
 def bulletin(w, h):
+    """The run's own bulletin: the last finished day, then a tally mark for every entrant processed so far."""
     im, d = layer(w, h); d.rectangle([0, 0, w - 1, h - 1], fill=PAPER); d.rectangle([0, 0, w - 1, 12], fill=RED); text(d, w // 2 - width("BULLETIN", 1) // 2, 3, "BULLETIN", CREAM, 1)
-    for k in range(3):
-        bx, by = 8 + k * (w - 16) // 3, 20; d.rectangle([bx, by, bx + 16, by + 16], outline=DOLIVE); d.line([(bx + 2, by + 2), (bx + 14, by + 14)], fill=RED); d.line([(bx + 14, by + 2), (bx + 2, by + 14)], fill=RED)
-    for k in range(7): dashes(d, 8, w - 8 - (k % 3) * 9, 46 + k * 7, DOLIVE)
+    rows = [json.loads(l) for l in RUN.read_text().splitlines() if l.strip()] if RUN.exists() else []
+    day = f"DAY {rows[-1]['day']}" if rows else "DAY 1"; text(d, w // 2 - width(day, 1) // 2, 18, day, DOLIVE, 1)
+    per = (w - 12) // 14 * 5; n = sum(r["entrants"] for r in rows)   # ponytail: rows that don't fit under the day line are dropped
+    for i in range(min(n, per * ((h - 60) // 10))):
+        g, k = divmod(i % per, 5); x, y = 6 + g * 14 + k * 2, 32 + (i // per) * 10
+        if k < 4: d.line([(x, y), (x, y + 6)], fill=DOLIVE)
+        else: d.line([(x - 9, y + 5), (x - 1, y + 1)], fill=RED)   # the fifth mark strikes the four
     d.rectangle([8, h - 22, w - 9, h - 10], outline=OLIVE); dashes(d, 12, w - 20, h - 16, OLIVE)
     d.line([(0, 0), (0, h - 1)], fill=CREAM); return im
 
