@@ -11,11 +11,15 @@ RESEARCH = ["FarmingTech", "PowerRegulation", "Jobs", "AdvancedResearch", "Impro
 # id, x, y, priority. 2-wide buildings sit on x and x+1, 3-wide ones are centred on x. The room is x177-200, y120-123.
 PLAN = [("Outhouse", 178, 120, 9), ("WashBasin", 181, 120, 8),
         ("ManualGenerator", 191, 120, 8), ("ResearchCenter", 193, 120, 8),
-        *[("Wire", x, 120, 7) for x in range(191, 200)],
+        *[("Wire", x, y, 7) for y in (120, 121) for x in range(191, 200)],
         ("Tile", 196, 119, 7), ("Tile", 199, 119, 7),
         ("Ladder", 190, 120, 6), ("Ladder", 190, 121, 6), ("Ladder", 190, 122, 6), ("Ladder", 190, 123, 6), ("Ladder", 190, 124, 6), ("Ladder", 190, 125, 6),
         ("Bed", 191, 125, 6), ("Bed", 193, 125, 6), ("Bed", 195, 125, 6),
-        ("MineralDeoxidizer", 199, 120, 5)]
+        ("MineralDeoxidizer", 199, 120, 5),
+        *[("Tile", x, 124, 8) for x in (194, 196, 197, 198, 199)],   # holes in the bedroom floor
+        ("MicrobeMusher", 196, 120, 8), ("Battery", 198, 120, 7), ("LiquidPumpingStation", 203, 118, 8)]
+STRAY = [[x, y] for x in (200, 201) for y in range(115, 119)]   # a pump blueprint that landed beside the pool
+WIRES = [[x, y] for y in (120, 121) for x in range(191, 200)]   # the ports sit on either row, so wire both and join them
 DIGS = [[x, y] for y in (124,) for x in (190,)] + [[x, y] for y in (125, 126) for x in range(190, 201)]   # the bedroom above
 
 
@@ -24,11 +28,13 @@ def log(*a): print(time.strftime("%H:%M:%S"), *a, flush=True)
 
 def run(until):
     done, tries, last_cycle = set(), {}, None
-    oni.cmd(op="dig", cells=DIGS, prio=6)
+    oni.cmd(op="dig", cells=DIGS, prio=6); oni.cmd(op="cancel", cells=STRAY)
+    oni.cmd(op="dig", cells=[[201, 120], [202, 120], [201, 121], [202, 121]], prio=9)   # a doorway to the pool to work the pump from
+    log("link", oni.cmd(op="link", cells=WIRES), "mush", oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar"))   # both are lost on a reload
     while True:
         s = oni.state()
         if not s.get("inGame"): log("not in game", s.get("screens")); time.sleep(10); continue
-        if s["paused"]: oni.cmd(op="speed", speed=2); log("unpaused")
+        if s["paused"]: oni.cmd(op="speed", speed=2); log("unpaused")   # 0 to 2, 2 is the fastest
         if s["cycle"] != last_cycle:
             last_cycle = s["cycle"]
             oni.cmd(op="camera", x=BASE[0], y=BASE[1], zoom=14); time.sleep(1)

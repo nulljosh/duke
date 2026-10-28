@@ -173,6 +173,60 @@ public static class Ops
             case "camera":   // {"x", "y", "zoom"?}: centre the view on a cell, for the cycle screenshots
                 CameraController.Instance.SnapTo(Grid.CellToPosCCC(Grid.XYToCell((int)j["x"], (int)j["y"]), Grid.SceneLayer.Background), (float?)j["zoom"] ?? 12f);
                 return new { ok = true };
+            case "status":   // {"x", "y"}: the status lines the game shows for whatever stands on that cell
+            {
+                int cell = Grid.XYToCell((int)j["x"], (int)j["y"]); var lines = new List<string>();
+                foreach (var layer in new[] { ObjectLayer.Building, ObjectLayer.Wire, ObjectLayer.FoundationTile, ObjectLayer.Minion })
+                {
+                    var go = Grid.Objects[cell, (int)layer]; var sel = go?.GetComponent<KSelectable>(); if (sel == null) continue;
+                    foreach (StatusItemGroup.Entry e in sel.GetStatusItemGroup()) lines.Add(go.name + ": " + e.item.GetName(e.data));
+                }
+                return lines;
+            }
+            case "cancel":   // {"cells": [[x, y], ...]}: drop blueprints and dig orders there, like the Cancel tool
+            {
+                int n = 0;
+                foreach (var c in j["cells"])
+                {
+                    int cell = Grid.XYToCell((int)c[0], (int)c[1]);
+                    foreach (var layer in new[] { ObjectLayer.Building, ObjectLayer.DigPlacer, ObjectLayer.FoundationTile })
+                    {
+                        var go = Grid.Objects[cell, (int)layer];
+                        if (go != null && (layer == ObjectLayer.DigPlacer || go.GetComponent<Constructable>() != null)) { go.Trigger((int)GameHashes.Cancel, null); n++; }
+                    }
+                }
+                return new { ok = true, cancelled = n };
+            }
+            case "link":   // {"cells": [[x, y], ...], "util"?: "power"|"gas"|"liquid"}: join each wire or pipe cell to its listed
+            {              // neighbours, the way a drag would. Pieces placed one at a time join nothing.
+                var mgr = (string)j["util"] == "gas" ? Game.Instance.gasConduitSystem : (string)j["util"] == "liquid" ? Game.Instance.liquidConduitSystem : (IUtilityNetworkMgr)Game.Instance.electricalConduitSystem;
+                var set = new HashSet<int>(j["cells"].Select(c => Grid.XYToCell((int)c[0], (int)c[1])));
+                foreach (int cell in set)
+                {
+                    UtilityConnections m = 0;
+                    if (set.Contains(Grid.CellLeft(cell))) m |= UtilityConnections.Left;
+                    if (set.Contains(Grid.CellRight(cell))) m |= UtilityConnections.Right;
+                    if (set.Contains(Grid.CellAbove(cell))) m |= UtilityConnections.Up;
+                    if (set.Contains(Grid.CellBelow(cell))) m |= UtilityConnections.Down;
+                    mgr.AddConnection(m, cell, true); mgr.AddConnection(m, cell, false);
+                    foreach (var layer in new[] { ObjectLayer.Wire, ObjectLayer.WireConnectors, ObjectLayer.GasConduit, ObjectLayer.LiquidConduit })
+                        Grid.Objects[cell, (int)layer]?.GetComponent<KAnimGraphTileVisualizer>()?.UpdateConnections(m);
+                }
+                mgr.ForceRebuildNetworks();
+                return new { ok = true, cells = set.Count };
+            }
+            case "queue":   // {"x", "y", "result": "MushBar", "count"?: -1}: keep a fabricator making it; -1 is forever
+            {
+                var fab = Grid.Objects[Grid.XYToCell((int)j["x"], (int)j["y"]), (int)ObjectLayer.Building]?.GetComponent<ComplexFabricator>();
+                if (fab == null) return new { error = "no fabricator there" };
+                var recipes = fab.GetRecipes();
+                var r = j["recipe"] != null ? recipes.FirstOrDefault(x => x.id == (string)j["recipe"])   // e.g. MicrobeMusher_I_Dirt_Water_O_MushBar
+                    : recipes.FirstOrDefault(x => x.results.Any(o => o.material.Name == (string)j["result"]));
+                if (r == null) return new { error = "no recipe", have = recipes.Select(x => x.id) };
+                int n = (int?)j["count"] ?? -1;
+                fab.SetRecipeQueueCount(r, n < 0 ? ComplexFabricator.QUEUE_INFINITE : n);
+                return new { ok = true, recipe = r.id };
+            }
             case "speed": SpeedControlScreen.Instance.SetSpeed((int)j["speed"]); if ((bool?)j["play"] ?? true) SpeedControlScreen.Instance.Unpause(false); return new { ok = true };
             case "pause": SpeedControlScreen.Instance.Pause(false); return new { ok = true };
             case "research":

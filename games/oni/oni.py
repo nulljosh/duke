@@ -41,9 +41,19 @@ def launch():
         if subprocess.run(["pgrep", "-f", "MacOS/Oxygen Not Included"], capture_output=True).returncode == 0: break
     time.sleep(3); subprocess.run(["open", "-b", front])
     for _ in range(120):
-        if up(): return
+        if up(): subprocess.run(["open", "-b", front]); return   # the window grabs focus again once it finishes loading
         time.sleep(3)
     sys.exit("the bridge never answered")
+
+
+def restart():
+    """Quit and come back on the latest autosave, e.g. to load a rebuilt bridge. Loses the time since the cycle began."""
+    subprocess.run(["pkill", "-f", "MacOS/Oxygen Not Included"])
+    while subprocess.run(["pgrep", "-f", "MacOS/Oxygen Not Included"], capture_output=True).returncode == 0: time.sleep(1)
+    launch()
+    while "MainMenu" not in (up() or {}).get("screens", []): time.sleep(2)
+    time.sleep(4); print(cmd(op="invoke", type="MainMenu", method="ResumeGame"))
+    while not (up() or {}).get("dupes"): time.sleep(3)
 
 
 def newgame():
@@ -59,5 +69,5 @@ def newgame():
 
 if __name__ == "__main__":
     a = sys.argv[1]
-    if a in ("launch", "newgame"): globals()[a]()
+    if a in ("launch", "newgame", "restart"): globals()[a]()
     else: print(json.dumps(state() if a == "state" else shot() if a == "shot" else cmd(**json.loads(a)))[:4000])
