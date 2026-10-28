@@ -27,6 +27,7 @@ def ledger(words):
             rows.append({"t": t, "y": w["y"], "cost": -amt, "who": None})   # income: a negative cost
         if 360 < w["x"] < 600 and w["y"] > 220 and re.search(r"FOOD|HEAT|MEDIC|UPGRADE", t):
             price = next((int(re.search(r"\d+", v["t"])[0]) for v in words if 650 < v["x"] < 790 and abs(v["y"] - w["y"]) < 10 and re.search(r"\d", v["t"])), None)
+            if not price or price % 5 or price > 50: price = None   # day 7: heat's "-10" read as 0 or 1 spent the wife's medicine on heat
             cost = price or next(v for k, v in COSTS.items() if k in t)   # food is 5 a head, so it falls as the family does
             who = next((k for k, alts in WHO.items() if any(a in t for a in alts)), None)
             rows.append({"t": t, "y": w["y"], "cost": cost, "who": who})
@@ -58,7 +59,7 @@ def night():
     checked = [rgb.getpixel((RADIO_X, round(r["y"])))[0] > 150 for r in rows]
     hungry = any("HUNG" in w["t"].upper() for w in words)
     fam = status(rgb, rows); want, left = plan(rows, total, checked, fam, hungry)
-    print("ledger", total, [(r["t"], r["who"], c) for r, c in zip(rows, checked)], {k: v for k, v in fam.items() if v["sick"]}, flush=True)   # why a row was or wasn't bought
+    print("ledger", total, [(r["t"], r["who"], r["cost"], c) for r, c in zip(rows, checked)], {k: v for k, v in fam.items() if v["sick"]}, flush=True)   # why a row was or wasn't bought
     for _ in range(3):   # click, then read the radios back: a missed click here is a dead family member tomorrow
         for r, c in zip(rows, checked):
             if (r in want) != c: play.click((RADIO_X, round(r["y"]))); time.sleep(0.4)
