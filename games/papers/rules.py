@@ -71,7 +71,8 @@ def verdict(words, day):
         others = [alnum(t) for t in rest if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)]
         num_ok = not pn or not others or any(same(pn, o, 0.6) for o in others)
         enter_by = max([d for d in re.findall(r"19\d\d\.\d\d\.\d\d", text) if d >= "1982"] or [today])   # cut off the desk: passes
-        ok = ok and ("GRANTED" in text or "PERMIT" in text) and holder_ok and num_ok and enter_by >= today
+        papers = "GRANTED" in text or "PERMIT" in text or (day >= 8 and bool(re.search(r"DIPLOMAT|AUTHORI", text)))   # diplomats bring an authorization instead
+        ok = ok and papers and holder_ok and num_ok and enter_by >= today
     if day == 7 and country == "KOLECHIA": ok = False   # search every Kolechian; denying unsearched costs no citation (ponytail: no scanner yet)
     if day >= 6 and any(re.fullmatch(r"WOR[KH]", t) for t in rest):   # purpose WORK needs the Ministry of Labor's work pass
         ok = ok and bool(re.search(r"LAB[OE]R|HOLDER|FIELD", text))   # ponytail: work-until vs duration not checked yet
@@ -125,6 +126,7 @@ def _check():
     assert verdict(w("ARSTOTZKA", "Entry Permit", "Goyetsky, Andrei", "ORYAM-5RGHG") + o("hereby granted to", "AMDREI GOYETSE", "ORYAM-5RGHG", "1982.12.20"), 7) == "approve"
     assert verdict(w("Haihan", "1983.11.23", "IMPOR") + o("is hereby granted to", "1982.11.20"), 7) == "deny"   # a readable stale enter-by still fails
     aza = w("ANTEGRIA", "Hudsonsho, Rzg", "S90LT-HJ160") + o("hereby granted to", "AZA HUDSONSHA", "590LT-H-130", "WORH", "1982.12.20", "Minirtry ef Laber", "HOLDER")
+    assert verdict(w("UNITED FEDERATION", "Shingleton") + o("DIPLOMATIC AUTHORIZATION", "ARSTOTZKA"), 8) == "approve" and verdict(w("UNITED FEDERATION", "Shingleton"), 8) == "deny"
     assert verdict(aza + o("MICHE PIETROWSHA", "MAHUFACTURING"), 7) == "deny" and verdict(aza + o("AZA HUDSONSHO", "FISHING"), 7) == "approve"
 
 
