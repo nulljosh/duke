@@ -209,7 +209,8 @@ if __name__ == "__main__":
     day = int(sys.argv[1])
     base = Image.open(HERE / '.counter.png') if (HERE / '.counter.png').exists() else shot().crop(CBOX)   # the empty counter
     base.save(HERE / '.counter.png')
-    drag((745, 560), (105, 612)); time.sleep(1)   # file the day's bulletin so it stays out of the OCR
+    shot(); b = next((w for w in ocr() if re.search(r"BULLETIN|INSPECTOR", w["t"].upper())), {"x": 745, "y": 460})
+    drag((b["x"], b["y"] + 100), (105, 612)); time.sleep(1)   # file the day's bulletin, wherever it lands, so it stays out of the OCR
     EMPTY = shot().crop(DBOX)
     for n in range(int(sys.argv[2]) if len(sys.argv) > 2 else 80):
         r = entrant(day, base)
