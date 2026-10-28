@@ -43,6 +43,7 @@ def plan(rows, total, checked, fam):
 
 
 def night():
+    play.cli(f"m:{play.at(600, 650)}"); time.sleep(0.3)   # off the radios first: a hidden dot reads as unchecked
     img = play.shot(); rgb = Image.open(play.SHOT).convert("RGB"); words = play.ocr()
     rows, total = ledger(words)
     checked = [rgb.getpixel((RADIO_X, round(r["y"])))[0] > 150 for r in rows]
