@@ -21,10 +21,13 @@ PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         *[("Tile", x, 124, 5) for x in range(191, 200)],   # the bedroom floor, whatever the dig leaves of it
         ("Bed", 191, 125, 5), ("Bed", 193, 125, 5), ("Bed", 195, 125, 5),
         ("AlgaeHabitat", 197, 125, 5), ("AlgaeHabitat", 199, 125, 5),
-        ("PlanterBox", 198, 125, 5), ("PlanterBox", 200, 125, 5)]   # between the terrariums, on the bedroom floor
+        ("PlanterBox", 198, 125, 5), ("PlanterBox", 200, 125, 5),
+        *[("Ladder", 180, y, 6) for y in range(108, 120)]]   # between the terrariums, on the bedroom floor
 ROOM = [[x, y] for y in range(120, 124) for x in [*range(177, 183), *range(191, 201)]]
 BEDROOM = [[190, 124]] + [[x, y] for y in (125, 126) for x in range(190, 201)]
 LEDGE = [[201, y] for y in (121, 122, 123)] + [[202, y] for y in (121, 122, 123)]   # over a one-tile dam at y120: the pool keeps most of its water
+SHAFT = [[180, y] for y in range(119, 107, -1)]   # down to the dirt below the floor: a ladder in every cell, so nobody gets stuck
+LOWER = [[x, y] for y in (110, 111) for x in range(168, 206)]   # a corridor off the bottom of the shaft
 UPPER = [[x, y] for y in range(124, 128) for x in range(177, 190)]   # air volume above the west room, so the diffuser never hits max pressure
 
 
@@ -42,12 +45,12 @@ def topup(have, element, low, n=15):
     are reachable, tunnel through the safe rock closest to the seam."""
     if have.get(element, 0) >= low: return
     seam = near(oni.cells(element, 160, 100, 220, 140), 300)
-    r = oni.cmd(op="safedig", cells=seam, floor=119, prio=6, max=n)
+    r = oni.cmd(op="safedig", cells=seam, floor=109, prio=6, max=n)   # 109: the shaft and corridor reach down that far
     if r["placed"] < 3 and seam:
-        g = oni.cmd(op="grid", x0=160, y0=119, x1=220, y1=140); solid = {k for k, v in g["legend"].items() if v.endswith("solid")}
+        g = oni.cmd(op="grid", x0=160, y0=109, x1=220, y1=140); solid = {k for k, v in g["legend"].items() if v.endswith("solid")}
         rock = [[160 + i, 140 - k] for k, row in enumerate(g["rows"]) for i, ch in enumerate(row) if ch in solid]
         gap = lambda c: min(abs(c[0] - t[0]) + abs(c[1] - t[1]) for t in seam[:40])
-        r = oni.cmd(op="safedig", cells=sorted(rock, key=gap)[:400], floor=119, prio=6, max=8)
+        r = oni.cmd(op="safedig", cells=sorted(rock, key=gap)[:400], floor=109, prio=6, max=8)
     log("topup", element, r)
 
 
@@ -70,7 +73,7 @@ def printables(s):
     oni.cmd(op="printables"); time.sleep(2); offers = oni.cmd(op="printables")
     if not isinstance(offers, list): return
     pick = next((i for i, o in enumerate(offers) if o.startswith("package") and any(f in o for f in FOOD_PACKAGES)), None)
-    if pick is None and s["foodKcal"] > 8000: pick = next((i for i, o in enumerate(offers) if o.startswith("dupe")), None)
+    if pick is None and s["foodKcal"] > 8000 and len(s["dupes"]) < 4: pick = next((i for i, o in enumerate(offers) if o.startswith("dupe")), None)
     if pick is not None: log("print", offers[pick], oni.cmd(op="print", index=pick))
     else: oni.cmd(op="invoke", type="ImmigrantScreen", method="OnPressBack"); log("pod offers passed", offers)
     oni.cmd(op="speed", speed=2)
@@ -112,6 +115,7 @@ def run(until):
         if time.time() - t_link > 60:   # wires placed one at a time join nothing until linked; a reload drops the links too
             oni.cmd(op="link", cells=WIRES); oni.cmd(op="mop", cells=[[x, 120] for x in range(177, 203)]); t_link = time.time()
             for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): oni.cmd(op="safedig", cells=cells, floor=119, prio=prio)   # more come in reach as the room opens up
+            oni.cmd(op="safedig", cells=SHAFT, floor=107, prio=6); oni.cmd(op="safedig", cells=LOWER, floor=109, prio=5)
             topup(s["have"], "Dirt", 600); topup(s["have"], "Algae", 300); explore(s); seeds(); printables(s)
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
             oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
