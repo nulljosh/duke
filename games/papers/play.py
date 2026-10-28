@@ -178,7 +178,7 @@ def decide(day, spots, base=None):
             spot = (700, 560); drag(late, spot); spots.append(spot); time.sleep(0.6); return decide(day, spots, base)
         seen = reveal(spots, words)
         if seen: words = seen; v = verdict(words, day)
-        elif day == 3 or not spots: missing_passport(); shot(); words = ocr(); v = "deny"   # a real no-passport entrant: interrogate
+        elif day == 3 or not spots or SAME >= 1: missing_passport(); shot(); words = ocr(); v = "deny"   # no passport twice from the same face: really none, interrogate
         else: v = "deny"   # papers but no passport found: hand everything back rather than interrogate over a lost one
     visa = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
     if visa:   # the passport: slide its visa box under the chosen stamp
