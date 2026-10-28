@@ -6,9 +6,6 @@
 
 Second ending 2 on day 10 (the family starved from the slow early days), so the run restarted from day 2 with the fast bot; day 3 running. `day.py <day>` runs night, walk and booth; `--title` from the title screen (finds the day's newest save by text), `--resume` mid-booth. Rules in rules.py (tests run without the game), RULES.md has days 7 to 31.
 
-- [x] Night automation (food before medicine for the merely sick, read back after clicking) and the day runner.
-- [x] Speed: drags 0.6 s (were 2.2), about 15 to 20 s an entrant.
-- [x] Day 6 work pass, day 7 Kolechians denied unsearched, day 8 diplomats.
 - [ ] Booth: measure height against the wall lines (day 7 ID card penalty), work-until vs duration, the spoken purpose vs the permit.
 - [ ] Day 9 on: RULES.md, one rule per day, each from a real citation. Hard days: 13 (ID supplement), 14 (wanted faces), 18 (denial reasons), 23 and 31 (attacks: aim and shoot).
 - [ ] Target ending 20 on day 31: deny every EZIC task, burn both gifts, shoot the two attackers before the charge.
