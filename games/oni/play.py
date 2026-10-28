@@ -36,7 +36,14 @@ def topup(have, element, low, n=15):
     that touch no liquid, at normal priority (colony 1 starved behind 225 digs at priority 9)."""
     if have.get(element, 0) >= low: return
     near = sorted(oni.cells(element, 166, 108, 212, 134), key=lambda c: abs(c[0] - 190) + 2 * abs(c[1] - 121))
-    log("topup", element, oni.cmd(op="dig", cells=oni.safe(near[:n * 2])[:n], prio=5))
+    ok = oni.cmd(op="reach", cells=oni.safe(near[:200]))   # a dig no dupe can stand next to just sits there (colony 2, cycle 12)
+    if len(ok) < 5 and near:   # walled in: tunnel through whatever reachable rock lies closest to the nearest seam
+        g = oni.cmd(op="grid", x0=166, y0=108, x1=212, y1=134); solid = {k for k, v in g["legend"].items() if v.endswith("solid")}
+        rock = [[166 + i, 134 - r] for r, row in enumerate(g["rows"]) for i, ch in enumerate(row) if ch in solid]
+        rock = oni.cmd(op="reach", cells=oni.safe(sorted(rock, key=lambda c: abs(c[0] - 190) + abs(c[1] - 121))[:300]))
+        gap = lambda c: min(abs(c[0] - t[0]) + abs(c[1] - t[1]) for t in near[:40])
+        ok += sorted(rock, key=gap)[:8]
+    log("topup", element, len(ok), "reachable", oni.cmd(op="dig", cells=ok[:n], prio=5))
 
 
 def run(until):
