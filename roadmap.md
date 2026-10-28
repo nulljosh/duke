@@ -4,10 +4,11 @@
 
 ## Papers, Please (active, 2026-10-27)
 
-Day 5 of 31 replaying from the day 5 save. `games/papers/play.py <day>` plays a day; GUIDE.md has the rules by day and the run log; docs/BENCHMARKS.md has every game's numbers.
+Day 5 done (8 people, family alive, $0), day 6 running. `python3 games/papers/day.py <next day>` runs the night, the walk and the booth from the night screen; GUIDE.md has the rules and run log.
 
-- [ ] Night automation: read the ledger and family status by OCR and buy in order: medicine for VERY SICK, food, heat, then medicine for SICK. Never end below zero (ending 1).
-- [ ] Day runner: sleep, newspaper, walk, file the bulletin, entrants, night, a line in progress.jsonl, redraw progress.svg, send the graph. One command per day.
+- [x] Night automation: read the ledger and family status by OCR and buy in order: medicine for VERY SICK, food, heat, then medicine for SICK. Never end below zero (ending 1).
+- [x] Day runner (day.py; the graph is still sent by hand): sleep, newspaper, walk, file the bulletin, entrants, night, a line in progress.jsonl, redraw progress.svg, send the graph. One command per day.
+- [ ] Food needs about 12 people a day (8 now).
 - [ ] Speed: from 45 seconds an entrant down to 25. Fewer drag steps, shorter waits, time each phase in the log.
 - [ ] Day 6: work pass for permits with purpose WORK (name, work-until date). Day 7: search Kolechians. Day 8: diplomatic authorization. Day 13: ID supplement. Day 14: wanted list. Day 18: reason for denial (interrogate first).
 - [ ] Read the audio transcript so a purpose or duration that differs from the permit is caught (day 4 citation).
