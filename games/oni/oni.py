@@ -18,6 +18,11 @@ def shot(path="/tmp/oni-shot.png"):
         time.sleep(0.1)
 
 
+def unhide():
+    """A Cmd-H'd game freezes its clock, so once the mod has made the window transparent, un-hide it (nothing shows)."""
+    subprocess.run(["osascript", "-e", 'tell application "System Events" to set visible of (every process whose name is "Oxygen Not Included") to true'], capture_output=True)
+
+
 def hide():
     """Cmd-H the game until the bridge takes over: it starts as a normal window for the half minute before mods load."""
     subprocess.run(["osascript", "-e", 'tell application "System Events" to set visible of (every process whose name is "Oxygen Not Included") to false'], capture_output=True)
@@ -55,7 +60,7 @@ def launch():
         if subprocess.run(["pgrep", "-f", "MacOS/Oxygen Not Included"], capture_output=True).returncode == 0: break
     for _ in range(200):   # hidden and behind until the mod makes it transparent and drops it from the Dock
         hide(); subprocess.run(["open", "-g", "-b", front]) if _ % 10 == 0 else None
-        if up(): subprocess.run(["open", "-b", front]); return
+        if up(): time.sleep(6); unhide(); subprocess.run(["open", "-b", front]); return   # 6 s: the mod's first transparency pass
         time.sleep(1)
     sys.exit("the bridge never answered")
 

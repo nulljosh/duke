@@ -40,7 +40,7 @@ def topup(have, element, low, n=15):
 
 
 def run(until):
-    done, tries, last_cycle, mush, planted, t_link = set(), {}, None, False, set(), 0
+    done, tries, last_cycle, mush, planted, t_link, clock = set(), {}, None, False, set(), 0, None
     for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): log("dig", oni.cmd(op="dig", cells=oni.safe(cells), prio=prio))
     log("ledge", oni.cmd(op="dig", cells=LEDGE, prio=6))   # touches the pool on purpose
     while True:
@@ -48,6 +48,9 @@ def run(until):
         if not s.get("inGame"): log("not in game", s.get("screens")); time.sleep(10); continue
         if not s["dupes"]: log("everyone is dead at cycle", s["cycle"]); return
         if s["paused"]: oni.cmd(op="speed", speed=2); log("unpaused")   # 0 to 2, 2 is the fastest
+        now = s["cycle"] + s["cycleFrac"]
+        if not s["paused"] and now == clock: oni.unhide(); log("clock stalled, unhid the game")   # a hidden app stops simulating
+        clock = now
         if s["cycle"] != last_cycle:
             last_cycle = s["cycle"]
             oni.cmd(op="camera", x=BASE[0], y=BASE[1], zoom=14); time.sleep(1)
@@ -58,7 +61,6 @@ def run(until):
                    "worst": min(((d["name"], round(d["breath"]), round(d["stress"]), round(d["kcal"])) for d in s["dupes"]), key=lambda d: d[3])}
             with open(HERE / "progress.jsonl", "a") as f: f.write(json.dumps(row) + "\n")
             log("cycle", row)
-            subprocess.Popen([sys.executable, "oniart.py"], cwd=HERE.parent.parent / "tools", stdout=subprocess.DEVNULL)   # the phone wallpaper carries the cycle
             if s["cycle"] > until: return
         if not s["research"]:
             nxt = next((t for t in RESEARCH if t not in s["researchDone"]), None)
