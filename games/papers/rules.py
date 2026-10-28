@@ -60,6 +60,7 @@ def verdict(words, day):
     country, city, exp, name, num = passport(mine)
     if day == 1: return "approve" if country == "ARSTOTZKA" else "deny"
     today = (datetime.date(1982, 11, 22) + datetime.timedelta(day)).strftime("%Y.%m.%d")
+    if exp is None and "1982" in mine: exp = "1982"   # day 4 Alina Ruchumova: only the year read, and a 1982 expiry is nearly always past
     # deny only on readable evidence: the pixel font often garbles a valid city or date, and most entrants are valid
     text = re.sub(DATE, r"\1.\2.\3", " ".join(rest))
     if country == "ARSTOTZKA" and re.search(r"GRANTED|PERMIT", text): country = None   # a permit's ARSTOTZKA header lying over the passport
@@ -69,9 +70,12 @@ def verdict(words, day):
         ok = ok and "TICKET" in text and today in text
     if day >= 4 and country == "ARSTOTZKA":   # the ID card prints a district, height and weight; it may overlap the passport
         ok = ok and bool(re.search(r"IDENTITY|DISTRIC|\d\s?CM\b|\d\s?KG\b", " ".join(mine + rest)))
+        births = {"19" + d[0][2:] + "." + d[1] + "." + d[2] for d in re.findall(r"([17]9\d\d)[.,\s](\d\d)[.,\s](\d\d)", " ".join(mine + rest)) if d[0][2:] < "75"}   # the pixel font reads 1 as 7
+        ok = ok and not any(sum(x != y for x, y in zip(a, b)) >= 2 for a in births for b in births)   # day 4 Norma Tarnoff: ID card 1920, passport 1938. ponytail: a 1-digit gap passes as OCR noise
     if day >= 4 and country != "ARSTOTZKA":   # OCR mangles the pixel font: an unreadable field passes, a readable mismatch fails
-        sur = next((m.group(1) for t in mine for m in [re.match(r"^([A-Z']{3,})[,.]\s+[A-Z]", t)] if m), None)
-        holder_ok = not sur or any(same(sur, wd, 0.6) for t in rest for wd in t.split())
+        pname = next((m.groups() for t in mine + rest for m in [re.match(r"^([A-Z']{3,})[,.]\s+([A-Z']{3,})", t)] if m), None)
+        granted = next((rest[i + 1] for i, t in enumerate(rest[:-1]) if "GRANTED" in t), "")   # the permit's holder line
+        holder_ok = not pname or not granted or any(same(p, wd, 0.6) for p in pname for wd in granted.split())   # day 4 Schiavon held Abdullah Yurinov's permit
         alnum = lambda s: re.sub(r"[^A-Z0-9]", "", s)
         pn = next((alnum(t) for t in mine if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)), None)
         others = [alnum(t) for t in rest if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)]
@@ -138,6 +142,11 @@ def _check():
     assert verdict(w("UNITED FEDERATION", "Shingleton") + o("DIPLOMATIC AUTHORIZATION", "ARSTOTZKA"), 8) == "approve" and verdict(w("UNITED FEDERATION", "Shingleton"), 8) == "deny"
     assert verdict(w("UNITED FEDERATION", "Baherova, Maria", "Horista City") + o("granted to", "MARIA BAHEROVA", "WORH", "Minirtry of Laber", "LILIVASILAUSHIS", "STATISTICS", "1983.12.01"), 7) == "deny"
     assert passport(["UNITED FEDERATION", "reat Hapid", "982.11.03"])[2] == "1982.11.03"
+    # day 4 citations: a stranger's permit, a 1982 expiry read as the bare year, an ID card born 18 years earlier
+    assert verdict(w("Schiavon, Giorgio", "Horista City", "1983.06.10", "EBEON-6HLRR") + o("is hereby granted to", "ABDULLAH YURINOV", "EBEON-6HLRR", "1982.12.08"), 4) == "deny"
+    assert verdict(w("huchumova, Alina", "1947.03.15", "Enhyo", "1982", "CHE40-GUAH2") + o("is hereby granted to", "ALINA RUCHUMOVA", "1982.12.16"), 4) == "deny"
+    norma = w("Tarnoff, Norma", "| 1938.03.15", "East Grestin", "1983.06.12", "ARSTOTZKA")
+    assert verdict(norma + o("IDENTITY CARD", "7920.03.15"), 4) == "deny" and verdict(norma + o("IDENTITY CARD", "1938.03.15"), 4) == "approve"
     assert verdict(aza + o("MICHE PIETROWSHA", "MAHUFACTURING"), 7) == "deny" and verdict(aza + o("AZA HUDSONSHO", "MAHUFACTURING"), 7) == "approve" and verdict(aza + o("AZA HUDSONSHO", "FISHING"), 7) == "approve"
 
 
