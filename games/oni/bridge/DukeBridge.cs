@@ -233,6 +233,8 @@ public static partial class Ops
                 return j["cells"].Where(c => navs.Any(n => n.CanReach(Grid.XYToCell((int)c[0], (int)c[1]), Around))).ToArray();
             }
             case "safedig": return SafeDig(j);
+            case "skills": return Skills();
+            case "learn": return Learn(j);
             case "plants": return Plants();
             case "uproot": return Uproot(j);
             case "speed": SpeedControlScreen.Instance.SetSpeed((int)j["speed"]); if ((bool?)j["play"] ?? true) SpeedControlScreen.Instance.Unpause(false); return new { ok = true };

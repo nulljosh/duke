@@ -8,7 +8,7 @@ import oni
 HERE = Path(__file__).resolve().parent
 BASE = (190, 122)   # camera centre for the cycle shots
 RESEARCH = ["FarmingTech", "PowerRegulation", "Jobs", "AdvancedResearch", "ImprovedOxygen", "SanitationSciences", "FineDining",
-            "BasicRefinement", "Combustion", "MedicineI", "Agriculture"]
+            "BasicRefinement", "Combustion", "BasicRocketry", "SkyDetectors", "MedicineI", "Agriculture"]   # BasicRocketry: the steam rocket, the road to the Great Escape
 WIRES = [[x, y] for y in (120, 121) for x in range(191, 200)] + [[200, 121], [201, 121], [202, 121], [201, 122], [202, 122]]   # ports sit on either row, so wire both and join them; the tail feeds musher 2
 # id, x, y, priority. 2-wide buildings sit on x and x+1, 3-wide ones are centred on x. The room is x177-200, y120-123.
 PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
@@ -81,6 +81,16 @@ def seeds():
     if wild: log("uproot mealwood", oni.cmd(op="uproot", cells=wild))
 
 
+def skills():
+    """Spend skill points: one dupe takes Advanced Research (the Super Computer needs it), the rest dig faster."""
+    dupes = oni.cmd(op="skills"); researcher = any("Researching1" in d["mastered"] for d in dupes)
+    for d in dupes:
+        if d["points"] < 1: continue
+        want = "Researching1" if not researcher else "Mining1" if "Mining1" not in d["mastered"] else "Building1"
+        r = oni.cmd(op="learn", name=d["name"], skill=want); log("skill", d["name"], want, r)
+        researcher = researcher or (want == "Researching1" and r.get("ok"))
+
+
 def printables(s):
     """Every few cycles the pod offers dupes or packages: take food, and no new mouths while the larder is thin."""
     if not s["immigrants"]: return
@@ -133,7 +143,7 @@ def run(until):
             oni.cmd(op="safedig", cells=SPINE, floor=119, prio=5); oni.cmd(op="safedig", cells=near(MINES, 999), floor=100, prio=4, max=20)
             oni.cmd(op="dig", cells=[[188, 109], [188, 108]], prio=8)   # the ladder down to the second pump; touches the pool on purpose
             oni.cmd(op="safedig", cells=[[184, y] for y in range(112, 119)] + [[179, 109], [179, 108]], floor=100, prio=8)   # dirt beside the ladders
-            topup(s["have"], "Dirt", 600); topup(s["have"], "Algae", 300); floor(); explore(s); seeds(); printables(s)
+            topup(s["have"], "Dirt", 600); topup(s["have"], "Algae", 300); floor(); explore(s); seeds(); printables(s); skills()
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
             oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=201, y=121, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
         if not mush and oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush = True; log("mush bars queued")
