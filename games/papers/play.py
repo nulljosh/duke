@@ -249,5 +249,10 @@ if __name__ == "__main__":
     for n in range(int(sys.argv[2]) if len(sys.argv) > 2 else 80):
         r = entrant(day, base)
         print(n, r, flush=True)
-        if r is None: break
+        if r is None:   # only the ledger ends the day; a dark frame mid-day (day 8, after the EZIC card) is not the night
+            for _ in range(10):
+                if night(): break
+                time.sleep(3)
+                if at_booth(shot()): break
+            if night(): break
     else: raise SystemExit("still in the booth after the cap")
