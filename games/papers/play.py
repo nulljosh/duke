@@ -146,6 +146,8 @@ def entrant(day, base):
     t0 = time.time()
     while not doc_on_counter(img := shot(), base):
         if not at_booth(img): return None
+        if time.time() - t0 > 6 and any("NO DOCUMENTS" in w["t"].upper() for w in ocr()):   # Jorji on day 3: interrogate, he leaves
+            missing_passport(); return "interrogated"
         if time.time() - t0 > 40: return "nobody came"   # still in the booth: a missed horn, call again
         time.sleep(0.3)
     walk = time.time() - t0
