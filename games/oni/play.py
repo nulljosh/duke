@@ -24,7 +24,8 @@ PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         ("PlanterBox", 198, 125, 5), ("PlanterBox", 200, 125, 5),
         *[("Ladder", 180, y, 6) for y in range(108, 120)],
         *[("Tile", x, 109, 9) for x in (181, 182, 183)],   # the corridor crosses an open cavity there
-        ("LiquidPumpingStation", 189, 105, 8), ("Ladder", 188, 108, 7), ("Ladder", 188, 109, 7)]   # the second pool, under the corridor   # between the terrariums, on the bedroom floor
+        ("LiquidPumpingStation", 189, 105, 8), ("Ladder", 188, 108, 7), ("Ladder", 188, 109, 7),   # the second pool, under the corridor
+        *[("Ladder", 184, y, 7) for y in range(112, 119)]]   # up from the corridor through a streak of dirt   # between the terrariums, on the bedroom floor
 ROOM = [[x, y] for y in range(120, 124) for x in [*range(177, 183), *range(191, 201)]]
 BEDROOM = [[190, 124]] + [[x, y] for y in (125, 126) for x in range(190, 201)]
 LEDGE = [[201, y] for y in (121, 122, 123)] + [[202, y] for y in (121, 122, 123)]   # over a one-tile dam at y120: the pool keeps most of its water
@@ -126,6 +127,7 @@ def run(until):
             for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): oni.cmd(op="safedig", cells=cells, floor=119, prio=prio)   # more come in reach as the room opens up
             oni.cmd(op="safedig", cells=SHAFT, floor=107, prio=6); oni.cmd(op="safedig", cells=LOWER, floor=109, prio=5)
             oni.cmd(op="dig", cells=[[188, 109], [188, 108]], prio=8)   # the ladder down to the second pump; touches the pool on purpose
+            oni.cmd(op="safedig", cells=[[184, y] for y in range(112, 119)] + [[179, 109], [179, 108]], floor=100, prio=8)   # dirt beside the ladders
             topup(s["have"], "Dirt", 600); topup(s["have"], "Algae", 300); floor(); explore(s); seeds(); printables(s)
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
             oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
