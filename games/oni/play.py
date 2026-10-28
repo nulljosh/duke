@@ -56,6 +56,13 @@ def topup(have, element, low, n=15):
     log("topup", element, r)
 
 
+def floor():
+    """Holes in the base's floor row cut the room in two (colony 4: a pit under the wash basin); tile every open cell."""
+    g = oni.cmd(op="grid", x0=176, y0=119, x1=202, y1=119); open_ = {k for k, v in g["legend"].items() if not v.endswith("solid")}
+    for i, ch in enumerate(g["rows"][0]):
+        if ch in open_: log("floor hole", 176 + i, oni.cmd(op="build", id="Tile", x=176 + i, y=119, prio=9).get("ok"))
+
+
 def explore(s):
     """Idle dupes are wasted labor: give them the nearest safe rock at low priority, so the base grows and digs turn up seams."""
     if sum(d["chore"] in (None, "IdleChore") for d in s["dupes"]) < 2: return
@@ -118,7 +125,7 @@ def run(until):
             oni.cmd(op="link", cells=WIRES); oni.cmd(op="mop", cells=[[x, 120] for x in range(177, 203)]); t_link = time.time()
             for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): oni.cmd(op="safedig", cells=cells, floor=119, prio=prio)   # more come in reach as the room opens up
             oni.cmd(op="safedig", cells=SHAFT, floor=107, prio=6); oni.cmd(op="safedig", cells=LOWER, floor=109, prio=5)
-            topup(s["have"], "Dirt", 600); topup(s["have"], "Algae", 300); explore(s); seeds(); printables(s)
+            topup(s["have"], "Dirt", 600); topup(s["have"], "Algae", 300); floor(); explore(s); seeds(); printables(s)
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
             oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
         if not mush and oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush = True; log("mush bars queued")
