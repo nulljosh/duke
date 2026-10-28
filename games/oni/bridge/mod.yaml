@@ -1,0 +1,3 @@
+title: "Duke Bridge"
+description: "Lets Duke read the colony and place orders over HTTP on 127.0.0.1:8741."
+staticID: DukeBridge

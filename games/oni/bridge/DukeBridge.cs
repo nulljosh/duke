@@ -1,0 +1,205 @@
+// Duke's bridge into Oxygen Not Included: an HTTP server on 127.0.0.1:8741 that reads the colony and places orders the
+// way a player would (dig and build blueprints, research, speed). Dupes still do all the work. GET /state, POST /cmd
+// with a JSON body {"op": ...}. Requests are handled on Unity's main thread, one frame at a time.
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading;
+using HarmonyLib;
+using KMod;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
+
+public class DukeBridge : UserMod2
+{
+    internal static readonly ConcurrentQueue<KeyValuePair<HttpListenerContext, string>> Inbox = new ConcurrentQueue<KeyValuePair<HttpListenerContext, string>>();
+
+    public override void OnLoad(Harmony harmony)
+    {
+        base.OnLoad(harmony);
+        Application.runInBackground = true;   // keeps simulating behind Joshua's windows
+        var l = new HttpListener();
+        l.Prefixes.Add("http://127.0.0.1:8741/");
+        l.Start();
+        new Thread(() =>
+        {
+            while (true)
+            {
+                var c = l.GetContext();
+                using (var r = new StreamReader(c.Request.InputStream)) Inbox.Enqueue(new KeyValuePair<HttpListenerContext, string>(c, r.ReadToEnd()));
+            }
+        }) { IsBackground = true }.Start();
+        var go = new GameObject("DukeBridge");
+        UnityEngine.Object.DontDestroyOnLoad(go);
+        go.AddComponent<DukePump>();
+    }
+}
+
+public class DukePump : MonoBehaviour
+{
+    void Update()
+    {
+        while (DukeBridge.Inbox.TryDequeue(out var job))
+        {
+            string reply;
+            try
+            {
+                var path = job.Key.Request.Url.AbsolutePath;
+                reply = JsonConvert.SerializeObject(path == "/state" ? Ops.State() : Ops.Run(JObject.Parse(job.Value)));
+            }
+            catch (Exception e) { reply = JsonConvert.SerializeObject(new { error = e.ToString() }); }
+            var b = Encoding.UTF8.GetBytes(reply);
+            try { job.Key.Response.ContentType = "application/json"; job.Key.Response.OutputStream.Write(b, 0, b.Length); job.Key.Response.Close(); }
+            catch (Exception) { }
+        }
+    }
+}
+
+public static class Ops
+{
+    static bool InGame => Game.Instance != null && SaveLoader.Instance != null && ClusterManager.Instance != null && ClusterManager.Instance.activeWorld != null;
+
+    public static object State()
+    {
+        var screens = new[] { "MainMenu", "ColonyDestinationSelectScreen", "MinionSelectScreen", "ImmigrantScreen", "VideoScreen", "InfoDialogScreen", "ConfirmDialogScreen" }
+            .Where(n => { var t = AccessTools.TypeByName(n); return t != null && UnityEngine.Object.FindObjectsOfType(t).Cast<Component>().Any(c => c.gameObject.activeInHierarchy); }).ToArray();
+        if (!InGame) return new { inGame = false, screens };
+        var inv = ClusterManager.Instance.activeWorld.worldInventory;
+        var db = Db.Get();
+        var dupes = Components.LiveMinionIdentities.Items.Select(m =>
+        {
+            var go = m.gameObject; int cell = Grid.PosToCell(go);
+            Func<Klei.AI.Amount, float> v = a => a.Lookup(go)?.value ?? -1;
+            var chore = go.GetComponent<ChoreDriver>()?.GetCurrentChore();
+            return new
+            {
+                name = m.GetProperName(), x = Grid.CellToXY(cell).x, y = Grid.CellToXY(cell).y,
+                kcal = v(db.Amounts.Calories) / 1000f, stress = v(db.Amounts.Stress), breath = v(db.Amounts.Breath),
+                hp = v(db.Amounts.HitPoints), bladder = v(db.Amounts.Bladder), stamina = v(db.Amounts.Stamina),
+                chore = chore?.choreType.Id, air = Grid.Element[cell].id.ToString(), airMass = Grid.Mass[cell],
+            };
+        }).ToArray();
+        var pod = Components.Telepads.Items.FirstOrDefault();
+        var podXY = pod != null ? Grid.CellToXY(Grid.PosToCell(pod)) : new Vector2I(-1, -1);
+        var have = new Dictionary<string, float>();
+        foreach (var e in ElementLoader.elements)
+        {
+            float a = inv.GetAmount(e.tag, false);
+            if (a > 0.5f) have[e.id.ToString()] = (float)Math.Round(a, 1);
+        }
+        var buildings = Components.BuildingCompletes.Items.Where(b => b != null && b.GetMyWorldId() == ClusterManager.Instance.activeWorldId)
+            .Select(b => { var c = Grid.CellToXY(Grid.PosToCell(b)); return new object[] { b.Def.PrefabID, c.x, c.y, b.GetComponent<Operational>()?.IsOperational ?? true }; }).ToArray();
+        int pending = UnityEngine.Object.FindObjectsOfType<Constructable>().Length;
+        var tech = Research.Instance.GetActiveResearch();
+        return new
+        {
+            inGame = true, screens, cycle = GameClock.Instance.GetCycle() + 1, cycleFrac = GameClock.Instance.GetTimeSinceStartOfCycle() / 600f,
+            speed = SpeedControlScreen.Instance.GetSpeed(), paused = SpeedControlScreen.Instance.IsPaused,
+            width = Grid.WidthInCells, height = Grid.HeightInCells, pod = new[] { podXY.x, podXY.y },
+            immigrants = Immigration.Instance.ImmigrantsAvailable,
+            foodKcal = Components.Edibles.Items.Where(e => e != null && e.GetMyWorldId() == ClusterManager.Instance.activeWorldId).Sum(e => e.Calories) / 1000f,
+            research = tech?.tech.Id, researchDone = db.Techs.resources.Where(t => t.IsComplete()).Select(t => t.Id).ToArray(),
+            dupes, have, buildings, pending,
+        };
+    }
+
+    public static object Run(JObject j)
+    {
+        string op = (string)j["op"];
+        switch (op)
+        {
+            case "invoke":   // menus: {"type": "MainMenu", "method": "NewGame"} on the live screen of that type
+            {
+                var t = AccessTools.TypeByName((string)j["type"]);
+                var o = UnityEngine.Object.FindObjectsOfType(t).Cast<Component>().FirstOrDefault(c => c.gameObject.activeInHierarchy) ?? (UnityEngine.Object.FindObjectOfType(t) as Component);
+                if (o == null) return new { error = "no live " + t };
+                var r = AccessTools.Method(t, (string)j["method"]).Invoke(o, j["args"]?.ToObject<object[]>() ?? new object[0]);
+                return new { ok = true, result = r?.ToString() };
+            }
+            case "grid":   // {"x0","y0","x1","y1"}: rows top to bottom, one short code per cell; legend maps code to element
+            {
+                int x0 = (int)j["x0"], y0 = (int)j["y0"], x1 = (int)j["x1"], y1 = (int)j["y1"];
+                var legend = new Dictionary<string, string>(); var codes = new Dictionary<SimHashes, string>(); var rows = new List<string>();
+                for (int y = y1; y >= y0; y--)
+                {
+                    var sb = new StringBuilder();
+                    for (int x = x0; x <= x1; x++)
+                    {
+                        int cell = Grid.XYToCell(x, y);
+                        if (!Grid.IsValidCell(cell)) { sb.Append(' '); continue; }
+                        if (!Grid.IsVisible(cell)) { sb.Append('?'); continue; }
+                        if (Grid.Objects[cell, (int)ObjectLayer.Building] != null) { sb.Append('#'); continue; }
+                        var e = Grid.Element[cell];
+                        if (!codes.TryGetValue(e.id, out var code))
+                        {
+                            const string pool = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                            code = pool[codes.Count % pool.Length].ToString(); codes[e.id] = code; legend[code] = e.id + (e.IsSolid ? " solid" : e.IsLiquid ? " liquid" : " gas");
+                        }
+                        sb.Append(code);
+                    }
+                    rows.Add(sb.ToString());
+                }
+                return new { x0, y1, rows, legend };
+            }
+            case "dig":   // {"cells": [[x, y], ...]}
+            {
+                int n = 0;
+                foreach (var c in j["cells"])
+                {
+                    int cell = Grid.XYToCell((int)c[0], (int)c[1]); if (!Grid.Solid[cell]) continue;
+                    var dig = DigTool.PlaceDig(cell, 0); if (dig == null) continue; n++;
+                    if (j["prio"] != null) dig.GetComponent<Prioritizable>()?.SetMasterPriority(new PrioritySetting(PriorityScreen.PriorityClass.basic, (int)j["prio"]));
+                }
+                return new { ok = true, placed = n };
+            }
+            case "build":   // {"id": "Ladder", "x", "y", "orient"?: "R90"}: a blueprint in the best material we have
+            {
+                var def = Assets.GetBuildingDef((string)j["id"]);
+                if (def == null) return new { error = "no building " + j["id"] };
+                int cell = Grid.XYToCell((int)j["x"], (int)j["y"]);
+                var orient = j["orient"] != null ? (Orientation)Enum.Parse(typeof(Orientation), (string)j["orient"]) : Orientation.Neutral;
+                if (!def.IsValidPlaceLocation(null, cell, orient, out string why)) return new { error = why };
+                var mats = Materials(def);
+                if (mats == null) return new { error = "not enough material for " + def.PrefabID };
+                var go = def.TryPlace(null, Grid.CellToPosCBC(cell, def.SceneLayer), orient, mats, "DEFAULT_FACADE", 0);
+                if (go != null && j["prio"] != null) go.GetComponent<Prioritizable>()?.SetMasterPriority(new PrioritySetting(PriorityScreen.PriorityClass.basic, (int)j["prio"]));
+                return go != null ? (object)new { ok = true, mats = mats.Select(t => t.Name) } : new { error = "TryPlace failed" };
+            }
+            case "camera":   // {"x", "y", "zoom"?}: centre the view on a cell, for the cycle screenshots
+                CameraController.Instance.SnapTo(Grid.CellToPosCCC(Grid.XYToCell((int)j["x"], (int)j["y"]), Grid.SceneLayer.Background), (float?)j["zoom"] ?? 12f);
+                return new { ok = true };
+            case "speed": SpeedControlScreen.Instance.SetSpeed((int)j["speed"]); if ((bool?)j["play"] ?? true) SpeedControlScreen.Instance.Unpause(false); return new { ok = true };
+            case "pause": SpeedControlScreen.Instance.Pause(false); return new { ok = true };
+            case "research":
+            {
+                var tech = Db.Get().Techs.TryGet((string)j["tech"]);
+                if (tech == null) return new { error = "no tech" };
+                Research.Instance.SetActiveResearch(tech, true); return new { ok = true };
+            }
+            case "techs": return Db.Get().Techs.resources.Select(t => new { t.Id, done = t.IsComplete(), cost = t.costsByResearchTypeID, unlocks = t.unlockedItemIDs }).ToArray();
+            case "buildable": return Assets.BuildingDefs.Where(d => d.ShowInBuildMenu && !d.Deprecated && (Db.Get().TechItems.TryGet(d.PrefabID)?.IsComplete() ?? true)).Select(d => new { d.PrefabID, d.WidthInCells, d.HeightInCells, mats = d.MaterialCategory, mass = d.Mass }).ToArray();
+            default: return new { error = "unknown op " + op };
+        }
+    }
+
+    // For each material slot, the element in that category we hold the most of. Short is fine: the blueprint waits
+    // and dupes deliver once enough is dug. Nothing of it anywhere means no blueprint.
+    static IList<Tag> Materials(BuildingDef def)
+    {
+        var inv = ClusterManager.Instance.activeWorld.worldInventory; var picked = new List<Tag>();
+        for (int i = 0; i < def.MaterialCategory.Length; i++)
+        {
+            var cats = def.MaterialCategory[i].Split('&').Select(s => new Tag(s)).ToArray();
+            var best = ElementLoader.elements.Where(e => cats.Any(c => e.HasTag(c) || e.tag == c))
+                .Select(e => new { e.tag, a = inv.GetAmount(e.tag, false) }).OrderByDescending(x => x.a).FirstOrDefault();
+            if (best == null || best.a <= 0) return null;
+            picked.Add(best.tag);
+        }
+        return picked;
+    }
+}

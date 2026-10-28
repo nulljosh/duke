@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- dotnet build drops the mod into ONI's local mods folder. -->
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <Managed>$(HOME)/Library/Application Support/Steam/steamapps/common/OxygenNotIncluded/OxygenNotIncluded.app/Contents/Resources/Data/Managed</Managed>
+    <ModDir>$(HOME)/Library/Application Support/unity.Klei.Oxygen Not Included/mods/Local/DukeBridge</ModDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="$(Managed)/Assembly-CSharp.dll" Private="false" />
+    <Reference Include="$(Managed)/Assembly-CSharp-firstpass.dll" Private="false" />
+    <Reference Include="$(Managed)/0Harmony.dll" Private="false" />
+    <Reference Include="$(Managed)/Newtonsoft.Json.dll" Private="false" />
+    <Reference Include="$(Managed)/UnityEngine.dll" Private="false" />
+    <Reference Include="$(Managed)/UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(Managed)/netstandard.dll" Private="false" />
+  </ItemGroup>
+  <Target Name="Install" AfterTargets="Build">
+    <MakeDir Directories="$(ModDir)" />
+    <Copy SourceFiles="$(TargetPath);mod.yaml;mod_info.yaml" DestinationFolder="$(ModDir)" />
+  </Target>
+</Project>
