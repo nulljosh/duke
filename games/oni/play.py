@@ -29,8 +29,8 @@ def log(*a): print(time.strftime("%H:%M:%S"), *a, flush=True)
 
 def run(until):
     done, tries, last_cycle = set(), {}, None
-    oni.cmd(op="dig", cells=DIGS, prio=6); oni.cmd(op="cancel", cells=STRAY)
-    oni.cmd(op="dig", cells=[[201, 120], [202, 120], [201, 121], [202, 121]], prio=9)   # a doorway to the pool to work the pump from
+    oni.cmd(op="cancel", cells=STRAY)   # no more bulk digs: at priority 9 they starved the colony (cycle 12)
+
     log("link", oni.cmd(op="link", cells=WIRES), "mush", oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar"))   # both are lost on a reload
     while True:
         s = oni.state()
