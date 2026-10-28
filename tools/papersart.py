@@ -31,8 +31,8 @@ LAYOUT = {   # low-res coordinates. The phone keeps y < 70 (the clock) sky only,
     "phone": dict(
         yard=dict(win=(14, 6, 316, 398), hor=205, wall=26, yb=470, gate=205, gw=30, towers=[42, 288], ctop=134, tu=1, posts=[110, 160, 250],
                   beams=[(150, 330, 46), (110, 270, 40), (210, 360, 50), (170, 255, 36)], h0=6, h1=128, gap=.26, near_x=96, amp=96, bends=4.3, calm=70, barrels=[(36, 300, 1.5), (290, 352, 2.3)]),
-        scale=1, dtop=405, pool=(160, 540, 205, 140), pp=(192, 536, 98, 126, -3), bul=(66, 518, 82, 112, 6), stamp=(194, 582, 3, -10),
-        tool=(282, 532, 1.5, 24), lamp=(46, 410, 18, 646, 41)),
+        scale=1, dtop=405, pool=(168, 540, 205, 140), pp=(204, 536, 98, 126, -3), bul=(62, 512, 82, 112, 5), stamp=(206, 582, 3, -10),
+        tool=(292, 532, 1.5, 24), lamp=(46, 410, 18, 646, 41)),
     "desktop": dict(
         yard=dict(win=(22, 10, 618, 212), hor=122, wall=22, yb=292, gate=330, gw=22, towers=[96, 560], ctop=72, tu=.7, posts=[190, 250, 440],
                   beams=[(250, 190, 34), (210, 160, 30), (420, 200, 36), (370, 168, 28)], h0=4, h1=78, gap=.15, near_x=150, amp=200, bends=3.2, calm=0, barrels=[(70, 170, 1.1), (580, 190, 1.5)]),
