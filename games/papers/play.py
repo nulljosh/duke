@@ -113,7 +113,11 @@ SPOTS = [(650, 400), (965, 380), (460, 600)]   # where each handed-over document
 
 
 def at_booth(img):   # the counter strip is olive in the booth and black on the night screen
-    return ImageStat.Stat(img.crop(CBOX)).mean[0] > 60
+    return ImageStat.Stat(img.crop(CBOX)).mean[0] > 60 and not night()
+
+
+def night():   # the ledger is up: one stray click near SLEEP on a negative night is game over
+    return any(re.search(r"SAVINGS|SLEEP|SALARY", w["t"].upper()) for w in ocr())
 
 
 def entrant(day, base):
@@ -191,6 +195,7 @@ def decide(day, spots, base=None):
         if EMPTY is None:
             for spot in spots: drag(spot, ENTRANT); time.sleep(0.5)
         else: keep_gifts(); sweep(ENTRANT)   # everything the entrant owns goes back; citations, ads and notes stay
+    if night(): return v, []
     give_back(); time.sleep(1)
     for _ in range(3):   # something on the counter: a paper dropped short, or a gift handed over at the end (the note)
         left = base is not None and doc_on_counter(shot(), base)
