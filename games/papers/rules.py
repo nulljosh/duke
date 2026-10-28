@@ -74,7 +74,10 @@ def verdict(words, day):
         ok = ok and ("GRANTED" in text or "PERMIT" in text) and holder_ok and num_ok and enter_by >= today
     if day == 7 and country == "KOLECHIA": ok = False   # search every Kolechian; denying unsearched costs no citation (ponytail: no scanner yet)
     if day >= 6 and any(re.fullmatch(r"WOR[KH]", t) for t in rest):   # purpose WORK needs the Ministry of Labor's work pass
-        ok = ok and bool(re.search(r"LAB[OE]R|HOLDER|FIELD", text))   # ponytail: name and work-until vs duration not checked yet
+        ok = ok and bool(re.search(r"LAB[OE]R|HOLDER|FIELD", text))   # ponytail: work-until vs duration not checked yet
+        sur = next((m.group(1) for t in mine for m in [re.match(r"^([A-Z']{3,})[,.]\s+[A-Z]", t)] if m), None)
+        names = [t for t in rest if re.fullmatch(r"[A-Z']{3,} [A-Z']{3,}", t) and t not in ("ENTRY VISA", "ENTRY PERMIT", "WORK PASS", "IDENTITY CARD")]
+        ok = ok and (not sur or all(any(same(sur, wd, 0.6) for wd in t.split()) for t in names))   # the pass names someone else
     return "approve" if ok else "deny"
 
 
@@ -121,6 +124,8 @@ def _check():
     assert verdict(w("Risa, Misha", "1936.11.28", "True Glorian", "1983.12.18", "REPUBLI", "SHFG5-BRKAG") + o("Permit", "is hereby granted to", "MISHA RISA", "SHFG5-BRKAG", "IMMIGRATE", "FOREVER"), 7) == "approve"
     assert verdict(w("ARSTOTZKA", "Entry Permit", "Goyetsky, Andrei", "ORYAM-5RGHG") + o("hereby granted to", "AMDREI GOYETSE", "ORYAM-5RGHG", "1982.12.20"), 7) == "approve"
     assert verdict(w("Haihan", "1983.11.23", "IMPOR") + o("is hereby granted to", "1982.11.20"), 7) == "deny"   # a readable stale enter-by still fails
+    aza = w("ANTEGRIA", "Hudsonsho, Rzg", "S90LT-HJ160") + o("hereby granted to", "AZA HUDSONSHA", "590LT-H-130", "WORH", "1982.12.20", "Minirtry ef Laber", "HOLDER")
+    assert verdict(aza + o("MICHE PIETROWSHA", "MAHUFACTURING"), 7) == "deny" and verdict(aza + o("AZA HUDSONSHO", "FISHING"), 7) == "approve"
 
 
 
