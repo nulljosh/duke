@@ -53,6 +53,9 @@ WORDS = {"ENTRY VISA", "ENTRY PERMIT", "WORK PASS", "IDENTITY CARD", "ARSTOTZKA"
          "FISHING", "FOOD SERVICE", "GENERAL LABOR", "HEALTHCARE", "MANUFACTURING", "RESEARCH", "STATISTICS", "SURVEYING", "PURPOSE", "DURATION"}   # never names
 
 
+PURPOSES = {"WORK": r"WOR[KH]|HORK|HORH", "VISIT": r"[VP]IS[IT]T|VISITING", "TRANSIT": r"TRANSIT|PASSING", "IMMIGRATE": r"IMMIGRAT\w*|LIVE HERE|MOVING"}
+
+
 def verdict(words, day):
     """Day 1: Arstotzkans only. Day 2: known country, its own issuing city, not expired. Day 3: foreigners bring an
     entry ticket for today. Day 4 on: citizens bring an ID card; foreigners an entry permit naming this passport."""
@@ -73,7 +76,7 @@ def verdict(words, day):
     if day >= 4 and country == "ARSTOTZKA":   # the ID card prints a district, height and weight; it may overlap the passport
         ok = ok and bool(re.search(r"IDENTITY|DISTRIC|\d\s?CM\b|\d\s?KG\b", " ".join(mine + rest)))
         births = {".".join(d) for d in re.findall(r"(\d\d)[.,\s](\d\d)[.,\s](\d\d)\b", " ".join(mine + rest)) if d[0] < "75"}   # by the year's last two digits: the 19 reads as 79 or P
-        ok = ok and len(births) <= 1   # day 4 Norma Tarnoff (ID card 1920, passport 1938), day 8 Corman Drex (1926 vs 1936)
+        ok = ok and not any(sum(x != y for x, y in zip(a, b)) >= 2 for a in births for b in births)   # day 4 Norma Tarnoff: ID card 1920, passport 1938. A 1-digit gap is OCR (day 8 Corman Drex, valid, read 1926 vs 1936)
         toks = mine + rest
         idn = next(((t.rstrip(",.:"), toks[i + 1]) for i, t in enumerate(toks[:-1]) if re.fullmatch(r"[A-Z']{3,}[,.:]", t)), None)   # the ID card prints "HILL," then "SVETLANA"
         pn = next((m.groups() for t in toks for m in [re.match(r"^([A-Z']{2,})[,.]\s+([A-Z']{2,})", t)] if m), None)
@@ -90,6 +93,10 @@ def verdict(words, day):
         enter_by = max([d for d in re.findall(r"19\d\d\.\d\d\.\d\d", text) if d >= "1982"] or [today])   # cut off the desk: passes
         papers = "GRANTED" in text or "PERMIT" in text or (day >= 8 and bool(re.search(r"DIPLOMAT|AUTHORI", text)))   # diplomats bring an authorization instead
         ok = ok and papers and holder_ok and num_ok and enter_by >= today
+    said = " ".join(w["t"].upper() for w in words if not (w["x"] > 360 and w["y"] > 236))   # the booth transcript and speech bubbles
+    spoken = next((p for p, pat in PURPOSES.items() if re.search(pat, said)), None)
+    written = next((p for p, pat in PURPOSES.items() for t in rest if re.fullmatch(pat, t)), None)
+    if day >= 5 and spoken and written and spoken != written: ok = False   # day 8 Karina Gulieva: said one purpose, her permit another
     if 13 <= day <= 26 and country != "ARSTOTZKA":   # foreigners show an ID supplement (height, weight, description, thumbprint)
         ok = ok and bool(re.search(r"SUPPLEM|DESCRIPT|THUMB", text))   # ponytail: its height, weight and expiry not checked yet
     if day == 7 and country == "KOLECHIA": ok = False   # search every Kolechian; denying unsearched costs no citation (ponytail: no scanner yet)
@@ -157,7 +164,9 @@ def _check():
     assert verdict(w("Funke, Sabrina", "1943.03.16", "Paradizna", "1983.08.28", "ARSTOTZKA") + o("IDENTITY CARD", "DOE.P43.05.24"), 5) == "deny"
     assert verdict(w("Hill. Eve", "1927.09.18", "East Grestin", "1983.04.15", "ARSTOTZKA") + o("IDENTITY CARD", "HILL,", "SVETLANA", "227.09.18"), 8) == "deny"
     assert verdict(w("Fouchier, Julia", "DDE. 1953.01.05", "Orvech Vonor", "1984.09.29", "ARSTOTZHA") + o("IDENTITY CARD", "FOUCHIER:", "JULIA", "353.01.05"), 8) == "approve"
-    assert verdict(w("Drex, Corman", "1936.11.29", "Paradizna", "1984.04.19", "ARSTOTZHA") + o("IDENTITY CARD", "DREX,", "CORMAN", "1926.11.29"), 8) == "deny"
+    assert verdict(w("Drex, Corman", "1945.02.10", "Paradizna", "1984.06.08", "ARSTOTZHA") + o("IDENTITY CARD", "DREX,", "CORMANI", "845.03.10"), 8) == "approve"
+    kar = w("UNITED FEDERATION", "Gulieva, Karina", "Great Rapid", "1983.10.25", "600JL-DFSHG") + o("hereby granted to", "KARINA GULIEVA", "600JL-DFSHG", "WORK", "1982.12.20", "Minirtry of Laber", "HOLDER", "KARINA GULIEVA")
+    assert verdict(kar, 8) == "approve" and verdict(kar + [{"t": "I am here to visit.", "x": 150, "y": 120}], 8) == "deny" and verdict(kar + [{"t": "I plan to Horh.", "x": 150, "y": 120}], 8) == "approve"
     norma = w("Tarnoff, Norma", "| 1938.03.15", "East Grestin", "1983.06.12", "ARSTOTZKA")
     assert verdict(norma + o("IDENTITY CARD", "7920.03.15"), 4) == "deny" and verdict(norma + o("IDENTITY CARD", "1938.03.15"), 4) == "approve"
     assert verdict(aza + o("MICHE PIETROWSHA", "MAHUFACTURING"), 7) == "deny" and verdict(aza + o("AZA HUDSONSHO", "MAHUFACTURING"), 7) == "approve" and verdict(aza + o("AZA HUDSONSHO", "FISHING"), 7) == "approve"
