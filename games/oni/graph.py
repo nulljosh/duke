@@ -4,7 +4,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 HERE = Path(__file__).resolve().parent
-COLOURS = {1: (176, 96, 80), 2: (70, 140, 200), 3: (90, 160, 90), 4: (200, 150, 40)}
+COLOURS = {1: (176, 96, 80), 2: (70, 140, 200), 3: (90, 160, 90), 4: (200, 150, 40), 5: (140, 90, 190)}
 
 
 def runs():
@@ -33,9 +33,10 @@ def draw(out):
     try: font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 22)
     except OSError: font = ImageFont.load_default()
     d.text((60, 20), "Oxygen Not Included, cycle by cycle", fill=(20, 20, 20), font=font)
-    for i, (c, col) in enumerate(COLOURS.items()): d.rectangle([760 + i * 200, 26, 780 + i * 200, 40], fill=col); d.text((790 + i * 200, 20), f"colony {c}", fill=(40, 40, 40), font=font)
-    panel(d, (110, 110, 1140, 360), "Dupes alive", "dupes", 4, data, font)
-    panel(d, (110, 450, 1140, 700), "Food in stock (kcal, game meter)", "foodKcal", 16000, data, font)
+    for i, (c, col) in enumerate(COLOURS.items()): d.rectangle([520 + i * 135, 26, 540 + i * 135, 40], fill=col); d.text((548 + i * 135, 20), f"colony {c}", fill=(40, 40, 40), font=font)
+    top = max(16000, max(r["foodKcal"] for rows in data.values() for r in rows))
+    panel(d, (110, 110, 1140, 360), "Dupes alive", "dupes", 6, data, font)
+    panel(d, (110, 450, 1140, 700), "Food in stock (kcal, game meter)", "foodKcal", -(-top // 10000) * 10000, data, font)
     img.save(out); return out
 
 
