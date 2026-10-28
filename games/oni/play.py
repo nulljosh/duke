@@ -17,7 +17,8 @@ PLAN = [("Outhouse", 178, 120, 9), ("WashBasin", 181, 120, 8),
         ("Bed", 191, 125, 6), ("Bed", 193, 125, 6), ("Bed", 195, 125, 6),
         ("MineralDeoxidizer", 199, 120, 5),
         *[("Tile", x, 124, 8) for x in (194, 196, 197, 198, 199)],   # holes in the bedroom floor
-        ("MicrobeMusher", 196, 120, 8), ("Battery", 198, 120, 7), ("LiquidPumpingStation", 203, 118, 8)]
+        ("MicrobeMusher", 196, 120, 8), ("Battery", 198, 120, 7), ("LiquidPumpingStation", 203, 118, 8),
+        ("AlgaeHabitat", 197, 125, 8), ("AlgaeHabitat", 199, 125, 8), ("PlanterBox", 186, 124, 6)]   # air on the CO2-heavy bedroom floor
 STRAY = [[x, y] for x in (200, 201) for y in range(115, 119)]   # a pump blueprint that landed beside the pool
 WIRES = [[x, y] for y in (120, 121) for x in range(191, 200)]   # the ports sit on either row, so wire both and join them
 DIGS = [[x, y] for y in (124,) for x in (190,)] + [[x, y] for y in (125, 126) for x in range(190, 201)]   # the bedroom above
@@ -60,4 +61,4 @@ def run(until):
 
 
 if __name__ == "__main__":
-    run(int(sys.argv[1]) if len(sys.argv) > 1 else 11)
+    run(int(sys.argv[1]) if len(sys.argv) > 1 else 30)

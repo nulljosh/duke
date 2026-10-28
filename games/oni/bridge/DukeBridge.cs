@@ -102,7 +102,7 @@ public static class Ops
             speed = SpeedControlScreen.Instance.GetSpeed(), paused = SpeedControlScreen.Instance.IsPaused,
             width = Grid.WidthInCells, height = Grid.HeightInCells, pod = new[] { podXY.x, podXY.y },
             immigrants = Immigration.Instance.ImmigrantsAvailable,
-            foodKcal = Components.Edibles.Items.Where(e => e != null && e.GetMyWorldId() == ClusterManager.Instance.activeWorldId).Sum(e => e.Calories) / 1000f,
+            foodKcal = WorldResourceAmountTracker<RationTracker>.Get().CountAmount(null, inv, true) / 1000f,   // the number the game's food meter shows
             research = tech?.tech.Id, researchDone = db.Techs.resources.Where(t => t.IsComplete()).Select(t => t.Id).ToArray(),
             dupes, have, buildings, pending,
         };
@@ -226,6 +226,28 @@ public static class Ops
                 int n = (int?)j["count"] ?? -1;
                 fab.SetRecipeQueueCount(r, n < 0 ? ComplexFabricator.QUEUE_INFINITE : n);
                 return new { ok = true, recipe = r.id };
+            }
+            case "printables":   // open the Printing Pod's picker and list what it offers (dupes by name, care packages by item)
+            {
+                var screen = ImmigrantScreen.instance;
+                if (screen == null || !screen.gameObject.activeInHierarchy) { ImmigrantScreen.InitializeImmigrantScreen(Components.Telepads.Items[0]); return new { ok = true, opened = true }; }
+                var list = Traverse.Create(screen).Field("containers").GetValue<System.Collections.IList>();
+                return list.Cast<object>().Select(c => c is CarePackageContainer cp ? "package " + Traverse.Create(cp).Field("info").Field("id").GetValue<string>() + " x" + Traverse.Create(cp).Field("info").Field("quantity").GetValue<float>()
+                    : c is CharacterContainer cc ? "dupe " + Traverse.Create(cc).Field("stats").Field("Name").GetValue<string>() : c.ToString()).ToArray();
+            }
+            case "print":   // {"index"}: take that offer and print it
+            {
+                var screen = ImmigrantScreen.instance;
+                var list = Traverse.Create(screen).Field("containers").GetValue<System.Collections.IList>();
+                ((ITelepadDeliverableContainer)list[(int)j["index"]]).SelectDeliverable();
+                AccessTools.Method(typeof(CharacterSelectionController), "OnProceed").Invoke(screen, new object[0]);
+                return new { ok = true };
+            }
+            case "mop":   // {"cells": [[x, y], ...]}: mop up shallow liquid there
+            {
+                var m = AccessTools.Method(typeof(MopTool), "OnDragTool");
+                foreach (var c in j["cells"]) m.Invoke(MopTool.Instance, new object[] { Grid.XYToCell((int)c[0], (int)c[1]), 0 });
+                return new { ok = true };
             }
             case "speed": SpeedControlScreen.Instance.SetSpeed((int)j["speed"]); if ((bool?)j["play"] ?? true) SpeedControlScreen.Instance.Unpause(false); return new { ok = true };
             case "pause": SpeedControlScreen.Instance.Pause(false); return new { ok = true };
