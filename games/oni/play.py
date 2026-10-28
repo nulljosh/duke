@@ -12,7 +12,8 @@ RESEARCH = ["FarmingTech", "PowerRegulation", "Jobs", "AdvancedResearch", "Impro
             "BasicRocketry", "SkyDetectors", "MedicineI"]   # Distillation: the Water Sieve. Everything past Combustion needs the Super Computer's points
 WIRES = [[x, y] for y in (120, 121) for x in range(191, 200)] + [[200, 121], [201, 121], [202, 121], [201, 122], [202, 122]]   # ports sit on either row, so wire both and join them; the tail feeds musher 2
 WIRES += [[x, 120] for x in range(169, 176)] + [[x, 121] for x in range(169, 191)]   # west wing: the coal generator and the Super Computer
-PLANTERS = [(198, 125), (200, 125)]
+PLANTERS = [(x, 125) for x in range(177, 189)] + [(x, 125) for x in range(197, 201)]   # 16 Mealwood, no water: the farm over the west room and the bedroom's end
+COLONY = 6
 # id, x, y, priority. 2-wide buildings sit on x and x+1, 3-wide ones are centred on x. The room is x177-200, y120-123.
 PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         ("ManualGenerator", 191, 120, 7), ("ResearchCenter", 193, 120, 6),
@@ -23,7 +24,7 @@ PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         *[("Ladder", 190, y, 5) for y in range(120, 126)],
         *[("Tile", x, 124, 5) for x in range(191, 200)],   # the bedroom floor, whatever the dig leaves of it
         ("Bed", 191, 125, 5), ("Bed", 193, 125, 5), ("Bed", 195, 125, 5),
-        ("AlgaeHabitat", 197, 125, 5), ("AlgaeHabitat", 199, 125, 5),
+        *[("Tile", x, 124, 6) for x in range(177, 190)],   # the farm floor, where the rock is open
         *[("PlanterBox", x, y, 5) for x, y in PLANTERS],
         *[("Ladder", 180, y, 6) for y in range(108, 120)],
         *[("Tile", x, 109, 9) for x in (181, 182, 183)],   # the corridor crosses an open cavity there
@@ -41,7 +42,7 @@ SHAFT = [[180, y] for y in range(119, 99, -1)]   # down to the dirt below the fl
 SPINE = [[189, y] for y in range(124, 138)]   # up from the bedroom level, the same way
 MINES = [[x, y] for y0 in (101, 105, 129, 133) for y in (y0, y0 + 1) for x in range(155, 216)]   # corridors off the shaft and spine
 LOWER = [[x, y] for y in (110, 111) for x in range(150, 220)]   # a corridor off the bottom of the shaft, both ways
-UPPER = [[x, y] for y in range(124, 128) for x in range(177, 190)]   # air volume above the west room, so the diffuser never hits max pressure
+UPPER = [[x, y] for y in range(125, 128) for x in range(177, 190)]   # the farm: planters on y125 with headroom, off the ladder at x190
 
 
 def log(*a): print(time.strftime("%H:%M:%S"), *a, flush=True)
@@ -127,9 +128,9 @@ def run(until):
         if s["cycle"] != last_cycle:
             last_cycle = s["cycle"]
             oni.cmd(op="camera", x=BASE[0], y=BASE[1], zoom=14); time.sleep(1)
-            shot = HERE / "shots" / f"c5-cycle-{s['cycle']:03d}.png"; shot.parent.mkdir(exist_ok=True)
+            shot = HERE / "shots" / f"c{COLONY}-cycle-{s['cycle']:03d}.png"; shot.parent.mkdir(exist_ok=True)
             shutil.copy(oni.shot(), shot)
-            row = {"colony": 5, "cycle": s["cycle"], "dupes": len(s["dupes"]), "foodKcal": round(s["foodKcal"]), "research": s["research"],
+            row = {"colony": COLONY, "cycle": s["cycle"], "dupes": len(s["dupes"]), "foodKcal": round(s["foodKcal"]), "research": s["research"],
                    "done": len(s["researchDone"]), "buildings": len(s["buildings"]),
                    "worst": min(((d["name"], round(d["breath"]), round(d["stress"]), round(d["kcal"])) for d in s["dupes"]), key=lambda d: d[3])}
             with open(HERE / "progress.jsonl", "a") as f: f.write(json.dumps(row) + "\n")
@@ -152,13 +153,13 @@ def run(until):
             oni.cmd(op="safedig", cells=SPINE, floor=119, prio=5); oni.cmd(op="safedig", cells=near(MINES, 999), floor=100, prio=4, max=20)
             oni.cmd(op="dig", cells=[[188, 109], [188, 108]], prio=8)   # the ladder down to the second pump; touches the pool on purpose
             oni.cmd(op="safedig", cells=[[184, y] for y in range(112, 119)] + [[179, 109], [179, 108]], floor=100, prio=8)   # dirt beside the ladders
-            topup(s["have"], "Dirt", 600); topup(s["have"], "Algae", 300); floor(); explore(s); seeds(); printables(s); skills()
+            topup(s["have"], "Dirt", 1500); topup(s["have"], "Algae", 300); floor(); explore(s); seeds(); printables(s); skills()
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
             oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=201, y=121, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
         if not mush and oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush = True; log("mush bars queued")
         if not mush2 and oni.cmd(op="queue", x=201, y=121, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush2 = True; log("musher 2 queued")
         for x, y in PLANTERS:
-            if x not in planted and oni.cmd(op="plant", x=x, y=y, seed="BasicPlantSeed").get("ok"): planted.add(x); log("mealwood ordered", x)
+            if (x, y) not in planted and oni.cmd(op="plant", x=x, y=y, seed="BasicPlantSeed").get("ok"): planted.add((x, y)); log("mealwood ordered", x, y)
         time.sleep(10)
 
 
