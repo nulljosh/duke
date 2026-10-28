@@ -48,7 +48,8 @@ def night():
     img = play.shot(); rgb = Image.open(play.SHOT).convert("RGB"); words = play.ocr()
     rows, total = ledger(words)
     checked = [rgb.getpixel((RADIO_X, round(r["y"])))[0] > 150 for r in rows]
-    want, left = plan(rows, total, checked, status(rgb, rows))
+    fam = status(rgb, rows); want, left = plan(rows, total, checked, fam)
+    print("ledger", total, [(r["t"], r["who"], c) for r, c in zip(rows, checked)], {k: v for k, v in fam.items() if v["sick"]}, flush=True)   # why a row was or wasn't bought
     for _ in range(3):   # click, then read the radios back: a missed click here is a dead family member tomorrow
         for r, c in zip(rows, checked):
             if (r in want) != c: play.click((RADIO_X, round(r["y"]))); time.sleep(0.4)
