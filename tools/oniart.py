@@ -67,16 +67,76 @@ def base(img, rng, x0, y0, x1, y1, alive):
             q = max(0, 1 - math.hypot((x - cx) / (2.6 * r), (y - gy) / (1.5 * r))) ** 1.6
             if q: px[x, y] = tuple(min(255, int(c + (wc - c) * q * .8)) for c, wc in zip(px[x, y], WARM))
     d = ImageDraw.Draw(img)
-    d.rectangle([cx - r + 4, gy, cx + r - 4, y1], fill=(255, 244, 210)); d.ellipse([cx - r + 4, gy - r + 4, cx + r - 4, gy + r - 4], fill=(255, 244, 210))
+    hole = Image.new("L", img.size, 0); hd = ImageDraw.Draw(hole)   # the opening: white-hot at the core, warm at the rim
+    hd.rectangle([cx - r + 4, gy, cx + r - 4, y1], fill=255); hd.ellipse([cx - r + 4, gy - r + 4, cx + r - 4, gy + r - 4], fill=255); hp = hole.load()
+    for y in range(int(gy - r), y1 + 1):
+        for x in range(cx - r, cx + r + 1):
+            if hp[x, y]: q = min(1, math.hypot((x - cx) / r, (y - (gy + r * .3)) / (r * 1.3))); px[x, y] = tuple(int(a + (b - a) * q ** 1.4) for a, b in zip((255, 252, 236), hexc("#f2b85a")))
+    d = ImageDraw.Draw(img)
     for t in (0, 1):   # two pillars and the arch over them
         d.rectangle([cx - r - 3 + t * (2 * r - 1), gy, cx - r + 4 + t * (2 * r - 1), y1], fill=hexc("#d8ceb4"), outline=INK)
     d.arc([cx - r - 3, gy - r - 3, cx + r + 3, gy + r + 3], 180, 360, fill=hexc("#d8ceb4"), width=7); d.arc([cx - r - 3, gy - r - 3, cx + r + 3, gy + r + 3], 180, 360, fill=INK, width=1)
     d.ellipse([cx - 6, gy - r - 9, cx + 6, gy - r + 3], fill=WARM, outline=INK)
     sz = 2 if (y1 - y0) > 90 else 1
-    for i in range(alive): dupe(d, (cx - r - 22 - i * 26) if i % 2 == 0 else (cx + r + 22 + (i - 1) * 26), y1, sz, rng)
-    for _ in range(26):   # oxygen bubbles drifting up from the diffuser end of the room
-        bx, by = rng.randint(x0 + 4, x1 - 4), rng.randint(y0 + 2, y1 - 6); rr = rng.choice([1, 1, 2])
-        d.ellipse([bx - rr, by - rr, bx + rr, by + rr], outline=AIR)
+    furnish(d, x0, x1, y1, cx, r, sz)
+    spots = [cx - r - 5 * sz, cx + r + 7 * sz, x1 - 8 * sz, x0 + 6 * sz]   # in the gaps: cot to arch, arch to desk, past the planter
+    for i in range(alive): dupe(d, spots[i % len(spots)], y1, sz, rng)
+    for i in range(12):   # oxygen rising off the diffuser by the planter, wobbling as it goes
+        t = i / 12; bx = x1 - 14 * sz + 5 * math.sin(i * 1.7) * sz; by = y1 - 16 * sz - t * (y1 - y0 - 26 * sz); rr = (2 + (i % 3 == 0)) * sz // 2 + 1
+        d.ellipse([bx - rr, by - rr, bx + rr, by + rr], outline=AIR); d.point((bx - rr // 2, by - rr // 2), (255, 255, 255))
+    d.rectangle([x0 - 2, y0 - 6, x1 + 2, y0 - 1], fill=hexc("#cfc6b0"), outline=INK)   # a tiled ceiling and dark rims, so the room is dug, not pasted
+    for x in range(x0, x1, 8): d.line([(x, y0 - 5), (x, y0 - 2)], fill=hexc("#9a917c"))
+    d.line([(x0 - 1, y0), (x0 - 1, y1)], fill=INK, width=2); d.line([(x1 + 1, y0), (x1 + 1, y1)], fill=INK, width=2)
+
+
+def furnish(d, x0, x1, y1, cx, r, s):
+    """A cot, the research desk with its screen, an outhouse and a planter of mealwood, the colony's first rooms."""
+    ox = x0 + 10 * s   # the outhouse, a little hut with a moon in the door
+    d.rectangle([ox, y1 - 14 * s, ox + 9 * s, y1 - 1], fill=hexc("#8a6a48"), outline=INK); d.polygon([(ox - s, y1 - 14 * s), (ox + 4 * s, y1 - 18 * s), (ox + 10 * s, y1 - 14 * s)], fill=hexc("#5a4430"), outline=INK)
+    d.arc([ox + 3 * s, y1 - 11 * s, ox + 6 * s, y1 - 8 * s], 300, 120, fill=WARM)
+    bx = ox + 16 * s   # a cot: frame, mattress, a blanket in the colony red
+    d.rectangle([bx, y1 - 5 * s, bx + 16 * s, y1 - 3 * s], fill=hexc("#d8d0bc"), outline=INK); d.rectangle([bx + 5 * s, y1 - 6 * s, bx + 16 * s, y1 - 4 * s], fill=hexc("#b8443a"))
+    d.line([(bx, y1 - 3 * s), (bx, y1)], fill=INK); d.line([(bx + 16 * s, y1 - 3 * s), (bx + 16 * s, y1)], fill=INK)
+    rx = cx + r + 12 * s   # the research station: a desk, a glowing screen, a flask
+    d.rectangle([rx, y1 - 7 * s, rx + 16 * s, y1 - 5 * s], fill=hexc("#7a5a3a"), outline=INK); d.line([(rx + s, y1 - 5 * s), (rx + s, y1)], fill=INK); d.line([(rx + 15 * s, y1 - 5 * s), (rx + 15 * s, y1)], fill=INK)
+    d.rectangle([rx + 3 * s, y1 - 15 * s, rx + 11 * s, y1 - 8 * s], fill=hexc("#7fe0c0"), outline=INK); d.line([(rx + 5 * s, y1 - 12 * s), (rx + 9 * s, y1 - 12 * s)], fill=hexc("#2a6a5a"))
+    d.ellipse([rx + 12 * s, y1 - 10 * s, rx + 15 * s, y1 - 7 * s], fill=hexc("#c86ad0"), outline=INK)
+    px = x1 - 26 * s   # a planter box of mealwood
+    d.rectangle([px, y1 - 4 * s, px + 12 * s, y1 - 1], fill=hexc("#6a4a30"), outline=INK)
+    for i in range(4):
+        lx = px + 2 * s + i * 3 * s; d.line([(lx, y1 - 4 * s), (lx - s, y1 - 9 * s - (i % 2) * 2 * s)], fill=hexc("#7ac04a"), width=s)
+        d.ellipse([lx - 2 * s, y1 - 11 * s - (i % 2) * 2 * s, lx + s, y1 - 8 * s - (i % 2) * 2 * s], fill=hexc("#a8d86a"), outline=hexc("#3e6a24"))
+
+
+def light(img, box, top, warm=.55):
+    """The rock falls off into the dark away from the base, and the rooms spill warm light onto what is near them."""
+    x0, y0, x1, y1 = box; px = img.load(); R = 150
+    for y in range(int(top), img.height):
+        for x in range(img.width):
+            if x0 <= x <= x1 and y0 <= y <= y1 + 4: continue
+            dx = max(x0 - x, 0, x - x1); dy = max(y0 - y, 0, y - y1); q = max(0, 1 - math.hypot(dx, dy * 1.2) / R)
+            f = .3 + .7 * q ** 1.3; c = px[x, y]
+            px[x, y] = tuple(min(255, int(v * f + (wv - v) * f * q * q * warm * .35)) for v, wv in zip(c, WARM))
+
+
+def pocket(d, x, y, w, h, rng):
+    """A cave of water under the base: dark rock rim, the pool filling the lower part, light on its surface."""
+    d.ellipse([x - 3, y - 3, x + w + 3, y + h + 3], fill=hexc("#120e0c")); d.ellipse([x, y, x + w, y + h], fill=hexc("#1e2a33"))
+    sy = y + h * .35
+    d.chord([x, y, x + w, y + h], 0, 180, fill=WATER); d.rectangle([x + 3, sy, x + w - 3, y + h / 2], fill=WATER)
+    d.line([(x + 4, sy), (x + w - 4, sy)], fill=AIR); d.line([(x + w * .25, sy + 3), (x + w * .55, sy + 3)], fill=hexc("#7ab8e8"))
+    for _ in range(5): bx, by = rng.uniform(x + 8, x + w - 8), rng.uniform(sy + 6, y + h - 6); d.point((bx, by), hexc("#9ad0f8"))
+
+
+def geode(d, cx, cy, rng):
+    """The world's geode trait: a cracked cavity of violet crystal catching the light."""
+    d.ellipse([cx - 26, cy - 18, cx + 26, cy + 18], fill=hexc("#140e18"), outline=INK); d.ellipse([cx - 22, cy - 15, cx + 22, cy + 15], fill=hexc("#2a1c38"))
+    for _ in range(16):
+        a = rng.uniform(0, 6.28); r0 = rng.uniform(14, 20); bx, by = cx + r0 * math.cos(a) * 1.1, cy + r0 * math.sin(a) * .72
+        tx, ty = cx + (bx - cx) * .35, cy + (by - cy) * .35; hw = rng.uniform(2.5, 4)
+        nx, ny = -(ty - by), tx - bx; n = math.hypot(nx, ny) or 1; nx, ny = nx / n * hw, ny / n * hw
+        c = rng.choice([hexc("#b07ae8"), hexc("#8a5ad0"), hexc("#d8b0ff")])
+        d.polygon([(bx + nx, by + ny), (tx, ty), (bx - nx, by - ny)], fill=c, outline=hexc("#4a2a6a")); d.line([(bx + nx * .4, by + ny * .4), (tx, ty)], fill=hexc("#f0e0ff"))
 
 
 def oni(kind):
@@ -91,19 +151,24 @@ def oni(kind):
     for _ in range(90 if not desktop else 160): d.point((rng.randrange(w), rng.randrange(sky + 20)), rng.choice([hexc("#8a9ab8"), hexc("#d8e4ff")]))
     if desktop: bx0, by0, bx1, by1 = w // 2 - 170, h // 2 - 40, w // 2 + 170, h // 2 + 40
     else: bx0, by0, bx1, by1 = 14, h // 2 - 110, w - 14, h // 2 + 10
+    pocket(ImageDraw.Draw(img), bx1 - (96 if desktop else 78), by1 + 34, 70 if desktop else 60, 40, rng)
+    light(img, (bx0, by0, bx1, by1), sky + 20)
+    gx, gy = (w // 4, h - 120) if not desktop else (w - 120, h - 70); px = img.load()
+    for y in range(gy - 46, gy + 46):   # its own violet glow, since the base light never reaches this deep
+        for x in range(max(0, gx - 64), min(w, gx + 64)):
+            q = max(0, 1 - math.hypot((x - gx) / 60, (y - gy) / 42)) ** 2; px[x, y] = tuple(min(255, int(c + (v - c) * q * .75)) for c, v in zip(px[x, y], hexc("#9a6ad8")))
+    geode(ImageDraw.Draw(img), gx, gy, rng)
     base(img, rng, bx0, by0, bx1, by1, alive); d = ImageDraw.Draw(img)
-    px0, py0 = bx1 - (90 if desktop else 70), by1 + 30   # a water pocket below the base, its surface catching the light
-    d.ellipse([px0, py0, px0 + (70 if desktop else 52), py0 + 44], fill=WATER, outline=hexc("#1c3a5c")); d.line([(px0 + 8, py0 + 10), (px0 + 44, py0 + 10)], fill=AIR)
     for y in range(h - 70, h):   # CO2 pools at the bottom, heavier than air
         t = (y - (h - 70)) / 70
         for x in range(w):
             r, g, b = img.getpixel((x, y)); img.putpixel((x, y), tuple(int(c * (1 - .55 * t) + q * .55 * t) for c, q in zip((r, g, b), CO2)))
-    d = ImageDraw.Draw(img); s = 2
-    lines = [f"COLONY {colony}", f"CYCLE {cycle}", f"{alive} ALIVE"]
-    ty = by1 + (110 if not desktop else 60)
-    for i, line in enumerate(lines):
-        tx = (w - width(line, s)) // 2; y = ty + i * 9 * s
-        text(d, tx + 1, y + 1, line, INK, s); text(d, tx, y, line, WARM if i == 1 else hexc("#f0ecd8"), s)
+    d = ImageDraw.Draw(img)
+    big, small = f"CYCLE {cycle}", f"COLONY {colony}  {alive} ALIVE"; ty = by1 + (112 if not desktop else 64)
+    for word, sc, col, y in ((big, 4, WARM, ty), (small, 2, hexc("#f0ecd8"), ty + 40)):   # one big number, one quiet line
+        tx = (w - width(word, sc)) // 2
+        for ox, oy in ((-1, 0), (1, 0), (0, -1), (0, 1), (2, 2)): text(d, tx + ox, y + oy, word, INK, sc)
+        text(d, tx, y, word, col, sc)
     f = 6 if desktop else 4
     vignette(img, f); ImageDraw.Draw(img).rectangle([f, f, w - 1 - f, h - 1 - f], outline=hexc("#6a5a44"))
     img = dither(img.resize((w * 2, h * 2), Image.NEAREST), 6)
