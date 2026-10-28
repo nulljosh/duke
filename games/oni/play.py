@@ -9,7 +9,7 @@ HERE = Path(__file__).resolve().parent
 BASE = (190, 122)   # camera centre for the cycle shots
 RESEARCH = ["FarmingTech", "PowerRegulation", "Jobs", "AdvancedResearch", "ImprovedOxygen", "SanitationSciences", "FineDining",
             "BasicRefinement", "Combustion", "MedicineI", "Agriculture"]
-WIRES = [[x, y] for y in (120, 121) for x in range(191, 200)]   # ports sit on either row, so wire both and join them
+WIRES = [[x, y] for y in (120, 121) for x in range(191, 200)] + [[200, 121], [201, 121], [202, 121], [201, 122], [202, 122]]   # ports sit on either row, so wire both and join them; the tail feeds musher 2
 # id, x, y, priority. 2-wide buildings sit on x and x+1, 3-wide ones are centred on x. The room is x177-200, y120-123.
 PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         ("ManualGenerator", 191, 120, 7), ("ResearchCenter", 193, 120, 6),
@@ -26,7 +26,8 @@ PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         *[("Tile", x, 109, 9) for x in (181, 182, 183)],   # the corridor crosses an open cavity there
         ("LiquidPumpingStation", 189, 105, 8), ("Ladder", 188, 108, 7), ("Ladder", 188, 109, 7),   # the second pool, under the corridor
         *[("Ladder", 184, y, 7) for y in range(112, 119)],   # up from the corridor through a streak of dirt
-        *[("Ladder", 180, y, 6) for y in range(100, 108)], *[("Ladder", 189, y, 5) for y in range(126, 138)]]   # the mine grid's spines   # between the terrariums, on the bedroom floor
+        *[("Ladder", 180, y, 6) for y in range(100, 108)], *[("Ladder", 189, y, 5) for y in range(126, 138)],   # the mine grid's spines
+        ("MicrobeMusher", 201, 121, 8)]   # a second musher on the pool ledge: one can't cook for six   # between the terrariums, on the bedroom floor
 ROOM = [[x, y] for y in range(120, 124) for x in [*range(177, 183), *range(191, 201)]]
 BEDROOM = [[190, 124]] + [[x, y] for y in (125, 126) for x in range(190, 201)]
 LEDGE = [[201, y] for y in (121, 122, 123)] + [[202, y] for y in (121, 122, 123)]   # over a one-tile dam at y120: the pool keeps most of its water
@@ -93,7 +94,7 @@ def printables(s):
 
 
 def run(until):
-    done, tries, last_cycle, mush, planted, t_link, clock = set(), {}, None, False, set(), 0, None
+    done, tries, last_cycle, mush, mush2, planted, t_link, clock = set(), {}, None, False, False, set(), 0, None
     for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): log("dig", oni.cmd(op="safedig", cells=cells, floor=119, prio=prio))
     log("ledge", oni.cmd(op="dig", cells=LEDGE, prio=6))   # touches the pool on purpose
     while True:
@@ -134,8 +135,9 @@ def run(until):
             oni.cmd(op="safedig", cells=[[184, y] for y in range(112, 119)] + [[179, 109], [179, 108]], floor=100, prio=8)   # dirt beside the ladders
             topup(s["have"], "Dirt", 600); topup(s["have"], "Algae", 300); floor(); explore(s); seeds(); printables(s)
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
-            oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
+            oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=201, y=121, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
         if not mush and oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush = True; log("mush bars queued")
+        if not mush2 and oni.cmd(op="queue", x=201, y=121, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush2 = True; log("musher 2 queued")
         for x in (198, 200):
             if x not in planted and oni.cmd(op="plant", x=x, y=125, seed="BasicPlantSeed").get("ok"): planted.add(x); log("mealwood ordered", x)
         time.sleep(10)
