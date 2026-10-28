@@ -22,6 +22,9 @@ def ledger(words):
     rows = []
     for w in words:
         t = w["t"].upper()
+        if 360 < w["x"] < 600 and w["y"] > 220 and re.search(r"GIFT|EZIC", t):   # days 11 and 12: burn EZIC's gift (keeping it is ending 4)
+            amt = next((int(re.sub(r"\D", "", v["t"])) for v in words if v["x"] > 650 and abs(v["y"] - w["y"]) < 10 and re.search(r"\d", v["t"])), 0)
+            rows.append({"t": t, "y": w["y"], "cost": -amt, "who": None})   # income: a negative cost
         if 360 < w["x"] < 600 and w["y"] > 220 and re.search(r"FOOD|HEAT|MEDIC|UPGRADE", t):
             cost = next(v for k, v in COSTS.items() if k in t)   # ponytail: fixed prices; read the -N column if they ever change
             who = next((k for k, alts in WHO.items() if any(a in t for a in alts)), None)
@@ -116,6 +119,9 @@ def _check():
     fam = {k: {"very": k == "UNCLE", "sick": k in ("UNCLE", "SON"), "cold": True, "hungry": True} for k in ("WIFE", "SON", "MIL", "UNCLE")}
     want, left = plan(rows, 15, [False] * 4, fam)
     assert [r["t"] for r in want] == ["MEDICINE (UNCLE)", "MEDICINE (SON)"] and left == 5   # food (20) doesn't fit, the son's medicine does
+    gift = {"t": "EZIC GIFT", "y": 5, "cost": -1000, "who": None}
+    want, left = plan(rows + [gift], 1040, [False] * 4 + [True], fam)   # the gift was ticked: untick it, spend only our own 40
+    assert gift not in want and left == 0
     want, left = plan(rows, 40, [False] * 4, fam)
     assert [r["t"] for r in want] == ["MEDICINE (UNCLE)", "FOOD", "MEDICINE (SON)", "HEAT"] and left == 0
 
