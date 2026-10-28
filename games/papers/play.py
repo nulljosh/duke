@@ -72,6 +72,10 @@ FACEBOX, FACE = (60, 250, 300, 445), None
 SAME, EMPTY = 0, None   # the desk as it looks with nothing new on it, refreshed before each entrant
 
 
+KEEP = r"CIT.{1,3}TION|PROTOCOL|PENALTY|WARNING|PINK|FANTAS|НАН|BROTHEL|TRUST HI"   # citations, the Pink Vice ad, the note: ours to keep
+def parked(x, y): return x > 850 and y > 540
+
+
 def blob(img, base, box, skip=()):
     """Centre of the busiest cell of whatever changed inside box, so a grab lands on paper and not between two sheets."""
     diff = ImageChops.difference(img.crop(box), base).point(lambda v: 255 if v > 40 else 0)
@@ -79,8 +83,16 @@ def blob(img, base, box, skip=()):
     w, h = diff.size; cw, ch = w // 8, h // 6
     cells = [(ImageStat.Stat(diff.crop((x, y, x + cw, y + ch))).mean[0], box[0] + x + cw // 2, box[1] + y + ch // 2)
              for x in range(0, w - cw + 1, cw) for y in range(0, h - ch + 1, ch)]
-    score, cx, cy = max([c for c in cells if c[1:] not in skip] or [(0, 0, 0)])
+    score, cx, cy = max([c for c in cells if c[1:] not in skip and not parked(*c[1:])] or [(0, 0, 0)])
     return (cx, cy) if score > 60 else None
+
+
+def keep_gifts():
+    """Park the papers that are ours by their printed title, so the sweep hands back only what the entrant owns."""
+    for _ in range(4):
+        shot(); w = next((w for w in ocr() if re.search(KEEP, w["t"].upper()) and not parked(w["x"], w["y"]) and w["x"] > 360 and w["y"] > 236), None)
+        if not w: return
+        drag((w["x"], min(w["y"] + 15, 650)), PARK); time.sleep(0.6)
 
 
 def sweep(to, tries=6):
@@ -172,15 +184,13 @@ def at_booth(img):   # the counter strip is olive in the booth and black on the 
 def entrant(day, base):
     global EMPTY, SAME, FACE
     if not at_booth(shot()): return None
-    sweep(PARK, 3) if EMPTY is not None else None; time.sleep(0.4); EMPTY = shot().crop(DBOX)   # citations and orphans go to the corner and become part of the desk
+    keep_gifts(); time.sleep(0.4); EMPTY = shot().crop(DBOX)   # the last citation goes to the corner; the desk as it is now is the baseline
     if sum("PENALTY" in w["t"].upper() for w in ocr()) >= 2: raise SystemExit("two penalties: stop and replay the day")
     click(HORN)
     t0 = time.time()
     while not doc_on_counter(img := shot(), base):
         if not at_booth(img): return None
-        if time.time() - t0 > 40:   # still in the booth: a missed horn, or someone waiting on a paper we parked
-            if not FACE or ImageStat.Stat(ImageChops.difference(img.crop(FACEBOX), FACE)).mean[0] < 8: drag(PARK, ENTRANT)
-            return "nobody came"
+        if time.time() - t0 > 40: return "nobody came"   # still in the booth: a missed horn, call again
         time.sleep(0.3)
     walk = time.time() - t0
     face = shot().crop(FACEBOX)
@@ -216,10 +226,10 @@ def missing_passport():
 
 
 def reveal(spots, words):
-    """Three papers overlap on this desk. Slide the top ones down out of the way, newest first, until the passport
+    """Three papers overlap on this desk. Lift each one, newest first, to the open middle of the desk until the passport
     shows; keep what was read before unless the passport now covers it."""
-    for spot in reversed(spots[1:]):
-        drag(spot, (spot[0], spot[1] + 230)); time.sleep(0.5); shot(); now = ocr()
+    for spot in reversed(spots):
+        drag(spot, (700, 330)); time.sleep(0.5); shot(); now = ocr()
         v = next((w for w in now if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
         if v: return now + [w for w in words if not (abs(w["x"] - v["x"]) < 125 and -150 < w["y"] - v["y"] < 210)]
     return None
@@ -234,7 +244,8 @@ def decide(day, spots, base=None):
             spot = (700, 560); drag(late, spot); spots.append(spot); time.sleep(0.6); return decide(day, spots, base)
         seen = reveal(spots, words)
         if seen: words = seen; v = verdict(words, day)
-        else: missing_passport(); shot(); words = ocr(); v = "deny"
+        elif day == 3 or not spots: missing_passport(); shot(); words = ocr(); v = "deny"   # a real no-passport entrant: interrogate
+        else: v = "deny"   # papers but no passport found: hand everything back rather than interrogate over a lost one
     visa = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
     if visa:   # the passport: slide its visa box under the chosen stamp
         grab = (visa["x"], min(visa["y"] + 150, 580))   # a temporary visa slip sits low on the desk
@@ -242,18 +253,21 @@ def decide(day, spots, base=None):
         drag(grab, drop); time.sleep(0.5)
         click(TRAY_OPEN); time.sleep(0.7); click((STAMP_X[v], 330)); time.sleep(0.7); click(TRAY_CLOSE); time.sleep(0.5)
         drag(drop, ENTRANT); time.sleep(0.5)
-    if EMPTY is not None: sweep(ENTRANT)   # everything else goes back too, notes and cards included
-    else:
-        for spot in spots: drag(spot, ENTRANT); time.sleep(0.5)
-    time.sleep(1)
-    for i in range(3):   # a paper dropped short lands on the counter: hand it up. Offered again, it is a gift (a note, a card): keep it
+    def give_back():
+        if EMPTY is None:
+            for spot in spots: drag(spot, ENTRANT); time.sleep(0.5)
+        else: keep_gifts(); sweep(ENTRANT)   # everything the entrant owns goes back; citations, ads and notes stay
+    give_back(); time.sleep(1)
+    for _ in range(3):   # something on the counter: a paper dropped short, or a gift handed over at the end (the note)
         left = base is not None and doc_on_counter(shot(), base)
         if not left: break
-        drag(left, ENTRANT if i == 0 else PARK); time.sleep(1.0)
+        drag(left, (700, 450)); time.sleep(0.6); spots = []; give_back(); time.sleep(1.0)
     return v, [w["t"] for w in words if w["x"] > 360 and w["y"] > 236]
 
 
 def _check():
+    assert all(re.search(KEEP, t.upper()) for t in ("M.O.H. CITHTION", "The Pink", "А нан наннеа Далі"))
+    assert not any(re.search(KEEP, t.upper()) for t in ("ENTRY VISA", "Ludum, Dari", "Minirtry of Laber"))
     empty, frame = Image.new("L", (750, 432)), Image.new("L", (1140, 668)); frame.paste(255, (660, 336, 860, 486))
     x, y = blob(frame, empty, DBOX); assert 660 <= x <= 860 and 336 <= y <= 486 and blob(Image.new("L", (1140, 668)), empty, DBOX) is None
     w = lambda *ts: [{"t": "ENTRY VISA", "x": 700, "y": 300}] + [{"t": t, "x": 700, "y": 400} for t in ts]

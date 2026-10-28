@@ -102,9 +102,10 @@ if __name__ == "__main__":
     elif "--resume" in sys.argv: pass   # already in the booth mid-day
     else:
         left, bought = night(); print("night", left, bought, flush=True)
+        if left < 0: sys.exit("night ends below zero: sleeping is game over. Cmd+Q and replay the day before")
         if not morning(): sys.exit("stuck before the booth")
     booth = subprocess.run([sys.executable, str(play.HERE / "play.py"), str(day)], capture_output=True, text=True); log = booth.stdout
-    (play.HERE / "runs").mkdir(exist_ok=True); (play.HERE / "runs" / f"day{day}.log").write_text(log + booth.stderr)   # each entrant's OCR, to write the next day's rules from
+    (play.HERE / "runs").mkdir(exist_ok=True); (play.HERE / "runs" / f"day{day}-{time.strftime('%H%M')}.log").write_text(log + booth.stderr)   # each entrant's OCR, to write the next day's rules from
     if booth.returncode: sys.exit(f"stuck in the booth: {booth.stderr.strip().splitlines()[-1:]}; quit before Sleep and run --replay")
     n = sum(1 for l in log.splitlines() if "('approve'" in l or "('deny'" in l)
     play.shot(); words = play.ocr(); rows, total = ledger(words)
