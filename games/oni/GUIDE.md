@@ -98,3 +98,11 @@ Tech IDs are also UNVERIFIED. The brief's examples (`FarmingTech`, `BasicResearc
 - Save-file tools (not live state): [oni-duplicity](https://github.com/RoboPhred/oni-duplicity) (MIT web editor) and [oni-save-parser](https://classic.yarnpkg.com/en/package/oni-save-parser) (MIT, npm). The README says save version 7.15, and the npm page says 7.17. Check the version against the current build.
 - Avoid romen-h/ONI-Mods and its fork Pertel/ONI-Mods. Their code is source-available with no reuse license.
 - No public ONI AI or bot project turned up in search. Duke's DukeBridge (`/Users/joshua/Documents/Code/duke/games/oni/bridge/DukeBridge.cs`) is the live-state route already in use: ops `state`, `grid`, `dig`, `build`, `research`, `techs`, `buildable`, `speed`, `pause`, `invoke`, `camera`. It starts Survival through `ModeSelectScreen.OnClickSurvival`.
+
+## 6. Survival numbers (colony 5)
+
+- Research stops after the first tier without a Super Computer (`AdvancedResearchCenter`). Every tech past it costs advanced points, Agriculture included, and colony 5 sat on Agriculture for cycles without one.
+- Water: a Microbe Musher batch is 75 kg water plus 75 kg dirt for 800 kcal, so 4 dupes need about 375 kg of water a cycle. The Water Sieve (`WaterPurifier`, tech `Distillation`) turns polluted water clean at up to 5 kg/s, using 1 kg/s of sand. Source: [Water Sieve](https://oxygennotincluded.wiki.gg/wiki/Water_Sieve).
+- A pitcher pump draws from the 4 cells under its bottom row, both columns, and stops at the first solid cell (`PumpingStationGuide.GetDepthAvailable`). One sand cell under pump 2 left it dry beside 2.5 t of water. Never dig wet cells while dupes work there: that dig drowned two of them.
+- Food: domestic Mealwood gives 200 kcal per plant per cycle, so a dupe needs 5 plants. Source: [Mealwood](https://oxygennotincluded.wiki.gg/wiki/Mealwood).
+- Power: the Coal Generator (`Generator`, tech `Combustion`) gives 600 W and burns 1 kg/s of coal. Source: [Coal Generator](https://oxygennotincluded.wiki.gg/wiki/Coal_Generator).
