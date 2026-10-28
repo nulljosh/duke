@@ -1,7 +1,7 @@
 """Run the colony: place the build plan as materials allow, keep research going, unpause, and save a screenshot and a
 progress row at the start of every cycle. python3 play.py [until_cycle]. The plan is for the Skewed Asteroid start
 (Printing Pod at 186,120); colony 1's lessons are in README.md."""
-import json, shutil, sys, time
+import json, shutil, subprocess, sys, time
 from pathlib import Path
 import oni
 
@@ -58,6 +58,7 @@ def run(until):
                    "worst": min(((d["name"], round(d["breath"]), round(d["stress"]), round(d["kcal"])) for d in s["dupes"]), key=lambda d: d[3])}
             with open(HERE / "progress.jsonl", "a") as f: f.write(json.dumps(row) + "\n")
             log("cycle", row)
+            subprocess.Popen([sys.executable, "oniart.py"], cwd=HERE.parent.parent / "tools", stdout=subprocess.DEVNULL)   # the phone wallpaper carries the cycle
             if s["cycle"] > until: return
         if not s["research"]:
             nxt = next((t for t in RESEARCH if t not in s["researchDone"]), None)
