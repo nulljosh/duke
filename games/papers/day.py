@@ -1,6 +1,7 @@
 """One command per day: the night's budget, sleep, the walk to work, the booth, a line in progress.jsonl and the graph.
 Run it from the night screen of the day before: `python3 day.py <next day>`."""
 import json, re, subprocess, sys, time
+from pathlib import Path
 from PIL import Image
 import play
 
@@ -84,21 +85,32 @@ def morning():
 
 def reload(day):
     """Replay a day from its morning save: quit without sleeping, relaunch through Steam, Story, pick the day."""
-    play.mine(); subprocess.run(["osascript", "-e", 'tell application "System Events" to keystroke "q" using command down']); time.sleep(4)   # Cmd+Q must hit the game, never his app
+    if play.HEADLESS: play.headless("q"); time.sleep(4)
+    else: play.mine(); subprocess.run(["osascript", "-e", 'tell application "System Events" to keystroke "q" using command down']); time.sleep(4)   # Cmd+Q must hit the game, never his app
     for _ in range(10):   # it can hang windowless after Cmd+Q, and a fresh launch then finds the old pid (2026-10-27)
         if subprocess.run(["pgrep", "PapersPlease"], capture_output=True).returncode: break
         time.sleep(2)
     else: subprocess.run(["pkill", "-x", "PapersPlease"]); time.sleep(3)
-    subprocess.run(["open", "steam://run/239030"])
+    launch()
     for i in range(60):   # Steam can take a couple of minutes; ask it again halfway
         time.sleep(3)
         pid = subprocess.run(["pgrep", "PapersPlease"], capture_output=True, text=True).stdout.split()
         if pid: break
-        if i == 30: subprocess.run(["open", "steam://run/239030"])
+        if i == 30: launch()
     else: sys.exit("Steam never started the game")
     time.sleep(12)
-    subprocess.run(["osascript", "-e", f'tell application "System Events" to set frontmost of (first process whose unix id is {pid[0]}) to true'])
+    play.HEADLESS = play.headless() is not None
+    if not play.HEADLESS: subprocess.run(["osascript", "-e", f'tell application "System Events" to set frontmost of (first process whose unix id is {pid[0]}) to true'])
     open_day(day)
+
+
+APP = Path.home() / "Library/Application Support/Steam/steamapps/common/PapersPlease/PapersPlease.app"
+def launch():
+    """In the background with headless.dylib inserted when it is built (SteamAppId keeps the Steam API from relaunching
+    it through Steam without the dylib); through Steam with the real cursor otherwise."""
+    lib = play.HERE / "headless.dylib"
+    if lib.exists(): subprocess.run(["open", "-g", "-n", "--env", f"DYLD_INSERT_LIBRARIES={lib}", "--env", "SteamAppId=239030", str(APP)])
+    else: subprocess.run(["open", "steam://run/239030"])
 
 
 def open_day(day):

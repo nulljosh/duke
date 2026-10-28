@@ -1,7 +1,8 @@
 """Play Papers, Please days from screenshots: call the next entrant, read the passport, stamp, hand it back.
 The game window must be in front: Unity only takes the real cursor (cliclick), not events posted to its pid.
+Headless: launched with headless.dylib inserted, the game takes the same commands over a socket and plays behind his windows.
 Coordinates are window points, top-left of the content under the title bar included (same as the screenshot)."""
-import json, re, subprocess, sys, time
+import json, re, socket, subprocess, sys, time
 import rules
 from rules import KEEP, verdict
 from pathlib import Path
@@ -20,13 +21,21 @@ def window():
     pid = subprocess.run(["pgrep", "PapersPlease"], capture_output=True, text=True).stdout.split()[0]
     for line in subprocess.run([str(FEZ / "win"), "list", pid], capture_output=True, text=True).stdout.splitlines():
         p = line.split()
-        if p[-1] == "PapersPlease": return int(p[3]), int(p[4])
+        if p[-1] == "PapersPlease": return int(p[3]), int(p[4]), p[0]
     raise SystemExit("no PapersPlease window")
 
 
 subprocess.run(["osascript", "-e", 'tell application "System Events" to set position of window 1 of (first process whose name is "PapersPlease") to {390, 50}'])
-OX, OY = window()   # pinned at (390, 50) first: the window once slid down 126 px mid-day and every click missed
-def at(x, y): return f"{round(OX + x)},{round(OY + y)}"
+OX, OY, WID = window()   # pinned at (390, 50) first: the window once slid down 126 px mid-day and every click missed
+def headless(*a):
+    """Send cliclick-style commands to the injected game; None when it was launched without headless.dylib."""
+    try:
+        with socket.socket(socket.AF_UNIX) as s: s.connect("/tmp/papers-input.sock"); s.sendall((" ".join(a) + "\n").encode()); return s.recv(8)
+    except OSError: return None
+
+
+HEADLESS = headless() is not None
+def at(x, y): return f"{round(x)},{round(y)}" if HEADLESS else f"{round(OX + x)},{round(OY + y)}"
 def idle():
     out = subprocess.run(["ioreg", "-c", "IOHIDSystem"], capture_output=True, text=True).stdout
     return int(re.search(r'"HIDIdleTime" = (\d+)', out)[1]) / 1e9
@@ -47,7 +56,9 @@ def mine():
         else: time.sleep(5)
 
 
-def cli(*a): mine(); subprocess.run(["cliclick", *a])
+def cli(*a):
+    if HEADLESS: headless(*a)
+    else: mine(); subprocess.run(["cliclick", *a])
 def click(p): cli(f"m:{at(*p)}", "w:120", f"c:{at(*p)}")
 
 
@@ -58,7 +69,11 @@ def drag(a, b):
 
 
 def shot():
-    subprocess.run(["screencapture", "-x", f"-R{OX},{OY},1140,668", str(SHOT)]); return Image.open(SHOT).convert("L")
+    global WID
+    if not HEADLESS: subprocess.run(["screencapture", "-x", f"-R{OX},{OY},1140,668", str(SHOT)])
+    elif subprocess.run(["screencapture", "-x", "-o", "-l", WID, str(SHOT)]).returncode:   # the window, even behind others
+        WID = window()[2]; subprocess.run(["screencapture", "-x", "-o", "-l", WID, str(SHOT)])   # a relaunch made a new window
+    return Image.open(SHOT).convert("L")
 
 
 def ocr(path=SHOT): return json.loads(subprocess.run([str(FEZ / "ocr"), str(path)], capture_output=True, text=True).stdout or "[]")
