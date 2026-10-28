@@ -106,7 +106,7 @@ def keep_gifts():
         if not w: return
         if re.search(r"CIT.{1,3}TION", w["t"].upper()): print("citation", [v["t"] for v in ws if abs(v["x"] - w["x"]) < 160 and 0 <= v["y"] - w["y"] < 200], flush=True)   # the reason line, for the next rule
         PENALTIES += any(re.search(r"ASSESS|CREDITS", v["t"].upper()) for v in ws)   # counted while the slip is fresh mid-desk, before it is parked
-        if PENALTIES >= 4: raise SystemExit("four penalties: stop and replay the day")   # each costs 5; two still leave a fed family
+        if PENALTIES >= 3: raise SystemExit("three penalties: stop and replay the day")   # they grow (day 8: 5, 5, 10, 15): three sink the night
         drag((w["x"], min(w["y"] + 15, 650)), PARK); time.sleep(0.6)
 
 

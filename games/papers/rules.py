@@ -73,11 +73,16 @@ def verdict(words, day):
     if day >= 4 and country == "ARSTOTZKA":   # the ID card prints a district, height and weight; it may overlap the passport
         ok = ok and bool(re.search(r"IDENTITY|DISTRIC|\d\s?CM\b|\d\s?KG\b", " ".join(mine + rest)))
         births = {".".join(d) for d in re.findall(r"(\d\d)[.,\s](\d\d)[.,\s](\d\d)\b", " ".join(mine + rest)) if d[0] < "75"}   # by the year's last two digits: the 19 reads as 79 or P
-        ok = ok and not any(sum(x != y for x, y in zip(a, b)) >= 2 for a in births for b in births)   # day 4 Norma Tarnoff: ID card 1920, passport 1938. ponytail: a 1-digit gap passes as OCR noise
+        ok = ok and len(births) <= 1   # day 4 Norma Tarnoff (ID card 1920, passport 1938), day 8 Corman Drex (1926 vs 1936)
+        toks = mine + rest
+        idn = next(((t.rstrip(",.:"), toks[i + 1]) for i, t in enumerate(toks[:-1]) if re.fullmatch(r"[A-Z']{3,}[,.:]", t)), None)   # the ID card prints "HILL," then "SVETLANA"
+        pn = next((m.groups() for t in toks for m in [re.match(r"^([A-Z']{2,})[,.]\s+([A-Z']{2,})", t)] if m), None)
+        ok = ok and (not idn or not pn or (same(pn[0], idn[0], 0.6) and same(pn[1], idn[1], 0.5)))   # day 8 Eve Hill carried Svetlana Hill's ID card
     if day >= 4 and country != "ARSTOTZKA":   # OCR mangles the pixel font: an unreadable field passes, a readable mismatch fails
         pname = next((m.groups() for t in mine + rest for m in [re.match(r"^([A-Z']{3,})[,.]\s+([A-Z']{3,})", t)] if m), None)
         granted = next((rest[i + 1] for i, t in enumerate(rest[:-1]) if "GRANTED" in t), "")   # the permit's holder line
-        holder_ok = not pname or not granted or any(same(p, wd, 0.6) for p in pname for wd in granted.split())   # day 4 Schiavon held Abdullah Yurinov's permit
+        words_ = granted.split()   # day 4 Schiavon held Abdullah Yurinov's permit; day 8 an "invalid name" slipped through on one matching name
+        holder_ok = not pname or not words_ or (any(same(pname[0], wd, 0.6) for wd in words_) and (len(pname[1]) <= 3 or any(same(pname[1], wd, 0.5) for wd in words_)))
         alnum = lambda s: re.sub(r"[^A-Z0-9]", "", s)
         pn = next((alnum(t) for t in mine if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)), None)
         others = [alnum(t) for t in rest if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)]
@@ -150,6 +155,9 @@ def _check():
     assert verdict(w("-KOLECHIA", "Maciejewicz, Hubert", "Yurko Citu", "1982.11.1šŚ", "8MQA7-X6LVG") + o("is hereby granted to", "HUBERT MACIEJEWICZ", "8MQA7-X6LVG", "1982.12.20"), 4) == "deny"
     assert verdict(w("Lestrade, Vince", "True Glorian", "1984.05.04", "REPUBLIA", "TDW50-9HDFT") + o("is hereby granted to", "PINCE LESTRADE", "TOMSU-9HOFT", "1982.12.23"), 5) == "approve"
     assert verdict(w("Funke, Sabrina", "1943.03.16", "Paradizna", "1983.08.28", "ARSTOTZKA") + o("IDENTITY CARD", "DOE.P43.05.24"), 5) == "deny"
+    assert verdict(w("Hill. Eve", "1927.09.18", "East Grestin", "1983.04.15", "ARSTOTZKA") + o("IDENTITY CARD", "HILL,", "SVETLANA", "227.09.18"), 8) == "deny"
+    assert verdict(w("Fouchier, Julia", "DDE. 1953.01.05", "Orvech Vonor", "1984.09.29", "ARSTOTZHA") + o("IDENTITY CARD", "FOUCHIER:", "JULIA", "353.01.05"), 8) == "approve"
+    assert verdict(w("Drex, Corman", "1936.11.29", "Paradizna", "1984.04.19", "ARSTOTZHA") + o("IDENTITY CARD", "DREX,", "CORMAN", "1926.11.29"), 8) == "deny"
     norma = w("Tarnoff, Norma", "| 1938.03.15", "East Grestin", "1983.06.12", "ARSTOTZKA")
     assert verdict(norma + o("IDENTITY CARD", "7920.03.15"), 4) == "deny" and verdict(norma + o("IDENTITY CARD", "1938.03.15"), 4) == "approve"
     assert verdict(aza + o("MICHE PIETROWSHA", "MAHUFACTURING"), 7) == "deny" and verdict(aza + o("AZA HUDSONSHO", "MAHUFACTURING"), 7) == "approve" and verdict(aza + o("AZA HUDSONSHO", "FISHING"), 7) == "approve"
