@@ -4,14 +4,13 @@
 
 ## Papers, Please (active, 2026-10-27)
 
-Day 5 done (8 people, family alive, $0), day 6 running. `python3 games/papers/day.py <next day>` runs the night, the walk and the booth from the night screen; GUIDE.md has the rules and run log.
+Day 8 done; day 9 running. The first run lost the whole family on day 7 (ending 2), so days 5 to 8 were replayed: 12, 8, 13 and 7 paid. `day.py <day>` runs night, walk and booth; `--title` starts from the title screen, `--resume` mid-booth. Rules live in rules.py (tests run without the game), RULES.md has days 7 to 31.
 
-- [x] Night automation: read the ledger and family status by OCR and buy in order: medicine for VERY SICK, food, heat, then medicine for SICK. Never end below zero (ending 1).
-- [x] Day runner (day.py; the graph is still sent by hand): sleep, newspaper, walk, file the bulletin, entrants, night, a line in progress.jsonl, redraw progress.svg, send the graph. One command per day.
-- [ ] Food needs about 12 people a day (8 now).
-- [ ] Speed: from 45 seconds an entrant down to 25. Fewer drag steps, shorter waits, time each phase in the log.
-- [ ] Day 6: work pass for permits with purpose WORK (name, work-until date). Day 7: search Kolechians. Day 8: diplomatic authorization. Day 13: ID supplement. Day 14: wanted list. Day 18: reason for denial (interrogate first).
-- [ ] Read the audio transcript so a purpose or duration that differs from the permit is caught (day 4 citation).
+- [x] Night automation (food before medicine for the merely sick, read back after clicking) and the day runner.
+- [x] Speed: about 24 seconds an entrant (was 45).
+- [x] Day 6 work pass, day 7 Kolechians denied unsearched, day 8 diplomats.
+- [ ] Booth: measure height against the wall lines (day 7 ID card penalty), work-until vs duration, the spoken purpose vs the permit.
+- [ ] Day 9 on: RULES.md, one rule per day, each from a real citation.
 
 ## Benchmarks: finishing Duolingo (measured 2026-10-02)
 "Finished" means every course on the account at 100%, plus math and chess. Run
