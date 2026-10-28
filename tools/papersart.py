@@ -32,7 +32,7 @@ LAYOUT = {   # low-res coordinates. The phone keeps y < 70 (the clock) sky only,
         yard=dict(win=(14, 6, 316, 398), hor=205, wall=26, yb=470, gate=205, gw=30, towers=[42, 288], ctop=134, tu=1, posts=[110, 160, 250],
                   beams=[(150, 330, 46), (110, 270, 40), (210, 360, 50), (170, 255, 36)], h0=6, h1=128, gap=.26, near_x=96, amp=96, bends=4.3, calm=70, barrels=[(36, 300, 1.5), (290, 352, 2.3)]),
         scale=1, dtop=405, pool=(160, 540, 205, 140), pp=(192, 536, 98, 126, -3), bul=(66, 518, 82, 112, 6), stamp=(194, 582, 3, -10),
-        tool=(282, 532, 1.5, 24), lamp=(66, 410, 46, 646, 41)),
+        tool=(282, 532, 1.5, 24), lamp=(46, 410, 18, 646, 41)),
     "desktop": dict(
         yard=dict(win=(22, 10, 618, 212), hor=122, wall=22, yb=292, gate=330, gw=22, towers=[96, 560], ctop=72, tu=.7, posts=[190, 250, 440],
                   beams=[(250, 190, 34), (210, 160, 30), (420, 200, 36), (370, 168, 28)], h0=4, h1=78, gap=.15, near_x=150, amp=200, bends=3.2, calm=0, barrels=[(70, 170, 1.1), (580, 190, 1.5)]),
@@ -92,10 +92,10 @@ def bulletin(w, h):
     """The run's own bulletin: the last finished day, then a tally mark for every entrant processed so far."""
     im, d = layer(w, h); d.rectangle([0, 0, w - 1, h - 1], fill=PAPER); d.rectangle([0, 0, w - 1, 12], fill=RED); text(d, w // 2 - width("BULLETIN", 1) // 2, 3, "BULLETIN", CREAM, 1)
     rows = [json.loads(l) for l in RUN.read_text().splitlines() if l.strip()] if RUN.exists() else []
-    day = f"DAY {rows[-1]['day']}" if rows else "DAY 1"; text(d, w // 2 - width(day, 1) // 2, 18, day, DOLIVE, 1)
-    per = (w - 12) // 14 * 5; n = sum(r["entrants"] for r in rows)   # ponytail: rows that don't fit under the day line are dropped
-    for i in range(min(n, per * ((h - 60) // 10))):
-        g, k = divmod(i % per, 5); x, y = 6 + g * 14 + k * 2, 32 + (i // per) * 10
+    day = f"DAY {rows[-1]['day']}" if rows else "DAY 1"; ds = 2 if w >= 70 else 1; text(d, 6, 18, day, RED, ds)   # left: the passport covers the right edge
+    per = (w - 12) // 14 * 5; cap = per * ((h - 22 - 9 * ds) // 10); n = sum(r["entrants"] for r in rows)
+    for i in range(n // -(-n // cap) if n else 0):   # once the run outgrows the paper, each mark stands for a few entrants
+        g, k = divmod(i % per, 5); x, y = 6 + g * 14 + k * 2, 22 + 9 * ds + (i // per) * 10
         if k < 4: d.line([(x, y), (x, y + 6)], fill=DOLIVE)
         else: d.line([(x - 9, y + 5), (x - 1, y + 1)], fill=RED)   # the fifth mark strikes the four
     d.rectangle([8, h - 22, w - 9, h - 10], outline=OLIVE); dashes(d, 12, w - 20, h - 16, OLIVE)
