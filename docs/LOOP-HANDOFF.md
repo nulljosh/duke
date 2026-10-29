@@ -33,6 +33,8 @@ Loop: `/loop until Pikmin 2 is completed, documenting progress with graphs and t
 - Live tree: `/Volumes/LaCie/src/duke` (a clone), because macOS revoked Documents access on 2026-10-29 07:00. Use git with `GIT_CONFIG_GLOBAL=/dev/null` (the global gitconfig lives in Documents). When access returns, discard the uncommitted Pikmin edits in the Documents copy and pull.
 - Order: `dsu.py` (virtual pad), `memd.py` (MemoryWatcher to `mem.json`), `gdbd.py` (Dolphin's GDB stub on a unix socket, reads any address on tcp 26762), then `dolphin.py launch`, which hides the window. Dolphin blocks at boot until gdbd connects.
 - `pk2.py`: `Pad()`, `shot(name)` (Dolphin's screenshot hotkey on the pad's SHARE, works hidden), `mem()`, `read/u32/f32s` (live memory), `control(pad)` (A through dialogue until the stick moves Olimar).
+- Twitch (twitch.tv/nulljosh1, live since 2026-10-29 07:32): `games/pikmin/stream.sh` pipes `wincap` (ScreenCaptureKit, Dolphin must be unhidden, behind other windows is fine) into ffmpeg to RTMP. Key in `/Volumes/LaCie/dolphin-duke/twitch.key` (600), read from his dashboard with his OK; never print it.
+- `pk2.py` also has `enemies()`, `pellets(kind)` (6 treasures on Day 1), `pikis()`, `waypoints()`/`route()`/`travel()` (the area's carry graph), `throw_at()`, `gather()`. Walking: mFaceDir = camera yaw - stick angle (`Walker`). gather/travel still misroute; fix next.
 - Day 1: five red Pikmin join after the Dwarf Bulborb tutorial; B whistles.
 - Next: `goto(x, z)` closed-loop on Olimar's position, read enemy and treasure positions from memory, throw, carry the first treasure, and save at the day's end. Then progress.jsonl, graph.py and wallpaper.py, as in pokemon/.
 - The memory card in the profile has File 1. Don't touch other slots.
