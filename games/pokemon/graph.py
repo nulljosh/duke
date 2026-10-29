@@ -57,25 +57,23 @@ def draw(out):
         yy = py1 - (py1 - py0) * v / lmax
         d.line([(px0, yy), (px1, yy)], fill=GRID)
         text(d, (x0 + 6, yy - 5), str(v), f)
-    for m in range(0, tmax + 1, max(15, tmax // 6 // 15 * 15)):
+    step = next(s for s in (15, 30, 60, 120, 240, 480, 960, 1920) if tmax / s <= 6)
+    for m in range(0, tmax + 1, step):
         xx = px0 + (px1 - px0) * m / tmax
         lab = f"{m // 60}:{m % 60:02d}"
         text(d, (min(xx - 6, x1 - 6 - f.getbbox(lab)[2]), py1 + 3), lab, f)
-    names = []
-    for r in data:
-        for n, _ in r["party"]:
-            if n not in names:
-                names.append(n)
-    for i, n in enumerate(names):
+    # One line per party slot, so an evolution keeps its line; the label is the slot's latest name.
+    slots = max([len(r["party"]) for r in data] + [0])
+    for i in range(slots):
+        rows_i = [r for r in data if len(r["party"]) > i]
+        n = rows_i[-1]["party"][i][0]
         col = TYPE.get(str(n).upper(), OTHER[i % len(OTHER)])
-        pts = [(px0 + (px1 - px0) * r["playMin"] / tmax, py1 - (py1 - py0) * lv / lmax)
-               for r in data for nn, lv in r["party"] if nn == n]
+        pts = [(px0 + (px1 - px0) * r["playMin"] / tmax, py1 - (py1 - py0) * r["party"][i][1] / lmax) for r in rows_i]
         if len(pts) > 1:
             d.line(pts, fill=col, width=2)
         for x, y in pts:
             d.rectangle([x - 2, y - 2, x + 2, y + 2], fill=col)
-        lv = [lv for nn, lv in last["party"] if nn == n]
-        label = f"{n.upper()} L{lv[0]}" if lv else n.upper()
+        label = f"{str(n).upper()} L{rows_i[-1]['party'][i][1]}"
         text(d, (x1 - 8 - f.getbbox(label)[2], y0 + 5 + i * 11), label, f, col)
 
     # Badges, dex and money, like the trainer card.
