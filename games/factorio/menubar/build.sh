@@ -5,7 +5,7 @@
 set -e
 cd "$(dirname "$0")"
 
-swiftc -O -parse-as-library main.swift -o ConveyerMonitor.app/Contents/MacOS/ConveyerMonitor
+swiftc -O -parse-as-library *.swift -o ConveyerMonitor.app/Contents/MacOS/ConveyerMonitor
 # The engineer sprite sheets come from the installed game, copied into the bundle for runtime use and kept out of git.
 GFX="$HOME/Library/Application Support/Steam/steamapps/common/Factorio/factorio.app/Contents/data/base/graphics/entity/character"
 ICONS="$HOME/Library/Application Support/Steam/steamapps/common/Factorio/factorio.app/Contents/data/base/graphics/icons"
