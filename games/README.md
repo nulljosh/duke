@@ -28,4 +28,12 @@ Ranked for Duke from the Steam library (142 games, 2026-10-26): Mac native, read
 7. Cities: Skylines. A sandbox, milestones only.
 8. Don't Starve. Survival; Adventure Mode is the goal.
 
+Emulator games, on the same headless libmgba player as Sapphire (`pokemon/gba.c`, which already has the GB core). Each needs Joshua's own ROM. Games with a public decompilation come first, because the memory map is read from source instead of guessed:
+
+1. Pokemon Emerald (pret/pokeemerald). The same engine as Sapphire, so most of `pokemon/` carries over.
+2. Pokemon FireRed (pret/pokefirered). Same generation, Kanto map.
+3. Fire Emblem: The Sacred Stones (FireEmblemUniverse/fireemblem8u). Turn-based, so it plays perfectly.
+4. Pokemon Crystal and Red (pret/pokecrystal, pokered). Game Boy disassemblies.
+5. Zelda: The Minish Cap (zeldaret/tmc). A work-in-progress decomp, and real-time combat makes it harder.
+
 Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geometry Dash, Super Hexagon), story walks (Firewatch, Gone Home, The Stanley Parable), multiplayer (Rust, Dota 2, Don't Starve Together), and the 47 games with no Mac build.
