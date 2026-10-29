@@ -129,7 +129,7 @@ def printables(s, water):
 
 
 def run(until):
-    done, tries, last_cycle, mush, mush2, planted, t_link, clock = set(), {}, None, False, False, set(), 0, None
+    done, tries, last_cycle, cooking, planted, t_link, clock = set(), {}, None, None, set(), 0, None
     for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): log("dig", oni.cmd(op="safedig", cells=cells, floor=119, prio=prio))
     log("ledge", oni.cmd(op="dig", cells=LEDGE, prio=6))   # touches the pool on purpose
     while True:
@@ -174,8 +174,10 @@ def run(until):
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
             oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=201, y=121, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
             oni.cmd(op="prio", x=174, y=120, p=1 if w < 2000 else 5)   # the Super Computer drinks 50 kg of water a point (AdvancedResearchCenterConfig); the mushers come first
-        if not mush and oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush = True; log("mush bars queued")
-        if not mush2 and oni.cmd(op="queue", x=201, y=121, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush2 = True; log("musher 2 queued")
+        want = True if s["foodKcal"] < 20000 else False if s["foodKcal"] > 30000 else cooking   # every bar is 75 kg of water: colony 7 cooked to 67k kcal and burnt 9 t of its 18
+        if want is None: want = True
+        if want != cooking and all(oni.cmd(op="queue", x=x, y=y, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar", count=-1 if want else 0).get("ok") for x, y in ((196, 120), (201, 121))):
+            cooking = want; log("mushers", "cooking" if want else "stopped, larder full")
         for x, y in PLANTERS:
             if (x, y) not in planted and oni.cmd(op="plant", x=x, y=y, seed="BasicSingleHarvestPlantSeed").get("ok"): planted.add((x, y)); log("mealwood ordered", x, y)
         time.sleep(10)
