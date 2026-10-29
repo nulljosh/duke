@@ -83,7 +83,10 @@ def newgame():
     while "MinionSelectScreen" not in state()["screens"]: time.sleep(3)
     time.sleep(6); print(cmd(op="invoke", type="MinionSelectScreen", method="OnProceed"))
     while not state().get("dupes"): time.sleep(3)
-    time.sleep(3); print(cmd(op="invoke", type="StoryMessageScreen", method="<OnActivate>b__22_0")); cmd(op="pause")
+    for _ in range(20):   # the intro alert spawns a few seconds in; colony 6 tried once, too early, and kept it (and a hidden HUD) all game
+        time.sleep(3)
+        if cmd(op="invoke", type="StoryMessageScreen", method="<OnActivate>b__22_0").get("ok"): print("intro dismissed"); break
+    cmd(op="pause")
 
 
 if __name__ == "__main__":

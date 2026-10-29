@@ -12,24 +12,22 @@ RESEARCH = ["FarmingTech", "PowerRegulation", "Jobs", "AdvancedResearch", "Impro
             "BasicRocketry", "SkyDetectors", "MedicineI"]   # Distillation: the Water Sieve. Everything past Combustion needs the Super Computer's points
 WIRES = [[x, y] for y in (120, 121) for x in range(191, 200)] + [[200, 121], [201, 121], [202, 121], [201, 122], [202, 122]]   # ports sit on either row, so wire both and join them; the tail feeds musher 2
 WIRES += [[x, 120] for x in range(169, 176)] + [[x, 121] for x in range(169, 191)]   # west wing: the coal generator and the Super Computer
-RETIRE = [(189, 105), (191, 105)]   # pumps over a sand column: both read Empty and block the one spot that works
-PLANTERS = [(x, 125) for x in range(177, 189)] + [(x, 125) for x in range(197, 201)]   # 16 Mealwood, no water: the farm over the west room and the bedroom's end
-COLONY = 6
+PLANTERS = [(x, 125) for x in range(197, 201)]   # only where the headroom is open; seeds are the limit, not boxes (colony 6 built 16, all read "No Seed Available")
+COLONY = 7
 # id, x, y, priority. 2-wide buildings sit on x and x+1, 3-wide ones are centred on x. The room is x177-200, y120-123.
 PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         ("ManualGenerator", 191, 120, 7), ("ResearchCenter", 193, 120, 6),
         *[("Wire", x, y, 6) for x, y in WIRES],
         ("Tile", 196, 119, 6), ("Tile", 199, 119, 6),
-        ("MicrobeMusher", 196, 120, 7), ("Battery", 198, 120, 6), ("LiquidPumpingStation", 203, 118, 7),
+        ("MicrobeMusher", 196, 120, 7), ("Battery", 198, 120, 6),
         ("MineralDeoxidizer", 199, 120, 6),
         *[("Ladder", 190, y, 5) for y in range(120, 126)],
         *[("Tile", x, 124, 5) for x in range(191, 200)],   # the bedroom floor, whatever the dig leaves of it
         ("Bed", 191, 125, 5), ("Bed", 193, 125, 5), ("Bed", 195, 125, 5),
-        *[("Tile", x, 124, 6) for x in range(177, 190)],   # the farm floor, where the rock is open
         *[("PlanterBox", x, y, 5) for x, y in PLANTERS],
         *[("Ladder", 180, y, 6) for y in range(108, 120)],
         *[("Tile", x, 109, 9) for x in (181, 182, 183)],   # the corridor crosses an open cavity there
-        ("LiquidPumpingStation", 190, 105, 9),   # a pitcher pump needs both its columns open below (PumpingStationGuide): only 190-191 are water all the way down ("Ladder", 188, 108, 7), ("Ladder", 188, 109, 7),   # the second pool, under the corridor
+        ("LiquidPumpingStation", 189, 110, 9),   # both columns (189-190) water from y109 down to 106 on the fresh map, dry base cells, reached from the corridor at 188 (preflight.py checks it)
         *[("Ladder", 184, y, 7) for y in range(112, 119)],   # up from the corridor through a streak of dirt
         *[("Ladder", 180, y, 6) for y in range(100, 108)], *[("Ladder", 189, y, 5) for y in range(126, 138)],   # the mine grid's spines
         ("MicrobeMusher", 201, 121, 8),
@@ -43,7 +41,7 @@ SHAFT = [[180, y] for y in range(119, 99, -1)]   # down to the dirt below the fl
 SPINE = [[189, y] for y in range(124, 138)]   # up from the bedroom level, the same way
 MINES = [[x, y] for y0 in (101, 105, 129, 133) for y in (y0, y0 + 1) for x in range(155, 216)]   # corridors off the shaft and spine
 LOWER = [[x, y] for y in (110, 111) for x in range(150, 220)]   # a corridor off the bottom of the shaft, both ways
-UPPER = [[x, y] for y in range(125, 128) for x in range(177, 190)]   # the farm: planters on y125 with headroom, off the ladder at x190
+UPPER = [[x, y] for y in range(124, 128) for x in range(177, 190)]   # air volume above the west room, so the diffuser never hits max pressure
 
 
 def log(*a): print(time.strftime("%H:%M:%S"), *a, flush=True)
@@ -107,8 +105,9 @@ def printables(s):
     if not s["immigrants"]: return
     oni.cmd(op="printables"); time.sleep(2); offers = oni.cmd(op="printables")
     if not isinstance(offers, list): return
-    pick = next((i for i, o in enumerate(offers) if o.startswith("package") and any(f in o for f in FOOD_PACKAGES)), None)
-    if pick is None and (s["foodKcal"] > 8000 and len(s["dupes"]) < 4 or s["foodKcal"] > 30000 and len(s["dupes"]) < 6): pick = next((i for i, o in enumerate(offers) if o.startswith("dupe")), None)
+    water = s["have"].get("Water", 0)
+    pick = next((i for i, o in enumerate(offers) if o.startswith("package") and (any(f in o for f in FOOD_PACKAGES) or water < 2000 and "Water" in o)), None)   # colony 6 passed on Water x2000 a minute before its last dupe died
+    if pick is None and water > 3000 and s["foodKcal"] > 8000 and len(s["dupes"]) < 4: pick = next((i for i, o in enumerate(offers) if o.startswith("dupe")), None)   # a dupe drinks ~94 kg of water a cycle as mush; gate on water, not kcal
     if pick is not None: log("print", offers[pick], oni.cmd(op="print", index=pick))
     else: oni.cmd(op="invoke", type="ImmigrantScreen", method="OnPressBack"); log("pod offers passed", offers)
     oni.cmd(op="speed", speed=2)
@@ -118,7 +117,6 @@ def run(until):
     done, tries, last_cycle, mush, mush2, planted, t_link, clock = set(), {}, None, False, False, set(), 0, None
     for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): log("dig", oni.cmd(op="safedig", cells=cells, floor=119, prio=prio))
     log("ledge", oni.cmd(op="dig", cells=LEDGE, prio=6))   # touches the pool on purpose
-    for x, y in RETIRE: oni.cmd(op="prio", x=x, y=y, p=9); log("retire", x, y, oni.cmd(op="deconstruct", x=x, y=y))
     while True:
         s = oni.state()
         if not s.get("inGame"): log("not in game", s.get("screens")); time.sleep(10); continue
@@ -150,14 +148,15 @@ def run(until):
                 if tries[item] in (1, 61): log("waiting", item, r.get("error"))
         if time.time() - t_link > 60:   # wires placed one at a time join nothing until linked; a reload drops the links too
             oni.cmd(op="link", cells=WIRES); oni.cmd(op="mop", cells=[[x, 120] for x in range(177, 203)]); t_link = time.time()
-            for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 7)): oni.cmd(op="safedig", cells=cells, floor=119, prio=prio)   # UPPER is the farm's headroom: a planter under rock never grows. More come in reach as the room opens up
+            for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): oni.cmd(op="safedig", cells=cells, floor=119, prio=prio)   # more come in reach as the room opens up
             oni.cmd(op="safedig", cells=SHAFT, floor=99, prio=6); oni.cmd(op="safedig", cells=LOWER, floor=109, prio=5)
             oni.cmd(op="safedig", cells=SPINE, floor=119, prio=5); oni.cmd(op="safedig", cells=near(MINES, 999), floor=100, prio=4, max=20)
-            oni.cmd(op="dig", cells=[[188, 109], [188, 108]], prio=8)   # the ladder down to the second pump; touches the pool on purpose
+            oni.cmd(op="dig", cells=[[188, 110], [188, 111]], prio=8)   # the step beside the pump: water only touches it diagonally, and liquid never climbs, so safedig's 3x3 rule is too strict here
             oni.cmd(op="safedig", cells=[[184, y] for y in range(112, 119)] + [[179, 109], [179, 108]], floor=100, prio=8)   # dirt beside the ladders
             topup(s["have"], "Dirt", 1500); topup(s["have"], "Algae", 300); topup(s["have"], "Cuprite", 800); floor(); explore(s); seeds(); printables(s); skills()
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
             oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=201, y=121, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
+            oni.cmd(op="prio", x=174, y=120, p=1 if s["have"].get("Water", 0) < 2000 else 5)   # the Super Computer drinks 50 kg of water a point (AdvancedResearchCenterConfig); the mushers come first
         if not mush and oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush = True; log("mush bars queued")
         if not mush2 and oni.cmd(op="queue", x=201, y=121, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush2 = True; log("musher 2 queued")
         for x, y in PLANTERS:

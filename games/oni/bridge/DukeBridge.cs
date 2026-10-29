@@ -76,8 +76,10 @@ public static partial class Ops
             case "invoke":   // menus: {"type": "MainMenu", "method": "NewGame"} on the live screen of that type
             {
                 var t = AccessTools.TypeByName((string)j["type"]);
-                var o = UnityEngine.Object.FindObjectsOfType(t).Cast<Component>().FirstOrDefault(c => c.gameObject.activeInHierarchy) ?? (UnityEngine.Object.FindObjectOfType(t) as Component);
-                if (o == null) return new { error = "no live " + t };
+                var o = (t == null ? null : UnityEngine.Object.FindObjectsOfType(t).Cast<Component>().FirstOrDefault(c => c.gameObject.activeInHierarchy) ?? (UnityEngine.Object.FindObjectOfType(t) as Component))
+                    ?? Resources.FindObjectsOfTypeAll<KScreen>().FirstOrDefault(c => c.GetType().Name == (string)j["type"] && c.gameObject.activeInHierarchy);   // by name too: colony 6's intro alert never matched the type lookup
+                if (o == null) return new { error = "no live " + (string)j["type"] + " (" + t?.AssemblyQualifiedName + ")" };
+                t = o.GetType();
                 var r = AccessTools.Method(t, (string)j["method"]).Invoke(o, j["args"]?.ToObject<object[]>() ?? new object[0]);
                 return new { ok = true, result = r?.ToString() };
             }
