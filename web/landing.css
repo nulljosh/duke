@@ -171,4 +171,13 @@ body::after { content: ""; position: fixed; inset: 8px; border: 1px solid color-
 .game-live img { width: 100%; height: auto; border-radius: var(--r-group); image-rendering: pixelated; display: block; }
 .game-live figcaption { margin-top: var(--sp-3); font-size: 13px; line-height: 16px; color: var(--sub); }
 @media (max-width: 900px) { .games { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 520px) { .games { grid-template-columns: 1fr; } }
+/* Phone: the cards become an inset grouped list, a 40 point tile leading each row, hairlines inset past the tile. */
+@media (max-width: 600px) {
+  .games { grid-template-columns: 1fr; gap: 0; background: var(--surface); border-radius: var(--r-group); overflow: hidden; margin-top: var(--sp-6); }
+  .game { position: relative; display: grid; grid-template-columns: 40px 1fr; column-gap: var(--sp-3); align-items: start; padding: var(--sp-3) var(--sp-4); border-radius: 0; background: none; }
+  .game + .game::before { content: ""; position: absolute; top: 0; left: calc(var(--sp-4) + 40px + var(--sp-3)); right: 0; height: 1px; background: var(--line); }
+  .game-tile { width: 40px; height: 40px; margin: 0; grid-row: span 2; }
+  .game-tile svg { width: 32px; height: 32px; }
+  .game h3 { font-size: 15px; line-height: 20px; }
+  .game p { margin-top: 0; font-size: 13px; line-height: 16px; }
+}
