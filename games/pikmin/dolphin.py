@@ -29,11 +29,14 @@ def ini(path, sections):
     path.write_text("".join(f"[{s}]\n" + "".join(f"{k} = {v}\n" for k, v in kv.items()) for s, kv in sections.items()))
 
 
+SPEED = 3.0   # emulation speed, 1.0 = real time. Turbo, not a game cheat. ponytail: fixed knob; raise it once a run shows the M4 and the bot keep up
+
+
 def setup(locations=()):
     cfg = USER / "Config"
     ini(cfg / "Dolphin.ini", {
         "General": {"HotkeysRequireFocus": "False", "GDBSocket": str(USER / "gdb.sock")},   # gdbd.py
-        "Core": {"SIDevice0": 6, "SIDevice1": 0, "SIDevice2": 0, "SIDevice3": 0},
+        "Core": {"EmulationSpeed": SPEED, "SIDevice0": 6, "SIDevice1": 0, "SIDevice2": 0, "SIDevice3": 0},
         "DSP": {"Backend": "No Audio Output", "Volume": 0},
         "Interface": {"ConfirmStop": "False", "PauseOnFocusLost": "False", "UsePanicHandlers": "False",
                       "ShowActiveTitle": "False"},
@@ -42,6 +45,7 @@ def setup(locations=()):
         "Analytics": {"PermissionAsked": "True", "Enabled": "False"},
         "AutoUpdate": {"UpdateTrack": ""},
     })
+    ini(cfg / "GFX.ini", {"Settings": {"ShowFPS": "True", "ShowSpeed": "True"}})   # read the real speed off a screenshot
     ini(cfg / "DSUClient.ini", {"Server": {"Enabled": "True", "Entries": "Duke:127.0.0.1:26760;"}})
     ini(cfg / "GCPadNew.ini", {"GCPad1": PAD})
     ini(cfg / "Hotkeys.ini", {"Hotkeys": {"Device": "DSUClient/0/Duke", "General/Take Screenshot": "Share"}})

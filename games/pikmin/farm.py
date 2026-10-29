@@ -8,10 +8,13 @@ import pk2
 pk2.ACTIVE = 1
 pad = pk2.Pad()
 GOAL = 15
+ONION = (-340, 4000)
 bad = set()                                   # posies the cursor cannot reach (behind a ledge)
 while pk2.alive() < GOAL:
     pk2.pluck(pad)
     time.sleep(1)
+    if pk2.squad(1) < pk2.alive() - pk2.squad(0) - len(pk2.sprouts()):
+        pk2.goto(pad, *ONION, near=60)         # delivered Pikmin idle by the Onion
     pad.press("B", 1500, after=0.5)
     me = pk2.pos()
     posies = [e for e in pk2.enemies() if e["id"] == 0 and math.hypot(e["x"] - me[0], e["z"] - me[1]) < 900

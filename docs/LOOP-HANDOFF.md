@@ -17,9 +17,11 @@ Rules for every tick:
 - Pikmin 2 is set up (`games/pikmin/`: a DSU virtual pad and the Dolphin profile on the LaCie). It waits on Joshua clearing Dolphin's first-launch check.
 
 ## Next, in order
-1. Brawly, then Slateport (Briney's boat), Mauville and Wattson.
-2. Catch a team: water and flying types for the HMs, and cover for Grovyle's fire and flying weaknesses.
-3. Badges 3 to 8, the Elite Four, then the legendaries and stat maxing.
+1. Pikmin 2, beating the human 25 hours: crush the bag with 15, carry the Courage Reactor, save Day 1, relaunch at
+   3x turbo, then one autonomous script per day (games/pikmin/GUIDE.md, "Beating the human time").
+2. Joshua's game queue after Pikmin: Wind Waker, then Smash Bros, then something else. He supplies the files.
+   Side idea from him: a Monopoly sim, a million games, to find the best strategy.
+3. Sapphire stays parked: Brawly next, then Slateport, Mauville and Wattson.
 
 ## Restart prompt
 
