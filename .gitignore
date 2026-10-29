@@ -29,3 +29,7 @@ games/papers/.game/
 games/papers/.counter.png
 games/papers/runs/
 games/papers/headless.dylib
+games/pokemon/gba
+games/pokemon/gba.pid
+games/pokemon/shots/
+games/pokemon/states/

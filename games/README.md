@@ -12,7 +12,7 @@ Every game Duke plays, and the queue. Duke plays for real: it reads the game's s
 | FEZ | `fez/` | Beaten 2026-10-26 (32 of 32 cubes, Star Gate ending). New Game+ max-out parked at 18 gold, 15 anti, 2 bits |
 | Papers, Please | `papers/` | Days 1 to 9 beaten, parked at day 10 |
 | Oxygen Not Included | `oni/` | Parked at colony 7, cycle 24; the win is Home Sweet Home ([VICTORY.md](oni/VICTORY.md)) |
-| Pokemon Sapphire | not started | Next: an emulator run streamed to Twitch |
+| Pokemon Sapphire | `pokemon/` | Playing as Stitch with Treecko; headless libmgba player, stream to Twitch pending |
 | Mirage (Joshua Tree's platformer) | `mirage/` | Played by the Joshua Tree loop |
 
 ## Queue
