@@ -8,7 +8,7 @@ Device = DSUClient/0/Duke (see dolphin.py). The bot talks to this on 127.0.0.1:2
   stick 0.0 1.0     main stick x, y in -1..1 (y up)      cstick x y
   press A 80        hold A for 80 ms, then let go
 GameCube -> DSU: A Cross, B Circle, X Square, Y Triangle, Z R1, L L2, R R2, Start Options, D-pad Pad N/S/E/W,
-main stick Left, C stick Right."""
+main stick Left, C stick Right. SHARE is Dolphin's screenshot hotkey."""
 import socket
 import struct
 import threading
@@ -49,7 +49,7 @@ def pad_data(counter):
     with lock:
         held = set(state["held"])
         lx, ly, rx, ry = state["lx"], state["ly"], state["rx"], state["ry"]
-    bs1 = 0x08 if "START" in held else 0
+    bs1 = (0x08 if "START" in held else 0) | (0x01 if "SHARE" in held else 0)   # Options, Share
     analog = bytes(255 if k in held else 0 for k in ANALOG)
     body = struct.pack("<IBBBB6sBBIBBBBBBBB", T_PAD, 0, 2, 2, 1, MAC, 5, 1, counter, bs1, 0, 0, 0,
                        axis(lx), axis(ly), axis(rx), axis(ry))

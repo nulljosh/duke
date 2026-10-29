@@ -30,10 +30,11 @@ Read `games/pokemon/README.md`, `GUIDE.md` and this file first.
 
 ## Pikmin 2 (active since 2026-10-29 06:20; Sapphire parked for it)
 Loop: `/loop until Pikmin 2 is completed, documenting progress with graphs and the iPhone wallpaper`. The ROM is Joshua's Pikmin 2 (Europe, GPVP01) RVZ at `/Volumes/LaCie/roms/pikmin2/`. Dolphin runs from an isolated profile at `/Volumes/LaCie/dolphin-duke` (quarantine cleared 2026-10-29 with Joshua's OK).
-- Order: `python3 dsu.py` (the virtual pad), then `python3 memd.py` (it holds the MemoryWatcher socket and writes `mem.json`), then `python3 dolphin.py launch`. Locations load only at boot, so after changing `pk2.WATCH` run `dolphin.setup(pk2.locations())` and relaunch.
-- `pk2.py` has `Pad().press/cmd('stick x y')`, `shot(name)` (window capture via `winid`), and `mem()` (pokos, treasures, Pikmin by colour, and Olimar and Louie x/y/z/dir from naviMgr +0x28 +0x20C).
-- START skips cutscenes and A advances dialogue. Day 1 (Valley of Repose) is reached, and Olimar answers the stick (it worked at 06:50).
-- Next: walk to a point with position feedback (map the stick to world direction from the camera), find the red Onion and Pikmin, throw, carry the first treasure, and save at the day's end. Then progress.jsonl, graph.py and wallpaper.py, as in pokemon/.
+- Live tree: `/Volumes/LaCie/src/duke` (a clone), because macOS revoked Documents access on 2026-10-29 07:00. Use git with `GIT_CONFIG_GLOBAL=/dev/null` (the global gitconfig lives in Documents). When access returns, discard the uncommitted Pikmin edits in the Documents copy and pull.
+- Order: `dsu.py` (virtual pad), `memd.py` (MemoryWatcher to `mem.json`), `gdbd.py` (Dolphin's GDB stub on a unix socket, reads any address on tcp 26762), then `dolphin.py launch`, which hides the window. Dolphin blocks at boot until gdbd connects.
+- `pk2.py`: `Pad()`, `shot(name)` (Dolphin's screenshot hotkey on the pad's SHARE, works hidden), `mem()`, `read/u32/f32s` (live memory), `control(pad)` (A through dialogue until the stick moves Olimar).
+- Day 1: five red Pikmin join after the Dwarf Bulborb tutorial; B whistles.
+- Next: `goto(x, z)` closed-loop on Olimar's position, read enemy and treasure positions from memory, throw, carry the first treasure, and save at the day's end. Then progress.jsonl, graph.py and wallpaper.py, as in pokemon/.
 - The memory card in the profile has File 1. Don't touch other slots.
 
 ## Pokemon Sapphire (parked 2026-10-29 06:20)

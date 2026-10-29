@@ -6,7 +6,6 @@ layout in include/Game/gamePlayData.h.
 python3 pk2.py A 'A*3' wait:2 shot:name   presses (seconds between), saves shots/name.png"""
 import os
 import socket
-import subprocess
 import sys
 import time
 
@@ -47,11 +46,22 @@ class Pad:
 
 
 def shot(name):
+    """Dolphin's screenshot hotkey (SHARE on the DSU pad) works with the window hidden; screencapture does not."""
+    import glob
+    import shutil
     os.makedirs(SHOTS, exist_ok=True)
-    wid = subprocess.run([os.path.join(HERE, "winid")], capture_output=True, text=True).stdout.strip()
-    path = os.path.join(SHOTS, name + ".png")
-    subprocess.run(["screencapture", "-x", "-o", "-l", wid, path], check=True)
-    return path
+    pattern = os.path.join(USER, "ScreenShots", "**", "*.png")
+    before = set(glob.glob(pattern, recursive=True))
+    Pad().press("SHARE", 120, after=0)
+    for _ in range(40):
+        new = set(glob.glob(pattern, recursive=True)) - before
+        if new:
+            time.sleep(0.3)                    # let Dolphin finish writing it
+            path = os.path.join(SHOTS, name + ".png")
+            shutil.move(new.pop(), path)
+            return path
+        time.sleep(0.25)
+    raise TimeoutError("no Dolphin screenshot")
 
 
 class Memory:
@@ -104,3 +114,48 @@ def mem():
         if k.endswith(("_x", "_y", "_z", "_dir")):
             v[k] = struct.unpack(">f", struct.pack(">I", v[k] & 0xFFFFFFFF))[0]
     return v
+
+
+def moved(pad, x=0, y=1, secs=0.6):
+    """Push the stick briefly; True if Olimar moved, i.e. the player has control (no dialogue or cutscene)."""
+    a = mem()
+    pad.cmd(f"stick {x} {y}")
+    time.sleep(secs)
+    pad.cmd("release all")
+    time.sleep(0.4)
+    b = mem()
+    return abs(b["olimar_x"] - a["olimar_x"]) + abs(b["olimar_z"] - a["olimar_z"]) > 20
+
+
+def control(pad, tries=60):
+    """Press A through dialogue until the stick moves Olimar again. A only: START in the field opens the pause menu."""
+    for i in range(tries):
+        if moved(pad, 0, 1 if i % 2 else -1):
+            return i
+        pad.press("A", after=1.2)
+    raise TimeoutError("no control")
+
+
+_gdb = None
+
+
+def read(addr, n):
+    """Bytes at a game address, through gdbd.py (Dolphin's GDB stub)."""
+    global _gdb
+    if _gdb is None:
+        _gdb = socket.create_connection(("127.0.0.1", 26762)).makefile("rw")
+    _gdb.write(f"r {addr:x} {n}\n")
+    _gdb.flush()
+    h = _gdb.readline().strip()
+    if h.startswith("E"):
+        raise ValueError(f"read {addr:08x}: {h}")
+    return bytes.fromhex(h)
+
+
+def u32(addr):
+    return int.from_bytes(read(addr, 4), "big")
+
+
+def f32s(addr, n):
+    import struct
+    return struct.unpack(f">{n}f", read(addr, 4 * n))
