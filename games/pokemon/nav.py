@@ -131,7 +131,7 @@ def step(g, d):
     """Hold a direction until the player moves one tile (a tap first turns them to face it)."""
     x, y, *_ = where(g)
     g.cmd(f"keys {g.KEYS[d]}")
-    for _ in range(40):
+    for _ in range(60):                   # a door takes longer to open than a step takes
         g.wait(2)
         if where(g)[:2] != (x, y):
             break
@@ -141,23 +141,23 @@ def step(g, d):
 
 
 def fight(g):
-    """Wild or trainer battle: A picks FIGHT, then the first move, and clears every message.
-    ponytail: always move 1; pick moves by type and HP once the party has more than Pound/Absorb."""
-    n = 0
-    while "Battle" in g.screen() or n < 3:
-        g.press("A", after=20)
-        n += 1
-        if n > 600:
-            raise SystemExit("battle never ended")
+    import battle
+    battle.fight(g)
     g.wait(30)
     talk(g)
-    return n
 
 
 def walk(g, goal, limit=200):
+    start = where(g)[2:]
     for _ in range(limit):
+        if where(g)[2:] != start:         # walked through a door or off the edge on the way
+            return True
         if "Battle" in g.screen():
             fight(g)
+        if g.r8(0x030006A4):              # a script took over (a rival stopping us, a trainer's eye)
+            talk(g)
+            if "Battle" in g.screen():
+                fight(g)
         if where(g)[:2] == goal:
             return True
         p = path(g, goal)
@@ -196,10 +196,14 @@ def warp(g, pos):
     m = where(g)[2:]
     if not walk(g, pos):
         return False
-    if changed(g, m, 60):
+    if changed(g, m, 180):
         return True
-    for d in ("DOWN", "UP", "LEFT", "RIGHT"):
-        g.press(d, hold=20, after=10)
+    # Arrow warps (MB_EAST/WEST/NORTH/SOUTH_ARROW_WARP 0x62-0x65) fire only while you push their way.
+    arrow = {0x62: "RIGHT", 0x63: "LEFT", 0x64: "UP", 0x65: "DOWN"}.get(Map(g).behaviour(*pos))
+    for d in ([arrow] if arrow else []) + ["DOWN", "UP", "LEFT", "RIGHT"]:
+        if where(g)[:2] != pos and not walk(g, pos):
+            break
+        g.press(d, hold=40, after=10)
         if changed(g, m):
             return True
     return False
