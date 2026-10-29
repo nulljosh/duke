@@ -21,6 +21,10 @@ Rules for every tick:
    3x turbo, then one autonomous script per day (games/pikmin/GUIDE.md, "Beating the human time").
 2. Joshua's game queue after Pikmin: Wind Waker, then Smash Bros, then something else. He supplies the files.
    Side idea from him: a Monopoly sim, a million games, to find the best strategy.
+   Research (2026-10-29): Melee is fully decompiled (doldecomp/melee) and SmashBot and libmelee already read its
+   memory. Wind Waker's decomp (zeldaret/tww) is about 80% done, and its route is on zeldaspeedruns.com. Pikmin 1
+   is fully decompiled (projectPiki/pikmin), making it the closest next Pikmin. Twilight Princess and Animal
+   Crossing are also fully decompiled. Pikmin 3 and 4 and Hey! Pikmin have no decomp.
 3. Sapphire stays parked: Brawly next, then Slateport, Mauville and Wattson.
 
 ## Restart prompt

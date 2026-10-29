@@ -32,12 +32,12 @@ for i, c in enumerate(["blue", "red", "yellow", "purple", "white", "bulbmin"]):
 
 
 class Pad:
-    def __init__(self):
+    def __init__(self, drive=True):
         """One driver at a time: five farm.py copies once fought over the stick (2026-10-29). The lock frees on exit."""
         import fcntl
         self.lock = open(os.path.join(HERE, ".pad.lock"), "w")
         try:
-            fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            drive and fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
             sys.exit("pad busy: another bot script is driving")
         self.sock = socket.create_connection(("127.0.0.1", 26761))
@@ -60,7 +60,7 @@ def shot(name):
     os.makedirs(SHOTS, exist_ok=True)
     pattern = os.path.join(USER, "ScreenShots", "**", "*.png")
     before = set(glob.glob(pattern, recursive=True))
-    Pad().press("SHARE", 120, after=0)
+    Pad(drive=False).press("SHARE", 120, after=0)     # the screenshot key moves nothing, so it skips the lock
     for _ in range(40):
         new = set(glob.glob(pattern, recursive=True)) - before
         if new:
