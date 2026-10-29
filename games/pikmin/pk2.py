@@ -4,6 +4,7 @@ Addresses are the European build's (GPVP01), from projectPiki/pikmin2's config/G
 layout in include/Game/gamePlayData.h.
 
 python3 pk2.py A 'A*3' wait:2 shot:name   presses (seconds between), saves shots/name.png"""
+import math
 import os
 import socket
 import sys
@@ -32,6 +33,13 @@ for i, c in enumerate(["blue", "red", "yellow", "purple", "white", "bulbmin"]):
 
 class Pad:
     def __init__(self):
+        """One driver at a time: five farm.py copies once fought over the stick (2026-10-29). The lock frees on exit."""
+        import fcntl
+        self.lock = open(os.path.join(HERE, ".pad.lock"), "w")
+        try:
+            fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            sys.exit("pad busy: another bot script is driving")
         self.sock = socket.create_connection(("127.0.0.1", 26761))
         self.f = self.sock.makefile("rw")
 
@@ -125,6 +133,18 @@ def moved(pad, x=0, y=1, secs=0.6):
     time.sleep(0.4)
     b = [navi(i)[:2] for i in (0, 1)]
     return any(abs(q[0] - p[0]) + abs(q[1] - p[1]) > 20 for p, q in zip(a, b))
+
+
+def frozen(pad):
+    """True when the stick moves nothing at all, neither place nor facing: a message box is up. Against a wall the
+    captain still turns, so a wall reads as not frozen."""
+    a = navi()
+    pad.cmd(f"stick {-math.sin(a[2]):.2f} {-math.cos(a[2]):.2f}")
+    time.sleep(0.3)
+    pad.cmd("release all")
+    time.sleep(0.2)
+    b = navi()
+    return abs(b[0] - a[0]) + abs(b[1] - a[1]) < 1 and abs(_wrap(b[2] - a[2])) < 0.05
 
 
 def control(pad, tries=60):
@@ -274,6 +294,10 @@ def goto(pad, x, z, near=30, tries=80):
             return True
         stuck = stuck + 1 if last - d < 5 else 0
         if stuck >= 3:
+            if frozen(pad):                    # a tutorial box ate the stick: read it out, then keep walking
+                control(pad, 30)
+                stuck, last = 0, 1e9
+                continue
             return False
         last = d
         w.toward(x, z, min(0.5, max(0.12, d / 400)))
@@ -281,15 +305,24 @@ def goto(pad, x, z, near=30, tries=80):
 
 
 def face(pad, x, z):
-    """Turn toward (x, z) so the cursor, where throws land, points at it."""
+    """Turn toward (x, z) so the cursor, where throws land, points at it. Closed loop on the cursor itself: tap the
+    stick (longer for a bigger turn), let the cursor settle, check again."""
+    import math
     w = Walker(pad)
-    w.toward(x, z, 0.1)
-    w.toward(x, z, 0.06)
+    for _ in range(8):
+        px, pz, _ = navi()
+        cx, _, cz = cursor()
+        err = _wrap(math.atan2(x - px, z - pz) - math.atan2(cx - px, cz - pz))
+        if abs(err) < 0.12:
+            return
+        w.toward(x, z, 0.08 + 0.12 * abs(err) / math.pi)   # a big turn needs the stick held longer
+        time.sleep(0.2)
 
 
-def throw_at(pad, x, z, n=5, tries=4):
-    """Line the cursor up on (x, z), then throw n Pikmin. The cursor sits a fixed reach ahead of Olimar, so stand
-    that reach short of the target on the line toward it, face it, and check where the cursor really is."""
+def aim(pad, x, z, tries=4):
+    """Put the cursor on (x, z) and return how far off it is. The cursor sits a fixed reach ahead of the captain, so
+    stand that reach short of the target on the line toward it, face it, and check where the cursor really is.
+    Throws land on the cursor, and the whistle circle is centred on it too, not on the captain."""
     import math
     for _ in range(tries):
         px, pz = pos()
@@ -301,16 +334,28 @@ def throw_at(pad, x, z, n=5, tries=4):
         cx, _, cz = cursor()
         if math.hypot(cx - x, cz - z) < 25:
             break
+    return math.hypot(cx - x, cz - z)
+
+
+def throw_at(pad, x, z, n=5):
+    miss = aim(pad, x, z)
     for _ in range(n):
         pad.press("A", 80, after=0.35)
-    return math.hypot(cx - x, cz - z)
+    return miss
+
+
+def whistle_at(pad, x, z, ms=2000):
+    """Whistle in the Pikmin around (x, z)."""
+    miss = aim(pad, x, z)
+    pad.press("B", ms, after=0.8)
+    return miss
 
 
 if __name__ == "__main__" and sys.argv[1:2] == ["selftest"]:
     assert abs(_wrap(7.0) - (7.0 - 6.283185307179586)) < 1e-9 and _wrap(-3.2) > 0
 
 
-PELLET_MGRS = {"treasure": 0x805168A0, "item": 0x805168A8, "fruit": 0x80516890, "carcass": 0x80516880}
+PELLET_MGRS = {"number": 0x80516878, "treasure": 0x805168A0, "item": 0x805168A8, "fruit": 0x80516890, "carcass": 0x80516880}
 
 
 def pellets(kind="treasure"):
@@ -440,6 +485,13 @@ def pluck(pad):
     """Walk onto each sprout and press A; returns how many joined the squad."""
     before = squad(ACTIVE)
     for x, z in sprouts():
-        goto(pad, x, z, near=14)
+        if (round(x), round(z)) in NOPLUCK:
+            continue
+        goto(pad, x, z, near=8)
         pad.press("A", 100, after=1.2)
+        if (x, z) in sprouts():               # still there: not pluckable yet, and A would throw a Pikmin
+            NOPLUCK.add((round(x), round(z)))
     return squad(ACTIVE) - before
+
+
+NOPLUCK = set()

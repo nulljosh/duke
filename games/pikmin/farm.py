@@ -1,5 +1,5 @@
 """Day 1, Louie: grow the squad on the Red Onion until there are 15 Pikmin. Pluck sprouts, throw the squad at the
-nearest Pellet Posy (enemy id 0), let them carry the pellet home, repeat."""
+nearest Pellet Posy (enemy id 0) or loose pellet, let them carry the pellet home, repeat."""
 import math
 import time
 
@@ -19,6 +19,8 @@ while pk2.alive() < GOAL:
     me = pk2.pos()
     posies = [e for e in pk2.enemies() if e["id"] == 0 and math.hypot(e["x"] - me[0], e["z"] - me[1]) < 900
               and (round(e["x"]), round(e["z"])) not in bad]
+    posies += [p for p in pk2.pellets("number") if math.hypot(p["x"] - me[0], p["z"] - me[1]) < 900
+               and (round(p["x"]), round(p["z"])) not in bad]   # pellets that dropped and nobody carried
     print("alive", pk2.alive(), "squad", pk2.squad(1), "posies", len(posies), flush=True)
     if not posies or not pk2.squad(1):
         time.sleep(10)
