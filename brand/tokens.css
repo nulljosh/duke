@@ -1,5 +1,6 @@
 /* Duke design system. One source for the landing (copied to web/ by deploy.sh) and the values the app mirrors in RunState.swift.
-   One colour: clrs.cc Blue, fading to clrs.cc Navy in the icon like deep water. Dark mode is the deep blue of a FEZ night, the sea after dark.
+   The icon is nine game tiles on ink, one per game, the white one in the middle playing now. The UI owns one colour, Duke orange,
+   the Factorio tile's warmth; every game keeps its own colour (--g-*). Dark mode is true black, like a console between games.
    Type: Duke Sans (Inter, OFL, quotes redrawn as wave crests). 8 point grid, one radius set, 48 point capsule controls. */
 @font-face { font-family: "Duke Sans"; src: url("fonts/DukeSans-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Duke Sans"; src: url("fonts/DukeSans-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
@@ -8,14 +9,15 @@
 
 :root {
   /* colour */
-  --accent: #0074d9;          /* clrs.cc Blue: links, buttons, highlights, correct answers */
-  --accent-light: #0074d9;    /* icon gradient top */
-  --accent-deep: #001f3f;     /* icon gradient bottom: clrs.cc Navy */
-  --link: #0063ba;
-  --btn: #0063ba;          /* white text passes AA */
-  --band: #0063ba;
-  --band-sub: #d6e8fb;
-  --band-art: #7fbdf2;
+  --accent: #e8691a;          /* Duke orange: highlights, correct answers, the focus ring */
+  --accent-light: #2e2e34;    /* icon gradient top: ink */
+  --accent-deep: #0c0c0e;     /* icon gradient bottom */
+  --ink: #16161a;             /* the icon tile, the band */
+  --link: #c2410c;            /* AA on white */
+  --btn: #c2410c;             /* white text passes AA */
+  --band: #16161a;
+  --band-sub: #c7c7cc;
+  --band-art: #e8691a;
   --band-line: rgba(255, 255, 255, .24);
   --ring: color-mix(in srgb, var(--accent) 30%, transparent);
   --bg: #fff;
@@ -59,10 +61,11 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --link: #6cb6ff;
-    --bg: #141f33;            /* FEZ night */
-    --surface: #1a2740;
-    --line: rgba(242, 227, 192, .12);
+    --link: #ff8a3d;
+    --bg: #000;               /* true black, a console between games */
+    --surface: #1c1c1e;
+    --band: #1c1c1e;
+    --line: rgba(255, 255, 255, .12);
     --text: #f5f5f7;
     --sub: rgba(245, 245, 247, .6);
   }

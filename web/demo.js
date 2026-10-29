@@ -1,7 +1,7 @@
 (function(){
-  // ponytail: real solved exercises from each track (mate-in-1/fork, algebra,
-  // word-order), replayed on a mini stage (move/type + flash + XP), cycling
-  // subjects like the runner cycles tracks. No screenshot anywhere.
+  // ponytail: real solved exercises from each Duolingo track (mate-in-1/fork,
+  // algebra, word-order) and one move from every other game, replayed on a mini
+  // stage (move/type + flash + XP), cycling like the runner. No screenshot anywhere.
   // All twelve: the scripted demo only ever used a handful, but a live FEN can
   // contain anything.
   var glyph = {
@@ -58,23 +58,41 @@
       setTimeout(function() { tiles[tokenIdx].classList.add('on'); if (step === p.order.length - 1) done(); }, 350 + step * 260);
     });
   }
+  // Every other game gets a turn between Duolingo rounds: its tile (the same glyph as its card below), the move it
+  // makes and what it lands. Glyphs come from the cards so there is one drawing per game.
+  function playGame(p, done) {
+    var card = [].slice.call(document.querySelectorAll('#games .game')).filter(function(c) { return c.querySelector('h3').textContent === p.game; })[0];
+    var svg = card ? card.querySelector('.game-tile').innerHTML : '';
+    stage.innerHTML = '<div class="demo-game"><div class="demo-game-tile" style="--game: var(' + p.color + ')">' + svg +
+      '</div><div class="demo-game-move" id="gameMove">' + p.move + '</div></div>';
+    setTimeout(function() { document.getElementById('gameMove').classList.add('on'); }, 350);
+    setTimeout(done, 1100);
+  }
   var puzzles = [
     { type: 'chess', label: 'Checkmate!', pieces: { e1:'Q', g1:'K', g8:'k', f7:'p', g7:'p', h7:'p' }, from: 'e1', to: 'e8' },
+    { type: 'game', game: 'Factorio', color: '--g-factorio', label: 'Rocket launched!', move: 'Build the silo, feed it, launch' },
     { type: 'math',  label: 'Solved!', problem: '3(x + 2) = 21', answer: 'x = 5' },
+    { type: 'game', game: 'FEZ', color: '--g-fez', label: '32 of 32 cubes', move: 'Rotate the world, take the cube' },
     { type: 'lang',  label: 'Correct!', prompt: '"How are you?" → Spanish', tokens: ['tú', '¿Cómo', 'estás', '?'], order: [1, 0, 2, 3] },
+    { type: 'game', game: 'Papers, Please', color: '--g-papers', label: 'Approved', move: 'Passport matches the rulebook' },
     { type: 'chess', label: 'Checkmate!', pieces: { a1:'R', g1:'K', g8:'k', f7:'p', g7:'p', h7:'p' }, from: 'a1', to: 'a8' },
+    { type: 'game', game: 'Pokemon Sapphire', color: '--g-pokemon', label: 'Grovyle, level 27', move: 'Treecko evolves' },
     { type: 'math',  label: 'Solved!', problem: '√144 + 5²', answer: '37' },
+    { type: 'game', game: 'Pikmin 2', color: '--g-pikmin', label: 'Purples!', move: 'Reds into the Candypop Bud' },
+    { type: 'game', game: 'Oxygen Not Included', color: '--g-oni', label: 'Cycle survived', move: 'Dig, build, keep everyone breathing' },
     { type: 'lang',  label: 'Correct!', prompt: '"The cat sleeps" → Greek', tokens: ['κοιμάται', 'Η', 'γάτα'], order: [1, 2, 0] },
+    { type: 'game', game: 'Game Dev Tycoon', color: '--g-gdt', label: 'Shipped!', move: 'Pick a topic and genre, make the game' },
+    { type: 'game', game: 'Mirage', color: '--g-mirage', label: 'Level clear', move: 'Jump the gap before sunset' },
     { type: 'chess', label: 'Fork!', pieces: { e5:'N', g1:'K', g8:'k', c8:'q' }, from: 'e5', to: 'f7' }
   ];
   var trackName = { chess: 'Chess', math: 'Math', lang: 'Language' };
   // Live tracks are language codes ("ro"); show the name.
   function langName(code) { try { return new Intl.DisplayNames(['en'], { type: 'language' }).of(code); } catch (e) { return code; } }
-  var players = { chess: playChess, math: playMath, lang: playLang };
+  var players = { chess: playChess, math: playMath, lang: playLang, game: playGame };
   function playNext() {
     if (live) return;              // the real runner took over
     var p = puzzles[solved % puzzles.length];
-    trackEl.textContent = 'Solving ' + trackName[p.type];
+    trackEl.textContent = p.game ? 'Playing ' + p.game : 'Solving ' + trackName[p.type];
     labelEl.classList.remove('on');
     players[p.type](p, function() {
       if (live) return;

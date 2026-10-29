@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 HERE = Path(__file__).resolve().parent
 W, H = 960, 540
-BG, PANEL, INK, DIM, GRID = (18, 34, 24), (28, 52, 36), (240, 244, 236), (150, 170, 150), (44, 72, 52)
+BG, PANEL, INK, DIM, GRID = (22, 22, 26), (36, 36, 40), (245, 245, 247), (160, 160, 168), (56, 56, 62)  # Duke ink (brand/tokens.css --ink)
 RED, GOLD = (226, 62, 52), (246, 196, 60)
 GOAL = 201                                     # treasures in the game
 

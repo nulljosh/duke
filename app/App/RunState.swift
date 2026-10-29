@@ -234,10 +234,10 @@ final class Poller: ObservableObject {
     }
 }
 
-// clrs.cc Blue, the one brand colour (brand/tokens.css --accent), and Duke Sans, bundled on macOS.
+// Duke orange, the one brand colour (brand/tokens.css --accent), and Duke Sans, bundled on macOS.
 // Elsewhere the custom font falls back to the system face at the same size.
 extension Color {
-    static let duke = Color(red: 0x00 / 255, green: 0x74 / 255, blue: 0xD9 / 255)
+    static let duke = Color(red: 0xE8 / 255, green: 0x69 / 255, blue: 0x1A / 255)
 }
 
 extension Font {

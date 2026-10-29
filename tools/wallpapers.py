@@ -17,31 +17,11 @@ from papersart import papers                  # noqa: E402  Papers, Please art, 
 from oniart import oni                        # noqa: E402  Oxygen Not Included art, original, with the live cycle
 
 
-# ---------- Duke: the brand tile, Neptune's Horses and one glyph per game ----------
+# ---------- Duke: the brand tile, the Great Wave and one colour tile per game ----------
 
-def gear(cx, cy, r, teeth=8):
-    pts = []
-    for n in range(teeth * 4):
-        a = n * math.pi * 2 / (teeth * 4); rr = r if n % 4 in (1, 2) else r * .78
-        pts.append(f"{cx + rr * math.cos(a):.1f},{cy + rr * math.sin(a):.1f}")
-    hole = r * .32
-    return (f'<path fill-rule="evenodd" d="M{" L".join(pts)} Z M{cx + hole},{cy} a{hole},{hole} 0 1,0 {-2 * hole},0 '
-            f'a{hole},{hole} 0 1,0 {2 * hole},0 Z"/>')
-
-
-GLYPHS = {   # each drawn in a 100x100 box, white: Duolingo's four tracks, then the three games
-    "languages": '<path opacity=".55" d="M40 14 H86 Q94 14 94 22 V50 Q94 58 86 58 H80 V70 L66 58 H40 Q32 58 32 50 V22 Q32 14 40 14 Z"/>'
-                 '<path d="M14 34 H62 Q70 34 70 42 V70 Q70 78 62 78 H34 L20 90 V78 H14 Q6 78 6 70 V42 Q6 34 14 34 Z"/>',
-    "math": '<path d="M20 26 H44 V34 H20 Z M28 18 H36 V42 H28 Z M56 26 H80 V34 H56 Z M20 66 H44 V74 H20 Z '
-            'M56 60 H80 V68 H56 Z M56 72 H80 V80 H56 Z"/>',
-    "chess": '<path d="M26 86 H74 V76 H66 L62 46 H70 V18 H60 V28 H54 V18 H46 V28 H40 V18 H30 V46 H38 L34 76 H26 Z"/>',
-    "music": '<path d="M30 22 L80 12 V68 A11 9 -20 1 1 72 60 V30 L38 37 V78 A11 9 -20 1 1 30 70 Z"/>',
-    "factorio": gear(50, 50, 44),
-    "gamedev": '<path fill-rule="evenodd" d="M28 28 H72 Q94 28 96 60 Q98 84 82 84 Q72 84 66 70 H34 Q28 84 18 84 Q2 84 4 60 '
-               'Q6 28 28 28 Z M22 46 H30 V38 H36 V46 H44 V52 H36 V60 H30 V52 H22 Z M68 44 a5 5 0 1 0 0.1 0 Z M78 54 a5 5 0 1 0 0.1 0 Z"/>',
-    "fez": '<path d="M50 8 L88 30 L50 52 L12 30 Z"/><path opacity=".72" d="M12 30 L50 52 V94 L12 72 Z"/>'
-           '<path opacity=".45" d="M88 30 L50 52 V94 L88 72 Z"/>',
-}
+GAMES = [("DUOLINGO", "#2e8b3a"), ("FACTORIO", "#c4570f"), ("GAME DEV TYCOON", "#0063ba"), ("FEZ", "#b08a00"),
+         ("PAPERS, PLEASE", "#b5302a"), ("OXYGEN NOT INCLUDED", "#3d7a5c"), ("POKEMON SAPPHIRE", "#3a5aa8"),
+         ("PIKMIN 2", "#1f6e3a"), ("MIRAGE", "#9a4a1f")]   # tokens.css --g-*, Sapphire navy lifted for the ink
 
 
 def mark():
@@ -50,7 +30,7 @@ def mark():
 
 
 FONTS = ROOT / "fonts"
-BAND, ART, SUB = (0, 99, 186), (127, 189, 242), (214, 232, 251)   # tokens.css: --band, --band-art, --band-sub
+BAND, ART, SUB = (22, 22, 26), (232, 105, 26), (199, 199, 204)   # tokens.css: --band (ink), --accent (Duke orange), --band-sub
 
 
 def svg_png(body, w, h):
@@ -105,8 +85,8 @@ def place(img, mask, box, tint, alpha, period):
 
 
 def duke(kind):
-    """Dressed like the Hermes landing (after Nous Research): the band blue, Hokusai's Great Wave and Duke Kahanamoku
-    with his board as dot masks in scanlines, film grain, a thin frame, tiny caps, a giant wordmark and the games."""
+    """Dressed like the Hermes landing (after Nous Research): Duke ink, Hokusai's Great Wave and Duke Kahanamoku
+    with his board as dot masks in scanlines, film grain, a thin frame, tiny caps, a giant wordmark, every game and its colour tile."""
     W, H = SIZES[kind]; desk = kind == "desktop"
     img = Image.new("RGBA", (W, H), BAND + (255,))
     wave, duke = art_mask("great-wave"), art_mask("duke")
@@ -129,9 +109,11 @@ def duke(kind):
     f = ImageFont.truetype(str(FONTS / "DukeSans-Bold.ttf"), big)
     d.text((x0 - big * .05, y + small * 1.2), "Duke", font=f, fill=(255, 255, 255, 255))
     y += small * 1.2 + big * 1.12
-    caps(d, (x0, y), "DUOLINGO  FACTORIO  GAME DEV TYCOON  FEZ", small, SUB + (230,))
-    row = "".join(f'<g transform="translate({n * g * 1.7} 0) scale({g / 100})" fill="#fff">{GLYPHS[k]}</g>' for n, k in enumerate(GLYPHS))
-    img.alpha_composite(svg_png(row, int(g * 1.7 * len(GLYPHS)), g), (x0, int(y + small * 2.4)))
+    per = 5 if desk else 3                     # every game it plays, then its colour tile
+    for i in range(0, len(GAMES), per):
+        caps(d, (x0, int(y)), "  ".join(n for n, _ in GAMES[i:i + per]), small, SUB + (230,)); y += small * 1.6
+    row = "".join(f'<rect x="{n * g * 1.3}" width="{g}" height="{g}" rx="{g * .24}" fill="{c}"/>' for n, (_, c) in enumerate(GAMES))
+    img.alpha_composite(svg_png(row, int(g * 1.3 * len(GAMES)), g), (x0, int(y + small)))
     cred = "HOKUSAI, THE GREAT WAVE, C. 1831. DUKE KAHANAMOKU, C. 1915. PUBLIC DOMAIN"; cs = int(small * (.7 if desk else .55))
     fw = caps(ImageDraw.Draw(Image.new("RGBA", (1, 1))), (0, 0), cred, cs, SUB)
     caps(d, (W - m - (48 if desk else 20) - fw, H - m - (48 if desk else 20) - cs), cred, cs, SUB + (190,))
