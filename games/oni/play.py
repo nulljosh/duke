@@ -151,6 +151,7 @@ def run(until):
             for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): oni.cmd(op="safedig", cells=cells, floor=119, prio=prio)   # more come in reach as the room opens up
             oni.cmd(op="safedig", cells=SHAFT, floor=99, prio=6); oni.cmd(op="safedig", cells=LOWER, floor=109, prio=5)
             oni.cmd(op="safedig", cells=SPINE, floor=119, prio=5); oni.cmd(op="safedig", cells=near(MINES, 999), floor=100, prio=4, max=20)
+            oni.cmd(op="safedig", cells=[[x, y] for x in range(181, 188) for y in (110, 111)], floor=109, prio=8)   # the corridor to the pump first: the water is the colony
             oni.cmd(op="dig", cells=[[188, 110], [188, 111]], prio=8)   # the step beside the pump: water only touches it diagonally, and liquid never climbs, so safedig's 3x3 rule is too strict here
             oni.cmd(op="safedig", cells=[[184, y] for y in range(112, 119)] + [[179, 109], [179, 108]], floor=100, prio=8)   # dirt beside the ladders
             topup(s["have"], "Dirt", 1500); topup(s["have"], "Algae", 300); topup(s["have"], "Cuprite", 800); floor(); explore(s); seeds(); printables(s); skills()
