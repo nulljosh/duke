@@ -38,7 +38,7 @@ Background tasks: run each one as a Claude background task, never with nohup, an
 
 ## Live window: where it stands
 
-What feeds the window today (Mac app `menubar/main.swift`, Python feeders in `scripts/`):
+What feeds the window today (Mac app `menubar/*.swift`, Python feeders in `scripts/`):
 
 | Piece | What it does | Cost / problem |
 |---|---|---|

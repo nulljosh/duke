@@ -83,7 +83,7 @@ The agent plays Joshua's real save through a planner and a set of replay scripts
 | `milestone.py`, `ship_landing.sh`, `landing_sync.py`, `make_icon.py`, `statline.py`, `realshot.sh`, `oilprep.sh` | Proof GIFs, landing and README refresh and deploy, the icon, one detailed log line, a true graphics screenshot (needs a real client, crashes the server if left joined), and oil prep. |
 | `export_training.py` | Turns `runs/*.jsonl` into `data/train.jsonl` and `data/valid.jsonl` for LoRA. See [TRAINING.md](TRAINING.md). |
 
-## The monitor (`menubar/main.swift`)
+## The monitor (`menubar/*.swift`: App, Poller, Models, LiveWindow, Markers, Silo, Layers, Panels)
 
 A SwiftUI menu bar app signed with the Developer ID so macOS keeps its Documents permission across rebuilds. The popover shows the map, research and roadmap. The live window (`--open-live`, `--fullscreen` to opt in) floats above all windows by default (Ctrl+Option+P toggles), follows the player with a zoomed camera eased at 60 fps, draws the real Factorio engineer sprite (copied from the Steam install by `build.sh`, never into git), and pulses a dot on every machine (green working, amber waiting, red stuck). Ctrl+Option+H shows or hides the progress panel. The map picture only redraws when the runner steps, so new builds show as dots before they show as sprites.
 
