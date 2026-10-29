@@ -23,6 +23,11 @@ def grind(g, level, back):
     tiles = m.grass()
     if not tiles:                                        # a cave: every floor tile has encounters
         tiles = [p for p in world.mapdata(g, here_map(g)).reach(here) if p != here]
+    reach = world.mapdata(g, here_map(g)).reach(here)
+    tiles = [p for p in tiles if p in reach]               # the nearest grass can sit behind a ledge or a tree
+    if len(tiles) < 2:
+        print("no reachable grass on", world.name(here_map(g)), flush=True)
+        return True
     patch = sorted(tiles, key=lambda p: abs(p[0] - here[0]) + abs(p[1] - here[1]))
     a = patch[0]
     b = next((p for p in patch if abs(p[0] - a[0]) + abs(p[1] - a[1]) == 1), patch[1])
