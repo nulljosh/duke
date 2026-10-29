@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 USER = Path("/Volumes/LaCie/dolphin-duke")
-ISO = Path("/Volumes/LaCie/roms/pikmin2/Pikmin 2 (Europe) (EnFrDeEsIt).iso")
+ISO = Path("/Volumes/LaCie/roms/pikmin2/Pikmin 2 (Europe) (En,Fr,De,Es,It).rvz")
 APP = "/Applications/Dolphin.app"
 
 PAD = {

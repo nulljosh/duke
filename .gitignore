@@ -33,3 +33,7 @@ games/pokemon/gba
 games/pokemon/gba.pid
 games/pokemon/shots/
 games/pokemon/states/
+games/pikmin/winid
+games/pikmin/shots/
+games/pikmin/mem.json
+games/pikmin/*.log
