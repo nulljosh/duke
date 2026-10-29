@@ -8,7 +8,7 @@ time.sleep(5)
 for k in ("START", "A", "A", "A"):
     pad.press(k, after=4)
 for i in range(400):
-    pad.press("A", after=2)
+    pad.press("START" if i % 2 else "A", after=2)          # START skips a cutscene once it is skippable
     v = pk2.mem()
     if any(v.get(c) for c in ("red", "blue", "yellow")):
         print("pikmin at", i, v, flush=True)

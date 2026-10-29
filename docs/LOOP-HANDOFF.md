@@ -28,6 +28,17 @@ Rules for every tick:
 ```
 Read `games/pokemon/README.md`, `GUIDE.md` and this file first.
 
+## Pikmin 2 (active since 2026-10-29 06:20; Sapphire parked for it)
+Loop: `/loop until Pikmin 2 is completed, documenting progress with graphs and the iPhone wallpaper`. The ROM is Joshua's Pikmin 2 (Europe, GPVP01) RVZ at `/Volumes/LaCie/roms/pikmin2/`. Dolphin runs from an isolated profile at `/Volumes/LaCie/dolphin-duke` (quarantine cleared 2026-10-29 with Joshua's OK).
+- Order: `python3 dsu.py` (the virtual pad), then `python3 memd.py` (it holds the MemoryWatcher socket and writes `mem.json`), then `python3 dolphin.py launch`. Locations load only at boot, so after changing `pk2.WATCH` run `dolphin.setup(pk2.locations())` and relaunch.
+- `pk2.py` has `Pad().press/cmd('stick x y')`, `shot(name)` (window capture via `winid`), and `mem()` (pokos, treasures, Pikmin by colour, and Olimar and Louie x/y/z/dir from naviMgr +0x28 +0x20C).
+- START skips cutscenes and A advances dialogue. Day 1 (Valley of Repose) is reached, and Olimar answers the stick (it worked at 06:50).
+- Next: walk to a point with position feedback (map the stick to world direction from the camera), find the red Onion and Pikmin, throw, carry the first treasure, and save at the day's end. Then progress.jsonl, graph.py and wallpaper.py, as in pokemon/.
+- The memory card in the profile has File 1. Don't touch other slots.
+
+## Pokemon Sapphire (parked 2026-10-29 06:20)
+Saved in game at Granite Cave, Grovyle L28 with 1 badge, and the save is backed up. To resume: `games/pokemon/run.sh`, load `states/parked.ss`, then `play.py brawly 29`.
+
 ## FEZ (beaten 2026-10-26, max-out parked)
 32 of 32 cubes, Star Gate ending. The New Game+ max-out is parked at 18 gold, 15 anti, 2 bits. `python3 games/fez/fezsave.py ~/Library/Application\ Support/FEZ/SaveSlot2` lists what is left; the hard parts are behind Memory Core volume 5 and in the puzzles noted in `games/fez/README.md`.
 
