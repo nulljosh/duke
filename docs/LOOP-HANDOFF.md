@@ -1,41 +1,33 @@
-# Duke loop handoff (2026-10-26, overnight)
+# Duke loop handoff (2026-10-28, night)
 
 ## What the loop is
-`/loop until fez and Duolingo beat`. Duke plays FEZ for real, front to back, while the Duolingo runner keeps grinding courses. Each tick picks the next FEZ target, plays it, commits what worked, logs it in `games/fez/README.md`, and checks the runner is still up. Replies to Joshua stay one line.
+`/loop until Pokemon Sapphire is complete with all stats maxed out and all legendary Pokemon captured`. Duke plays Sapphire for real as Stitch (boy) with Treecko, headless, while the Duolingo runner keeps going. Each tick runs the next leg in `games/pokemon/play.py`, logs a row with `stats.py`, redraws `progress.png` and the iPhone wallpaper, commits, and sends Joshua screenshots. Replies stay one line.
 
 Rules for every tick:
-- FEZ plays slot 3 (`SaveSlot2`) only. Never touch his slots. Backups are in `games/fez/.save-backup/`.
-- No console cheats. FEZUG is for reading state, the HUD and timescale 1.5, nothing else.
-- Keep FEZ hidden in the background at low volume. Never launch GUI apps on his screen.
-- Never kill the Duolingo runner or the menu bar app. After an `app/App/` edit, deploy the way `CLAUDE.md` says (swap, lsregister, kickstart) so no crash dialog appears.
-- Commit and push each win. Stage only the files the tick changed.
+- Read the decomp (pret/pokeruby, symbols in `/Volumes/LaCie/src/pokeruby/`) before any menu or move that can't be undone. `games/pokemon/GUIDE.md` lists the menus that don't default the way you'd expect.
+- No cheats. A savestate reload is only for undoing the bot's own misinput.
+- Only one client talks to the player at a time, so never run two scripts at once.
+- Never kill the Duolingo runner or the menu bar app.
 
 ## Where things stand
-- Runner: restarted with cs as its start track. Balance mode moves between tracks by XP rate (about 785k XP at 00:29 PDT). Its headless browser launches with `--mute-audio`, so lessons no longer read aloud on the Mac.
-- FEZ: 32 of 32 (18 gold, 14 anti), 05:45. Cube 31 was the Observatory gold cube (`observatory.cube()`, in from the top via `zu_city_ruins.to_y28()` and Zu Bridge > Throne); cube 32 the Telescope anti-cube (`telescope_cube.cube()`, one-way platforms up to the tube top). BEATEN about 07:00: back down the Tree (`tree_bounce.from_top()`, `tree_roots.down()`), Zu City STARGATE, then the low-gravity Pyramid climb to the Mother Cube (`routes/pyramid.py`, `plan.LOWREACH`); credits rolled, save backed up as `.save-backup/SaveSlot2.beaten`. Joshua 2026-10-26: now max the game out (all 32 gold, 32 anti, the heart cubes); `fezsave.py` lists what's left per room.
-- Code anti-cubes are the fast path: `codes.py ROOM...` walks to each room, steps off the door (an Up in the code walks him back out), waits until the game lists Gomez in the code volume (`volumes` in the bridge state; the game tests it from the camera, a 3D box check is not enough), enters the CodePattern from the level data, collects. Joshua's call: like a walkthrough, fine.
-- Below the Tree: Boiler Room is left (its route dies at Big Tower). Above the Tree climb: the Tree's own anti-cube floating at (44,60,4) (code solved long ago, cube never taken), Tree Sky, Zu Bridge, Telescope (volume 4's code only), Code Machine. The planner cannot climb the Tree from y53 at all; that climb is the last wall. The 32-cube door is Zu City's STARGATE door (Right view, y36).
-- Fixed tonight: the key server followed a dead pid after restarts (the "crash" loop Joshua saw); the bridge mod keeps FEZ active so background keys never go dead; `start()` kills FEZ and restores the save if a menu slip opens a new game (happened once, restored from SaveSlot2_Backup); `fez.snapshot()` copies the save to `.save-backup/` after every cube; restarts capped at one per run.
-- Hand routes: `routes/tree_roots.py` (up to the Tree door via the plank ring), `routes/zu_city.py` (down to Memory Core). Bans from the dead-input window were wiped (copy in `.save-backup/bans.before-cleanup`).
-- Done tonight: Mine A bit (mid-air camera turn while falling), Mine Wrap bits 4 and 5 (`bombrun.wrap_chain`, the tower's brick ring cleared face by face), Mine Wrap top floor (`bombrun.wrap_top`), Bomb Pillar door and bit (`pillar_door`, `pillar_bit`), the Bomb Pillar's brick block (`pillar_bricks`).
-- Stuck: Mine Wrap's gold cube (no solid ground between y44 and its y63 to 65 platforms per the live grid) and the Bomb Pillar chest (about 2 tiles above what a ladder jump reaches).
-- `trip.py` (split out of `go.py`) has door, travel, collect and sweep; `trip.travel` marks a door blocked only when Gomez reached it and it would not open. Nature Hub black holes re-roll on each level load (`routes/nature_hub.reroll_holes`).
-- Duolingo: Indonesian at about 43%, roughly 13 hours left on that course. Every solved question is saved in `courses/<code>.jsonl` (`scripts/courses.py`). Patois now builds its language units from that vocabulary, with Tatoeba sentences only.
-- Duke 1.1 shipped (daily goal ring). The Mac app signs with Developer ID now, so rebuilds don't re-prompt.
+- Player: `games/pokemon/run.sh` (libmgba, no window, 127.0.0.1:8742; frames go to ffmpeg on udp 9000 for OBS). The ROM is at `~/roms/sapphire/`. Twitch waits on Joshua's account and stream key.
+- Run: Treecko got the Poochyena win and Birch's rescue at 0:15 play time. Now grinding on Route 101 to L8 (`play.py grind101 8`) before May's Torchic on Route 103. No in-game save written yet.
+- Sapphire's legendaries are Kyogre, Rayquaza, Regirock, Regice, Registeel and the roaming Latios. Groudon is Ruby-only, so it needs a trade, and Latias needs the Eon Ticket event. Say so before claiming "all".
 
 ## Next, in order
-1. FEZ is beaten; the New Game+ max-out is parked at 18 gold, 15 anti, 2 bits (Joshua: "you decide", 2026-10-27), and Papers, Please is the active game. To resume FEZ: most of what is left sits behind Memory Core volume 5, a secret passage to Pivot Watertower at x17-18 z24-25 y48 that never registers Gomez (he stands 3 units in front of it); the rest is puzzles (graveyard lightning platforms, the owl statues for Big Owl, Mine Wrap bombs). Big Tower, Tree Roots and the Waterfall now have hand routes in `routes/`. `python3 games/fez/fezsave.py ~/Library/Application\ Support/FEZ/SaveSlot2` lists what's left per room.
-2. Rooms behind doors not yet opened: Pivot Watertower, Industrial Superspin, Pivot One/Two/Three, Triple Pivot Cave, the Sewers. `fezmap.py route` throws KeyError for them until a way in exists.
-3. Mine Wrap gold cube: find the intended climb. The Steam guides that cover it rate-limit fetches, so try again later.
-4. Puzzles still blocked from before: Lighthouse climb, Quantum, CMY, Weightswitch Temple, Fractal, Tree climb.
-5. Papers, Please is the next game for Duke once FEZ is done or fully blocked.
+1. May on Route 103, then Petalburg (meet Dad, Wally), Route 104, Petalburg Woods, Rustboro and Roxanne.
+2. Teach `nav.fight` to pick moves by type and to switch or heal; write an in-game save leg (START, SAVE).
+3. Badges 2 to 8, the Elite Four, then the legendaries and stat maxing (EV training, Rare Candy only from the game itself).
 
 ## Restart prompt
 
 ```
-/loop until fez and Duolingo beat
+/loop until Pokemon Sapphire is complete with all stats maxed out and all legendary Pokemon captured
 ```
-Read `games/fez/README.md` (progress log at the bottom) and this file first.
+Read `games/pokemon/README.md`, `GUIDE.md` and this file first.
+
+## FEZ (beaten 2026-10-26, max-out parked)
+32 of 32 cubes, Star Gate ending. The New Game+ max-out is parked at 18 gold, 15 anti, 2 bits. `python3 games/fez/fezsave.py ~/Library/Application\ Support/FEZ/SaveSlot2` lists what is left; the hard parts are behind Memory Core volume 5 and in the puzzles noted in `games/fez/README.md`.
 
 ## Papers, Please (active, 2026-10-27)
 
