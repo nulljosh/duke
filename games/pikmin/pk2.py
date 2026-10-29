@@ -150,8 +150,11 @@ def frozen(pad):
 def control(pad, tries=60):
     """Press A through dialogue until the stick moves Olimar again. A only: START in the field opens the pause menu."""
     for i in range(tries):
-        if moved(pad, 0, 1 if i % 2 else -1):
-            return i
+        try:
+            if moved(pad, 0, 1 if i % 2 else -1):
+                return i
+        except ValueError:                    # captains are unloaded during a floor or area change
+            pass
         pad.press("A", after=1.2)
     raise TimeoutError("no control")
 

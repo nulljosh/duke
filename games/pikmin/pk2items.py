@@ -27,7 +27,7 @@ def pellets(kind="treasure"):
     return out
 
 
-ITEM_MGRS = {"cave": 0x80516820, "gate": 0x805167B0, "downfloor": 0x80516860, "bridge": 0x80516838}
+ITEM_MGRS = {"cave": 0x80516820, "gate": 0x805167B0, "downfloor": 0x80516860, "bridge": 0x80516838, "fountain": 0x80516830}
 
 
 def items(kind):
