@@ -2,6 +2,7 @@
 python3 play.py <leg>"""
 import sys
 
+import battle
 import graph
 import mons
 import nav
@@ -19,7 +20,10 @@ def grind(g, level, back):
     when HP drops under 40%, so the caller heals."""
     m = nav.Map(g)
     here = nav.where(g)[:2]
-    patch = sorted(m.grass(), key=lambda p: abs(p[0] - here[0]) + abs(p[1] - here[1]))
+    tiles = m.grass()
+    if not tiles:                                        # a cave: every floor tile has encounters
+        tiles = [p for p in world.mapdata(g, here_map(g)).reach(here) if p != here]
+    patch = sorted(tiles, key=lambda p: abs(p[0] - here[0]) + abs(p[1] - here[1]))
     a = patch[0]
     b = next((p for p in patch if abs(p[0] - a[0]) + abs(p[1] - a[1]) == 1), patch[1])
     while lead(g)["level"] < level:
@@ -28,7 +32,7 @@ def grind(g, level, back):
             if "Battle" in g.screen():
                 nav.fight(g)
             x = lead(g)
-            if x["hp"] * 10 < x["maxhp"] * 4:
+            if x["hp"] * 10 < x["maxhp"] * 4 or battle.damaging_pp(g, x) < 10:   # low HP, or out of attacks
                 back(g)
                 return False
     return True
@@ -94,6 +98,10 @@ def leg_petalburg(g):
     gym = next(p for p, dest in nav.warps(g).items() if dest[:2] == (8, 1)) if any(d[:2] == (8, 1) for d in nav.warps(g).values()) else None
     print("warps", nav.warps(g), flush=True)
     stats.log(g, "Reached Petalburg City")
+
+
+def here_map(g):
+    return nav.where(g)[2:]
 
 
 def here(g):
@@ -203,6 +211,37 @@ def leg_tunnel(g):
             nav.fight(g)
         nav.talk(g)
     stats.log(g, "Got the Devon Goods back in Rusturf Tunnel")
+
+
+def sail(g):
+    """Mr. Briney's boat from his cottage (he mirrors your steps, so talk_to wanders until he's adjacent)."""
+    goto(g, "Route104_MrBrineysHouse")
+    nav.talk_to(g, 21)
+    g.wait(300)
+    nav.talk(g)
+
+
+def leg_brawly(g, level=24):
+    """Train on Route 116 by Rustboro's Pokemon Center, sail to Dewford, beat Brawly."""
+    if world.name(here(g)).startswith(("Dewford", "GraniteCave", "Route106", "Route107")):
+        goto(g, "DewfordTown")
+    while lead(g)["level"] < level and not world.name(here(g)).startswith("Dewford"):
+        goto(g, "Route116")
+        grind(g, level, heal_nearest)
+    stats.log(g, f"Trained to L{lead(g)['level']} for Brawly")
+    if not world.name(here(g)).startswith("Dewford"):
+        heal_nearest(g)
+        sail(g)
+    heal_nearest(g)
+    goto(g, "DewfordTown_Gym")
+    leader = min(nav.templates(g), key=lambda t: t[3])
+    print("brawly", leader, flush=True)
+    nav.talk_to(g, leader[1]) or nav.use(g, leader[2:4], "DOWN")
+    nav.talk(g)
+    if "Battle" in g.screen():
+        nav.fight(g)
+    nav.talk(g)
+    print(stats.log(g, "Beat Brawly: Knuckle Badge"), flush=True)
 
 
 if __name__ == "__main__":

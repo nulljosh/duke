@@ -61,6 +61,10 @@ def grid_to(g, cur_addr, want):
         g.press("DOWN" if want // 2 else "UP", after=6)
 
 
+def damaging_pp(g, me):
+    return sum(pp for mid, pp in zip(me["moves"], me["pp"]) if mid and move(g, mid)["power"])
+
+
 def best(g):
     me, foe = mon(g, 0), mon(g, 1)
     scores = [score(g, me, foe, s) for s in range(4)]
@@ -76,7 +80,12 @@ def fight(g, log=print):
             break
         f = pk.name(g.r32(FUNCS))
         if f == "HandleInputChooseAction":
-            grid_to(g, ACTION_CUR, 0)               # FIGHT
+            s, scores = best(g)
+            wild = not g.r32(TYPE_FLAGS) & 0x8       # BATTLE_TYPE_TRAINER
+            if wild and scores[s] <= 0:
+                grid_to(g, ACTION_CUR, 3)           # RUN: nothing left that does damage
+            else:
+                grid_to(g, ACTION_CUR, 0)           # FIGHT
             g.press("A", after=10)
         elif f == "HandleInputChooseMove":
             s, scores = best(g)
