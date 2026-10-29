@@ -31,25 +31,26 @@ def walk(x, z, near):
     return pk2.goto(pad, x, z, near=near)
 
 
-pk2.gather(pad)
-print("squad", pk2.squad(0), "alive", pk2.alive(), flush=True)
-for b in [e for e in pk2.enemies() if e["id"] == POM]:
-    print("bud", round(b["x"]), round(b["z"]), "walk", walk(b["x"], b["z"], 150), flush=True)
-    for i in range(5):
-        print(" throw", i, "miss", round(pk2.throw_at(pad, b["x"], b["z"], n=1)), flush=True)
-        time.sleep(1.5)
-    time.sleep(6)                              # seeds fly out and plant
-    print(" plucked", pk2.pluck(pad), "squad", pk2.squad(0), flush=True)
+if __name__ == "__main__":
     pk2.gather(pad)
-print("purples", pk2.squad(0), "squad; shot", pk2.shot("purple"), flush=True)
-a = pk2.pellets("item")[0]
-print("atlas walk", walk(a["x"], a["z"], 200), flush=True)
-for i in range(4):
-    pk2.swarm(pad, a["x"], a["z"], 5)
-    time.sleep(3)
-    if pk2.squad(0) == 0:
-        break
-time.sleep(10)
-b = pk2.pellets("item")
-print("atlas", b and (round(b[0]["x"]), round(b[0]["z"])), "moved" if not b or math.hypot(b[0]["x"] - a["x"], b[0]["z"] - a["z"]) > 30 else "stuck", flush=True)
-print(pk2.shot("atlas_lift"), flush=True)
+    print("squad", pk2.squad(0), "alive", pk2.alive(), flush=True)
+    for b in [e for e in pk2.enemies() if e["id"] == POM]:
+        print("bud", round(b["x"]), round(b["z"]), "walk", walk(b["x"], b["z"], 150), flush=True)
+        for i in range(5):
+            print(" throw", i, "miss", round(pk2.throw_at(pad, b["x"], b["z"], n=1)), flush=True)
+            time.sleep(1.5)
+        time.sleep(6)                              # seeds fly out and plant
+        print(" plucked", pk2.pluck(pad), "squad", pk2.squad(0), flush=True)
+        pk2.gather(pad)
+    print("purples", pk2.squad(0), "squad; shot", pk2.shot("purple"), flush=True)
+    a = pk2.pellets("item")[0]
+    print("atlas walk", walk(a["x"], a["z"], 200), flush=True)
+    for i in range(4):
+        pk2.swarm(pad, a["x"], a["z"], 5)
+        time.sleep(3)
+        if pk2.squad(0) == 0:
+            break
+    time.sleep(10)
+    b = pk2.pellets("item")
+    print("atlas", b and (round(b[0]["x"]), round(b[0]["z"])), "moved" if not b or math.hypot(b[0]["x"] - a["x"], b[0]["z"] - a["z"]) > 30 else "stuck", flush=True)
+    print(pk2.shot("atlas_lift"), flush=True)

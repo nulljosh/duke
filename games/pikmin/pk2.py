@@ -474,7 +474,7 @@ def gather(pad):
         far = max(pikis(), key=lambda p: math.hypot(p[0] - me[0], p[1] - me[1]))
         if math.hypot(far[0] - me[0], far[1] - me[1]) > 120:
             travel(pad, *far, near=80)
-        pad.press("B", 1500, after=1.0)
+        whistle_at(pad, *far, ms=1500)        # plain B whistles at the cursor, which can sit far from the strays
     return squad(ACTIVE) >= alive()
 
 
@@ -488,7 +488,7 @@ def sprouts():
     if not used:
         return []
     vt, blob = read(arr, 4), read(arr, 0x400)
-    stride = next(k for k in range(0x200, len(blob) - 4, 4) if blob[k:k + 4] == vt)
+    stride = next(k for k in range(0x100, len(blob) - 4, 4) if blob[k:k + 4] == vt)
     out = [struct.unpack(">f4xf", read(arr + i * stride + 0x19C, 12)) for i in used]
     return [p for p in out if p != (0.0, 0.0)]  # a seed still in the air has no position yet
 
