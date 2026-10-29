@@ -31,6 +31,7 @@ PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         *[("Ladder", 184, y, 7) for y in range(112, 119)],   # up from the corridor through a streak of dirt
         *[("Ladder", 180, y, 6) for y in range(100, 108)], *[("Ladder", 189, y, 5) for y in range(126, 138)],   # the mine grid's spines
         ("MicrobeMusher", 201, 121, 8),
+        ("LiquidPumpingStation", 203, 122, 9),   # the east pool (x203-205, y118-121, about 11 cells) beside musher 2; depth 4 by the preflight rule, its base digs the pool's roof
         *[("Tile", x, 119, 8) for x in (169, 170, 171, 173, 175)],   # the west wing's floor has gaps
         ("AdvancedResearchCenter", 174, 120, 8), ("Generator", 170, 120, 7),
         ("MassageTable", 176, 120, 8)]   # stress relief; the generator's wires pass under it   # Super Computer: research stalls without its points   # a second musher on the pool ledge: one can't cook for six   # between the terrariums, on the bedroom floor
