@@ -24,6 +24,16 @@
   --text: #1d1d1f;
   --sub: rgba(29, 29, 31, .6);
 
+  /* games: one colour each, white glyph on top, all AA against white text */
+  --g-duolingo: #2e8b3a;
+  --g-factorio: #c4570f;
+  --g-gdt: #0063ba;
+  --g-fez: #b08a00;
+  --g-papers: #b5302a;
+  --g-oni: #3d7a5c;
+  --g-pokemon: #203868;      /* the Sapphire text box navy */
+  --g-mirage: #9a4a1f;
+
   /* type */
   --font: "Duke Sans", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --size-display: 34px;       /* 41 line */

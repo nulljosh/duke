@@ -1,6 +1,6 @@
 # Duke brand kit and design system
 
-A board riding a breaking wave. Duke rides it so you don't have to: Duolingo, Factorio, Game Dev Tycoon and FEZ.
+A board riding a breaking wave. Duke rides it so you don't have to: Duolingo, Factorio, Game Dev Tycoon, FEZ, Papers, Please, Oxygen Not Included and Pokemon Sapphire.
 
 ## The mark
 A bold white surfboard riding the face of a breaking wave, the crest curling into a spiral. One picture on a gradient tile. No text, no outline. It replaced the lone tilted surfboard on 2026-10-26, which read as a feather at small sizes; board and wave read at 29 px.
@@ -23,6 +23,22 @@ One colour, from clrs.cc.
 | Text | `#1D1D1F` | `#F5F5F7` |
 
 Dark mode is the deep blue of a FEZ night, the sea after dark. Never brown, beige, purple or teal.
+
+## Games
+Every game gets one colour (`--g-*` in `tokens.css`) and a bold white line glyph on the same rounded tile as the icon, so the landing's game cards read as one family. Glyphs are our own drawings, a nod to each game, never its sprites or logo.
+
+| Game | Token | Colour | Glyph |
+|---|---|---|---|
+| Duolingo | `--g-duolingo` | `#2E8B3A` | a speech bubble with a check |
+| Factorio | `--g-factorio` | `#C4570F` | a gear |
+| Game Dev Tycoon | `--g-gdt` | `#0063BA` | a floppy disk |
+| FEZ | `--g-fez` | `#B08A00` | a cube |
+| Papers, Please | `--g-papers` | `#B5302A` | a stamp |
+| Oxygen Not Included | `--g-oni` | `#3D7A5C` | an asteroid with two craters |
+| Pokemon Sapphire | `--g-pokemon` | `#203868` | a ball, on the navy of the game's text boxes |
+| Mirage | `--g-mirage` | `#9A4A1F` | a sun setting on the horizon |
+
+Each game's own progress art (the Pokemon graph and iPhone wallpaper, the ONI wallpaper) takes that game's look on purpose: pixel font, its text box frame, scaled with no smoothing.
 
 ## Type
 Duke Sans: Inter 5.3 by Rasmus Andersson (SIL Open Font License 1.1, bumped from 5.2.5 on 2026-10-26), renamed, with its curly quotes redrawn as curling wave crests. Proportionally spaced, drawn in the spirit of San Francisco and Helvetica. Regular, Medium, Semibold and Bold live in `../fonts/` (ttf for the app, woff2 for the web, `OFL.txt` beside them). `../tools/gen_font.py` rebuilds them from the pinned Inter release, byte for byte.
