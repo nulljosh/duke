@@ -28,6 +28,7 @@ The runner serves its state on port 8737 and takes `POST /switch`, `/pause` and 
 | `functions/api/live.js` | Edge-cached live state for the landing |
 | `web/` | The landing at duke.jaybulb.com |
 | `brand/` | Design system: tokens, mark, icon, Duke Sans notes |
+| `games/` | One folder per game, each with its own README: a bridge into the game (mod, save or screen) and a Python driver |
 
 ## Build and test
 
