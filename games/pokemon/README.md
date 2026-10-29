@@ -10,6 +10,8 @@ Duke plays Pokemon Sapphire headless and for real, as Stitch with Treecko. No ch
 - `stats.py`: appends a row to `progress.jsonl` (play time, place, badges, Pokedex, money, party).
 - `graph.py`: draws `progress.png` in the game's text box style.
 - `intro.py`: New Game through the naming screen.
+- `play.py`: the run, leg by leg (`python3 play.py grind101 8`).
+- `wallpaper.py`: an iPhone wallpaper, the live screen and party in the same style, saved as "Pokemon Wallpaper.jpg" at the top of iCloud Drive.
 
 The ROM is Joshua's own dump at `~/roms/sapphire/` (US v1.1, SHA-1 4722efb8), never in the repo. The battery save sits next to it. Memory addresses come from pret/pokeruby's `pokesapphire_rev1.sym`, and the rules the bot relies on are in [GUIDE.md](GUIDE.md).
 
