@@ -171,10 +171,10 @@ def leg_roxanne(g, level=17):
     while lead(g)["level"] < level:
         goto(g, "Route104")
         grind(g, level, heal_nearest)
-    stats.log(g, f"Trained to L{lead(g)['level']} for Roxanne")
-    heal_nearest(g)
+    if lead(g)["hp"] < lead(g)["maxhp"]:
+        heal_nearest(g)
     goto(g, "RustboroCity_Gym")
-    rox = next(t for t in nav.templates(g) if "Roxanne" in t[4])
+    rox = min(nav.templates(g), key=lambda t: t[3])     # the leader stands at the top of the gym
     print("roxanne", rox, flush=True)
     nav.use(g, rox[2:4], "DOWN")
     nav.talk(g)

@@ -30,7 +30,7 @@ def draw(screen, out=OUT):
     hrs = f"{last['playMin'] // 60}:{last['playMin'] % 60:02d}"
     text(d, (W - 14 - f.getbbox(hrs)[2], y + 7), hrs, f)
     for i, (n, lv) in enumerate(last["party"]):
-        col = TYPE.get(n, OTHER[i % len(OTHER)])
+        col = TYPE.get(str(n).upper(), OTHER[i % len(OTHER)])
         text(d, (14, y + 22 + i * 14), n.upper(), f, col)
         text(d, (W - 14 - f.getbbox(f"L{lv}")[2], y + 22 + i * 14), f"L{lv}", f, col)
 

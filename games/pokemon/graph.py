@@ -10,7 +10,7 @@ HERE = Path(__file__).resolve().parent
 W, H, SCALE = 320, 214, 3
 NAVY, INK, SHADOW, EDGE, RIM, PAPER = (32, 56, 104), (64, 64, 64), (200, 200, 208), (80, 96, 120), (168, 184, 208), (248, 248, 248)
 GRID, GOLD, DIM = (224, 228, 236), (248, 200, 48), (200, 204, 212)
-TYPE = {"Treecko": (88, 176, 72), "Grovyle": (88, 176, 72), "Sceptile": (88, 176, 72)}
+TYPE = {"TREECKO": (88, 176, 72), "GROVYLE": (88, 176, 72), "SCEPTILE": (88, 176, 72)}
 OTHER = [(232, 96, 64), (64, 136, 232), (200, 120, 200), (232, 168, 48), (120, 120, 120)]
 
 
@@ -67,7 +67,7 @@ def draw(out):
             if n not in names:
                 names.append(n)
     for i, n in enumerate(names):
-        col = TYPE.get(n, OTHER[i % len(OTHER)])
+        col = TYPE.get(str(n).upper(), OTHER[i % len(OTHER)])
         pts = [(px0 + (px1 - px0) * r["playMin"] / tmax, py1 - (py1 - py0) * lv / lmax)
                for r in data for nn, lv in r["party"] if nn == n]
         if len(pts) > 1:
