@@ -2,17 +2,9 @@
 liquid below (PumpingStationGuide.GetDepthAvailable: 2 columns, up to 4 cells, stops at the first solid). python3 preflight.py"""
 import sys
 import oni
-from play import PLAN, liquid
+from play import PLAN, STAGES, depth, liquid
 
 assert liquid(['X: Liquid Available: \n<link="WATER">Water</link>: 5.3 t']) == 5300 and liquid(['<link="WATER">Water</link>: 800 kg']) == 800 and liquid(["Empty"]) == 0
-
-
-def depth(x, y, solid):
-    d = 0
-    for i in range(1, 5):
-        if solid(x, y - i) or solid(x + 1, y - i): break
-        d = i
-    return d
 
 
 def main():
@@ -20,8 +12,7 @@ def main():
     kind = {k: v.split()[-1] for k, v in g["legend"].items()}
     at = lambda x, y: kind.get(g["rows"][140 - y][x - 150], "building") if 150 <= x <= 230 and 90 <= y <= 140 else "solid"
     ok = True
-    for name, x, y, _ in PLAN:
-        if name != "LiquidPumpingStation": continue
+    for x, y in [(x, y) for name, x, y, _ in PLAN if name == "LiquidPumpingStation"] + [STAGES[0][0]]:
         d = depth(x, y, lambda cx, cy: at(cx, cy) in ("solid", "building"))   # another building in a column blocks it too
         wet = sum(at(cx, y - i) == "liquid" for i in range(1, d + 1) for cx in (x, x + 1))
         good = d > 0 and wet > 0

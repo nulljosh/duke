@@ -27,7 +27,6 @@ PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         *[("PlanterBox", x, y, 5) for x, y in PLANTERS],
         *[("Ladder", 180, y, 6) for y in range(108, 120)],
         *[("Tile", x, 109, 9) for x in (181, 182, 183)],   # the corridor crosses an open cavity there
-        ("LiquidPumpingStation", 189, 110, 9),   # both columns (189-190) water from y109 down to 106 on the fresh map, dry base cells, reached from the corridor at 188 (preflight.py checks it)
         *[("Ladder", 184, y, 7) for y in range(112, 119)],   # up from the corridor through a streak of dirt
         *[("Ladder", 180, y, 6) for y in range(100, 108)], *[("Ladder", 189, y, 5) for y in range(126, 138)],   # the mine grid's spines
         ("MicrobeMusher", 201, 121, 8),
@@ -59,8 +58,51 @@ def liquid(lines):
 
 def water(s):
     """Stored water plus what the pumps can still reach. "have" alone misses the pool: colony 7 read 0 kg beside a 5.3 t pump."""
-    pumps = [oni.cmd(op="status", x=x, y=y) for name, x, y, _ in PLAN if name == "LiquidPumpingStation"]
+    pumps = [oni.cmd(op="status", x=b[1], y=b[2]) for b in s["buildings"] if b[0] == "LiquidPumpingStation"]
     return s["have"].get("Water", 0) + sum(liquid(l) for l in pumps if isinstance(l, list))
+
+
+STAGES = [((189, 110), []), ((190, 106), [(189, y) for y in range(106, 111)])]   # pool 1 from the top down, each with its ladder; on the fresh map 189,110 is the first spot with water under both columns
+
+
+def depth(x, y, blocked):
+    """How far a pitcher pump at x,y reaches: both columns, 1 to 4 cells, stopping at a solid cell or another building (PumpingStationGuide.GetDepthAvailable)."""
+    d = 0
+    for i in range(1, 5):
+        if blocked(x, y - i) or blocked(x + 1, y - i): break
+        d = i
+    return d
+
+
+def pumps(s):
+    """Follow pool 1 down. A stage whose pump reads Empty comes down; a stage with a dry base and at least 4 water cells in
+    reach goes up. Colony 7's first pump went dry with the water one cell under its reach."""
+    g = oni.cmd(op="grid", x0=150, y0=90, x1=230, y1=140)
+    cell = lambda x, y: g["legend"].get(g["rows"][140 - y][x - 150], "? building") if 150 <= x <= 230 and 90 <= y <= 140 else "? solid"
+    kind = lambda x, y: cell(x, y).split()[-1]
+    built = {(b[1], b[2]) for b in s["buildings"] if b[0] == "LiquidPumpingStation"}
+    for i, ((x, y), ladders) in enumerate(STAGES):
+        if (x, y) in built:
+            if i + 1 < len(STAGES) and "Empty" in str(oni.cmd(op="status", x=x, y=y)):
+                oni.cmd(op="prio", x=x, y=y, p=9); log("pump dry, taken down", x, y, oni.cmd(op="deconstruct", x=x, y=y))
+            continue
+        d = depth(x, y, lambda cx, cy: kind(cx, cy) in ("solid", "building"))
+        wet = sum(cell(cx, y - k).startswith("Water ") for k in range(1, d + 1) for cx in (x, x + 1))
+        if d >= 2 and wet >= 4 and all(kind(cx, y) not in ("liquid", "building") for cx in (x, x + 1)):
+            r = oni.cmd(op="build", id="LiquidPumpingStation", x=x, y=y, prio=9)
+            if r.get("ok"): log("pump stage", x, y, "depth", d, "water cells", wet, [oni.cmd(op="build", id="Ladder", x=lx, y=ly, prio=9).get("ok") for lx, ly in ladders])
+
+
+def research(s, w):
+    """Next tech in RESEARCH. Under 3 t of water, park on basic-only techs: the Super Computer drinks 50 kg a point, and
+    colony 7 ran dry researching Smelting."""
+    techs = {t["Id"]: t for t in oni.cmd(op="techs")}
+    adv = lambda k: techs[k]["cost"].get("advanced", 0) > 0
+    dry = w < 3000
+    if s["research"] and not (dry and adv(s["research"])): return
+    pick = next((t for t in RESEARCH if not techs[t]["done"] and not (dry and adv(t))), None)
+    if pick is None and dry: pick = next((k for k, t in techs.items() if not t["done"] and not adv(k)), None)
+    if pick and pick != s["research"]: log("research", pick, "(water low)" if dry else "", oni.cmd(op="research", tech=pick))
 
 
 def near(cells, n): return sorted(cells, key=lambda c: abs(c[0] - 190) + 2 * abs(c[1] - 121))[:n]
@@ -151,9 +193,6 @@ def run(until):
             with open(HERE / "progress.jsonl", "a") as f: f.write(json.dumps(row) + "\n")
             log("cycle", row)
             if s["cycle"] > until: return
-        if not s["research"]:
-            nxt = next((t for t in RESEARCH if t not in s["researchDone"]), None)
-            if nxt: log("research", nxt, oni.cmd(op="research", tech=nxt))
         for item in PLAN:
             if item in done or tries.get(item, 0) > 60: continue
             r = oni.cmd(op="build", id=item[0], x=item[1], y=item[2], prio=item[3])
@@ -169,7 +208,7 @@ def run(until):
             oni.cmd(op="safedig", cells=[[x, y] for x in range(181, 188) for y in (110, 111)], floor=109, prio=8)   # the corridor to the pump first: the water is the colony
             oni.cmd(op="dig", cells=[[188, 110], [188, 111]], prio=8)   # the step beside the pump: water only touches it diagonally, and liquid never climbs, so safedig's 3x3 rule is too strict here
             oni.cmd(op="safedig", cells=[[184, y] for y in range(112, 119)] + [[179, 109], [179, 108]], floor=100, prio=8)   # dirt beside the ladders
-            w = water(s)
+            w = water(s); research(s, w); pumps(s)
             topup(s["have"], "Dirt", 1500); topup(s["have"], "Algae", 300); topup(s["have"], "Cuprite", 800); floor(); explore(s); seeds(); printables(s, w); skills(s["foodKcal"] < 6000)
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
             oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=201, y=121, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
