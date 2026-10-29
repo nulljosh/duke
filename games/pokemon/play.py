@@ -223,10 +223,32 @@ def leg_tunnel(g):
 
 def sail(g):
     """Mr. Briney's boat from his cottage (he mirrors your steps, so talk_to wanders until he's adjacent)."""
+    import random
     goto(g, "Route104_MrBrineysHouse")
-    nav.talk_to(g, 21)
-    g.wait(300)
-    nav.talk(g)
+    g.cmd("turbo 1")                                  # he paces a fast loop; at 6x we only ever see him mid-stride
+    try:
+        return _sail(g)
+    finally:
+        g.cmd("turbo 6")
+
+
+def _sail(g):
+    """Briney and Peeko walk a loop round the table (Peeko in front), so standing in it only blocks them. Stand
+    just off it at (5,4), already facing it (a tap to turn would step into the loop), and press A the frame
+    Briney's currentCoords reach (6,4)."""
+    nav.walk(g, (4, 4))
+    nav.step(g, "RIGHT")
+    for _ in range(3600):
+        o = g.read(nav.OBJECTS + 36, 36)
+        if o[5] == 21 and (nav.s16(o, 0x10) - nav.OFF, nav.s16(o, 0x12) - nav.OFF) == (6, 4):
+            g.press("A", hold=3, after=20)
+            if g.r8(0x030006A4):
+                for _ in range(800):                  # YES boards at the Route 104 dock, then the ride plays out
+                    if world.name(here(g)).startswith("Dewford") and not g.r8(0x030006A4):
+                        return True
+                    g.press("A", after=20)
+        g.wait(1)
+    return False
 
 
 def leg_brawly(g, level=24):
@@ -234,7 +256,8 @@ def leg_brawly(g, level=24):
     island = ("Dewford", "GraniteCave", "Route106", "Route107")
     if not world.name(here(g)).startswith(island):
         heal_nearest(g)
-        sail(g)
+        if not sail(g):
+            raise SystemExit("could not get Mr. Briney to sail")
     while lead(g)["level"] < level:                  # Granite Cave: L7-10 wilds, the Dewford center next door
         goto(g, "GraniteCave_1F")
         grind(g, level, heal_nearest)
