@@ -280,3 +280,25 @@ def heal(g):
     face(g, "UP")
     g.press("A", after=30)
     return talk(g)
+
+
+def menu(g, action):
+    """Open START and pick an item by its MENU_ACTION id (start_menu.c: 0 Pokedex, 1 Pokemon, 2 Bag, 5 Save)."""
+    g.press("START", after=30)
+    n = g.r8(0x0202E8FD)                                   # sNumStartMenuActions
+    acts = list(g.read(0x0202E8FE, n))                     # sCurrentStartMenuActions
+    want = acts.index(action)
+    cur = g.r8(0x0202E8FC)                                 # sStartMenuCursorPos
+    for _ in range((want - cur) % n):
+        g.press("DOWN", after=8)
+    g.press("A", after=40)
+
+
+def save(g):
+    """START > SAVE > YES (and YES to overwrite): both prompts default to YES (DisplayYesNoMenu, cursor 0)."""
+    menu(g, 5)
+    for _ in range(12):
+        g.press("A", after=40)
+        if not g.r8(0x030006A4):
+            break
+    talk(g)

@@ -56,6 +56,23 @@ def leg_grind101(g, level=8):
     graph.draw(graph.HERE / "progress.png")
 
 
+
+def leg_may(g):
+    """Heal in Oldale, then Route 103: talk to May, battle her Torchic."""
+    oldale_heal(g)
+    nav.edge(g, "UP")
+    may = next(t for t in nav.templates(g) if t[1] == 240)   # graphicsId 240 is May on these maps
+    _, _, x, y, _ = may
+    for side in ("DOWN", "LEFT", "RIGHT", "UP"):
+        if nav.use(g, (x, y), side):
+            break
+    nav.talk(g)
+    if "Battle" in g.screen():
+        nav.fight(g)
+    stats.log(g, "Beat May's Torchic on Route 103")
+    graph.draw(graph.HERE / "progress.png")
+
+
 if __name__ == "__main__":
     g = pk.GBA()
     globals()["leg_" + sys.argv[1]](g, *map(int, sys.argv[2:]))
