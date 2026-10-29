@@ -6,6 +6,8 @@ MONS, FUNCS = 0x02024A80, 0x03004330          # gBattleMons, gBattlerControllerF
 ACTION_CUR, MOVE_CUR = 0x02024E60, 0x02024E64 # gActionSelectionCursor, gMoveSelectionCursor (per battler)
 MOVES, CHART = 0x081FB0D4, 0x081F96C8         # gBattleMoves (12 bytes each), gTypeEffectiveness
 TYPE_FLAGS = 0x020239F8                       # gBattleTypeFlags
+PSS = 0x02018000                              # pssData (gSharedMem + 0x18000): +0x79 selected move, +0x7C move to learn
+SUMMARY = {"sub_809D844", "sub_809DE44"}      # the summary screen's main callbacks
 _chart = None
 
 
@@ -71,11 +73,39 @@ def best(g):
     return max(range(4), key=lambda s: scores[s]), scores
 
 
+def value(g, mid):
+    m = move(g, mid) if mid else None
+    return m["power"] * m["accuracy"] if m else -1
+
+
+def forget(g, log=print):
+    """The learn-a-move summary (battle_script_commands.c atk5A): drop the weakest move, or skip the new one
+    if it is weaker than all four. Status moves count as zero, so they go first."""
+    import mons
+    new = g.r16(PSS + 0x7C)
+    me = mons.party(g)[0]
+    vals = [value(g, mid) for mid in me["moves"]]
+    target = min(range(4), key=lambda i: vals[i])
+    if value(g, new) <= vals[target]:
+        target = 4                                # the new move is the weakest: keep the old four
+    g.wait(60)
+    for _ in range(8):
+        cur = g.r8(PSS + 0x79)
+        if cur == target:
+            break
+        g.press("DOWN" if cur < target else "UP", after=12)
+    g.press("A", after=40)
+    log(f"  learn {new}: replaced slot {target} of {me['moves']}")
+
+
 def fight(g, log=print):
     """Run one battle to the end. Returns the number of turns chosen."""
     turns = 0
     for _ in range(3000):
         scr = g.screen()
+        if scr in SUMMARY and g.r16(PSS + 0x7C):
+            forget(g, log)
+            continue
         if "Battle" not in scr:
             break
         f = pk.name(g.r32(FUNCS))
