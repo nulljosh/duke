@@ -2,7 +2,9 @@
 liquid below (PumpingStationGuide.GetDepthAvailable: 2 columns, up to 4 cells, stops at the first solid). python3 preflight.py"""
 import sys
 import oni
-from play import PLAN
+from play import PLAN, liquid
+
+assert liquid(['X: Liquid Available: \n<link="WATER">Water</link>: 5.3 t']) == 5300 and liquid(['<link="WATER">Water</link>: 800 kg']) == 800 and liquid(["Empty"]) == 0
 
 
 def depth(x, y, solid):

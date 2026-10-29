@@ -1,7 +1,7 @@
 """Run the colony: place the build plan as materials allow, keep research going, unpause, and save a screenshot and a
 progress row at the start of every cycle. python3 play.py [until_cycle]. The plan is for the Skewed Asteroid start
 (Printing Pod at 186,120); colony 1's lessons are in README.md."""
-import json, shutil, subprocess, sys, time
+import json, re, shutil, subprocess, sys, time
 from pathlib import Path
 import oni
 
@@ -48,6 +48,18 @@ def log(*a): print(time.strftime("%H:%M:%S"), *a, flush=True)
 
 
 FOOD_PACKAGES = ("MushBar", "BasicPlantFood", "FieldRation", "Meat", "CookedMeat", "Pacu", "BasicPlantSeed", "PrickleFruit", "SwampFruit", "ColdWheatSeed")
+
+
+def liquid(lines):
+    """Kilograms of clean water in a pitcher pump's status lines ("Liquid Available: ... Water: 5.3 t")."""
+    m = next((re.search(r'WATER">Water</link>: ([\d.,]+) (t|kg|g)\b', l) for l in lines if 'WATER">Water' in l), None)
+    return float(m[1].replace(",", "")) * {"t": 1000, "kg": 1, "g": .001}[m[2]] if m else 0
+
+
+def water(s):
+    """Stored water plus what the pumps can still reach. "have" alone misses the pool: colony 7 read 0 kg beside a 5.3 t pump."""
+    pumps = [oni.cmd(op="status", x=x, y=y) for name, x, y, _ in PLAN if name == "LiquidPumpingStation"]
+    return s["have"].get("Water", 0) + sum(liquid(l) for l in pumps if isinstance(l, list))
 
 
 def near(cells, n): return sorted(cells, key=lambda c: abs(c[0] - 190) + 2 * abs(c[1] - 121))[:n]
@@ -100,12 +112,11 @@ def skills():
         researcher = researcher or (want == "Researching1" and r.get("ok"))
 
 
-def printables(s):
+def printables(s, water):
     """Every few cycles the pod offers dupes or packages: take food, and no new mouths while the larder is thin."""
     if not s["immigrants"]: return
     oni.cmd(op="printables"); time.sleep(2); offers = oni.cmd(op="printables")
     if not isinstance(offers, list): return
-    water = s["have"].get("Water", 0)
     pick = next((i for i, o in enumerate(offers) if o.startswith("package") and (any(f in o for f in FOOD_PACKAGES) or water < 2000 and "Water" in o)), None)   # colony 6 passed on Water x2000 a minute before its last dupe died
     if pick is None and water > 3000 and s["foodKcal"] > 8000 and len(s["dupes"]) < 4: pick = next((i for i, o in enumerate(offers) if o.startswith("dupe")), None)   # a dupe drinks ~94 kg of water a cycle as mush; gate on water, not kcal
     if pick is not None: log("print", offers[pick], oni.cmd(op="print", index=pick))
@@ -131,7 +142,7 @@ def run(until):
             shot = HERE / "shots" / f"c{COLONY}-cycle-{s['cycle']:03d}.png"; shot.parent.mkdir(exist_ok=True)
             shutil.copy(oni.shot(), shot)
             row = {"colony": COLONY, "cycle": s["cycle"], "dupes": len(s["dupes"]), "foodKcal": round(s["foodKcal"]), "research": s["research"],
-                   "done": len(s["researchDone"]), "buildings": len(s["buildings"]),
+                   "done": len(s["researchDone"]), "buildings": len(s["buildings"]), "water": round(water(s)),
                    "worst": min(((d["name"], round(d["breath"]), round(d["stress"]), round(d["kcal"])) for d in s["dupes"]), key=lambda d: d[3])}
             with open(HERE / "progress.jsonl", "a") as f: f.write(json.dumps(row) + "\n")
             log("cycle", row)
@@ -154,10 +165,11 @@ def run(until):
             oni.cmd(op="safedig", cells=[[x, y] for x in range(181, 188) for y in (110, 111)], floor=109, prio=8)   # the corridor to the pump first: the water is the colony
             oni.cmd(op="dig", cells=[[188, 110], [188, 111]], prio=8)   # the step beside the pump: water only touches it diagonally, and liquid never climbs, so safedig's 3x3 rule is too strict here
             oni.cmd(op="safedig", cells=[[184, y] for y in range(112, 119)] + [[179, 109], [179, 108]], floor=100, prio=8)   # dirt beside the ladders
-            topup(s["have"], "Dirt", 1500); topup(s["have"], "Algae", 300); topup(s["have"], "Cuprite", 800); floor(); explore(s); seeds(); printables(s); skills()
+            w = water(s)
+            topup(s["have"], "Dirt", 1500); topup(s["have"], "Algae", 300); topup(s["have"], "Cuprite", 800); floor(); explore(s); seeds(); printables(s, w); skills()
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
             oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=201, y=121, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
-            oni.cmd(op="prio", x=174, y=120, p=1 if s["have"].get("Water", 0) < 2000 else 5)   # the Super Computer drinks 50 kg of water a point (AdvancedResearchCenterConfig); the mushers come first
+            oni.cmd(op="prio", x=174, y=120, p=1 if w < 2000 else 5)   # the Super Computer drinks 50 kg of water a point (AdvancedResearchCenterConfig); the mushers come first
         if not mush and oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush = True; log("mush bars queued")
         if not mush2 and oni.cmd(op="queue", x=201, y=121, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush2 = True; log("musher 2 queued")
         for x, y in PLANTERS:
