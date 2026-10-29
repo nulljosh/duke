@@ -36,4 +36,11 @@ Emulator games, on the same headless libmgba player as Sapphire (`pokemon/gba.c`
 4. Pokemon Crystal and Red (pret/pokecrystal, pokered). Game Boy disassemblies.
 5. Zelda: The Minish Cap (zeldaret/tmc). A work-in-progress decomp, and real-time combat makes it harder.
 
+GameCube, on Dolphin with Joshua's own disc dumps (about 1.4 GB each, kept on the LaCie):
+
+1. Super Smash Bros. Melee. libmelee reads live state from Slippi Dolphin and drives a virtual pad; the goal is Classic, Adventure and All-Star with every character, then every unlock.
+2. Pikmin. Fully decompiled (projectPiki/pikmin, 100% in July 2026), and it plays like a strategy game; the goal is all 30 ship parts inside the 30 days.
+3. The Legend of Zelda: The Wind Waker. About 56 to 60% decompiled (zeldaret/tww), a real-time 3D adventure.
+4. Super Mario Sunshine. About 25% decompiled (doldecomp/sms), and 3D platforming is the hardest kind for a bot.
+
 Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geometry Dash, Super Hexagon), story walks (Firewatch, Gone Home, The Stanley Parable), multiplayer (Rust, Dota 2, Don't Starve Together), and the 47 games with no Mac build.
