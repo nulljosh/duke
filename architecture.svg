@@ -1,11 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="352" viewBox="0 48 720 352" style="background:#fff" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif">
-<rect y="48" width="720" height="352" fill="#fff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="528" viewBox="0 48 720 528" style="background:#fff" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<rect y="48" width="720" height="528" fill="#fff"/>
 <g fill="none" stroke="#d2d2d7" stroke-width="1.5">
   <path d="M84 108V132H636V108M220 108V132M356 108V132M492 108V132"/>
   <path d="M296 132V164"/>
   <path d="M636 132V164M572 196H392"/>
   <path d="M128 216H200"/>
   <path d="M296 228V264M392 288H448"/>
+  <path d="M360 440V456M65 456H655M65 456V472M183 456V472M301 456V472M419 456V472M537 456V472M655 456V472"/>
 </g>
 <g font-size="13" fill="#1d1d1f" text-anchor="middle">
   <rect x="24" y="68" width="120" height="40" rx="20" fill="#f5f5f7"/><text x="84" y="92">Menu bar app</text>
@@ -16,10 +17,21 @@
   <rect x="24" y="196" width="104" height="40" rx="20" fill="#f5f5f7"/><text x="76" y="220">LaunchAgent</text>
   <rect x="200" y="164" width="192" height="64" rx="20" fill="#0074d9"/><text x="296" y="192" fill="#fff" font-weight="600">run.mjs</text><text x="296" y="212" fill="#fff" font-size="11">state, log, switch, pause on :8737</text>
   <rect x="572" y="164" width="128" height="64" rx="20" fill="#f5f5f7"/><text x="636" y="192">Tunnel</text><text x="636" y="212" font-size="11" fill="#6e6e73">surf-status.jaybulb.com</text>
-  <rect x="200" y="264" width="192" height="48" rx="20" fill="#f5f5f7"/><text x="296" y="284">Chromium (Playwright)</text><text x="296" y="300" font-size="11" fill="#6e6e73">solver.js, math.js injected</text>
+  <rect x="200" y="264" width="192" height="48" rx="20" fill="#f5f5f7"/><text x="296" y="284">Chromium (Playwright)</text><text x="296" y="300" font-size="11" fill="#6e6e73">solver.js, math/ injected</text>
   <rect x="448" y="268" width="120" height="40" rx="20" fill="#001f3f"/><text x="508" y="292" fill="#fff">Duolingo</text>
+  <rect x="200" y="392" width="320" height="48" rx="20" fill="#0074d9"/><text x="360" y="412" fill="#fff" font-weight="600">games/&lt;game&gt;/ drivers</text><text x="360" y="428" fill="#fff" font-size="11">Python: read the game's state, decide, act</text>
+</g>
+<g font-size="12" fill="#fff" text-anchor="middle">
+  <rect x="11" y="472" width="108" height="48" rx="20" fill="#001f3f"/><text x="65" y="492">Factorio</text><text x="65" y="508" font-size="10" fill="#c7d3e0">FLE server</text>
+  <rect x="129" y="472" width="108" height="48" rx="20" fill="#001f3f"/><text x="183" y="492">Game Dev Tycoon</text><text x="183" y="508" font-size="10" fill="#c7d3e0">bridge mod</text>
+  <rect x="247" y="472" width="108" height="48" rx="20" fill="#001f3f"/><text x="301" y="492">FEZ</text><text x="301" y="508" font-size="10" fill="#c7d3e0">save file, keys</text>
+  <rect x="365" y="472" width="108" height="48" rx="20" fill="#001f3f"/><text x="419" y="492">Papers, Please</text><text x="419" y="508" font-size="10" fill="#c7d3e0">headless dylib, OCR</text>
+  <rect x="483" y="472" width="108" height="48" rx="20" fill="#001f3f"/><text x="537" y="492">Oxygen Not Incl.</text><text x="537" y="508" font-size="10" fill="#c7d3e0">Duke Bridge :8741</text>
+  <rect x="601" y="472" width="108" height="48" rx="20" fill="#001f3f"/><text x="655" y="492">Mirage</text><text x="655" y="508" font-size="10" fill="#c7d3e0">state lines</text>
 </g>
 <text x="164" y="210" font-size="11" fill="#6e6e73" text-anchor="middle">keeps alive</text>
 <text x="482" y="188" font-size="11" fill="#6e6e73" text-anchor="middle">read anywhere</text>
-<text x="360" y="372" font-size="11" fill="#6e6e73" text-anchor="middle">Every client reads the same port. The menu bar app starts the runner and restarts it when the port goes quiet.</text>
+<text x="360" y="340" font-size="11" fill="#6e6e73" text-anchor="middle">Every client reads the same port. The menu bar app starts the runner and restarts it when the port goes quiet.</text>
+<line x1="24" y1="364" x2="696" y2="364" stroke="#e8e8ed" stroke-width="1"/>
+<text x="360" y="552" font-size="11" fill="#6e6e73" text-anchor="middle">Each game runs headless, plays for real through its own bridge, and logs progress for the graphs.</text>
 </svg>

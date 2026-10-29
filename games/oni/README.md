@@ -1,26 +1,21 @@
-Duke plays Oxygen Not Included headless. The Duke Bridge mod (`bridge/`, `dotnet build` installs it into ONI's local mods) serves the colony's state and takes orders on 127.0.0.1:8741: dig, build, link wires, queue recipes, research, print dupes, mop, camera, speed. `oni.py` talks to it and captures the window by id. `play.py` runs a colony from a build plan and saves a screenshot and a row in `progress.jsonl` every cycle.
+Duke plays Oxygen Not Included headless and for real: no debug tools, nothing built before it's researched.
 
-Launch through Steam (`python3 oni.py launch`), never the binary: the game quits a minute in when the Steam API can't reach Steam. If every game logs `ipcserver GetSteamPath failed`, Steam's `ipcserver` helper outlived a Steam restart. Kill it and the next launch works. ONI's hardened runtime refuses `DYLD_INSERT_LIBRARIES`, so the Papers headless dylib crashes it at launch. The mod sets `runInBackground` instead.
+- `bridge/`: the Duke Bridge mod. `dotnet build` installs it into ONI's local mods. It serves the colony on 127.0.0.1:8741 and takes orders such as dig, build, link, research, print, priority, deconstruct, camera and a HUD toggle.
+- `oni.py`: talks to the bridge and launches, restarts or starts a new game.
+- `play.py`: runs a colony from a build plan. Each cycle it saves a screenshot and a row in `progress.jsonl`.
+- `preflight.py`: checks the plan's pumps against the game's rule before a new colony unpauses.
+- `graph.py`: colonies side by side, with dupes and food by cycle.
+- `wallpaper.py`: the live base as an iPhone wallpaper, written to the top of iCloud Drive.
 
-## Colony 1 (2026-10-28, Skewed Asteroid)
+The game rules the bot relies on, and what killed each colony, are in [GUIDE.md](GUIDE.md). How the base game is won is in [VICTORY.md](VICTORY.md).
 
-Survived 10 cycles with 2 of 3 dupes, lasted to cycle 15, 7 techs (Basic Farming, Power Regulation, Employment, Advanced Research, Plumbing, Improved Oxygen, Sanitation Sciences).
+## Running it
 
-What killed it, so colony 2 doesn't repeat it:
-- Wires and pipes placed one at a time join nothing. The machines sat unpowered for two cycles until the `link` op.
-- The pool was opened at floor level and drained across the base. Gas pressure went up, the Oxygen Diffuser stopped at max pressure, and CO2 filled the bedroom.
-- Bulk digs at priority 9 (225 cells) took all the labor. Lindsay got trapped in a water pit one of them opened (cycle 9). Nobody cooked, and Nisbet, Otto and Stinky starved (cycles 12 to 15).
-- Food is the clock: 16,000 kcal is about 5 cycles for 3 dupes. The Mush Bar chain (pump, bottle, deliver dirt and water, cook, crank power) has to be running by cycle 3, with Mealwood planted as soon as Basic Farming lands.
+- Launch through Steam (`python3 oni.py launch`), never the binary, because the game quits when the Steam API can't reach Steam. If every launch logs `ipcserver GetSteamPath failed`, kill Steam's leftover `ipcserver` and try again.
+- ONI's hardened runtime refuses `DYLD_INSERT_LIBRARIES`, so the mod sets `runInBackground` instead of using the Papers headless dylib.
+- A new game: `python3 oni.py newgame`, then `python3 preflight.py` while it's paused, then `python3 play.py 250`.
+- The intro alert sometimes stays up after a new game. Reloading the first autosave clears it (`python3 oni.py restart`).
 
-## Colonies 2 and 3 (2026-10-28, same seed)
+## Now
 
-Colony 2 kept all 3 dupes to cycle 13 and lost the last near the end of cycle 15. A tunnel dug the floor out from under the Microbe Musher.
-Colony 3 is the best so far: 6 dupes at the peak, 11 techs, everyone alive to cycle 16, the last one gone at cycle 20.
-
-What the bridge does now because of them: one safe-dig filter (reachable, no liquid next to it, nothing built on or above it, never under the floor line), a ladder shaft and a corridor for anything deeper, idle dupes dig the nearest safe rock, the musher at priority 9 and research at 1 when food runs low, food care packages first, no new dupes past 4.
-
-What killed colony 3: water. One pool fed the musher for 15 cycles. The second pool sat under a cavity that needed a bridge, and its pump finished as the last dupe starved. Colony 4 builds both pumps, the shaft and the bridge from cycle 1.
-
-## Colony 4 (same seed)
-
-Everyone alive to cycle 20, last one gone at cycle 22, 9 techs: the best run. Two pumps fixed water. It starved for dirt instead: everything reachable got dug by cycle 14, and a dirt cell is two or three cycles of mush. Colony 5 digs a mine grid from the start: ladder spines up and down from the base, corridors every few rows off them.
+Colony 7 is running on the Skewed Asteroid seed, with the pod at 186,120. It's the first colony whose pump works from day one.
