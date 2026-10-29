@@ -1,7 +1,7 @@
-# Duke loop handoff (2026-10-28, night)
+# Duke loop handoff (2026-10-29, morning)
 
 ## What the loop is
-`/loop until Pokemon Sapphire is complete with all stats maxed out and all legendary Pokemon captured`. Duke plays Sapphire for real as Stitch (boy) with Treecko, headless, while the Duolingo runner keeps going. Each tick runs the next leg in `games/pokemon/play.py`, logs a row with `stats.py`, redraws `progress.png` and the iPhone wallpaper, commits, and sends Joshua screenshots. Replies stay one line.
+`/loop until Pikmin 2 is completed, documenting progress with graphs and the iPhone wallpaper` (Sapphire is parked). Duke plays Sapphire for real as Stitch (boy) with Treecko, headless, while the Duolingo runner keeps going. Each tick runs the next leg in `games/pokemon/play.py`, logs a row with `stats.py`, redraws `progress.png` and the iPhone wallpaper, commits, and sends Joshua screenshots. Replies stay one line.
 
 Rules for every tick:
 - Read the decomp (pret/pokeruby, symbols in `/Volumes/LaCie/src/pokeruby/`) before any menu or move that can't be undone. `games/pokemon/GUIDE.md` lists the menus that don't default the way you'd expect.
@@ -17,8 +17,11 @@ Rules for every tick:
 - Pikmin 2 is set up (`games/pikmin/`: a DSU virtual pad and the Dolphin profile on the LaCie). It waits on Joshua clearing Dolphin's first-launch check.
 
 ## Next, in order
-1. Pikmin 2, beating the human 25 hours: crush the bag with 15, carry the Courage Reactor, save Day 1, relaunch at
-   3x turbo, then one autonomous script per day (games/pikmin/GUIDE.md, "Beating the human time").
+1. Pikmin 2 Day 2: Day 1 is beaten and saved (bag crushed, Courage Reactor carried by 20, 280 Poko; save backed up
+   at games/pikmin/states/day1-end.gci). Relaunch at 3x turbo (dolphin.py SPEED), answer "Land in this area?" with
+   Yes, then one autonomous script per day (games/pikmin/GUIDE.md, "Beating the human time"). Day 1 has no sun
+   meter; it ends when the reactor lands. sprouts() misreads some sprouts and A with Pikmin in hand throws, so
+   pluck with an empty squad. The Y captain swap can miss, so check which captain moves before trusting ACTIVE.
 2. Joshua's game queue after Pikmin: Wind Waker, then Smash Bros, then something else. He supplies the files.
    Side idea from him: a Monopoly sim, a million games, to find the best strategy.
    Research (2026-10-29): Melee is fully decompiled (doldecomp/melee) and SmashBot and libmelee already read its
@@ -30,9 +33,9 @@ Rules for every tick:
 ## Restart prompt
 
 ```
-/loop until Pokemon Sapphire is complete with all stats maxed out and all legendary Pokemon captured
+/loop until Pikmin 2 is completed, documenting progress with graphs and the iPhone wallpaper
 ```
-Read `games/pokemon/README.md`, `GUIDE.md` and this file first.
+Read `games/pikmin/GUIDE.md` and this file first.
 
 ## Pikmin 2 (active since 2026-10-29 06:20; Sapphire parked for it)
 Loop: `/loop until Pikmin 2 is completed, documenting progress with graphs and the iPhone wallpaper`. The ROM is Joshua's Pikmin 2 (Europe, GPVP01) RVZ at `/Volumes/LaCie/roms/pikmin2/`. Dolphin runs from an isolated profile at `/Volumes/LaCie/dolphin-duke` (quarantine cleared 2026-10-29 with Joshua's OK).
