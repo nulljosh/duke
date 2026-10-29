@@ -9,7 +9,7 @@
 // language tree is exhausted.
 //
 // Language / chess / music load scripts/solver.js. Math loads
-// scripts/math.js (former duo.js, pruned 2026-09-09 by hit-trace — see
+// scripts/math/ (former math.js and duo.js, pruned 2026-09-09 by hit-trace — see
 // CLAUDE.md) plus scripts/mathjs.min.js, and drives it through autoLesson().
 //
 // Logs: scripts/log.jsonl (one line per event), scripts/state.json (summary),
@@ -394,8 +394,10 @@ const inject = async () => {
   // mathjs (local bundle, no network dependency) replaces the hand-rolled
   // LaTeX-expression evaluator in compile() — load it first so `math` is
   // defined before the solver's top-level script runs.
-  const files = isMath ? ['mathjs.min.js', 'math.js'] : isChessTrack ? ['solver.js', 'js-chess-engine.js'] : ['solver.js'];
-  for (const f of files) await page.addScriptTag({ content: fs.readFileSync(path.join(D, f), 'utf8') });
+  // math/ is the old math.js cut into ordered pieces; joined back into one script, so every later patch still sees the earlier ones.
+  const read = f => f.endsWith('/') ? fs.readdirSync(path.join(D, f)).filter(n => n.endsWith('.js')).sort().map(n => fs.readFileSync(path.join(D, f, n), 'utf8')).join('') : fs.readFileSync(path.join(D, f), 'utf8');
+  const files = isMath ? ['mathjs.min.js', 'math/'] : isChessTrack ? ['solver.js', 'js-chess-engine.js'] : ['solver.js'];
+  for (const f of files) await page.addScriptTag({ content: read(f) });
   await page.evaluate(v => { window.__isChessTrack = v; }, isChessTrack);
   await page.evaluate(v => { window.__canSpeak = v; }, canSpeak);
   if (isChessTrack) await page.evaluate(c => { window.__duo.promoCalib = c; }, promoCalib);
@@ -881,7 +883,7 @@ while (true) {
     if (pendingTrack && pendingTrack !== track) break;   // same problem for /switch: a chess puzzle loop has no natural exit, so a switch sat ignored until the session ended on its own
     saveState();   // heartbeat: an `at` that stops advancing means the loop is stuck, not just between puzzles
     if (isMath) {
-      // ponytail: __duo.widget() (math.js) reads prompt + answer choices + any
+      // ponytail: __duo.widget() (math/) reads prompt + answer choices + any
       // pattern/table grid straight off the DOM — same idea as solveLang()'s
       // ledger row, just a read instead of a full parse. Best-effort: goes all
       // null between questions, and table/choices stay null on the widget

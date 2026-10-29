@@ -14,7 +14,7 @@ Chess puzzles carry their solution too. Duke reads `moveEvaluationsForPositions`
 
 **Languages** (`solver.js`): one dispatch over the challenge fields. Word bank, typed translate, cloze, pairs, tap complete and stories. Listen exercises are skipped, not guessed.
 
-**Math** (`math.js`): driven through `autoLesson()`. Drag widgets get a real Playwright mouse, because Duolingo's token bank ignores synthetic events. Expressions go through math.js.
+**Math** (`math/`): driven through `autoLesson()`. Drag widgets get a real Playwright mouse, because Duolingo's token bank ignores synthetic events. Expressions go through math.js.
 
 **Chess**: puzzles from the evaluations above, bot matches by Stockfish with a bundled engine as the fallback, always planned from `liveFen()`, the only position that is never stale.
 

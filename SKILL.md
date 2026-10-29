@@ -43,7 +43,7 @@ answer per question): `scripts/lessons.jsonl`.
   answered the same way from `storyElement` on the fiber. DuoRadio nodes have
   no challenge at all — quit and move on. When the tree stalls (nothing new
   to open), it PATCHes to the least-XP enrolled language and continues.
-- **Math** — loads `scripts/mathjs.min.js` then `scripts/math.js` (former
+- **Math** — loads `scripts/mathjs.min.js` then `scripts/math/` (former
   `duo.js`, pruned 2026-09-09 by hit-trace — see CLAUDE.md) and drives it
   through `__duo.autoLesson()`. Drag widgets (`needdrag`) get a real
   Playwright mouse via `__duo.pendingDrag()`; a `tokenslots`-kind plan is a
@@ -71,7 +71,7 @@ not used by the solver itself.
 ## Dead ends — do not re-litigate
 
 - **Synthetic `.click()`/`PointerEvent`s on tile-bank tokens, sliders,
-  draggable points, or the chess board.** `math.js`'s own `dragSynth()`/
+  draggable points, or the chess board.** `math/`'s own `dragSynth()`/
   `dragXY()` never work on these — that's still true, don't re-fix it
   in-page. What works: `run.mjs` driving a *real* Playwright mouse from
   outside (`__duo.pendingDrag()` for math's single-point plans, held

@@ -6,7 +6,7 @@ One Node runner plays Duolingo in its own Chromium window. A menu bar app keeps 
 
 ## How it runs
 
-`scripts/run.mjs <track>` launches Chromium on a saved profile, injects `solver.js` (languages, chess, stories) or `math.js` (math) into the page, and loops: solve, click through, reopen. Drags and chess moves use a real Playwright mouse, because Duolingo ignores synthetic events.
+`scripts/run.mjs <track>` launches Chromium on a saved profile, injects `solver.js` (languages, chess, stories) or `math/` (math) into the page, and loops: solve, click through, reopen. Drags and chess moves use a real Playwright mouse, because Duolingo ignores synthetic events.
 
 Between lessons it reads the daily quests and switches course when they stall, sends the friend gift, opens chests, and guards the streak after 6pm. `xpRates()` in `scripts/guards.mjs` turns the log into XP per hour per course, and `fastestTrack()` picks the next course to play.
 
@@ -18,7 +18,7 @@ The runner serves its state on port 8737 and takes `POST /switch`, `/pause` and 
 |---|---|
 | `scripts/run.mjs` | The loop, the browser, the port, course switching |
 | `scripts/solver.js` | Language, chess and story answers, one definition per function |
-| `scripts/math.js` | Math answers, with `mathjs.min.js` for expressions |
+| `scripts/math/` | Math answers, with `mathjs.min.js` for expressions |
 | `scripts/guards.mjs` | Pure decisions: stalls, streak risk, XP rates, quest focus |
 | `scripts/*.test.mjs` | Node tests, no browser |
 | `app/` | SwiftUI status app for macOS, iOS and watchOS (xcodegen) |
@@ -33,7 +33,7 @@ The runner serves its state on port 8737 and takes `POST /switch`, `/pause` and 
 ## Build and test
 
 ```sh
-node --check scripts/solver.js && node --check scripts/run.mjs && node --check scripts/math.js
+node --check scripts/solver.js && node --check scripts/run.mjs && for f in scripts/math/*.js; do node --check $f; done
 node --test scripts/*.test.mjs
 sh deploy.sh                      # landing: copies tokens and fonts, deploys Pages
 ```

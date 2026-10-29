@@ -61,8 +61,8 @@ inject into.
 
 - `scripts/solver.js` — the browser-side solver for language, chess, and
   music. Loaded via `page.addScriptTag`. Self-contained: does not depend on
-  `math.js`.
-- `scripts/math.js` — former `duo.js` / `math-legacy.js`, pruned 2026-09-09
+  `math/`.
+- `scripts/math/` — 52 ordered pieces of the old `math.js` (split 2026-10-28; `run.mjs` joins them back into one script), former `duo.js` / `math-legacy.js`, pruned 2026-09-09
   by an instrumented hit-trace: every function body got a `__hit(id)` call,
   a Playwright run drove `math` for real (autoLesson(), not the generic
   `run(15)` fallback — that one only hits the bail path), and every
@@ -81,12 +81,12 @@ inject into.
   `scripts/mathjs.min.js` (a local UMD bundle, copied from
   `curvely/node_modules/mathjs/lib/browser/math.js` — no network
   dependency); the LaTeX normaliser (`\frac`, `\sqrt`, `\pi`, `\cdot`,
-  implicit multiplication) stays, it just hands `math.js` a plain algebraic
+  implicit multiplication) stays, it just hands `math/` a plain algebraic
   string instead of building one for `new Function()`. If you touch math
   logic, this is the file — the same "never stack another wrapper" rule
   below still applies inside it.
 - `scripts/mathjs.min.js` — mathjs UMD bundle, math track only. Loaded
-  before `math.js` so `math` is defined at solver-script-eval time.
+  before `math/` so `math` is defined at solver-script-eval time.
 - `scripts/js-chess-engine.js` — bundled js-chess-engine 2.4.6, used for bot
   matches (`chal().match`) only, not puzzles.
 - `scripts/solver.test.mjs` — pure-function tests (`node --test`), no
@@ -116,7 +116,7 @@ re-opening the same one.
 
 ## The one rule that matters: don't stack wrappers
 
-This is exactly how `duo.js` (now `math.js`) grew to 21k+ lines with
+This is exactly how `duo.js` (now `math/`) grew to 21k+ lines with
 only a fraction actually live. If a fix "doesn't take", or two behaviours
 both fire and undo each other, an OLDER version of that function is still in
 the chain somewhere above your new one. **Delete the stale block. Never
@@ -133,7 +133,7 @@ Keep it that way — edit the function in place, don't shadow it.
   "e" false-matches inside "ești").
 - Word-bank tiles in language challenges are real `<button>`s and DO take a
   native `.click()` — this is NOT true of Math's token bank (a different,
-  synthetic-event-hostile widget in `math.js`; `run.mjs` now drives its
+  synthetic-event-hostile widget in `math/`; `run.mjs` now drives its
   drags with a real Playwright mouse instead, see above). Don't port a fix
   from one to the other.
 - The chess board is a Rive **canvas**. Synthetic pointer events do nothing.
@@ -159,7 +159,7 @@ Keep it that way — edit the function in place, don't shadow it.
 ## Testing a change
 
 ```bash
-node --check scripts/solver.js && node --check scripts/run.mjs && node --check scripts/math.js
+node --check scripts/solver.js && node --check scripts/run.mjs && for f in scripts/math/*.js; do node --check $f; done
 node --test scripts/solver.test.mjs
 ```
 
