@@ -7,9 +7,9 @@ import oni
 
 HERE = Path(__file__).resolve().parent
 BASE = (190, 122)   # camera centre for the cycle shots
-RESEARCH = ["FarmingTech", "PowerRegulation", "Jobs", "AdvancedResearch", "ImprovedOxygen", "SanitationSciences", "FineDining",
-            "BasicRefinement", "Combustion", "Distillation", "Smelting", "Agriculture", "TemperatureModulation", "LiquidTemperature",
-            "BasicRocketry", "SkyDetectors", "MedicineI"]   # Distillation: the Water Sieve. Everything past Combustion needs the Super Computer's points
+RESEARCH = ["FarmingTech", "AdvancedResearch", "Combustion", "LiquidPiping", "Distillation", "PowerRegulation", "Jobs", "ImprovedOxygen",
+            "SanitationSciences", "FineDining", "BasicRefinement", "Smelting", "Agriculture", "TemperatureModulation", "LiquidTemperature",
+            "BasicRocketry", "SkyDetectors", "MedicineI"]   # the Super Computer, coal to power it, then pipes and Distillation for the Water Sieve. Every tech past tier one needs its points
 WIRES = [[x, y] for y in (120, 121) for x in range(191, 200)] + [[200, 121], [201, 121], [202, 121], [201, 122], [202, 122]]   # ports sit on either row, so wire both and join them; the tail feeds musher 2
 WIRES += [[x, 120] for x in range(169, 176)] + [[x, 121] for x in range(169, 191)]   # west wing: the coal generator and the Super Computer
 PLANTERS = [(x, 125) for x in range(197, 201)]   # only where the headroom is open; seeds are the limit, not boxes (colony 6 built 16, all read "No Seed Available")
@@ -101,16 +101,19 @@ def seeds():
     if wild: log("uproot mealwood", oni.cmd(op="uproot", cells=wild))
 
 
-def skills():
-    """One dupe takes Advanced Research (the Super Computer needs it) and nobody learns anything else: every skill raises a
-    dupe's morale need, and colony 5's two skills each drove everyone to stress 100."""
-    dupes = oni.cmd(op="skills"); researcher = any("Researching1" in d["mastered"] for d in dupes)
-    for d in dupes:
-        if d["points"] < 1: continue
-        if researcher: break
-        want = "Researching1"
-        r = oni.cmd(op="learn", name=d["name"], skill=want); log("skill", d["name"], want, r)
-        researcher = researcher or (want == "Researching1" and r.get("ok"))
+def skills(hungry):
+    """The best scientist (highest Learning) takes Advanced Research (the Super Computer needs it) and puts research first;
+    nobody learns anything else, since every skill raises a dupe's morale need (colony 5's two skills drove everyone to
+    stress 100). Research speed is dirt rate x (3 + 0.4 Learning) / 50 kg a point (ResearchCenter.OnWorkTick), so the
+    cost is never speed: in colony 7 a 15-point tech took 4 cycles because nobody sat at the station."""
+    dupes = oni.cmd(op="skills")
+    lead = next((d for d in dupes if "Researching1" in d["mastered"]), None)
+    if not lead:
+        best = max((d for d in dupes if d["points"] >= 1), key=lambda d: d["learning"], default=None)
+        if best and oni.cmd(op="learn", name=best["name"], skill="Researching1").get("ok"): lead = best; log("skill", best["name"], "Researching1")
+    lead = max(dupes, key=lambda d: d["learning"], default=None)   # research priority goes to the fastest hands, skill or not: anyone works the basic station
+    want = 3 if hungry else 5   # 5 is Very High on the Priorities screen; a hungry colony needs the hands back
+    if lead and lead["research"] != want: log("research priority", lead["name"], want, oni.cmd(op="priority", name=lead["name"], group="Research", value=want))
 
 
 def printables(s, water):
@@ -155,7 +158,7 @@ def run(until):
             if item in done or tries.get(item, 0) > 60: continue
             r = oni.cmd(op="build", id=item[0], x=item[1], y=item[2], prio=item[3])
             if r.get("ok"): done.add(item); log("placed", item, r.get("mats"))
-            elif "not enough material" not in str(r.get("error")):   # short of metal is worth waiting for; colony 6 gave up on its Super Computer
+            elif not any(w in str(r.get("error")) for w in ("not enough material", "not researched")):   # both are worth waiting for; colony 6 gave up on its Super Computer
                 tries[item] = tries.get(item, 0) + 1
                 if tries[item] in (1, 61): log("waiting", item, r.get("error"))
         if time.time() - t_link > 60:   # wires placed one at a time join nothing until linked; a reload drops the links too
@@ -167,7 +170,7 @@ def run(until):
             oni.cmd(op="dig", cells=[[188, 110], [188, 111]], prio=8)   # the step beside the pump: water only touches it diagonally, and liquid never climbs, so safedig's 3x3 rule is too strict here
             oni.cmd(op="safedig", cells=[[184, y] for y in range(112, 119)] + [[179, 109], [179, 108]], floor=100, prio=8)   # dirt beside the ladders
             w = water(s)
-            topup(s["have"], "Dirt", 1500); topup(s["have"], "Algae", 300); topup(s["have"], "Cuprite", 800); floor(); explore(s); seeds(); printables(s, w); skills()
+            topup(s["have"], "Dirt", 1500); topup(s["have"], "Algae", 300); topup(s["have"], "Cuprite", 800); floor(); explore(s); seeds(); printables(s, w); skills(s["foodKcal"] < 6000)
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
             oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=201, y=121, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
             oni.cmd(op="prio", x=174, y=120, p=1 if w < 2000 else 5)   # the Super Computer drinks 50 kg of water a point (AdvancedResearchCenterConfig); the mushers come first

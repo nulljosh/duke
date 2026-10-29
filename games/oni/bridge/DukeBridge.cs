@@ -123,6 +123,7 @@ public static partial class Ops
             {
                 var def = Assets.GetBuildingDef((string)j["id"]);
                 if (def == null) return new { error = "no building " + j["id"] };
+                if (!(Db.Get().TechItems.TryGet(def.PrefabID)?.IsComplete() ?? true)) return new { error = "not researched: " + def.PrefabID };   // the build menu's own gate; colony 6 placed a coal generator before Combustion
                 int cell = Grid.XYToCell((int)j["x"], (int)j["y"]);
                 var orient = j["orient"] != null ? (Orientation)Enum.Parse(typeof(Orientation), (string)j["orient"]) : Orientation.Neutral;
                 if (!def.IsValidPlaceLocation(null, cell, orient, out string why)) return new { error = why };
@@ -247,6 +248,7 @@ public static partial class Ops
             case "learn": return Learn(j);
             case "plants": return Plants();
             case "uproot": return Uproot(j);
+            case "priority": return Priority(j);
             case "speed": SpeedControlScreen.Instance.SetSpeed((int)j["speed"]); if ((bool?)j["play"] ?? true) SpeedControlScreen.Instance.Unpause(false); return new { ok = true };
             case "pause": SpeedControlScreen.Instance.Pause(false); return new { ok = true };
             case "research":
