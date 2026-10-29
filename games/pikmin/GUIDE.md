@@ -39,8 +39,27 @@ every step. Walk straight first. The carry-route graph takes long detours, so us
 5. Pluck sprouts (stand on one, press A). Throw the squad at a posy, and the pellet goes to the Onion as new seeds.
    `farm.py` repeats this until there are 15 Pikmin.
 6. Take 15 to the bag and crush it (bag.py, last2.py).
-7. The Courage Reactor needs 20 carriers. Day 1 tops out at 16 Pikmin plus 2 seeds from the Bulborb carcass
-   (day1b.py), so the reactor waits for Day 2, when the posies are back. endday.py whistles both squads in before sunset.
+7. The Courage Reactor needs 20 carriers. Day 1 has no sunset: it ends when the reactor reaches the ship. Day 1
+   tops out at 16 Pikmin plus 2 seeds from the Bulborb carcass (day1b.py), so the bot fetched every straggler to
+   reach 20.
+
+## Days 2 to 4, the road to Emergence Cave
+
+The cave (-190, 1160) is not a straight walk south from the landing site. A snow wall blocks that way, even though the
+carry-route graph shows a path through it. The real road goes west, then south:
+
+1. The second paper bag (-1150, 2455) needs 35 Pikmin on top. `farm2.py 36` grows the squad on the posies near the
+   Onion first, and `bag2.py` crushes the bag.
+2. South of the bag are a Dwarf Bulborb and a Red Bulborb. Throwing the whole squad kills both, and the Pikmin carry the
+   bodies home for a lot of seeds. Pluck those before the next trip, or the HUD counts them as Pikmin you don't have.
+3. The white bramble gate (-591, 1427) takes most of a day for about 30 Pikmin. Its damage carries over to the next day.
+   `gate2.py` walks the known road (`PATH`), throws everyone at the gate, and keeps throwing.
+4. `cave.py` walks to the hole and opens the "Enter this hole?" prompt.
+
+At 3x speed a day lasts about ten minutes. The sun doesn't wait, so each day gets one script (`day3.sh`, `day4.sh`).
+
+`pk2.items(kind)` reads caves, gates, paper bags and bridges straight from memory, which is how these positions were
+found.
 
 A Bulborb carcass stops moving when no Onion has been found yet. Pikmin left outside a group or away from an Onion at
 sunset are eaten. A day ends at sunset or from the pause menu.

@@ -495,3 +495,23 @@ def pluck(pad):
 
 
 NOPLUCK = set()
+
+
+ITEM_MGRS = {"cave": 0x80516820, "gate": 0x805167B0, "downfloor": 0x80516860, "bridge": 0x80516838}
+
+
+def items(kind):
+    """Live x, z of one TNodeItemMgr's items (caves, gates, bags, bridges): the first TObjectNode in the mgr,
+    then +0x04 next, +0x18 the item, BaseItem mPosition +0x19C. Found by walking the list 2026-10-29."""
+    import struct
+    m = u32(ITEM_MGRS[kind])
+    node = next((u32(m + o) for o in range(0x4C, 0xC0, 4)
+                 if 0x80000000 <= u32(m + o) < 0x81800000 and u32(m + o) != m
+                 and u32(u32(m + o)) in range(0x804A0000, 0x804C0000) and 0x80000000 <= u32(u32(m + o) + 0x18) < 0x81800000), 0)
+    out, seen = [], set()
+    while 0x80000000 <= node < 0x81800000 and node not in seen:
+        seen.add(node)
+        x, _, z = struct.unpack(">3f", read(u32(node + 0x18) + 0x19C, 12))
+        out.append((x, z))
+        node = u32(node + 0x04)
+    return out
