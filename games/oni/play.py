@@ -48,7 +48,7 @@ UPPER = [[x, y] for y in range(124, 128) for x in range(177, 190)]   # air volum
 def log(*a): print(time.strftime("%H:%M:%S"), *a, flush=True)
 
 
-FOOD_PACKAGES = ("MushBar", "BasicPlantFood", "FieldRation", "Meat", "CookedMeat", "Pacu", "BasicPlantSeed", "PrickleFruit", "SwampFruit", "ColdWheatSeed")
+FOOD_PACKAGES = ("MushBar", "BasicPlantFood", "FieldRation", "Meat", "CookedMeat", "Pacu", "BasicSingleHarvestPlantSeed", "PrickleFruit", "SwampFruit", "ColdWheatSeed")
 
 
 def liquid(lines):
@@ -174,7 +174,7 @@ def run(until):
         if not mush and oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush = True; log("mush bars queued")
         if not mush2 and oni.cmd(op="queue", x=201, y=121, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush2 = True; log("musher 2 queued")
         for x, y in PLANTERS:
-            if (x, y) not in planted and oni.cmd(op="plant", x=x, y=y, seed="BasicPlantSeed").get("ok"): planted.add((x, y)); log("mealwood ordered", x, y)
+            if (x, y) not in planted and oni.cmd(op="plant", x=x, y=y, seed="BasicSingleHarvestPlantSeed").get("ok"): planted.add((x, y)); log("mealwood ordered", x, y)
         time.sleep(10)
 
 
