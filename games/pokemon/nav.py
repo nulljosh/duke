@@ -74,7 +74,8 @@ class Map:
 
     def cell(self, x, y):
         gx, gy = x + OFF, y + OFF
-        if not (0 <= gx < self.w and 0 <= gy < self.h):
+        # The 7-tile border holds the neighbouring map's tiles; a path through it walks off this map.
+        if not (OFF <= gx < self.w - OFF - 1 and OFF <= gy < self.h - OFF):
             return None
         return self.cells[gx + gy * self.w]
 
@@ -147,9 +148,14 @@ def fight(g):
     talk(g)
 
 
+TRACE = False
+
+
 def walk(g, goal, limit=200):
     start = where(g)[2:]
     for _ in range(limit):
+        if TRACE:
+            print("    walk", where(g), "->", goal, flush=True)
         if where(g)[2:] != start:         # walked through a door or off the edge on the way
             return True
         if "Battle" in g.screen():

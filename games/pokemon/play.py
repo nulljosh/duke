@@ -31,7 +31,10 @@ def grind(g, level, back):
     patch = sorted(tiles, key=lambda p: abs(p[0] - here[0]) + abs(p[1] - here[1]))
     a = patch[0]
     b = next((p for p in patch if abs(p[0] - a[0]) + abs(p[1] - a[1]) == 1), patch[1])
+    start = here_map(g)
     while lead(g)["level"] < level:
+        if here_map(g) != start:
+            return False                                   # slipped onto another map; the caller re-routes
         for p in (a, b):
             nav.walk(g, p)
             if "Battle" in g.screen():
