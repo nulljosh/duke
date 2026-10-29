@@ -30,12 +30,12 @@ The cave counts for White Flower Garden, Bulblax Kingdom, Snagret Hole, Citadel 
 
 ## Forecast (2026-10-29, Day 4)
 
-1 of 201 treasures home after 3.5 hours of bot play. 4,000 Monte Carlo runs give this:
+4 of 201 treasures home after 4.3 hours of bot play (Day 4 saved). 4,000 Monte Carlo runs give this:
 
 | | Bot hours left |
 |---|---|
-| P10 | 374 |
-| P50 | 426 |
-| P90 | 482 |
+| P10 | 126 |
+| P50 | 143 |
+| P90 | 160 |
 
-How the model works: each treasure left costs the pace so far (210 minutes per treasure, setup included), times a learning factor between 0.15 and 0.5, times a difficulty weight for the area, times lognormal noise. Each Onion, gate and boss adds 0.5 to 2 hours. The spread is narrow only because the learning factor is a guess. The real uncertainty is bigger until about ten more treasures are logged. `forecast.png` draws 120 of the runs, with the P10, P50 and P90 paths in gold.
+How the model works: each treasure left costs the pace so far (65 minutes per treasure so far, setup included), times a learning factor between 0.15 and 0.5, times a difficulty weight for the area, times lognormal noise. Each Onion, gate and boss adds 0.5 to 2 hours. The spread is narrow only because the learning factor is a guess. The real uncertainty is bigger until about ten more treasures are logged. `forecast.png` draws 120 of the runs, with the P10, P50 and P90 paths in gold.
