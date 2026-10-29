@@ -28,7 +28,7 @@ PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         *[("PlanterBox", x, y, 5) for x, y in PLANTERS],
         *[("Ladder", 180, y, 6) for y in range(108, 120)],
         *[("Tile", x, 109, 9) for x in (181, 182, 183)],   # the corridor crosses an open cavity there
-        ("LiquidPumpingStation", 189, 105, 8), ("Ladder", 188, 108, 7), ("Ladder", 188, 109, 7),   # the second pool, under the corridor
+        ("LiquidPumpingStation", 189, 105, 8), ("LiquidPumpingStation", 191, 105, 9),   # 189 reads only its root column, which is sand; 191 stands over open water ("Ladder", 188, 108, 7), ("Ladder", 188, 109, 7),   # the second pool, under the corridor
         *[("Ladder", 184, y, 7) for y in range(112, 119)],   # up from the corridor through a streak of dirt
         *[("Ladder", 180, y, 6) for y in range(100, 108)], *[("Ladder", 189, y, 5) for y in range(126, 138)],   # the mine grid's spines
         ("MicrobeMusher", 201, 121, 8),
@@ -148,7 +148,7 @@ def run(until):
                 if tries[item] in (1, 61): log("waiting", item, r.get("error"))
         if time.time() - t_link > 60:   # wires placed one at a time join nothing until linked; a reload drops the links too
             oni.cmd(op="link", cells=WIRES); oni.cmd(op="mop", cells=[[x, 120] for x in range(177, 203)]); t_link = time.time()
-            for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): oni.cmd(op="safedig", cells=cells, floor=119, prio=prio)   # more come in reach as the room opens up
+            for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 7)): oni.cmd(op="safedig", cells=cells, floor=119, prio=prio)   # UPPER is the farm's headroom: a planter under rock never grows. More come in reach as the room opens up
             oni.cmd(op="safedig", cells=SHAFT, floor=99, prio=6); oni.cmd(op="safedig", cells=LOWER, floor=109, prio=5)
             oni.cmd(op="safedig", cells=SPINE, floor=119, prio=5); oni.cmd(op="safedig", cells=near(MINES, 999), floor=100, prio=4, max=20)
             oni.cmd(op="dig", cells=[[188, 109], [188, 108]], prio=8)   # the ladder down to the second pump; touches the pool on purpose
