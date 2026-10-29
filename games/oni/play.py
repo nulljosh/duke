@@ -12,6 +12,7 @@ RESEARCH = ["FarmingTech", "PowerRegulation", "Jobs", "AdvancedResearch", "Impro
             "BasicRocketry", "SkyDetectors", "MedicineI"]   # Distillation: the Water Sieve. Everything past Combustion needs the Super Computer's points
 WIRES = [[x, y] for y in (120, 121) for x in range(191, 200)] + [[200, 121], [201, 121], [202, 121], [201, 122], [202, 122]]   # ports sit on either row, so wire both and join them; the tail feeds musher 2
 WIRES += [[x, 120] for x in range(169, 176)] + [[x, 121] for x in range(169, 191)]   # west wing: the coal generator and the Super Computer
+RETIRE = [(189, 105), (191, 105)]   # pumps over a sand column: both read Empty and block the one spot that works
 PLANTERS = [(x, 125) for x in range(177, 189)] + [(x, 125) for x in range(197, 201)]   # 16 Mealwood, no water: the farm over the west room and the bedroom's end
 COLONY = 6
 # id, x, y, priority. 2-wide buildings sit on x and x+1, 3-wide ones are centred on x. The room is x177-200, y120-123.
@@ -28,7 +29,7 @@ PLAN = [("Outhouse", 178, 120, 7), ("WashBasin", 181, 120, 6),
         *[("PlanterBox", x, y, 5) for x, y in PLANTERS],
         *[("Ladder", 180, y, 6) for y in range(108, 120)],
         *[("Tile", x, 109, 9) for x in (181, 182, 183)],   # the corridor crosses an open cavity there
-        ("LiquidPumpingStation", 189, 105, 8), ("LiquidPumpingStation", 191, 105, 9),   # 189 reads only its root column, which is sand; 191 stands over open water ("Ladder", 188, 108, 7), ("Ladder", 188, 109, 7),   # the second pool, under the corridor
+        ("LiquidPumpingStation", 190, 105, 9),   # a pitcher pump needs both its columns open below (PumpingStationGuide): only 190-191 are water all the way down ("Ladder", 188, 108, 7), ("Ladder", 188, 109, 7),   # the second pool, under the corridor
         *[("Ladder", 184, y, 7) for y in range(112, 119)],   # up from the corridor through a streak of dirt
         *[("Ladder", 180, y, 6) for y in range(100, 108)], *[("Ladder", 189, y, 5) for y in range(126, 138)],   # the mine grid's spines
         ("MicrobeMusher", 201, 121, 8),
@@ -117,6 +118,7 @@ def run(until):
     done, tries, last_cycle, mush, mush2, planted, t_link, clock = set(), {}, None, False, False, set(), 0, None
     for cells, prio in ((ROOM, 6), (BEDROOM, 5), (UPPER, 3)): log("dig", oni.cmd(op="safedig", cells=cells, floor=119, prio=prio))
     log("ledge", oni.cmd(op="dig", cells=LEDGE, prio=6))   # touches the pool on purpose
+    for x, y in RETIRE: oni.cmd(op="prio", x=x, y=y, p=9); log("retire", x, y, oni.cmd(op="deconstruct", x=x, y=y))
     while True:
         s = oni.state()
         if not s.get("inGame"): log("not in game", s.get("screens")); time.sleep(10); continue

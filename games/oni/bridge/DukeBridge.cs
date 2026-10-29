@@ -221,6 +221,12 @@ public static partial class Ops
             case "shot":   // {"path"}: a PNG of the frame as the game drew it, UI included; written at the end of this frame
                 if (File.Exists((string)j["path"])) File.Delete((string)j["path"]);
                 ScreenCapture.CaptureScreenshot((string)j["path"]); return new { ok = true };
+            case "deconstruct":   // {"x", "y"}: queue the building there for deconstruction, like the Deconstruct tool
+            {
+                var d = Grid.Objects[Grid.XYToCell((int)j["x"], (int)j["y"]), (int)ObjectLayer.Building]?.GetComponent<Deconstructable>();
+                if (d == null) return new { error = "nothing to deconstruct there" };
+                d.QueueDeconstruction(true); return new { ok = true };
+            }
             case "ui":   // {"show": false}: the HUD off for a clean frame (the game's own story-screen toggle), true puts it back
                 StoryMessageScreen.HideInterface(!(bool)j["show"]); return new { ok = true };
             case "prio":   // {"x", "y", "p"}: the errand priority of the building there, 1 to 9
