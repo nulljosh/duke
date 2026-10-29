@@ -432,7 +432,8 @@ def sprouts():
         return []
     vt, blob = read(arr, 4), read(arr, 0x400)
     stride = next(k for k in range(0x200, len(blob) - 4, 4) if blob[k:k + 4] == vt)
-    return [struct.unpack(">f4xf", read(arr + i * stride + 0x19C, 12)) for i in used]
+    out = [struct.unpack(">f4xf", read(arr + i * stride + 0x19C, 12)) for i in used]
+    return [p for p in out if p != (0.0, 0.0)]  # a seed still in the air has no position yet
 
 
 def pluck(pad):
