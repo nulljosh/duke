@@ -271,7 +271,8 @@ def leg_brawly(g, level=24):
     if "Battle" in g.screen():
         nav.fight(g)
     nav.talk(g)
-    print(stats.log(g, "Beat Brawly: Knuckle Badge"), flush=True)
+    won = stats.snapshot(g)["badges"] >= 2
+    print(stats.log(g, "Beat Brawly: Knuckle Badge" if won else "Lost to Brawly"), flush=True)
 
 
 if __name__ == "__main__":
