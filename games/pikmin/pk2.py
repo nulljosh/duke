@@ -117,14 +117,14 @@ def mem():
 
 
 def moved(pad, x=0, y=1, secs=0.6):
-    """Push the stick briefly; True if Olimar moved, i.e. the player has control (no dialogue or cutscene)."""
-    a = mem()
+    """Push the stick briefly; True if either captain moved, i.e. the player has control (no dialogue or cutscene)."""
+    a = [navi(i)[:2] for i in (0, 1)]
     pad.cmd(f"stick {x} {y}")
     time.sleep(secs)
     pad.cmd("release all")
     time.sleep(0.4)
-    b = mem()
-    return abs(b["olimar_x"] - a["olimar_x"]) + abs(b["olimar_z"] - a["olimar_z"]) > 20
+    b = [navi(i)[:2] for i in (0, 1)]
+    return any(abs(q[0] - p[0]) + abs(q[1] - p[1]) > 20 for p, q in zip(a, b))
 
 
 def control(pad, tries=60):
@@ -144,12 +144,14 @@ def read(addr, n):
     global _gdb
     if _gdb is None:
         _gdb = socket.create_connection(("127.0.0.1", 26762)).makefile("rw")
-    _gdb.write(f"r {addr:x} {n}\n")
-    _gdb.flush()
-    h = _gdb.readline().strip()
-    if h.startswith("E"):
-        raise ValueError(f"read {addr:08x}: {h}")
-    return bytes.fromhex(h)
+    for _ in range(3):                         # a pointer read mid-frame can catch a freed object: E00, retry
+        _gdb.write(f"r {addr:x} {n}\n")
+        _gdb.flush()
+        h = _gdb.readline().strip()
+        if not h.startswith("E"):
+            return bytes.fromhex(h)
+        time.sleep(0.05)
+    raise ValueError(f"read {addr:08x}: {h}")
 
 
 def u32(addr):
@@ -208,13 +210,18 @@ def enemies():
     return out
 
 
-def cursor(navi=0):
+def cursor(navi=None):
     """Where thrown Pikmin land: the NaviWhistle (Navi +0x28C) mPosition +0x0C."""
+    navi = ACTIVE if navi is None else navi
     return f32s(u32(u32(u32(0x80516660) + 0x28) + 0x320 * navi + 0x28C) + 0x0C, 3)
 
 
-def navi(i=0):
+ACTIVE = 0                                     # the captain the stick drives: 0 Olimar, 1 Louie (Y swaps)
+
+
+def navi(i=None):
     """Live x, z and mFaceDir of a captain (naviMgr +0x28 array, 0x320 each; FakePiki +0x20C, +0x1FC)."""
+    i = ACTIVE if i is None else i
     nb = u32(u32(0x80516660) + 0x28) + 0x320 * i
     x, _, z = f32s(nb + 0x20C, 3)
     return x, z, f32s(nb + 0x1FC, 1)[0]
@@ -376,7 +383,10 @@ def route(wps, a, b):
 
 
 def travel(pad, x, z, near=40):
-    """goto along the route graph; True on arrival."""
+    """Walk straight there; only when that sticks, goto along the route graph. True on arrival.
+    ponytail: the carry graph detours far around open ground, so it is the fallback, not the first try."""
+    if goto(pad, x, z, near=near):
+        return True
     pts = route(waypoints(), pos(), (x, z))
     for px, pz in pts[:-1]:
         goto(pad, px, pz, near=45)
@@ -401,11 +411,34 @@ def gather(pad):
     """Walk to the Pikmin that are not in the squad and whistle them in."""
     import math
     for _ in range(4):
-        if squad() >= alive():
+        if squad(ACTIVE) >= alive():
             return True
         me = pos()
         far = max(pikis(), key=lambda p: math.hypot(p[0] - me[0], p[1] - me[1]))
         if math.hypot(far[0] - me[0], far[1] - me[1]) > 120:
             travel(pad, *far, near=80)
         pad.press("B", 1500, after=1.0)
-    return squad() >= alive()
+    return squad(ACTIVE) >= alive()
+
+
+def sprouts():
+    """Planted Pikmin x, z: ItemPikihead::mgr (0x805167F0) MonoObjectMgr at +0x4C (+0x24 max, +0x28 array,
+    +0x2C mOpenIds), item position +0x19C, stride by vtable repeat. Found by scan 2026-10-29, not in the headers."""
+    import struct
+    mx, arr, opn = struct.unpack(">3I", read(u32(0x805167F0) + 0x4C + 0x24, 12))
+    free = read(opn, mx)
+    used = [i for i in range(mx) if free[i] == 0]
+    if not used:
+        return []
+    vt, blob = read(arr, 4), read(arr, 0x400)
+    stride = next(k for k in range(0x200, len(blob) - 4, 4) if blob[k:k + 4] == vt)
+    return [struct.unpack(">f4xf", read(arr + i * stride + 0x19C, 12)) for i in used]
+
+
+def pluck(pad):
+    """Walk onto each sprout and press A; returns how many joined the squad."""
+    before = squad(ACTIVE)
+    for x, z in sprouts():
+        goto(pad, x, z, near=14)
+        pad.press("A", 100, after=1.2)
+    return squad(ACTIVE) - before
