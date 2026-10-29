@@ -143,7 +143,7 @@ def run(until):
             if item in done or tries.get(item, 0) > 60: continue
             r = oni.cmd(op="build", id=item[0], x=item[1], y=item[2], prio=item[3])
             if r.get("ok"): done.add(item); log("placed", item, r.get("mats"))
-            else:
+            elif "not enough material" not in str(r.get("error")):   # short of metal is worth waiting for; colony 6 gave up on its Super Computer
                 tries[item] = tries.get(item, 0) + 1
                 if tries[item] in (1, 61): log("waiting", item, r.get("error"))
         if time.time() - t_link > 60:   # wires placed one at a time join nothing until linked; a reload drops the links too
@@ -153,7 +153,7 @@ def run(until):
             oni.cmd(op="safedig", cells=SPINE, floor=119, prio=5); oni.cmd(op="safedig", cells=near(MINES, 999), floor=100, prio=4, max=20)
             oni.cmd(op="dig", cells=[[188, 109], [188, 108]], prio=8)   # the ladder down to the second pump; touches the pool on purpose
             oni.cmd(op="safedig", cells=[[184, y] for y in range(112, 119)] + [[179, 109], [179, 108]], floor=100, prio=8)   # dirt beside the ladders
-            topup(s["have"], "Dirt", 1500); topup(s["have"], "Algae", 300); floor(); explore(s); seeds(); printables(s); skills()
+            topup(s["have"], "Dirt", 1500); topup(s["have"], "Algae", 300); topup(s["have"], "Cuprite", 800); floor(); explore(s); seeds(); printables(s); skills()
             hungry = s["foodKcal"] < 6000   # research and the musher both eat dirt; food wins well before the larder is empty
             oni.cmd(op="prio", x=196, y=120, p=9); oni.cmd(op="prio", x=201, y=121, p=9); oni.cmd(op="prio", x=193, y=120, p=1 if hungry else 5)
         if not mush and oni.cmd(op="queue", x=196, y=120, recipe="MicrobeMusher_I_Dirt_Water_O_MushBar").get("ok"): mush = True; log("mush bars queued")
