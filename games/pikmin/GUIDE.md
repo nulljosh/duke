@@ -38,7 +38,9 @@ every step. Walk straight first. The carry-route graph takes long detours, so us
 4. Walking Louie east along the route finds the Red Onion at about (-340, 4000), with Pellet Posies around it.
 5. Pluck sprouts (stand on one, press A). Throw the squad at a posy, and the pellet goes to the Onion as new seeds.
    `farm.py` repeats this until there are 15 Pikmin.
-6. Next: take 15 to the bag, crush it, carry the reactor to the ship.
+6. Take 15 to the bag and crush it (bag.py, last2.py).
+7. The Courage Reactor needs 20 carriers. Day 1 tops out at 16 Pikmin plus 2 seeds from the Bulborb carcass
+   (day1b.py), so the reactor waits for Day 2, when the posies are back. endday.py whistles both squads in before sunset.
 
 A Bulborb carcass stops moving when no Onion has been found yet. Pikmin left outside a group or away from an Onion at
 sunset are eaten. A day ends at sunset or from the pause menu.
