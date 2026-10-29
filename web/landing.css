@@ -162,7 +162,7 @@ body::after { content: ""; position: fixed; inset: 8px; border: 1px solid color-
 .doc p + p { margin-top: var(--sp-3); }
 
 /* Games: one card per game, each on its own colour from tokens.css (--g-*), same tile shape as the icon. */
-.games { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-4); margin-top: var(--sp-7); }
+.games { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); margin-top: var(--sp-7); }
 .game { background: var(--surface); border-radius: var(--r-card); padding: var(--sp-5); text-align: left; }
 .game-tile { width: 48px; height: 48px; border-radius: var(--r-icon); background: var(--game); display: grid; place-items: center; margin-bottom: var(--sp-4); }
 .game h3 { font-size: 17px; line-height: 24px; font-weight: 600; }
