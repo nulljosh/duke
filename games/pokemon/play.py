@@ -185,6 +185,26 @@ def leg_roxanne(g, level=17):
     print(row, flush=True)
 
 
+def leg_tunnel(g):
+    """Rustboro after the badge: chase the Aqua grunt who stole the Devon Goods into Rusturf Tunnel."""
+    if here(g) == world.find("RustboroCity_Gym"):
+        goto(g, "RustboroCity")
+    nav.talk(g)
+    goto(g, "RusturfTunnel")
+    for t in nav.templates(g):
+        print("tunnel", t, flush=True)
+    grunt = next((t for t in nav.templates(g) if "Grunt" in t[4] or "Aqua" in t[4]), None)
+    if grunt:
+        for side in ("LEFT", "RIGHT", "DOWN", "UP"):
+            if nav.use(g, grunt[2:4], side):
+                break
+        nav.talk(g)
+        if "Battle" in g.screen():
+            nav.fight(g)
+        nav.talk(g)
+    stats.log(g, "Got the Devon Goods back in Rusturf Tunnel")
+
+
 if __name__ == "__main__":
     g = pk.GBA()
     globals()["leg_" + sys.argv[1]](g, *[int(a) if a.isdigit() else a for a in sys.argv[2:]])

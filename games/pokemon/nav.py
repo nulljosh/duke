@@ -164,7 +164,9 @@ def walk(g, goal, limit=200):
         if not p:
             return False
         if not step(g, p[0]):
-            g.wait(30)  # an NPC stepped in, or a door/warp is loading
+            if len(p) == 1:
+                return False      # the goal itself won't take a step (a wall-side warp, a counter)
+            g.wait(30)            # an NPC stepped in, or a door/warp is loading
     return where(g)[:2] == goal
 
 
@@ -192,19 +194,23 @@ def changed(g, m, frames=150):
 
 
 def warp(g, pos):
-    """Walk onto a warp tile and through it. Doors fire on arrival; exit mats need one more step out."""
+    """Walk onto a warp tile and through it. Doors fire on arrival; stairs and exit mats fire while you push
+    into them; arrow warps (MB_*_ARROW_WARP 0x62-0x65) only while you push their way."""
     m = where(g)[2:]
-    if not walk(g, pos):
-        return False
+    walk(g, pos)
     if changed(g, m, 180):
         return True
-    # Arrow warps (MB_EAST/WEST/NORTH/SOUTH_ARROW_WARP 0x62-0x65) fire only while you push their way.
     arrow = {0x62: "RIGHT", 0x63: "LEFT", 0x64: "UP", 0x65: "DOWN"}.get(Map(g).behaviour(*pos))
-    for d in ([arrow] if arrow else []) + ["DOWN", "UP", "LEFT", "RIGHT"]:
-        if where(g)[:2] != pos and not walk(g, pos):
-            break
+    x, y = where(g)[:2]
+    toward = next((d for d, (dx, dy) in DIRS.items() if (x + dx, y + dy) == pos), None)
+    order = [d for d in (arrow, toward, "UP", "DOWN", "LEFT", "RIGHT") if d]
+    for d in dict.fromkeys(order):
+        if where(g)[2:] != m:
+            return True
+        if abs(where(g)[0] - pos[0]) + abs(where(g)[1] - pos[1]) > 1:
+            walk(g, pos)
         g.press(d, hold=40, after=10)
-        if changed(g, m):
+        if changed(g, m, 240):
             return True
     return False
 
@@ -306,3 +312,61 @@ def save(g):
         if not g.r8(0x030006A4):
             break
     talk(g)
+
+
+def find_npc(g, gid):
+    """Live map coords of the first visible object with this graphicsId (gObjectEvents +5), or None."""
+    raw = g.read(OBJECTS, 16 * 36)
+    for i in range(16):
+        o = raw[i * 36:i * 36 + 36]
+        if o[0] & 1 and not o[1] & 0x20 and not o[2] & 1 and o[5] == gid:
+            return (s16(o, 0x10) - OFF, s16(o, 0x12) - OFF)
+    return None
+
+
+def talk_to(g, gid, tries=80):
+    """Walk up to a person by graphicsId, chasing them if they wander, face them and talk."""
+    for _ in range(tries):
+        p = find_npc(g, gid)
+        if not p:
+            return False
+        x, y = where(g)[:2]
+        side = next((d for d, (dx, dy) in DIRS.items() if (x + dx, y + dy) == p), None)
+        if side:
+            face(g, side)
+            g.press("A", after=30)
+            if g.r8(0x030006A4):
+                talk(g)
+                return True
+            continue
+        m = Map(g)
+        spots = [(p[0] + dx, p[1] + dy) for dx, dy in DIRS.values()]
+        busy = npcs(g)
+        spots = [q for q in spots if m.open(*q, 0) and q not in busy]
+        spots.sort(key=lambda q: abs(q[0] - x) + abs(q[1] - y))
+        for q in spots:
+            r = path(g, q)
+            if r:
+                step(g, r[0])                    # one step, then look again: people wander
+                break
+        else:
+            import random                        # boxed in or mirrored (Briney copies our steps): wander
+            step(g, random.choice(list(DIRS)))
+    return False
+
+
+def ambush(g, gid, frames=900):
+    """For people on a fixed walking loop (MOVEMENT_TYPE_WALK_SEQUENCE_*): stand still and talk the moment
+    they're next to us."""
+    for _ in range(frames // 4):
+        p = find_npc(g, gid)
+        x, y = where(g)[:2]
+        side = next((d for d, (dx, dy) in DIRS.items() if p and (x + dx, y + dy) == p), None)
+        if side:
+            face(g, side)
+            g.press("A", after=20)
+            if g.r8(0x030006A4):
+                talk(g)
+                return True
+        g.wait(4)
+    return False
