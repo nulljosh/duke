@@ -40,7 +40,7 @@ def grind(g, level, back):
             if "Battle" in g.screen():
                 nav.fight(g)
             x = lead(g)
-            if x["hp"] * 10 < x["maxhp"] * 4 or battle.damaging_pp(g, x) < 10:   # low HP, or out of attacks
+            if x["hp"] * 10 < x["maxhp"] * 6 or battle.damaging_pp(g, x) < 10:   # low HP, or out of attacks
                 back(g)
                 return False
     return True

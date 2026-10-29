@@ -112,7 +112,8 @@ def fight(g, log=print):
         if f == "HandleInputChooseAction":
             s, scores = best(g)
             wild = not g.r32(TYPE_FLAGS) & 0x8       # BATTLE_TYPE_TRAINER
-            if wild and scores[s] <= 0:
+            me = mon(g, 0)
+            if wild and (scores[s] <= 0 or me["hp"] * 10 < me["maxhp"] * 3):   # nothing hits, or about to faint
                 grid_to(g, ACTION_CUR, 3)           # RUN: nothing left that does damage
             else:
                 grid_to(g, ACTION_CUR, 0)           # FIGHT
