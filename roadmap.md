@@ -97,7 +97,8 @@ Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geom
 ## Open
 - [ ] Brand 2 (board on a breaking wave, 2026-10-26) is live on the landing and the Mac menu bar app. The iPhone and Watch apps need a new build to carry the new icon.
 - [ ] FEZ: beat the 32-cube ending for real from Joshua's 67.6% save (slot 3 copy). Status lives in games/fez/README.md. Then add FEZ to the landing next to Duolingo and Factorio.
-- [ ] Oxygen Not Included (active since 2026-10-28): win Home Sweet Home (cycle 200, 12 dupes, Great Monument) or the Great Escape, headless through the Duke Bridge. Colony 7 is running, the first with working water; rules in games/oni/GUIDE.md, wins in games/oni/VICTORY.md. ETA a few days. Don't Starve after it (Steam marked it damaged on 2026-10-05; reinstall first).
+- [ ] Pokemon Sapphire (next): emulator run streamed to Twitch.
+- [ ] Oxygen Not Included (parked 2026-10-28): win Home Sweet Home (cycle 200, 12 dupes, Great Monument) or the Great Escape, headless through the Duke Bridge. Parked at colony 7, cycle 24; resume in docs/LOOP-HANDOFF.md, rules in games/oni/GUIDE.md. ETA a few days. Don't Starve after it (Steam marked it damaged on 2026-10-05; reinstall first).
 - [ ] Landing refresh once FEZ is beaten: Hermes' layout, styled for video games instead of Greek gods. Photos from FEZ and Factorio, and Duolingo too. Supported games listed: Duolingo, FEZ, Factorio.
 - [ ] `duke play <game>`: one entry point for duolingo, factorio, gdt and fez.
 - [ ] Hermes Sans (~/Documents/Code/hermes) likely has the same comma bug (feathers in every comma). Same fix as Duke Sans: tools/gen_font.py, with a check. Hermes has no roadmap.md yet, so the item lives here.

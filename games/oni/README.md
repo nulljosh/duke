@@ -18,4 +18,4 @@ The game rules the bot relies on, and what killed each colony, are in [GUIDE.md]
 
 ## Now
 
-Colony 7 is running on the Skewed Asteroid seed, with the pod at 186,120. It's the first colony whose pump works from day one.
+Parked 2026-10-28 at colony 7 ("The Hapless Beyond", cycle 24), the first colony whose pump worked from day one. Resume steps are in ../../docs/LOOP-HANDOFF.md.

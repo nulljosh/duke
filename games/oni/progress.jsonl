@@ -136,3 +136,68 @@
 {"colony": 5, "cycle": 31, "dupes": 2, "foodKcal": 800, "research": "AdvancedFiltration", "done": 11, "buildings": 167, "worst": ["Camille", 100, 100, 2680]}
 {"colony": 5, "cycle": 32, "dupes": 2, "foodKcal": 800, "research": "AdvancedFiltration", "done": 11, "buildings": 167, "worst": ["Camille", 100, 100, 1678]}
 {"colony": 6, "cycle": 1, "dupes": 3, "foodKcal": 16000, "research": null, "done": 0, "buildings": 10, "worst": ["Nikola", 100, 5, 3542]}
+{"colony": 6, "cycle": 2, "dupes": 3, "foodKcal": 13757, "research": "FarmingTech", "done": 0, "buildings": 50, "worst": ["Nikola", 100, 0, 3639]}
+{"colony": 6, "cycle": 3, "dupes": 3, "foodKcal": 13358, "research": "FarmingTech", "done": 0, "buildings": 113, "worst": ["Nikola", 100, 0, 3757]}
+{"colony": 6, "cycle": 4, "dupes": 4, "foodKcal": 15219, "research": "PowerRegulation", "done": 1, "buildings": 122, "worst": ["Marie", 100, 3, 3356]}
+{"colony": 6, "cycle": 5, "dupes": 4, "foodKcal": 20203, "research": "AdvancedResearch", "done": 3, "buildings": 123, "worst": ["Ellie", 100, 0, 3207]}
+{"colony": 6, "cycle": 6, "dupes": 4, "foodKcal": 23218, "research": "AdvancedResearch", "done": 3, "buildings": 131, "worst": ["Nikola", 100, 0, 3138]}
+{"colony": 6, "cycle": 7, "dupes": 4, "foodKcal": 24104, "research": "LiquidPiping", "done": 4, "buildings": 144, "worst": ["Marie", 100, 25, 3417]}
+{"colony": 6, "cycle": 8, "dupes": 4, "foodKcal": 23986, "research": "LiquidPiping", "done": 4, "buildings": 148, "worst": ["Nikola", 100, 0, 3748]}
+{"colony": 6, "cycle": 9, "dupes": 5, "foodKcal": 27203, "research": "ImprovedOxygen", "done": 5, "buildings": 149, "worst": ["Devon", 100, 0, 3244]}
+{"colony": 6, "cycle": 9, "dupes": 5, "foodKcal": 27650, "research": "ImprovedOxygen", "done": 5, "buildings": 153, "worst": ["Devon", 100, 0, 3302]}
+{"colony": 6, "cycle": 10, "dupes": 5, "foodKcal": 27650, "research": "ImprovedOxygen", "done": 5, "buildings": 153, "worst": ["Devon", 100, 0, 3229]}
+{"colony": 6, "cycle": 11, "dupes": 5, "foodKcal": 33104, "research": "SanitationSciences", "done": 6, "buildings": 159, "worst": ["Nisbet", 85, 0, 3523]}
+{"colony": 6, "cycle": 12, "dupes": 5, "foodKcal": 39355, "research": "FineDining", "done": 7, "buildings": 159, "worst": ["Nikola", 100, 2, 3676]}
+{"colony": 6, "cycle": 13, "dupes": 5, "foodKcal": 47444, "research": "BasicRefinement", "done": 8, "buildings": 159, "worst": ["Nikola", 100, 5, 3682]}
+{"colony": 6, "cycle": 14, "dupes": 5, "foodKcal": 42951, "research": "Combustion", "done": 9, "buildings": 159, "worst": ["Nikola", 82, 9, 3622]}
+{"colony": 6, "cycle": 15, "dupes": 5, "foodKcal": 46616, "research": "AdvancedFiltration", "done": 10, "buildings": 159, "worst": ["Devon", 100, 16, 3371]}
+{"colony": 6, "cycle": 16, "dupes": 6, "foodKcal": 49648, "research": "Distillation", "done": 11, "buildings": 160, "worst": ["Otto", 85, 1, 3628]}
+{"colony": 6, "cycle": 17, "dupes": 6, "foodKcal": 48093, "research": "Distillation", "done": 11, "buildings": 167, "worst": ["Nisbet", 100, 2, 2746]}
+{"colony": 6, "cycle": 18, "dupes": 6, "foodKcal": 42681, "research": "Distillation", "done": 11, "buildings": 169, "worst": ["Otto", 100, 12, 2432]}
+{"colony": 6, "cycle": 19, "dupes": 6, "foodKcal": 36861, "research": "Distillation", "done": 11, "buildings": 171, "worst": ["Otto", 100, 14, 1428]}
+{"colony": 6, "cycle": 20, "dupes": 6, "foodKcal": 33817, "research": "Distillation", "done": 11, "buildings": 174, "worst": ["Otto", 100, 12, 422]}
+{"colony": 6, "cycle": 21, "dupes": 6, "foodKcal": 28316, "research": "Distillation", "done": 11, "buildings": 175, "worst": ["Steve", 96, 1, 3256]}
+{"colony": 6, "cycle": 22, "dupes": 6, "foodKcal": 11511, "research": "Distillation", "done": 11, "buildings": 175, "worst": ["Nisbet", 100, 31, 3147]}
+{"colony": 6, "cycle": 22, "dupes": 6, "foodKcal": 11511, "research": "Distillation", "done": 11, "buildings": 176, "worst": ["Nisbet", 100, 34, 2964]}
+{"colony": 6, "cycle": 23, "dupes": 6, "foodKcal": 5713, "research": "Distillation", "done": 11, "buildings": 176, "worst": ["Marie", 100, 46, 3128]}
+{"colony": 6, "cycle": 24, "dupes": 6, "foodKcal": 3578, "research": "Distillation", "done": 11, "buildings": 176, "worst": ["Marie", 100, 47, 2162]}
+{"colony": 6, "cycle": 24, "dupes": 6, "foodKcal": 2778, "research": "Distillation", "done": 11, "buildings": 176, "worst": ["Marie", 100, 47, 2157]}
+{"colony": 6, "cycle": 24, "dupes": 6, "foodKcal": 2778, "research": "Distillation", "done": 11, "buildings": 176, "worst": ["Marie", 100, 47, 2157]}
+{"colony": 6, "cycle": 24, "dupes": 6, "foodKcal": 2778, "research": "Distillation", "done": 11, "buildings": 176, "worst": ["Marie", 100, 47, 2157]}
+{"colony": 6, "cycle": 25, "dupes": 4, "foodKcal": 1942, "research": "Distillation", "done": 11, "buildings": 175, "worst": ["Marie", 100, 67, 1151]}
+{"colony": 6, "cycle": 26, "dupes": 4, "foodKcal": 800, "research": "Distillation", "done": 11, "buildings": 175, "worst": ["Marie", 100, 91, 148]}
+{"colony": 6, "cycle": 27, "dupes": 3, "foodKcal": 800, "research": "Distillation", "done": 11, "buildings": 175, "worst": ["Nikola", 92, 89, 436]}
+{"colony": 6, "cycle": 28, "dupes": 2, "foodKcal": 800, "research": "Distillation", "done": 11, "buildings": 175, "worst": ["Nisbet", 94, 69, 751]}
+{"colony": 7, "cycle": 1, "dupes": 3, "foodKcal": 16000, "research": null, "done": 0, "buildings": 10, "worst": ["Rowan", 100, 5, 3545]}
+{"colony": 7, "cycle": 2, "dupes": 3, "foodKcal": 14122, "research": "FarmingTech", "done": 0, "buildings": 39, "worst": ["Rowan", 100, 0, 3776]}
+{"colony": 7, "cycle": 2, "dupes": 3, "foodKcal": 14122, "research": "FarmingTech", "done": 0, "buildings": 39, "worst": ["Rowan", 100, 0, 3784]}
+{"colony": 7, "cycle": 3, "dupes": 3, "foodKcal": 13493, "research": "FarmingTech", "done": 0, "buildings": 121, "worst": ["Rowan", 100, 0, 3760]}
+{"colony": 7, "cycle": 3, "dupes": 3, "foodKcal": 14293, "research": "FarmingTech", "done": 0, "buildings": 139, "worst": ["Rowan", 100, 0, 3437]}
+{"colony": 7, "cycle": 4, "dupes": 3, "foodKcal": 17100, "research": "FarmingTech", "done": 0, "buildings": 146, "worst": ["Rowan", 100, 0, 3593]}
+{"colony": 7, "cycle": 4, "dupes": 3, "foodKcal": 22700, "research": "FarmingTech", "done": 0, "buildings": 149, "water": 5000, "worst": ["Rowan", 100, 0, 2885]}
+{"colony": 7, "cycle": 5, "dupes": 3, "foodKcal": 20278, "research": "FarmingTech", "done": 0, "buildings": 149, "water": 4964, "worst": ["Rowan", 100, 0, 3766]}
+{"colony": 7, "cycle": 5, "dupes": 3, "foodKcal": 24278, "research": "PowerRegulation", "done": 1, "buildings": 149, "water": 8512, "worst": ["Rowan", 97, 1, 3379]}
+{"colony": 7, "cycle": 5, "dupes": 3, "foodKcal": 29078, "research": "PowerRegulation", "done": 1, "buildings": 149, "water": 7730, "worst": ["Rowan", 100, 0, 3112]}
+{"colony": 7, "cycle": 6, "dupes": 3, "foodKcal": 28054, "research": "PowerRegulation", "done": 1, "buildings": 149, "water": 7707, "worst": ["Travaldo", 100, 0, 3433]}
+{"colony": 7, "cycle": 7, "dupes": 4, "foodKcal": 32677, "research": "PowerRegulation", "done": 1, "buildings": 150, "water": 19963, "worst": ["Ashkan", 98, 4, 3500]}
+{"colony": 7, "cycle": 8, "dupes": 4, "foodKcal": 39907, "research": "PowerRegulation", "done": 1, "buildings": 154, "water": 18383, "worst": ["Rowan", 79, 0, 3440]}
+{"colony": 7, "cycle": 8, "dupes": 4, "foodKcal": 38014, "research": "Jobs", "done": 1, "buildings": 154, "water": 9303, "worst": ["Rowan", 100, 0, 3491]}
+{"colony": 7, "cycle": 8, "dupes": 4, "foodKcal": 39107, "research": "Jobs", "done": 1, "buildings": 153, "water": 18683, "worst": ["Rowan", 100, 0, 3416]}
+{"colony": 7, "cycle": 9, "dupes": 4, "foodKcal": 40418, "research": "AdvancedResearch", "done": 2, "buildings": 156, "water": 17970, "worst": ["Travaldo", 100, 0, 3777]}
+{"colony": 7, "cycle": 10, "dupes": 4, "foodKcal": 45600, "research": "Combustion", "done": 4, "buildings": 157, "water": 17257, "worst": ["Ashkan", 99, 0, 3379]}
+{"colony": 7, "cycle": 11, "dupes": 4, "foodKcal": 50442, "research": "LiquidPiping", "done": 5, "buildings": 157, "water": 15957, "worst": ["Stinky", 100, 0, 3353]}
+{"colony": 7, "cycle": 12, "dupes": 4, "foodKcal": 59184, "research": "AdvancedFiltration", "done": 6, "buildings": 158, "water": 14357, "worst": ["Ashkan", 98, 1, 3373]}
+{"colony": 7, "cycle": 13, "dupes": 4, "foodKcal": 63173, "research": "Distillation", "done": 7, "buildings": 158, "water": 12737, "worst": ["Travaldo", 100, 0, 3792]}
+{"colony": 7, "cycle": 14, "dupes": 4, "foodKcal": 66658, "research": "Distillation", "done": 7, "buildings": 158, "water": 9099, "worst": ["Rowan", 100, 32, 3635]}
+{"colony": 7, "cycle": 15, "dupes": 4, "foodKcal": 65902, "research": "Distillation", "done": 7, "buildings": 158, "water": 9399, "worst": ["Travaldo", 100, 7, 3694]}
+{"colony": 7, "cycle": 16, "dupes": 4, "foodKcal": 67391, "research": "Distillation", "done": 7, "buildings": 158, "water": 8733, "worst": ["Ashkan", 100, 3, 3628]}
+{"colony": 7, "cycle": 16, "dupes": 4, "foodKcal": 66058, "research": "Distillation", "done": 7, "buildings": 158, "water": 6875, "worst": ["Ashkan", 84, 2, 3880]}
+{"colony": 7, "cycle": 17, "dupes": 4, "foodKcal": 66058, "research": "Distillation", "done": 7, "buildings": 158, "water": 7254, "worst": ["Ashkan", 78, 1, 3749]}
+{"colony": 7, "cycle": 18, "dupes": 4, "foodKcal": 59113, "research": "SanitationSciences", "done": 9, "buildings": 158, "water": 5828, "worst": ["Travaldo", 100, 0, 3614]}
+{"colony": 7, "cycle": 19, "dupes": 4, "foodKcal": 46719, "research": "BasicRefinement", "done": 11, "buildings": 159, "water": 5506, "worst": ["Ashkan", 100, 1, 3614]}
+{"colony": 7, "cycle": 20, "dupes": 4, "foodKcal": 30628, "research": "RefinedObjects", "done": 12, "buildings": 159, "water": 3896, "worst": ["Travaldo", 100, 5, 3453]}
+{"colony": 7, "cycle": 21, "dupes": 4, "foodKcal": 18992, "research": "Smelting", "done": 13, "buildings": 159, "water": 1487, "worst": ["Rowan", 100, 70, 3233]}
+{"colony": 7, "cycle": 22, "dupes": 4, "foodKcal": 13705, "research": "Smelting", "done": 13, "buildings": 159, "water": 0, "worst": ["Travaldo", 90, 24, 3246]}
+{"colony": 7, "cycle": 23, "dupes": 4, "foodKcal": 1320, "research": "Smelting", "done": 13, "buildings": 159, "water": 0, "worst": ["Stinky", 100, 29, 3607]}
+{"colony": 7, "cycle": 23, "dupes": 4, "foodKcal": 3400, "research": "MedicineII", "done": 14, "buildings": 161, "water": 0, "worst": ["Stinky", 73, 32, 2925]}
+{"colony": 7, "cycle": 24, "dupes": 4, "foodKcal": 1400, "research": "MedicineII", "done": 14, "buildings": 162, "water": 0, "worst": ["Travaldo", 100, 34, 3206]}
