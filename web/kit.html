@@ -1,0 +1,59 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Duke brand kit</title>
+<link rel="stylesheet" href="tokens.css"><style>
+body{margin:0;font-family:var(--font);background:var(--bg);color:var(--text)}
+.page{width:1200px;padding:64px;box-sizing:border-box}
+h1{font-size:34px;line-height:41px;letter-spacing:-.022em;margin:0}
+h2{font-size:13px;line-height:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin:48px 0 16px;font-weight:600}
+p{font-size:17px;line-height:24px;color:var(--sub);margin:8px 0 0;max-width:680px}
+.row{display:flex;gap:24px;align-items:flex-end}
+.icons img{display:block;border-radius:22.5%}
+.cap{font-size:13px;line-height:16px;color:var(--sub);margin-top:8px;text-align:center}
+.sw{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.chip{border-radius:20px;background:var(--surface);overflow:hidden}
+.chip i{display:block;height:72px}
+.chip b{display:block;font-size:15px;line-height:20px;padding:12px 16px 0}
+.chip span{display:block;font-size:13px;line-height:16px;color:var(--sub);padding:0 16px 12px;font-variant-numeric:tabular-nums}
+.games{display:grid;grid-template-columns:repeat(9,1fr);gap:12px}
+.g{text-align:center}.g div{aspect-ratio:1;border-radius:22.5%;display:grid;place-items:center}
+.g svg{width:60%;height:60%}.g small{display:block;font-size:12px;line-height:16px;color:var(--sub);margin-top:8px}
+.type div{margin-bottom:12px}
+.ui{display:flex;gap:12px;align-items:center}
+.btn{height:48px;padding:0 24px;border-radius:999px;border:0;font:600 17px var(--font);display:inline-flex;align-items:center}
+.solid{background:var(--btn);color:#fff}.soft{background:var(--surface);color:var(--text)}
+.ring{box-shadow:0 0 0 4px var(--ring)}
+.card{background:var(--surface);border-radius:28px;padding:24px;width:240px}
+</style></head><body><div class="page">
+<h1>Duke brand kit</h1>
+<p>Nine game tiles on ink, one per game Duke plays. The white tile in the middle is the game it is playing right now.</p>
+<h2>Icon</h2>
+<div class="row icons"><div><img src="icon.svg" width="256" height="256"><div class="cap">1024, App Store</div></div>
+<div><img src="icon.svg" width="128" height="128"><div class="cap">128</div></div>
+<div><img src="icon.svg" width="64" height="64"><div class="cap">64</div></div>
+<div><img src="icon.svg" width="29" height="29"><div class="cap">29</div></div>
+<div><img src="icon.svg" width="16" height="16"><div class="cap">16</div></div></div>
+<h2>Colour</h2>
+<div class="sw">
+<div class="chip"><i style="background:#e8691a"></i><b>Duke orange</b><span>#E8691A accent</span></div>
+<div class="chip"><i style="background:#c2410c"></i><b>Action</b><span>#C2410C links, buttons</span></div>
+<div class="chip"><i style="background:#16161a"></i><b>Ink</b><span>#16161A icon, band</span></div>
+<div class="chip"><i style="background:#fff;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)"></i><b>Paper</b><span>#FFFFFF, text #1D1D1F</span></div>
+<div class="chip"><i style="background:#000"></i><b>Black</b><span>#000000 dark, surface #1C1C1E</span></div>
+</div>
+<h2>Games</h2>
+<div class="games" id="games"></div>
+<h2>Type</h2>
+<div class="type">
+<div style="font:700 34px/41px var(--font);letter-spacing:-.022em">Plays while you sleep. 34 Bold</div>
+<div style="font:600 22px/28px var(--font)">Every game it plays. 22 Semibold</div>
+<div style="font:400 17px/24px var(--font)">Each game gets its own bridge, read before any move. 17 Regular</div>
+<div style="font:400 13px/16px var(--font);color:var(--sub)">Duke Sans, from Inter, with its quotes drawn as wave crests. 13 Footnote</div></div>
+<h2>Controls and shape</h2>
+<div class="ui"><span class="btn solid">See how it works</span><span class="btn soft">The games</span><span class="btn soft ring">Focused</span>
+<div class="card"><b style="font-size:17px">Card, radius 28</b><p style="font-size:15px;line-height:20px">8 point grid. Controls 48, fully round.</p></div></div>
+</div>
+<script>
+var G=[["Duolingo","--g-duolingo"],["Factorio","--g-factorio"],["Game Dev Tycoon","--g-gdt"],["FEZ","--g-fez"],["Papers, Please","--g-papers"],["Oxygen Not Included","--g-oni"],["Pokemon Sapphire","--g-pokemon"],["Mirage","--g-mirage"],["Pikmin 2","--g-pikmin"]];
+fetch('index.html').then(r=>r.text()).then(t=>{var d=new DOMParser().parseFromString(t,'text/html');var box=document.getElementById('games');
+G.forEach(function(g){var card=[].slice.call(d.querySelectorAll('.game')).filter(c=>c.querySelector('h3').textContent===g[0])[0];
+box.insertAdjacentHTML('beforeend','<div class="g"><div style="background:var('+g[1]+')">'+(card?card.querySelector('.game-tile').innerHTML:'')+'</div><small>'+g[0]+'</small></div>')})});
+</script></body></html>

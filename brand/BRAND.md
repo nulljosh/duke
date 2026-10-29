@@ -1,14 +1,15 @@
 # Duke brand kit and design system
 
-Nine game tiles with play in the middle. Duke plays every one of them, for real: Duolingo, Factorio, Game Dev Tycoon,
+Nine 8-bit game blocks with play in the middle. Duke plays every one of them, for real: Duolingo, Factorio, Game Dev Tycoon,
 FEZ, Papers, Please, Oxygen Not Included, Pokemon Sapphire, Pikmin 2 and Mirage. The name stays a nod to Duke
 Kahanamoku, who made riding the wave look easy.
 
 ## The mark
-A three by three grid of rounded tiles on an ink tile. Each tile is one game's colour, like a shelf of cartridges. The
-middle tile is white with an ink play button: the game Duke is playing right now. No text, no outline. At 29 px it
-reads as a bright grid with one white square, and nothing else in the dock looks like it. It replaced the surfboard on
-a wave on 2026-10-29, which said surfing, not games.
+A three by three grid of 8-bit blocks on an ink tile, one per game, like the bricks of an old platformer: each one
+is a game's colour with a lit top-left edge, a shaded bottom-right edge, stepped corners and a one-pixel glint, all on
+a 24 px pixel grid (`../tools/icon.py` draws it). The middle block is white with a pixel play arrow: the game Duke is
+playing right now. No text, no outline. The pixels are chunky on purpose, so the blocks still read at 29 px. It
+replaced the surfboard on a wave on 2026-10-29, which said surfing, not games.
 
 - `../Duke.icon` is the source of truth (Icon Composer), used by the Mac and iPhone apps.
 - `../icon.svg` is the flat copy for the README and the landing. `icon-1024.png` is the App Store size, no alpha.

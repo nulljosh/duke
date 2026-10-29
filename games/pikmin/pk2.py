@@ -376,10 +376,17 @@ def waypoints():
     import struct
     rm = u32(u32(0x80516688) + 0x08)
     count, arr = int.from_bytes(read(rm + 0x1C, 2), "big"), u32(rm + 0x20)
-    raw = b"".join(read(arr + i, min(4000, count * 0x78 - i)) for i in range(0, count * 0x78, 4000))
+    if u32(rm) == 0x804B2E90:                  # caves: EditorRouteMgr, a CNode list (+0x20 root, +0x10 child,
+        blobs, node = [], u32(rm + 0x30)       # +0x04 next, +0x18 the WayPoint)
+        while node and len(blobs) < count:
+            blobs.append(read(u32(node + 0x18), 0x78))
+            node = u32(node + 0x04)
+    else:
+        raw = b"".join(read(arr + i, min(4000, count * 0x78 - i)) for i in range(0, count * 0x78, 4000))
+        blobs = [raw[i * 0x78:(i + 1) * 0x78] for i in range(count)]
     wps = {}
-    for i in range(count):
-        b = raw[i * 0x78:(i + 1) * 0x78]
+    for b in blobs:
+        i = struct.unpack(">h", b[0x36:0x38])[0]  # mIndex: links name waypoints by it
         nf, nt = struct.unpack(">h", b[0x38:0x3A])[0], struct.unpack(">h", b[0x5C:0x5E])[0]
         links = set(struct.unpack(">8h", b[0x3A:0x4A])[:max(0, nf)]) | set(struct.unpack(">8h", b[0x5E:0x6E])[:max(0, nt)])
         x, _, z = struct.unpack(">3f", b[0x4C:0x58])
