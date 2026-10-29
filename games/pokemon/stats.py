@@ -8,16 +8,12 @@ import nav
 
 HERE = Path(__file__).resolve().parent
 SB1, SB2 = 0x02025734, 0x02024EA4
-TOWNS = ["Littleroot", "Oldale", "Dewford", "Lavaridge", "Fallarbor", "Verdanturf", "Pacifidlog", "Petalburg",
-         "Slateport", "Mauville", "Rustboro", "Fortree", "Lilycove", "Mossdeep", "Sootopolis", "Ever Grande"]
-
-
-def place(sec):
-    if sec < len(TOWNS):
-        return TOWNS[sec]
-    if sec < 16 + 34:
-        return f"Route {sec - 16 + 101}"
-    return f"area {sec}"
+def pretty(grp, num):
+    """The decomp's map name, readable: GraniteCave_1F -> Granite Cave, Route104_MrBrineysHouse -> Route 104."""
+    import re
+    import world
+    base = world.NAMES.get(f"{grp}.{num}", "?").split("_")[0]
+    return re.sub(r"(?<=[a-z])(?=[A-Z0-9])", " ", base).replace("Town", "").replace("City", "").strip()
 
 
 def snapshot(g, note=""):
@@ -29,7 +25,7 @@ def snapshot(g, note=""):
     return dict(
         t=int(time.time()),
         playMin=int.from_bytes(sb2[0x0E:0x10], "little") * 60 + sb2[0x10],
-        place=place(g.r8(0x0202E828 + 0x14)),                  # gMapHeader.regionMapSectionId
+        place=pretty(grp, num),
         map=f"{grp}.{num}", badges=badges,
         caught=sum(bin(b).count("1") for b in sb2[0x28:0x5C]),  # gSaveBlock2.pokedex.owned
         money=g.r32(SB1 + 0x490),

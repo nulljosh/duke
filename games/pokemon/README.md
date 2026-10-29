@@ -16,5 +16,4 @@ Duke plays Pokemon Sapphire headless and for real, as Stitch with Treecko. No ch
 The ROM is Joshua's own dump at `~/roms/sapphire/` (US v1.1, SHA-1 4722efb8), never in the repo. The battery save sits next to it. Memory addresses come from pret/pokeruby's `pokesapphire_rev1.sym`, and the rules the bot relies on are in [GUIDE.md](GUIDE.md).
 
 ## Now
-
-Treecko is level 5 and won the Poochyena fight. Stitch is in Birch's lab after the rescue, at 0:15 play time. Next is Route 103 to battle May, then Petalburg and Rustboro for the first badge.
+1 badge. Grovyle (L27) is training in Granite Cave for Leaf Blade, then a Brawly rematch. `docs/LOOP-HANDOFF.md` has the plan.

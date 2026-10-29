@@ -7,10 +7,10 @@
 {"t": 1793249005, "playMin": 86, "place": "Petalburg", "map": "8.1", "badges": 0, "caught": 1, "money": 1834, "party": [["Treecko", 11]], "note": "Met Dad; Wally caught his Ralts"}
 {"t": 1793251966, "playMin": 229, "place": "Route 104", "map": "0.19", "badges": 0, "caught": 2, "money": 4990, "party": [["GROVYLE", 17]], "note": "Trained to L17 for Roxanne"}
 {"t": 1793252223, "playMin": 242, "place": "Rustboro", "map": "11.3", "badges": 1, "caught": 2, "money": 6762, "party": [["GROVYLE", 18]], "note": "Beat Roxanne: Stone Badge"}
-{"t": 1793252477, "playMin": 253, "place": "area 60", "map": "24.4", "badges": 1, "caught": 2, "money": 7242, "party": [["GROVYLE", 19]], "note": "Got the Devon Goods back in Rusturf Tunnel"}
-{"t": 1793252562, "playMin": 257, "place": "area 60", "map": "24.4", "badges": 1, "caught": 2, "money": 7462, "party": [["GROVYLE", 19]], "note": "Beat the Aqua grunt, got the Devon Goods back"}
+{"t": 1793252477, "playMin": 253, "place": "Rusturf Tunnel", "map": "24.4", "badges": 1, "caught": 2, "money": 7242, "party": [["GROVYLE", 19]], "note": "Got the Devon Goods back in Rusturf Tunnel"}
+{"t": 1793252562, "playMin": 257, "place": "Rusturf Tunnel", "map": "24.4", "badges": 1, "caught": 2, "money": 7462, "party": [["GROVYLE", 19]], "note": "Beat the Aqua grunt, got the Devon Goods back"}
 {"t": 1793252967, "playMin": 277, "place": "Rustboro", "map": "11.2", "badges": 1, "caught": 2, "money": 7462, "party": [["GROVYLE", 19]], "note": "Mr. Stone: Letter for Steven"}
 {"t": 1793253923, "playMin": 324, "place": "Dewford", "map": "0.11", "badges": 1, "caught": 2, "money": 7574, "party": [["GROVYLE", 20]], "note": "Sailed with Mr. Briney to Dewford"}
-{"t": 1793255947, "playMin": 421, "place": "area 55", "map": "24.7", "badges": 1, "caught": 2, "money": 7574, "party": [["GROVYLE", 22]], "note": "Parked for Pikmin 2, saved in game"}
+{"t": 1793255947, "playMin": 421, "place": "Granite Cave", "map": "24.7", "badges": 1, "caught": 2, "money": 7574, "party": [["GROVYLE", 22]], "note": "Parked for Pikmin 2, saved in game"}
 {"t": 1793277007, "playMin": 2107, "place": "Dewford", "map": "0.11", "badges": 1, "caught": 2, "money": 64, "party": [["GROVYLE", 26]], "note": "Trained to L26 for Brawly"}
-{"t": 1793278631, "playMin": 2265, "place": "area 55", "map": "24.7", "badges": 1, "caught": 2, "money": 25, "party": [["GROVYLE", 27]], "note": "Training in Granite Cave for Leaf Blade"}
+{"t": 1793278631, "playMin": 2265, "place": "Granite Cave", "map": "24.7", "badges": 1, "caught": 2, "money": 25, "party": [["GROVYLE", 27]], "note": "Training in Granite Cave for Leaf Blade"}
