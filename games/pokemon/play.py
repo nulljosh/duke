@@ -231,15 +231,14 @@ def sail(g):
 
 def leg_brawly(g, level=24):
     """Train on Route 116 by Rustboro's Pokemon Center, sail to Dewford, beat Brawly."""
-    if world.name(here(g)).startswith(("Dewford", "GraniteCave", "Route106", "Route107")):
-        goto(g, "DewfordTown")
-    while lead(g)["level"] < level and not world.name(here(g)).startswith("Dewford"):
-        goto(g, "Route116")
-        grind(g, level, heal_nearest)
-    stats.log(g, f"Trained to L{lead(g)['level']} for Brawly")
-    if not world.name(here(g)).startswith("Dewford"):
+    island = ("Dewford", "GraniteCave", "Route106", "Route107")
+    if not world.name(here(g)).startswith(island):
         heal_nearest(g)
         sail(g)
+    while lead(g)["level"] < level:                  # Granite Cave: L7-10 wilds, the Dewford center next door
+        goto(g, "GraniteCave_1F")
+        grind(g, level, heal_nearest)
+    stats.log(g, f"Trained to L{lead(g)['level']} for Brawly")
     heal_nearest(g)
     goto(g, "DewfordTown_Gym")
     leader = min(nav.templates(g), key=lambda t: t[3])
