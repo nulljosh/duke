@@ -194,3 +194,9 @@ Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geom
 
 ## Ingested 2026-10-25
 - [ ] Conveyer keeps starting on login but errors out. Its menu bar panel shows red "Stopped. It restarts on its own while the game is running..." with roadmap 5 left. Screenshot: ~/Documents/Code/notes/attachments/2026-10-25/conveyer-1.png (also conveyer-2.png). Check launchd/login item and who relaunches it before merging.
+
+## Ingested 2026-10-29
+- [ ] Refresh the README screenshots, they are stale.
+
+## Ingested 2026-10-30
+- [ ] README has stale screenshots
