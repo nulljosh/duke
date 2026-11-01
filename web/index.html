@@ -19,6 +19,7 @@
 <meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="landing.css">
+<link rel="stylesheet" href="hero.css?v=1">
 <script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
@@ -36,7 +37,8 @@
 
 <main id="top">
 <section class="hero">
-  <div class="wrap center">
+  <div class="hero-bg" aria-hidden="true" inert><div class="dwall" id="dwall"></div></div>
+  <div class="wrap center hero-copy">
     <p class="label">An autopilot for games</p>
     <h1>Plays while you sleep.</h1>
     <p class="lead">Games and software on autopilot: Duolingo, Factorio, Game Dev Tycoon, FEZ, Papers, Please, Oxygen Not Included, Pokemon Sapphire and Pikmin 2.</p>
@@ -46,23 +48,7 @@
     </div>
   </div>
 
-  <div class="stage reveal" aria-hidden="true">
-    <div class="stage-art"></div>
-    <div class="app-demo">
-      <h4 id="appTrackName">Solving Chess</h4>
-      <div class="app-meta" id="appMeta">196 day streak · 5/5 hearts · Diamond League</div>
-      <div id="demoStage"></div>
-      <div class="app-label" id="appLabel">Checkmate!</div>
-      <div class="app-xp" id="appXp">+0 XP</div>
-      <div class="app-stats">
-        <div><b id="statPuzzles">0</b><span>Solved</span></div>
-        <div><b id="statMisses">0</b><span>Misses</span></div>
-      </div>
-    </div>
-  </div>
-  <p class="demo-hint device-caption">Real solved exercises, replayed live and cycling tracks. Not a screenshot: it plays the move.</p>
 </section>
-<script src="demo.js"></script>
 
 <section class="sec" id="games">
   <div class="wrap center reveal">
@@ -162,6 +148,7 @@
     document.querySelectorAll(".reveal").forEach((el) => io ? io.observe(el) : el.classList.add("in"));
   });
 </script>
+<script src="demo.js?v=2"></script>
 <script src="i18n.js"></script>
 <script src="footer-band.js" defer></script>
 </body>

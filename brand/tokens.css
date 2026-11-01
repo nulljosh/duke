@@ -1,11 +1,7 @@
 /* Duke design system. One source for the landing (copied to web/ by deploy.sh) and the values the app mirrors in RunState.swift.
    The icon is nine game tiles on ink, one per game, the white one in the middle playing now. The UI owns one colour, Duke orange,
    the Factorio tile's warmth; every game keeps its own colour (--g-*). Dark mode is true black, like a console between games.
-   Type: Duke Sans (Inter, OFL, quotes redrawn as wave crests). 8 point grid, one radius set, 48 point capsule controls. */
-@font-face { font-family: "Duke Sans"; src: url("fonts/DukeSans-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-@font-face { font-family: "Duke Sans"; src: url("fonts/DukeSans-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
-@font-face { font-family: "Duke Sans"; src: url("fonts/DukeSans-Semibold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
-@font-face { font-family: "Duke Sans"; src: url("fonts/DukeSans-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+   Type: the system font, bold (Duke Sans retired 2026-11-01). 8 point grid, one radius set, 48 point capsule controls. */
 
 :root {
   /* colour */
@@ -38,7 +34,7 @@
   --g-pikmin: #1f6e3a;       /* the Pikmin 2 graph green */
 
   /* type */
-  --font: "Duke Sans", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --size-display: 34px;       /* 41 line */
   --size-title: 22px;         /* 28 line */
   --size-body: 17px;          /* 24 line */

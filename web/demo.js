@@ -1,73 +1,8 @@
-(function(){
-  // ponytail: real solved exercises from each Duolingo track (mate-in-1/fork,
-  // algebra, word-order) and one move from every other game, replayed on a mini
-  // stage (move/type + flash + XP), cycling like the runner. No screenshot anywhere.
-  // All twelve: the scripted demo only ever used a handful, but a live FEN can
-  // contain anything.
-  var glyph = {
-    K:'♔', Q:'♕', R:'♖', B:'♗', N:'♘', P:'♙',
-    k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟'
-  };
-  var stage = document.getElementById('demoStage');
-  var trackEl = document.getElementById('appTrackName');
-  var xpEl = document.getElementById('appXp'), labelEl = document.getElementById('appLabel');
-  var solvedEl = document.getElementById('statPuzzles'), missesEl = document.getElementById('statMisses');
-  var metaEl = document.getElementById('appMeta');
-  var xp = 0, solved = 0;
-  missesEl.textContent = '0';
-
-  function chessPos(sq) {
-    var file = sq.charCodeAt(0) - 97, rank = parseInt(sq[1], 10);
-    return { left: (file * 12.5) + '%', top: ((8 - rank) * 12.5) + '%' };
-  }
-  function playChess(p, done) {
-    stage.innerHTML = '<div class="demo-board" id="demoBoard"></div>';
-    var board = document.getElementById('demoBoard');
-    var nodes = {};
-    Object.keys(p.pieces).forEach(function(sq) {
-      var piece = p.pieces[sq], pos = chessPos(sq);
-      var el = document.createElement('div');
-      el.className = 'demo-piece ' + (piece === piece.toUpperCase() ? 'w' : 'b');
-      el.textContent = glyph[piece];
-      el.style.left = pos.left; el.style.top = pos.top;
-      board.appendChild(el);
-      nodes[sq] = el;
-    });
-    var flash = document.createElement('div');
-    flash.className = 'demo-flash';
-    var tp = chessPos(p.to);
-    flash.style.left = tp.left; flash.style.top = tp.top;
-    board.appendChild(flash);
-    setTimeout(function() {
-      nodes[p.from].style.left = tp.left; nodes[p.from].style.top = tp.top;
-      setTimeout(function() { flash.classList.add('on'); done(); }, 650);
-    }, 700);
-  }
-  function playMath(p, done) {
-    stage.innerHTML = '<div class="demo-math"><div class="problem">' + p.problem + '</div><div class="answer" id="mathAnswer">' + p.answer + '</div></div>';
-    setTimeout(function() {
-      document.getElementById('mathAnswer').classList.add('on');
-      done();
-    }, 900);
-  }
-  function playLang(p, done) {
-    stage.innerHTML = '<div class="demo-lang"><div class="prompt">' + p.prompt + '</div><div class="tiles" id="langTiles">' +
-      p.tokens.map(function(t) { return '<span class="tile">' + t + '</span>'; }).join('') + '</div></div>';
-    var tiles = document.querySelectorAll('#langTiles .tile');
-    p.order.forEach(function(tokenIdx, step) {
-      setTimeout(function() { tiles[tokenIdx].classList.add('on'); if (step === p.order.length - 1) done(); }, 350 + step * 260);
-    });
-  }
-  // Every other game gets a turn between Duolingo rounds: its tile (the same glyph as its card below), the move it
-  // makes and what it lands. Glyphs come from the cards so there is one drawing per game.
-  function playGame(p, done) {
-    var card = [].slice.call(document.querySelectorAll('#games .game')).filter(function(c) { return c.querySelector('h3').textContent === p.game; })[0];
-    var svg = card ? card.querySelector('.game-tile').innerHTML : '';
-    stage.innerHTML = '<div class="demo-game"><div class="demo-game-tile" style="--game: var(' + p.color + ')">' + svg +
-      '</div><div class="demo-game-move" id="gameMove">' + p.move + '</div></div>';
-    setTimeout(function() { document.getElementById('gameMove').classList.add('on'); }, 350);
-    setTimeout(done, 1100);
-  }
+// Hero wall: Duke's own app card, mounted many times behind the hero. Each card replays real solved exercises
+// (mate-in-1 and forks, algebra, word order) and one move from every other game it plays, cycling like the runner.
+// The first card goes live when the runner is up (/api/live), the rest keep replaying. No screenshot anywhere.
+(function () {
+  var glyph = { K:'\u2654', Q:'\u2655', R:'\u2656', B:'\u2657', N:'\u2658', P:'\u2659', k:'\u265a', q:'\u265b', r:'\u265c', b:'\u265d', n:'\u265e', p:'\u265f' };
   var puzzles = [
     { type: 'chess', label: 'Checkmate!', pieces: { e1:'Q', g1:'K', g8:'k', f7:'p', g7:'p', h7:'p' }, from: 'e1', to: 'e8' },
     { type: 'game', game: 'Factorio', color: '--g-factorio', label: 'Rocket launched!', move: 'Build the silo, feed it, launch' },
@@ -86,106 +21,127 @@
     { type: 'chess', label: 'Fork!', pieces: { e5:'N', g1:'K', g8:'k', c8:'q' }, from: 'e5', to: 'f7' }
   ];
   var trackName = { chess: 'Chess', math: 'Math', lang: 'Language' };
-  // Live tracks are language codes ("ro"); show the name.
   function langName(code) { try { return new Intl.DisplayNames(['en'], { type: 'language' }).of(code); } catch (e) { return code; } }
-  var players = { chess: playChess, math: playMath, lang: playLang, game: playGame };
-  function playNext() {
-    if (live) return;              // the real runner took over
-    var p = puzzles[solved % puzzles.length];
-    trackEl.textContent = p.game ? 'Playing ' + p.game : 'Solving ' + trackName[p.type];
-    labelEl.classList.remove('on');
-    players[p.type](p, function() {
-      if (live) return;
-      labelEl.textContent = p.label;
-      labelEl.classList.add('on');
-      xp += 10; solved += 1;
-      xpEl.textContent = '+' + xp + ' XP';
-      solvedEl.textContent = solved;
-      setTimeout(playNext, 1600);
-    });
-  }
+  function chessPos(sq) { var file = sq.charCodeAt(0) - 97, rank = parseInt(sq[1], 10); return { left: (file * 12.5) + '%', top: ((8 - rank) * 12.5) + '%' }; }
+  var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var later = function (f, ms) { return setTimeout(f, still ? 0 : ms); };
 
-  // ponytail: if the runner is actually up, show the real board instead of the
-  // replay - same data the apps read, through an edge-cached Function so the
-  // Mac takes one request per 10s no matter how many people are looking.
-  // It goes back to the scripted demo the moment that stops being true, because
-  // a landing page that breaks whenever a laptop sleeps is worse than a canned one.
-  var live = false;
-  var captionEl = document.querySelector('.device-caption');
-  var canned = captionEl ? captionEl.textContent : '';
+  function mount(root, offset, withLive) {
+    root.className = 'app-demo';
+    root.innerHTML = '<h4></h4><div class="app-meta">196 day streak \u00b7 5/5 hearts \u00b7 Diamond League</div><div class="demo-stage"></div>' +
+      '<div class="app-label"></div><div class="app-xp">+0 XP</div><div class="app-stats"><div><b>0</b><span>Solved</span></div><div><b>0</b><span>Misses</span></div></div>';
+    var q = function (s) { return root.querySelector(s); };
+    var trackEl = q('h4'), metaEl = q('.app-meta'), stage = q('.demo-stage'), labelEl = q('.app-label'), xpEl = q('.app-xp');
+    var nums = root.querySelectorAll('.app-stats b'), solvedEl = nums[0], missesEl = nums[1];
+    var xp = 0, solved = 0, live = false, lastLiveKey = null;
 
-  function drawLiveBoard(fen) {
-    stage.innerHTML = '<div class="demo-board" id="demoBoard"></div>';
-    var board = document.getElementById('demoBoard');
-    fen.split(' ')[0].split('/').forEach(function(rank, r) {
-      var f = 0;
-      rank.split('').forEach(function(ch) {
-        if (/\d/.test(ch)) { f += parseInt(ch, 10); return; }
-        var el = document.createElement('div');
-        el.className = 'demo-piece ' + (ch === ch.toUpperCase() ? 'w' : 'b');
-        el.textContent = glyph[ch] || glyph[ch.toLowerCase()] || '';
-        el.style.left = (f * 12.5) + '%';
-        el.style.top = (r * 12.5) + '%';
-        board.appendChild(el);
-        f += 1;
+    function playChess(p, done) {
+      stage.innerHTML = '<div class="demo-board"></div>';
+      var board = stage.firstChild, nodes = {};
+      Object.keys(p.pieces).forEach(function (sq) {
+        var piece = p.pieces[sq], pos = chessPos(sq), el = document.createElement('div');
+        el.className = 'demo-piece ' + (piece === piece.toUpperCase() ? 'w' : 'b'); el.textContent = glyph[piece];
+        el.style.left = pos.left; el.style.top = pos.top; board.appendChild(el); nodes[sq] = el;
       });
+      var flash = document.createElement('div'), tp = chessPos(p.to);
+      flash.className = 'demo-flash'; flash.style.left = tp.left; flash.style.top = tp.top; board.appendChild(flash);
+      later(function () { nodes[p.from].style.left = tp.left; nodes[p.from].style.top = tp.top; later(function () { flash.classList.add('on'); done(); }, 650); }, 700);
+    }
+    function playMath(p, done) {
+      stage.innerHTML = '<div class="demo-math"><div class="problem"></div><div class="answer"></div></div>';
+      stage.querySelector('.problem').textContent = p.problem; var a = stage.querySelector('.answer'); a.textContent = p.answer;
+      later(function () { a.classList.add('on'); done(); }, 900);
+    }
+    function playLang(p, done) {
+      stage.innerHTML = '<div class="demo-lang"><div class="prompt"></div><div class="tiles"></div></div>';
+      stage.querySelector('.prompt').textContent = p.prompt;
+      var box = stage.querySelector('.tiles'), tiles = p.tokens.map(function (t) { var s = document.createElement('span'); s.className = 'tile'; s.textContent = t; box.appendChild(s); return s; });
+      p.order.forEach(function (ti, step) { later(function () { tiles[ti].classList.add('on'); if (step === p.order.length - 1) done(); }, 350 + step * 260); });
+    }
+    // Every other game: its tile (the same glyph as its card in #games, one drawing per game), the move and what it lands.
+    function playGame(p, done) {
+      var card = [].slice.call(document.querySelectorAll('#games .game')).filter(function (c) { return c.querySelector('h3').textContent === p.game; })[0];
+      stage.innerHTML = '<div class="demo-game"><div class="demo-game-tile" style="--game: var(' + p.color + ')">' + (card ? card.querySelector('.game-tile').innerHTML : '') +
+        '</div><div class="demo-game-move"></div></div>';
+      var mv = stage.querySelector('.demo-game-move'); mv.textContent = p.move;
+      later(function () { mv.classList.add('on'); }, 350); later(done, 1100);
+    }
+    var players = { chess: playChess, math: playMath, lang: playLang, game: playGame };
+    function playNext() {
+      if (live) return; // the real runner took over
+      var p = puzzles[(solved + offset) % puzzles.length];
+      trackEl.textContent = p.game ? 'Playing ' + p.game : 'Solving ' + trackName[p.type];
+      labelEl.classList.remove('on');
+      players[p.type](p, function () {
+        if (live) return;
+        labelEl.textContent = p.label; labelEl.classList.add('on');
+        xp += 10; solved += 1; xpEl.textContent = '+' + xp + ' XP'; solvedEl.textContent = solved;
+        if (!still) later(playNext, 1600);
+      });
+    }
+    missesEl.textContent = '0';
+    playNext();
+    if (!withLive) return;
+
+    // ponytail: if the runner is actually up, this card shows the real board instead of the replay, through an
+    // edge-cached Function (one request per 10s from the Mac however many people look). It goes back to the replay
+    // the moment that stops being true: a landing that breaks whenever a laptop sleeps is worse than a canned one.
+    function drawLiveBoard(fen) {
+      stage.innerHTML = '<div class="demo-board"></div>';
+      var board = stage.firstChild;
+      fen.split(' ')[0].split('/').forEach(function (rank, r) {
+        var f = 0;
+        rank.split('').forEach(function (ch) {
+          if (/\d/.test(ch)) { f += parseInt(ch, 10); return; }
+          var el = document.createElement('div');
+          el.className = 'demo-piece ' + (ch === ch.toUpperCase() ? 'w' : 'b'); el.textContent = glyph[ch] || glyph[ch.toLowerCase()] || '';
+          el.style.left = (f * 12.5) + '%'; el.style.top = (r * 12.5) + '%'; board.appendChild(el); f += 1;
+        });
+      });
+    }
+    function drawLiveText(prompt, answer) {
+      stage.innerHTML = '<div class="demo-math"><div class="problem"></div><div class="answer on"></div></div>';
+      stage.querySelector('.problem').textContent = prompt; stage.querySelector('.answer').textContent = answer;
+    }
+    function off() { if (live) { live = false; lastLiveKey = null; playNext(); } }
+    function poll() {
+      fetch('/api/live').then(function (r) { return r.json(); }).then(function (d) {
+        // Only take over once there is something real to draw; after that a momentary gap holds the last one.
+        var hasContent = d.fen || (d.track !== 'chess' && d.prompt);
+        var fresh = d.live && d.at && (Date.now() - new Date(d.at).getTime() < 120000) && (hasContent || (live && d.track === trackEl.dataset.liveTrack));
+        if (!fresh) return off();
+        var trackChanged = trackEl.dataset.liveTrack !== d.track;
+        live = true; trackEl.dataset.liveTrack = d.track;
+        trackEl.textContent = 'Live: solving ' + (trackName[d.track] || langName(d.track));
+        if (d.xp != null) xpEl.textContent = '+' + d.xp + ' XP';
+        var n = d.track === 'chess' ? d.puzzles : d.lessons;
+        solvedEl.textContent = n; missesEl.textContent = d.misses;
+        if (d.streak != null) metaEl.textContent = d.streak + ' day streak \u00b7 ' + (n > 0 ? Math.round(100 * (n - d.misses) / n) : 100) + '% solve rate';
+        labelEl.textContent = d.paused ? 'Paused' : 'Solving\u2026'; labelEl.classList.add('on');
+        if (d.track === 'chess') { if (d.fen) drawLiveBoard(d.fen); }
+        else if (d.prompt) { var key = d.track + '|' + d.prompt; if (key !== lastLiveKey || trackChanged) { lastLiveKey = key; drawLiveText(d.prompt, d.answer || ''); } }
+        else if (trackChanged) stage.innerHTML = '';
+      }).catch(off);
+    }
+    poll(); setInterval(poll, 10000);
+  }
+
+  var wall = document.getElementById('dwall'); if (!wall) return;
+  var n = innerWidth <= 560 ? 4 : innerWidth <= 900 ? 6 : 8;
+  for (var i = 0; i < n; i++) { var c = document.createElement('div'); wall.appendChild(c); (function (c, i) { later(function () { mount(c, i * 2, i === 0); }, i * 180); })(c, i); }
+})();
+
+// Hero parallax: the wall drifts at 0.45, the copy lifts at 0.2 and fades. Off under reduced motion.
+(function () {
+  var bg = document.querySelector('.hero-bg'), copy = document.querySelector('.hero-copy');
+  if (!bg || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var t = 0;
+  addEventListener('scroll', function () {
+    if (t) return;
+    t = requestAnimationFrame(function () {
+      t = 0; var y = scrollY, h = innerHeight; if (y > h * 1.2) return;
+      bg.style.setProperty('--py', (y * .45) + 'px');
+      copy.style.transform = 'translate3d(0,' + (y * .2) + 'px,0)'; copy.style.opacity = Math.max(0, 1 - y / (h * .7));
     });
-  }
-
-  // ponytail: math/lang have no board to draw, just a prompt+answer pair off
-  // the last graded challenge (run.mjs now saves it to state.json). Reuse the
-  // same reveal box the scripted demo uses so a subject switch actually looks
-  // like a different subject, not a frozen chessboard with new stats next to it.
-  var lastLiveKey = null;
-  function drawLiveText(prompt, answer) {
-    stage.innerHTML = '<div class="demo-math"><div class="problem">' + prompt + '</div><div class="answer on">' + answer + '</div></div>';
-  }
-
-  function poll() {
-    fetch('/api/live').then(function(r) { return r.json(); }).then(function(d) {
-      // Stale `at` means the Mac went away since the edge last looked.
-      // Between puzzles the runner has no position to report. Taking over on
-      // one of those would stop the replay and leave a scripted board sitting
-      // under a "live right now" caption - so only take over once there is
-      // something real to draw. After that, a momentary gap just holds the last one.
-      var hasContent = d.fen || (d.track !== 'chess' && d.prompt);
-      var fresh = d.live && d.at && (Date.now() - new Date(d.at).getTime() < 120000)
-        && (hasContent || (live && d.track === trackEl.dataset.liveTrack));
-      if (!fresh) {
-        if (live) { live = false; lastLiveKey = null; if (captionEl) captionEl.textContent = canned; playNext(); }
-        return;
-      }
-      var wasLive = live, trackChanged = trackEl.dataset.liveTrack !== d.track;
-      live = true;
-      trackEl.dataset.liveTrack = d.track;
-      if (!wasLive && captionEl) {
-        captionEl.textContent = 'Live right now, from the Mac actually running it.';
-      }
-      trackEl.textContent = 'Solving ' + (trackName[d.track] || langName(d.track));
-      if (d.xp != null) xpEl.textContent = '+' + d.xp + ' XP';
-      var solved = d.track === 'chess' ? d.puzzles : d.lessons;
-      solvedEl.textContent = solved;
-      missesEl.textContent = d.misses;
-      if (metaEl && d.streak != null) {
-        var acc = solved > 0 ? Math.round(100 * (solved - d.misses) / solved) : 100;
-        metaEl.textContent = d.streak + ' day streak · ' + acc + '% solve rate';
-      }
-      labelEl.textContent = d.paused ? 'Paused' : 'Solving…';
-      labelEl.classList.add('on');
-      if (d.track === 'chess') {
-        if (d.fen) drawLiveBoard(d.fen);
-      } else if (d.prompt) {
-        var key = d.track + '|' + d.prompt;
-        if (key !== lastLiveKey || trackChanged) { lastLiveKey = key; drawLiveText(d.prompt, d.answer || ''); }
-      } else if (trackChanged) {
-        stage.innerHTML = '';
-      }
-    }).catch(function() {
-      if (live) { live = false; lastLiveKey = null; if (captionEl) captionEl.textContent = canned; playNext(); }
-    });
-  }
-
-  playNext();
-  poll();
-  setInterval(poll, 10000);
+  }, { passive: true });
 })();
