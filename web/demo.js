@@ -26,7 +26,7 @@
   var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var later = function (f, ms) { return setTimeout(f, still ? 0 : ms); };
 
-  function mount(root, offset, withLive) {
+  function mount(root, lane, withLive) {
     root.className = 'app-demo';
     root.innerHTML = '<h4></h4><div class="app-meta">196 day streak \u00b7 5/5 hearts \u00b7 Diamond League</div><div class="demo-stage"></div>' +
       '<div class="app-label"></div><div class="app-xp">+0 XP</div><div class="app-stats"><div><b>0</b><span>Solved</span></div><div><b>0</b><span>Misses</span></div></div>';
@@ -69,7 +69,7 @@
     var players = { chess: playChess, math: playMath, lang: playLang, game: playGame };
     function playNext() {
       if (live) return; // the real runner took over
-      var p = puzzles[(solved + offset) % puzzles.length];
+      var p = lane[solved % lane.length];
       trackEl.textContent = p.game ? 'Playing ' + p.game : 'Solving ' + trackName[p.type];
       labelEl.classList.remove('on');
       players[p.type](p, function () {
@@ -127,8 +127,13 @@
   }
 
   var wall = document.getElementById('dwall'); if (!wall) return;
-  var n = innerWidth <= 560 ? 4 : innerWidth <= 900 ? 6 : 8;
-  for (var i = 0; i < n; i++) { var c = document.createElement('div'); wall.appendChild(c); (function (c, i) { later(function () { mount(c, i * 2, i === 0); }, i * 180); })(c, i); }
+  // One lane per card so no two cards ever show the same thing: chess on one card only, math and language on
+  // another, and the other games two to a card.
+  var of = function (t) { return puzzles.filter(function (p) { return p.type === t; }); };
+  var games = of('game'), lanes = [of('chess'), of('math').concat(of('lang'))];
+  for (var g = 0; g < games.length; g += 2) lanes.push(games.slice(g, g + 2));
+  var n = Math.min(lanes.length, innerWidth <= 560 ? 4 : 6);
+  for (var i = 0; i < n; i++) { var c = document.createElement('div'); wall.appendChild(c); (function (c, i) { later(function () { mount(c, lanes[i], i === 0); }, i * 180); })(c, i); }
 })();
 
 // Hero parallax: the wall drifts at 0.45, the copy lifts at 0.2 and fades. Off under reduced motion.
