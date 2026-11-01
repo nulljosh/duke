@@ -10,7 +10,7 @@ It reads each question's answer out of the page's own React state and clicks it.
 
 Automating Duolingo is against their terms and can get an account banned. This is a personal study, not a product.
 
-<img src="docs/demo.gif" width="640">
+<img src="docs/demo.png" width="640">
 
 ## Features
 
