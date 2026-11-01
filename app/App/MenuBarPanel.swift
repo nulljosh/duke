@@ -56,7 +56,7 @@ struct MenuBarLabel: View {
             guard unreachable, backgroundRun else { return }
             if let last = lastStartAt, Date().timeIntervalSince(last) < 15 { return }
             lastStartAt = Date()
-            SolverProcess.start(track: startTrack)
+            SolverProcess.autoStart(track: startTrack)
         }
     }
 }

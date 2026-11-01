@@ -25,6 +25,9 @@ import { makeEngine } from './stockfish.mjs';
 import { rateLimited as rateLimitedGuard, isValidTrack, shouldRotateLog, cycleDue as cycleDueGuard, nextInRotation as nextInRotationGuard, courseComplete, stallAction, repeatedChallenge, summarizePath, leastComplete, trackForCourseId, diskLow, CLAIM_RE, GIFT_RE, streakAtRisk, questKey, questStalled, crossed, xpRates, fastestTrack, slowTrack } from './guards.mjs';
 
 const D = path.dirname(new URL(import.meta.url).pathname);
+// A /quit leaves quit.flag so the status app's watchdog leaves the runner down; starting again clears it.
+const QUIT_FLAG = path.join(D, 'quit.flag');
+try { fs.unlinkSync(QUIT_FLAG); } catch {}
 // ponytail: disk cleanups purge ~/Library/Caches/ms-playwright and node_modules,
 // which killed the runner overnight (missing module, then a 500MB re-download).
 // Keep the browser inside the repo and reinstall deps if they're gone. The
@@ -140,6 +143,7 @@ http.createServer((req, res) => {
     voiceOn = on === 'true' || on === '1'; S.voiceOn = voiceOn; saveState();
     res.end(JSON.stringify({ ok: true, voiceOn, canSpeak }));
   } else if (req.method === 'POST' && req.url.startsWith('/quit')) {
+    fs.writeFileSync(QUIT_FLAG, new Date().toISOString());
     res.end('{"ok":true}'); setTimeout(() => process.exit(0), 100);
   } else if (req.url.startsWith('/fen')) {
     // ponytail: reuses the same liveFen() the chess-move planner already calls

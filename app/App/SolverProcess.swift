@@ -92,7 +92,15 @@ enum SolverProcess {
         if (try? await URLSession.shared.data(for: req)) != nil { return }
         lastRunnerStart = Date()
         let track = d.string(forKey: "startTrack") ?? "chess"
-        DispatchQueue.main.async { start(track: track) }
+        DispatchQueue.main.async { autoStart(track: track) }
+    }
+
+    // A /quit (status app, script or curl) leaves scripts/quit.flag behind, and every automatic
+    // restart honours it, so a quit sticks until someone hits Start. run.mjs deletes it on launch.
+    private static let quitFlag = scriptURL.deletingLastPathComponent().appendingPathComponent("quit.flag")
+    static func autoStart(track: String) {
+        guard !FileManager.default.fileExists(atPath: quitFlag.path) else { return }
+        start(track: track)
     }
 
     static func start(track: String) {

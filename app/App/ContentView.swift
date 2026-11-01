@@ -81,7 +81,7 @@ struct ContentView: View {
         .onChange(of: poller.unreachable) { _, unreachable in
             guard unreachable, backgroundRun, !autoStarted else { return }
             autoStarted = true
-            SolverProcess.start(track: startTrack)
+            SolverProcess.autoStart(track: startTrack)
         }
         #endif
         .frame(minWidth: 320, idealWidth: 420, minHeight: 420, idealHeight: 640)
