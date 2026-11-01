@@ -101,7 +101,6 @@ Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geom
 - [ ] Oxygen Not Included (parked 2026-10-28): win Home Sweet Home (cycle 200, 12 dupes, Great Monument) or the Great Escape, headless through the Duke Bridge. Parked at colony 7, cycle 24; resume in docs/LOOP-HANDOFF.md, rules in games/oni/GUIDE.md. ETA a few days. Don't Starve after it (Steam marked it damaged on 2026-10-05; reinstall first).
 - [ ] Landing refresh once FEZ is beaten: Hermes' layout, styled for video games instead of Greek gods. Photos from FEZ and Factorio, and Duolingo too. Supported games listed: Duolingo, FEZ, Factorio.
 - [ ] `duke play <game>`: one entry point for duolingo, factorio, gdt and fez.
-- [x] (11-01: fixed in cyllene, now Cyllene Sans, with the check; Samantha Sans unaffected, its quotes are not redrawn) Hermes Sans (~/Documents/Code/hermes) likely has the same comma bug (feathers in every comma). Same fix as Duke Sans: tools/gen_font.py, with a check. Hermes has no roadmap.md yet, so the item lives here.
 - [ ] Confirm live (2026-10-18): Turkish "to read" and "to drink" match questions now solve (fix in 333d537, tr was stalled 24 hours before it). Also watch that balance mode stops picking Japanese and chess, and that XP per hour holds near 1,200 on the track it picks.
 - [ ] Nobody is told when the runner needs a human away from the Mac. A lost session shows an alert on the Mac only; the phone and watch apps just read stale. The session cookie runs to 2169, so this is rare.
 - [ ] Disk: 4.2GB free on 2026-10-05, and the runner pauses under 2GB. The streak guard now plays through that pause down to 300MB, but XP stops. Free space before it gets there.
@@ -196,7 +195,5 @@ Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geom
 - [ ] Conveyer keeps starting on login but errors out. Its menu bar panel shows red "Stopped. It restarts on its own while the game is running..." with roadmap 5 left. Screenshot: ~/Documents/Code/notes/attachments/2026-10-25/conveyer-1.png (also conveyer-2.png). Check launchd/login item and who relaunches it before merging.
 
 ## Ingested 2026-10-29
-- [x] Refresh the README screenshots, they are stale. Done 2026-11-01: docs/demo.png from the live site replaces the Cruise-era demo.gif.
 
 ## Ingested 2026-10-30
-- [x] README has stale screenshots (same fix, 2026-11-01)
