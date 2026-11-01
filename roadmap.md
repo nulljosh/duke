@@ -192,7 +192,7 @@ Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geom
   evaluator.
 
 ## Ingested 2026-10-25
-- [ ] Conveyer keeps starting on login but errors out. Its menu bar panel shows red "Stopped. It restarts on its own while the game is running..." with roadmap 5 left. Screenshot: ~/Documents/Code/notes/attachments/2026-10-25/conveyer-1.png (also conveyer-2.png). Check launchd/login item and who relaunches it before merging.
+- [x] (11-01: a dead "ConveyerMonitor" login item pointed at an app that no longer exists; removed. Duke itself stays under launchd) Conveyer keeps starting on login but errors out. Its menu bar panel shows red "Stopped. It restarts on its own while the game is running..." with roadmap 5 left. Screenshot: ~/Documents/Code/notes/attachments/2026-10-25/conveyer-1.png (also conveyer-2.png). Check launchd/login item and who relaunches it before merging.
 
 ## Ingested 2026-10-29
 
