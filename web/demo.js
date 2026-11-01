@@ -58,11 +58,12 @@
       var box = stage.querySelector('.tiles'), tiles = p.tokens.map(function (t) { var s = document.createElement('span'); s.className = 'tile'; s.textContent = t; box.appendChild(s); return s; });
       p.order.forEach(function (ti, step) { later(function () { tiles[ti].classList.add('on'); if (step === p.order.length - 1) done(); }, 350 + step * 260); });
     }
-    // Every other game: its tile (the same glyph as its card in #games, one drawing per game), the move and what it lands.
+    // Every other game: a real frame from Duke's own run of it (web/shots, cropped from games/*/shots), the move and
+    // what it lands. Same size as the chess board, never an icon.
+    var SHOT = { 'Factorio': 'factorio', 'FEZ': 'fez', 'Papers, Please': 'papers', 'Pokemon Sapphire': 'pokemon', 'Pikmin 2': 'pikmin',
+                 'Oxygen Not Included': 'oni', 'Game Dev Tycoon': 'gdt', 'Mirage': 'mirage' };
     function playGame(p, done) {
-      var card = [].slice.call(document.querySelectorAll('#games .game')).filter(function (c) { return c.querySelector('h3').textContent === p.game; })[0];
-      stage.innerHTML = '<div class="demo-game"><div class="demo-game-tile" style="--game: var(' + p.color + ')">' + (card ? card.querySelector('.game-tile').innerHTML : '') +
-        '</div><div class="demo-game-move"></div></div>';
+      stage.innerHTML = '<div class="demo-game"><img class="demo-shot" alt="" decoding="async" src="shots/' + SHOT[p.game] + '.jpg"><div class="demo-game-move"></div></div>';
       var mv = stage.querySelector('.demo-game-move'); mv.textContent = p.move;
       later(function () { mv.classList.add('on'); }, 350); later(done, 1100);
     }
