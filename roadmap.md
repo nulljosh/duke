@@ -108,7 +108,6 @@ Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geom
 - [ ] Gift sender (2026-10-05): clicks `SEND GIFT` on `/quests`. No friends quest was active when built, so the label is unverified. When one starts, check `log.jsonl` for `gift-sent`; if absent, read the button list in `quest-visit` and fix `GIFT_RE`.
 - [ ] Chest opener (2026-10-05): matches `[data-test*="chest"]` on `/learn`, but no chest nodes were on the chess or Spanish path when probed. Watch `log.jsonl` for `chest-open`; if chests show up under another name, fix the selector.
 - [ ] MONEY.md + GTM row, demo GIF on landing, README note that automating Duolingo is against their terms.
-- [ ] Verify the bare-translate fix live on the next ja round. Log data (2026-09-27)
   showed the real gap was not tapComplete (44 misses) but translate (849, mostly ja):
   zero tiles and no text box on screen, so the keyboard fallback never ran. New
   `type:bare` branch opens keyboard mode and types the solution. If misses continue,
@@ -122,7 +121,6 @@ Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geom
   done without blocking the page for >10s — needs a Web Worker running
   `jsChessEngine` off the main thread with a real cancellable timeout, not
   attempted yet.
-- [ ] `POST /quit` to the runner's port 8737 did not stop the runner (found 2026-10-20). Check what the handler does in `run.mjs` and make it exit the process, so a quit from the status app or a script actually stops it.
 
 ## Won't fix
 - Music track: not a solver gap. Verified live (2026-09-10) — this account's
