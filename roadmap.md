@@ -107,7 +107,6 @@ Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geom
 - [ ] Russian earns nothing: the last 1% is almost all speaking exercises (131 speak against 61 other challenges over 28 lessons) and they come back `unanswerable` with no skip button. Either the fake-mic path needs to work on that screen, or speaking exercises get turned off in the account settings (that changes the phone app too, so it is Joshua's call).
 - [ ] Gift sender (2026-10-05): clicks `SEND GIFT` on `/quests`. No friends quest was active when built, so the label is unverified. When one starts, check `log.jsonl` for `gift-sent`; if absent, read the button list in `quest-visit` and fix `GIFT_RE`.
 - [ ] Chest opener (2026-10-05): matches `[data-test*="chest"]` on `/learn`, but no chest nodes were on the chess or Spanish path when probed. Watch `log.jsonl` for `chest-open`; if chests show up under another name, fix the selector.
-- [ ] MONEY.md + GTM row, demo GIF on landing, README note that automating Duolingo is against their terms.
   showed the real gap was not tapComplete (44 misses) but translate (849, mostly ja):
   zero tiles and no text box on screen, so the keyboard fallback never ran. New
   `type:bare` branch opens keyboard mode and types the solution. If misses continue,
