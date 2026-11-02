@@ -140,7 +140,7 @@ def sweep(to, tries=6):
         drag(p, to); tried.append(p); time.sleep(0.3)   # a paper that won't go stays put: try the next busiest spot
 
 
-SPOTS = [(650, 470), (965, 470), (460, 600), (480, 400), (760, 600)]   # paper centres; at y 380 a ~400 px passport hid its visa under the booth (day 14)
+SPOTS = [(490, 450), (770, 450), (1010, 450), (640, 580), (900, 580)]   # three columns that do not overlap, then two low (the old five hid passports, day 15)
 
 
 def at_booth(img):   # the counter strip is olive in the booth and black on the night screen
