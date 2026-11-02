@@ -127,7 +127,10 @@ def open_day(day):
     if not col: sys.exit(f"day {day} not on the day picker")
     box = max((w for w in ws if re.match(r"\d+/\d+", w["t"]) and abs(w["x"] - col["x"]) < 60), key=lambda w: w["y"], default=None)
     if not box: sys.exit(f"no save under day {day}")
-    play.click((box["x"], box["y"] + 8)); time.sleep(3); play.click((568, 437)); time.sleep(5)
+    play.click((box["x"], box["y"] + 8)); time.sleep(3)
+    for _ in range(4):   # the CONTINUE dialog can open late; a click before it lands on nothing (2026-11-02)
+        play.click((568, 437)); time.sleep(5); play.shot()
+        if not any("CONTINUE" in w["t"].upper() for w in play.ocr()): break
     play.click((568, 627)); time.sleep(10)
 
 

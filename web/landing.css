@@ -88,8 +88,9 @@ body::after { content: ""; position: fixed; inset: 8px; border: 1px solid transp
 @keyframes demo-pop { from { transform: scale(.8); opacity: 0; } }
 
 /* Band: how it works, then the features as ruled cells */
-.band { margin: 0 clamp(0px, 3vw, 44px); background: var(--grain), var(--band); color: #fff; overflow: hidden; }
-.band .label { color: var(--band-sub); }
+.band { margin: 0 clamp(0px, 3vw, 44px); background: var(--grain), color-mix(in srgb, var(--g-duolingo) 58%, #0b0b0d); color: #fff; overflow: hidden; }
+.band .label { color: rgba(255,255,255,.72); }
+.band { --band-sub: rgba(255,255,255,.78); --band-line: rgba(255,255,255,.2); }
 .band-head { position: relative; padding: var(--sp-9) var(--sp-5) var(--sp-8); text-align: center; }
 .duke-art { position: absolute; right: 5%; bottom: 0; width: 26%; height: 96%; background: var(--band-sub); opacity: .9;
   -webkit-mask: var(--scan), url(art/duke.png) center bottom / contain no-repeat; -webkit-mask-composite: source-in;
@@ -189,7 +190,11 @@ body::after { content: ""; position: fixed; inset: 8px; border: 1px solid transp
 /* The palette at work: the headline's full stop walks the nine colours, each band cell wears one (the 3x3 of the icon). */
 h1 .dot { color: var(--l-factorio); animation: dot-walk 18s steps(1) infinite; }
 @keyframes dot-walk { 0% { color: var(--l-duolingo); } 11.1% { color: var(--l-factorio); } 22.2% { color: var(--l-gdt); } 33.3% { color: var(--l-fez); } 44.4% { color: var(--l-papers); } 55.5% { color: var(--l-oni); } 66.6% { color: var(--l-pokemon); } 77.7% { color: var(--l-mirage); } 88.8% { color: var(--l-pikmin); } }
-.cell .label::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: var(--sp-2); background: var(--c); }
-.cell:nth-child(1) { --c: var(--l-duolingo); } .cell:nth-child(2) { --c: var(--l-factorio); } .cell:nth-child(3) { --c: var(--l-gdt); }
-.cell:nth-child(4) { --c: var(--l-fez); } .cell:nth-child(5) { --c: var(--l-papers); } .cell:nth-child(6) { --c: var(--l-oni); }
+.cell .label::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: var(--sp-2); background: #fff; }
 @media (prefers-reduced-motion: reduce) { h1 .dot { animation: none; } }
+
+/* The closer: Hokusai's wave in all nine game colours, under the last word before the footer. */
+.closer { position: relative; overflow: hidden; isolation: isolate; margin: 0 clamp(0px, 3vw, 44px); background: var(--grain), #0b0b0d; color: #fff; padding: clamp(96px, 14vw, 200px) 0; }
+.closer .stage-art { z-index: -1; opacity: .55; }
+.closer .body { color: rgba(255,255,255,.78); }
+.sec + .sec.closer { border-top: 0; }
