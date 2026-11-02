@@ -25,7 +25,9 @@ def defuse():
         time.sleep(0.6); p.shot()
         if sum(_red(p, x) for x in WIRES) >= 3: break
     else: print("bomb: no red seen, cutting anyway", flush=True)   # 2026-11-02: giving up here was certain death
+    Image.open(p.SHOT).save(p.HERE / "runs" / f"bomb-open-{time.strftime('%H%M%S')}.png")
     for x in WIRES: p.click((x, 416)); time.sleep(0.5)
+    time.sleep(0.5); p.shot(); Image.open(p.SHOT).save(p.HERE / "runs" / f"bomb-cut-{time.strftime('%H%M%S')}.png")   # 2026-11-02: died after a "defused" run; these show why next time
     time.sleep(2); p.drag((560, 500), p.ENTRANT); time.sleep(2)
     global DONE; DONE = True
     print("bomb defused", flush=True)

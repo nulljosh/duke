@@ -77,7 +77,11 @@ def shot():
     return Image.open(SHOT).convert("L")
 
 
-def ocr(path=SHOT): return json.loads(subprocess.run([str(FEZ / "ocr"), str(path)], capture_output=True, text=True).stdout or "[]")
+def ocr(path=SHOT):
+    try: r = subprocess.run([str(FEZ / "ocr"), str(path)], capture_output=True, text=True, timeout=8)
+    except subprocess.TimeoutExpired: r = None
+    if r is None or "e5rt" in r.stderr: raise SystemExit("OCR down: Vision e5rt error, run sudo killall ANECompilerService")   # 2026-11-02: a wedged Neural Engine hung every read 28 s and the bot sat on the title for 10 min
+    return json.loads(r.stdout or "[]")
 
 
 def ocr_bright():
@@ -275,6 +279,7 @@ if __name__ == "__main__":
         r = entrant(day, base)
         print(n, r, flush=True)
         if r is None:   # only the ledger ends the day; a dark frame mid-day (day 8, after the EZIC card) is not the night
+            if any("ENDLESS" in w["t"].upper() for w in ocr()): raise SystemExit("title screen: the game ended")   # day 15: it spun here after a death
             for _ in range(10):
                 if night(): break
                 time.sleep(3)

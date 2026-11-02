@@ -33,7 +33,7 @@ def check(words):
     for name, a, b in todo:
         p.click(a); time.sleep(0.5); p.click(b); time.sleep(1.0)
         p.shot(); ws = p.ocr()
-        if any(re.search(r"DISCREP|DETECTED", w["t"].upper()) for w in ws):   # the mismatch label; "MATCHING DATA" OCRs as METEHING / TATCHIHG, so key on this one
+        if any(re.search(r"DISCREP|DETECTED", w["t"].upper()) and w["y"] < 630 for w in ws):   # the mismatch label; "MATCHING DATA" OCRs as METEHING / TATCHIHG, so key on this one. y < 630 skips the HIGHLIGHT DISCREPANCIES bar (cost a citation day 15)
             (p.HERE / "runs").mkdir(exist_ok=True); p.shot().save(p.HERE / "runs" / f"inspect-{name}-{time.strftime('%H%M%S')}.png")
             bad = name; print("inspect", name, [w["t"] for w in ws if 250 < w["y"] < 640 and 360 < w["x"] < 900][:8], flush=True)
             break
