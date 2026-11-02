@@ -3,7 +3,7 @@ The game window must be in front: Unity only takes the real cursor (cliclick), n
 Headless: launched with headless.dylib inserted, the game takes the same commands over a socket and plays behind his windows.
 Coordinates are window points, top-left of the content under the title bar included (same as the screenshot)."""
 import json, os, re, socket, subprocess, sys, time
-import bomb, ezic, inspect_mode, rules, scale, wanted
+import bomb, ezic, inspect_mode, interrogate, rules, scale, wanted
 from rules import KEEP, verdict
 from pathlib import Path
 from PIL import Image, ImageChops, ImageStat
@@ -170,7 +170,7 @@ def entrant(day, base):
     while not doc_on_counter(img := shot(), base):
         if not at_booth(img): return None
         if time.time() - t0 > 6 and any("NO DOCUMENTS" in w["t"].upper() for w in ocr()):   # Jorji on day 3: interrogate, he leaves
-            missing_passport(); return "interrogated"
+            interrogate.missing_passport(); return "interrogated"
         if time.time() - t0 > 40:   # still in the booth: a missed horn, call again
             if ezic.hooded(shot()): return ezic.messenger(day, base)   # day 15: he brings nothing and waits for the coded papers
             if any(re.search(r"VISA", w["t"].upper()) and w["x"] > 360 for w in ocr()): EMPTY = CLEAN; return decide(day, [], base)   # day 14: his papers were on the desk, unstamped
@@ -205,23 +205,6 @@ def entrant(day, base):
     return r
 
 
-def missing_passport():
-    """No passport: highlight the rule and the empty counter in inspect mode, then click the transcript printer to
-    interrogate (the INTERROGATE label is only a hint). The entrant then hands over a temporary visa slip to deny on."""
-    drag((253, 615), (730, 420)); time.sleep(1.2)   # rule book onto the desk, far enough right to read both pages
-    shot(); ws = ocr()
-    toc = next((w for w in ws if "BASIC" in w["t"].upper()), None)
-    if toc: click((toc["x"], toc["y"])); time.sleep(1.2); shot(); ws = ocr()
-    rule = next((w for w in ws if re.search(r"MU[SA]T HAVE", w["t"].upper())), None)
-    if rule:
-        click(INSPECT); time.sleep(1.0); click((rule["x"], rule["y"] + 8)); time.sleep(0.8)
-        click((300, 550)); time.sleep(2.5); click(PRINTER); time.sleep(6)
-    shot(); ws = ocr()
-    if any("HIGHLIGHT" in w["t"].upper() for w in ws): click(INSPECT); time.sleep(1.0); shot(); ws = ocr()   # papers don't move in inspect mode
-    book = next((w for w in ws if w["t"].upper() == "RULES"), None)
-    if book: drag((book["x"], book["y"] + 10), (253, 615)); time.sleep(1.0)   # file the book again
-
-
 def reveal(spots, words):
     """Three papers overlap on this desk. Lift each one, newest first, to the open middle of the desk until the passport
     shows; keep what was read before unless the passport now covers it."""
@@ -250,7 +233,7 @@ def decide(day, spots, base=None):
         (HERE / "runs").mkdir(exist_ok=True); shot().save(HERE / "runs" / f"nopass-{time.strftime('%H%M%S')}.png")   # what it saw, for the next fix
         seen = reveal(spots, words)
         if seen: words = seen; v = verdict(words, day)
-        else: missing_passport(); shot(); words = ocr(); v = "deny"   # none after the waits and the lift: interrogate for the visa slip. A deny with nothing stamped kept her at the booth (day 14)
+        else: interrogate.missing_passport(); shot(); words = ocr(); v = "deny"   # none after the waits and the lift: interrogate for the visa slip. A deny with nothing stamped kept her at the booth (day 14)
     visa = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
     if visa: wanted.match(words)   # log only: 32x40 correlation could not tell criminals (0.44 to 0.64) from honest faces (to 0.65)
     if v == "approve" and day >= 13 and inspect_mode.check(words): v = "deny"   # the game's own check: height, weight, description
@@ -267,10 +250,10 @@ def decide(day, spots, base=None):
         else: keep_gifts(); sweep(ENTRANT)   # everything the entrant owns goes back; citations, ads and notes stay
     if night(): return v, []
     give_back(); time.sleep(0.5)
-    for _ in range(3):   # something on the counter: a paper dropped short, or a gift handed over at the end (the note)
-        left = base is not None and doc_on_counter(shot(), base)
-        if not left: break
-        drag(left, (700, 450)); time.sleep(0.6); spots = []; give_back(); time.sleep(1.0)
+    t = time.time()   # handed-back papers sit on the counter until the entrant gathers them; pulling one back to the desk looped day 15 for 20 min
+    while base is not None and doc_on_counter(shot(), base) and time.time() - t < 10: time.sleep(0.5)
+    left = base is not None and doc_on_counter(shot(), base)
+    if left: drag(left, PARK if not at_booth_face() else ENTRANT); time.sleep(1.0)   # still there: a gift left behind (the note) is ours, else hand it over again
     return v, [(w["t"], w["x"], w["y"]) for w in words]   # every word with its place: verdicts replay offline (runs/why.py)
 
 
