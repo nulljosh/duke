@@ -3,7 +3,7 @@
 // window points from the frame's top-left (title bar included, same as the screenshot). Mouse events go straight
 // into the app's queue and the cursor queries answer with the virtual pointer, so Joshua's real cursor never moves
 // and the game plays behind his other windows.
-// Build: clang -dynamiclib -fobjc-arc -framework Cocoa -o headless.dylib headless.m
+// Build: clang -dynamiclib -fobjc-arc -framework Cocoa -framework AudioToolbox -framework CoreAudio -o headless.dylib headless.m
 #import <Cocoa/Cocoa.h>
 #import <objc/runtime.h>
 #include <sys/socket.h>
@@ -81,3 +81,14 @@ __attribute__((constructor)) static void init(void) {
     activity = [NSProcessInfo.processInfo beginActivityWithOptions:NSActivityUserInitiated | NSActivityLatencyCritical reason:@"headless play"];   // no App Nap behind other windows
     [NSThread detachNewThreadWithBlock:^{ serve(); }];
 }
+
+// Mute: the game never gets to start its audio output, so nothing plays on Joshua's Mac (2026-11-02).
+#import <AudioToolbox/AudioToolbox.h>
+#import <CoreAudio/CoreAudio.h>
+static OSStatus mute_unit(AudioUnit u) { return noErr; }
+static OSStatus mute_dev(AudioObjectID d, AudioDeviceIOProcID p) { return noErr; }
+static OSStatus mute_queue(AudioQueueRef q, const AudioTimeStamp *t) { return noErr; }
+#define INTERPOSE(new, old) __attribute__((used)) static struct { const void *n, *o; } _ip_##old __attribute__((section("__DATA,__interpose"))) = { (const void *)(new), (const void *)(old) }
+INTERPOSE(mute_unit, AudioOutputUnitStart);
+INTERPOSE(mute_dev, AudioDeviceStart);
+INTERPOSE(mute_queue, AudioQueueStart);
