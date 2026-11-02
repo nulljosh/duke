@@ -11,6 +11,9 @@ CITIES = {"ANTEGRIA": ["ST. MARMERO", "GLORIAN", "OUTER GROUSE"], "ARSTOTZKA": [
           "UNITED FEDERATION": ["GREAT RAPID", "SHINGLETON", "KORISTA CITY"]}
 
 
+DISTRICTS = {"ALTAN", "VESCILLO", "BURNTON", "OCTOVALIS", "GENNISTORA", "LENDIFORMA", "WOZENFIELD", "FARDESTO"}
+
+
 def near(s, options, cut=0.75):
     m = difflib.get_close_matches(s, options, 1, cut); return m[0] if m else None
 
@@ -76,6 +79,8 @@ def verdict(words, day):
         ok = ok and "TICKET" in text and today in text
     if day >= 4 and country == "ARSTOTZKA":   # the ID card prints a district, height and weight; it may overlap the passport
         ok = ok and bool(re.search(r"IDENTITY|DISTRIC|\d\s?CM\b|\d\s?KG\b", " ".join(mine + rest)))
+        dist = next((re.sub(r"[^A-Z]", "", m[1]) for t in mine + rest for m in [re.match(r"^([A-Z ]{4,}?)\s*DISTRIC", t)] if m), "")
+        ok = ok and (len(dist) < 5 or dist in DISTRICTS)   # exact: the game plants one-letter swaps (day 14 WIZENFIELD); OCR reads this font cleanly
         births = {".".join(d) for d in re.findall(r"(\d\d)[.,\s](\d\d)[.,\s](\d\d)\b", " ".join(mine + rest)) if d[0] < "75"}   # by the year's last two digits: the 19 reads as 79 or P
         ok = ok and not any(sum(x != y for x, y in zip(a, b)) >= 2 for a in births for b in births)   # day 4 Norma Tarnoff: ID card 1920, passport 1938. A 1-digit gap is OCR (day 8 Corman Drex, valid, read 1926 vs 1936)
         toks = mine + rest
@@ -94,7 +99,9 @@ def verdict(words, day):
         pn = next((alnum(t) for t in mine if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)), None)
         others = [alnum(t) for t in rest if re.search(r"[A-Z0-9]{4,6}[-_][A-Z0-9-]{3,6}", t)]
         num_ok = not pn or not others or any(same(pn, o, 0.45) for o in others)   # day 5 Vince Lestrade: TDW50-9HDFT read as TOMSU-9HOFT on his own permit
-        enter_by = max([d for d in re.findall(r"19\d\d\.\d\d\.\d\d", text) if d >= "1982"] or [today])   # cut off the desk: passes
+        eb = next((w for w in words if re.search(r"ENTER\s*BY", w["t"].upper())), None)   # the permit's own date, on its "Enter by" row
+        row = [re.sub(DATE, r"\1.\2.\3", w["t"]) for w in words if eb and abs(w["y"] - eb["y"]) < 12 and w["x"] > eb["x"] and re.search(DATE, w["t"])]
+        enter_by = re.search(r"19\d\d\.\d\d\.\d\d", row[0])[0] if row else max([d for d in re.findall(r"19\d\d\.\d\d\.\d\d", text) if d >= "1982"] or [today])   # day 14: the latest date on the desk (an ID supplement's) let an expired permit through; unread passes
         papers = "GRANTED" in text or "PERMIT" in text or (day >= 8 and bool(re.search(r"DIPLOMAT|AUTHORI", text)))   # diplomats bring an authorization instead
         ok = ok and papers and holder_ok and num_ok and enter_by >= today
     said = " ".join(w["t"].upper() for w in words if not (w["x"] > 360 and w["y"] > 236))   # the booth transcript and speech bubbles
@@ -138,6 +145,10 @@ def _check():
     assert verdict(w("Gray. Edward", "ANTEGRIA", "St. Marmero", "1984.10.25", "R308L-SHL28") + o("granted", "EDHRO GRHY", "R308L-3KL28", "1982.12.11"), 5) == "approve"
     assert verdict(w("Paradizna", "1983.11.23", "ARSTOTZKA") + o("HEIGHT 170cm"), 4) == "approve"
     assert verdict(w("Paradizna", "1983.11.23", "ARSTOTZKA"), 4) == "deny"
+    assert verdict(w("Paradizna", "1983.11.23", "ARSTOTZKA") + o("WIZENFIELD DISTRICT", "HEIGHT 170cm"), 4) == "deny"
+    assert verdict(w("Paradizna", "1983.11.23", "ARSTOTZKA") + o("GENNISTOR A DISTRICT", "HEIGHT 170cm"), 4) == "approve"
+    eb = lambda d: kol + permit + [{"t": "Enter by", "x": 880, "y": 520}, {"t": d, "x": 1010, "y": 522}, {"t": "1983.01.20", "x": 950, "y": 600}]
+    assert verdict(eb("1982.11.20"), 4) == "deny" and verdict(eb("1982.12.30"), 4) == "approve"   # day 14: the supplement's later date must not count
     assert verdict(w("Bylund, Henrik", "SRSTOTZKA IDENTITY CARD", "179 cm", "Paradizna", "1984.04.38", "ARSTOTZHA"), 5) == "approve"
     assert passport(["ENHUO", "IMPOR"])[1] == "ENKYO" and passport(["JUFKO LITU"])[1] == "YURKO CITY"
     assert passport(["OBRISTAN", "TSUNKEIDO"])[:2] == ("OBRISTAN", "TSUNKEIDO")
