@@ -111,7 +111,7 @@ def verdict(words, day):
     if 13 <= day <= 26 and country != "ARSTOTZKA":   # foreigners show an ID supplement (height, weight, description, thumbprint)
         ok = ok and bool(re.search(r"SUPPLEM|DESCRIPT|THUMB", text))   # ponytail: its height, weight and expiry not checked yet
     scale = next((int(m[1]) for w in words if w["x"] < 360 and w["y"] > 590 for m in [re.fullmatch(r"(\d{2,3})\s?KG", w["t"].upper())] if m), None)   # the booth scale
-    if day >= 13 and scale and any(abs(int(m[1]) - scale) > 3 for t in mine + rest for m in [re.search(r"\b(\d{2,3})\s?KG\b", t)] if m): ok = False   # day 14: weight lies on the ID supplement
+    if day >= 13 and scale and any(abs(int(m[1]) - scale) > 1 for t in mine + rest for m in [re.search(r"\b(\d{2,3})\s?KG\b", t)] if m): ok = False   # day 14: weight lies on the ID supplement
     if day == 7 and country == "KOLECHIA": ok = False   # search every Kolechian; denying unsearched costs no citation (ponytail: no scanner yet)
     if day >= 6 and any(re.fullmatch(r"WOR[KH]", t) for t in rest):   # purpose WORK needs the Ministry of Labor's work pass
         ok = ok and bool(re.search(r"LAB[OE]R|HOLDER|FIELD", text))   # ponytail: work-until vs duration not checked yet
