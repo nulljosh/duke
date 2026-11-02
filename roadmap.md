@@ -100,7 +100,6 @@ Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geom
 - [ ] Pokemon Sapphire: playing; Twitch pending.
 - [ ] Oxygen Not Included (parked 2026-10-28): win Home Sweet Home (cycle 200, 12 dupes, Great Monument) or the Great Escape, headless through the Duke Bridge. Parked at colony 7, cycle 24; resume in docs/LOOP-HANDOFF.md, rules in games/oni/GUIDE.md. ETA a few days. Don't Starve after it (Steam marked it damaged on 2026-10-05; reinstall first).
 - [ ] Landing refresh once FEZ is beaten: Hermes' layout, styled for video games instead of Greek gods. Photos from FEZ and Factorio, and Duolingo too. Supported games listed: Duolingo, FEZ, Factorio.
-- [ ] `duke play <game>`: one entry point for duolingo, factorio, gdt and fez.
 - [ ] Nobody is told when the runner needs a human away from the Mac. A lost session shows an alert on the Mac only; the phone and watch apps just read stale. The session cookie runs to 2169, so this is rare.
 - Disk: 4.2GB free on 2026-10-05, and the runner pauses under 2GB. The streak guard now plays through that pause down to 300MB, but XP stops. Free space before it gets there.
 - [ ] Russian earns nothing: the last 1% is almost all speaking exercises (131 speak against 61 other challenges over 28 lessons) and they come back `unanswerable` with no skip button. Either the fake-mic path needs to work on that screen, or speaking exercises get turned off in the account settings (that changes the phone app too, so it is Joshua's call).

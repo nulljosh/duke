@@ -1,0 +1,27 @@
+#!/bin/sh
+# duke play <game>: one entry point for every game Duke plays.
+#   duke play duolingo [track]   switch the live runner to a track (a language code, math, chess, music),
+#                                or start the runner on it when none is up
+#   duke play factorio           the Factorio agent
+#   duke play gdt [--minutes N]  Game Dev Tycoon in slot 5
+#   duke play fez                open FEZ windowed in the background; drive it with games/fez/fez.py
+D=$(cd "$(dirname "$0")/.." && pwd)
+usage() { sed -n 2,7p "$0" | sed 's/^# \{0,1\}//'; exit 2; }
+[ "$1" = play ] || usage
+game=$2; [ -n "$game" ] || usage; shift 2
+case "$game" in
+  duolingo|duo)
+    track=$1; [ -n "$track" ] || { echo "duke: name a track, for example: duke play duolingo math" >&2; exit 2; }
+    # The runner owns port 8737; switching it keeps the one browser instead of starting a second.
+    if curl -s -m 2 http://127.0.0.1:8737/ >/dev/null 2>&1; then
+      curl -s -m 5 -X POST -H "X-Pwnlingo-Token: $(cat "$D/scripts/api-token.txt")" "http://127.0.0.1:8737/switch?track=$track"; echo
+    else
+      exec node "$D/scripts/run.mjs" "$track"
+    fi ;;
+  factorio) cd "$D/games/factorio" && exec python3 agent.py "$@" ;;
+  gdt) exec python3 "$D/games/gdt/gdt_play.py" "$@" ;;
+  fez)
+    open -g /Volumes/LaCie/Steam/steamapps/common/FEZ/FEZ.app || exit 1
+    echo "FEZ is open behind your windows. Drive it: python3 $D/games/fez/fez.py key|cmd|shot ..." ;;
+  *) echo "duke: no game called $game (duolingo, factorio, gdt, fez)" >&2; exit 2 ;;
+esac
