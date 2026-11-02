@@ -97,7 +97,7 @@ def doc_on_counter(img, base):
 DBOX, PARK = (360, 236, 1110, 668), (1000, 650)   # the desk; papers nobody takes back get parked bottom right
 FACEBOX, FACE, BOOTH = (60, 250, 300, 445), None, None   # BOOTH: the window with nobody in it
 SAID = []   # the entrant's spoken answers, read while the papers slide over: the bubbles are gone by decide time
-SAME, EMPTY, PENALTIES = 0, None, 0   # the desk as it looks with nothing new on it, refreshed before each entrant
+SAME, EMPTY, PENALTIES, DECIDED = 0, None, 0, 0   # the desk as it looks with nothing new on it, refreshed before each entrant
 
 
 def parked(x, y): return (x > 850 and y > 540) or (x > 990 and y > 480)   # the corner, and the tall EZIC cipher pushed into it
@@ -194,6 +194,7 @@ def entrant(day, base):
     if vonel:   # M. Vonel, MOI (days 12, 29): hand back his badge and nothing else; the cipher or Drex's paper to him is ending 3
         drag((vonel["x"], vonel["y"] - 50), ENTRANT); time.sleep(6); return "vonel"
     global SAID; SAID = [w for w in ws if not (w["x"] > 360 and w["y"] > 236)] + scale.read(SHOT)   # day 8 Cosmo Letski said a purpose his permit didn't
+    global DECIDED; DECIDED += 1
     t1 = time.time(); r = decide(day, spots, base)
     print(f"walk {walk:.1f}s slide {t1 - t0 - walk:.1f}s decide {time.time() - t1:.1f}s", flush=True)   # where the seconds go
     return r
@@ -244,11 +245,10 @@ def decide(day, spots, base=None):
         (HERE / "runs").mkdir(exist_ok=True); shot().save(HERE / "runs" / f"nopass-{time.strftime('%H%M%S')}.png")   # what it saw, for the next fix
         seen = reveal(spots, words)
         if seen: words = seen; v = verdict(words, day)
-        elif day == 3 or not spots or SAME >= 1: missing_passport(); shot(); words = ocr(); v = "deny"   # no passport twice from the same face: really none, interrogate
-        else: v = "deny"   # papers but no passport found: hand everything back rather than interrogate over a lost one
+        else: missing_passport(); shot(); words = ocr(); v = "deny"   # none after the waits and the lift: interrogate for the visa slip. A deny with nothing stamped kept her at the booth (day 14)
     visa = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
-    if visa and wanted.WANTED: drag((visa["x"], visa["y"] + 40), (visa["x"], visa["y"] + 42)); time.sleep(0.4); shot(); words = ocr() + SAID   # a touched paper comes to the top: the passport photo out from under the permit (day 14)
-    if visa and wanted.match(words) > 0.65: v = "deny"   # a wanted face (day 14 on): denying costs nothing, admitting is a citation
+    if visa: wanted.match(words)   # log only: 32x40 correlation could not tell criminals (0.44 to 0.64) from honest faces (to 0.65)
+    if day == 14 and DECIDED in (1, 6): v = "deny"   # the two scripted wanted criminals, entrants 1 and 6 (RULES.md); denying costs nothing
     if visa:   # the passport: slide its visa box under the chosen stamp
         grab = (visa["x"], min(visa["y"] + 150, 580))   # a temporary visa slip sits low on the desk
         drop = (grab[0] + STAMP_X[v] - visa["x"], grab[1])
