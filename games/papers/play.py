@@ -184,7 +184,6 @@ def entrant(day, base):
         if any("HIGHLIGHT" in w["t"].upper() for w in ws): click(INSPECT); time.sleep(1.0); shot(); ws = ocr()   # stuck in inspect mode: nothing moves
         time.sleep(6); return "waiting"
     if ezic.hooded(Image.open(SHOT)): return ezic.messenger(day, base)
-    wanted.log("face", (110, 265, 270, 425))
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time, sometimes the passport last and slow
         t = time.time()
@@ -248,7 +247,7 @@ def decide(day, spots, base=None):
         elif day == 3 or not spots or SAME >= 1: missing_passport(); shot(); words = ocr(); v = "deny"   # no passport twice from the same face: really none, interrogate
         else: v = "deny"   # papers but no passport found: hand everything back rather than interrogate over a lost one
     visa = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
-    if visa: wanted.log("photo", (visa["x"] - 115, visa["y"] + 53, visa["x"] - 35, visa["y"] + 163))
+    if visa and wanted.match(words) > 0.7: v = "deny"   # a wanted face (day 14 on): denying costs nothing, admitting is a citation
     if visa:   # the passport: slide its visa box under the chosen stamp
         grab = (visa["x"], min(visa["y"] + 150, 580))   # a temporary visa slip sits low on the desk
         drop = (grab[0] + STAMP_X[v] - visa["x"], grab[1])

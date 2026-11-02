@@ -1,7 +1,7 @@
 """The bulletin's three wanted faces (day 14 on), scored against each entrant's booth face and passport photo.
 Scores are normalised cross-correlation on a 32x40 equalised greyscale: different wanted faces score 0.4 to 0.55
 against each other, so a match has to beat that clearly. Logging only until a real match calibrates the cut."""
-import math, sys, time
+import math, re, sys, time
 from PIL import Image, ImageOps
 
 WANTED = []   # greyscale crops, filled by read()
@@ -21,7 +21,7 @@ def read():
     p = sys.modules.get("play") or sys.modules["__main__"]
     p.drag((105, 612), (700, 420)); time.sleep(1.2)
     for _ in range(3):
-        p.shot(); title = next((w for w in p.ocr() if "WANTED" in w["t"].upper()), None)
+        p.shot(); title = next((w for w in p.ocr() if "CRIMIN" in w["t"].upper() and w["h"] >= 20), None)   # the page title, not page 1's "most wanted international criminals"
         if title: break
         p.click((840, 600)); time.sleep(1.0)   # the page corner
     if title:
@@ -36,10 +36,21 @@ def read():
 def scores(img): return [round(ncc(img, w), 2) for w in WANTED]
 
 
-def log(tag, box):
-    """Print this crop's scores against the wanted faces and keep the crop, so a cited admission calibrates the cut."""
-    if not WANTED: return
+def match(words):
+    """Best score of the passport photo on the desk against the wanted faces. The photo (about 80 x 105) sits right
+    above the passport number at the bottom left; search a little around it."""
+    if not WANTED: return 0
     p = sys.modules.get("play") or sys.modules["__main__"]
-    img = Image.open(p.SHOT).convert("L").crop(tuple(round(v) for v in box))
-    (p.HERE / "runs" / "faces").mkdir(exist_ok=True); img.save(p.HERE / "runs" / "faces" / f"{time.strftime('%H%M%S')}-{tag}.png")
-    print(tag, scores(img), flush=True)
+    img, best, at = Image.open(p.SHOT).convert("L"), 0, None
+    want = [_norm(w) for w in WANTED]
+    for n in (w for w in words if w.get("w") and w["x"] > 360 and w["y"] > 236 and re.search(r"[A-Z0-9]{4,5}[-_][A-Z0-9]{4,5}", w["t"])):
+        left = n["x"] - n["w"] / 2
+        for dx in range(-10, 11, 5):
+            for dy in range(-125, -94, 5):
+                box = (round(left + dx), round(n["y"] + dy), round(left + dx + 80), round(n["y"] + dy + 105))
+                x = _norm(img.crop(box))
+                sc = max(sum(a * b for a, b in zip(x, y)) / len(x) for y in want)
+                if sc > best: best, at = sc, box
+    if at: (p.HERE / "runs" / "faces").mkdir(exist_ok=True); img.crop(at).save(p.HERE / "runs" / "faces" / f"{time.strftime('%H%M%S')}-{round(best * 100)}.png")
+    print("wanted match", round(best, 2), flush=True)
+    return best
