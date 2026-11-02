@@ -123,9 +123,10 @@ def open_day(day):
     else: sys.exit("no STORY button on the title screen")   # past the title, then STORY
     play.shot(); ws = play.ocr()   # replays branch into more rows and the list scrolls: find the day's column, take its newest save
     col = next((w for w in ws if w["t"].strip() == str(day) and w["y"] < 180), None) \
-        or next((w for w in ws if "LATEST" in w["t"].upper()), None)   # the big digits OCR badly; the newest day is marked LATEST
+        or next((w for w in ws if "LATEST" in w["t"].upper()), None) \
+        or next(({**w, "x": w["x"] + 140} for w in ws if w["t"].strip() == str(day - 1) and w["y"] < 180), None)   # the big digits OCR badly; the newest day is marked LATEST; else one column right of yesterday (day 11, 2026-11-02)
     if not col: sys.exit(f"day {day} not on the day picker")
-    box = max((w for w in ws if re.match(r"\d+/\d+", w["t"]) and abs(w["x"] - col["x"]) < 60), key=lambda w: w["y"], default=None)
+    box = max((w for w in ws if re.search(r"\d+/\d+", w["t"]) and abs(w["x"] - col["x"]) < 60), key=lambda w: w["y"], default=None)
     if not box: sys.exit(f"no save under day {day}")
     play.click((box["x"], box["y"] + 8)); time.sleep(3)
     for _ in range(4):   # the CONTINUE dialog can open late; a click before it lands on nothing (2026-11-02)
