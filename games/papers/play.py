@@ -156,7 +156,7 @@ def night():   # the ledger is up: one stray click near SLEEP on a negative nigh
 
 
 def entrant(day, base):
-    global EMPTY, SAME, FACE
+    global EMPTY, SAME, FACE, DECIDED
     if not at_booth(shot()): return None
     keep_gifts()   # the last citation goes to the corner
     for _ in range(3):   # a paper left on the counter by someone who has walked off (Calensk's envelope) is ours: park it
@@ -196,7 +196,7 @@ def entrant(day, base):
     if vonel:   # M. Vonel, MOI (days 12, 29): hand back his badge and nothing else; the cipher or Drex's paper to him is ending 3
         drag((vonel["x"], vonel["y"] - 50), ENTRANT); time.sleep(6); return "vonel"
     global SAID; SAID = [w for w in ws if not (w["x"] > 360 and w["y"] > 236)] + scale.read(SHOT)   # day 8 Cosmo Letski said a purpose his permit didn't
-    global DECIDED; DECIDED += 1
+    DECIDED += 1
     t1 = time.time(); r = decide(day, spots, base)
     print(f"walk {walk:.1f}s slide {t1 - t0 - walk:.1f}s decide {time.time() - t1:.1f}s", flush=True)   # where the seconds go
     return r
