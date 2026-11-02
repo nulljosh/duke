@@ -170,7 +170,9 @@ def entrant(day, base):
         if not at_booth(img): return None
         if time.time() - t0 > 6 and any("NO DOCUMENTS" in w["t"].upper() for w in ocr()):   # Jorji on day 3: interrogate, he leaves
             missing_passport(); return "interrogated"
-        if time.time() - t0 > 40: return "nobody came"   # still in the booth: a missed horn, call again
+        if time.time() - t0 > 40:   # still in the booth: a missed horn, call again
+            if at_booth_face() and any(re.search(r"VISA", w["t"].upper()) and w["x"] > 360 for w in ocr()): EMPTY = CLEAN; return decide(day, [], base)   # day 14: his papers were already on the desk, unstamped
+            return "nobody came"
         time.sleep(0.3)
     walk = time.time() - t0
     face = shot().crop(FACEBOX)
@@ -282,7 +284,7 @@ if __name__ == "__main__":
     shot(); b = next((w for w in ocr() if re.search(r"BULLETIN|INSPECTOR", w["t"].upper())), {"x": 745, "y": 460})
     drag((b["x"], b["y"] + 100), (105, 612)); time.sleep(1)   # file the day's bulletin, wherever it lands, so it stays out of the OCR
     if day >= 14: wanted.read()
-    EMPTY = shot().crop(DBOX); BOOTH = shot().crop(FACEBOX) if not at_booth_face() else None
+    EMPTY = CLEAN = shot().crop(DBOX); BOOTH = shot().crop(FACEBOX) if not at_booth_face() else None
     for n in range(int(sys.argv[2]) if len(sys.argv) > 2 else 80):
         r = entrant(day, base)
         print(n, r, flush=True)

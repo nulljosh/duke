@@ -37,6 +37,6 @@ def check(words):
             (p.HERE / "runs").mkdir(exist_ok=True); p.shot().save(p.HERE / "runs" / f"inspect-{name}-{time.strftime('%H%M%S')}.png")
             bad = name; print("inspect", name, [w["t"] for w in ws if 250 < w["y"] < 640 and 360 < w["x"] < 900][:8], flush=True)
             break
-    p.click(p.INSPECT); time.sleep(0.8)
-    if any("HIGHLIGHT" in w["t"].upper() for w in p.ocr()): p.click(p.INSPECT); time.sleep(0.8)   # still in: one more toggle
+    p.click(p.INSPECT); time.sleep(0.8); p.shot()
+    if any("HIGHLIGHT" in w["t"].upper() for w in p.ocr()): p.click(p.INSPECT); time.sleep(0.8)   # still in: one more toggle. A stale shot here toggled it back on and froze day 14
     return bad
