@@ -1,6 +1,6 @@
 """Let the game judge what OCR can't: in inspect mode, click a field, then what it should match (the entrant's
 face, the scale); the game prints MATCHING DATA at the link's midpoint when they agree. Measured day 14 by hand:
-description vs face and weight vs scale both read "MATCHING DATA". Anything else is saved, to learn the label."""
+description vs face and weight vs scale read "MATCHING DATA"; a mismatch reads "DISCREPANCY DETECTED" (day 14)."""
 import re, sys, time
 
 FACE, SCALE = (180, 345), (322, 630)
@@ -33,7 +33,7 @@ def check(words):
     for name, a, b in todo:
         p.click(a); time.sleep(0.5); p.click(b); time.sleep(1.0)
         p.shot(); ws = p.ocr()
-        if not any("MATCH" in w["t"].upper() for w in ws):
+        if any(re.search(r"DISCREP|DETECTED", w["t"].upper()) for w in ws):   # the mismatch label; "MATCHING DATA" OCRs as METEHING / TATCHIHG, so key on this one
             (p.HERE / "runs").mkdir(exist_ok=True); p.shot().save(p.HERE / "runs" / f"inspect-{name}-{time.strftime('%H%M%S')}.png")
             bad = name; print("inspect", name, [w["t"] for w in ws if 250 < w["y"] < 640 and 360 < w["x"] < 900][:8], flush=True)
             break

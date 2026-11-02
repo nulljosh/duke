@@ -266,7 +266,7 @@ def decide(day, spots, base=None):
         left = base is not None and doc_on_counter(shot(), base)
         if not left: break
         drag(left, (700, 450)); time.sleep(0.6); spots = []; give_back(); time.sleep(1.0)
-    return v, [w["t"] for w in words if w["x"] > 360 and w["y"] > 236]
+    return v, [(w["t"], w["x"], w["y"]) for w in words]   # every word with its place: verdicts replay offline (runs/why.py)
 
 
 def _check():
