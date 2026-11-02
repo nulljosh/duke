@@ -9,9 +9,9 @@ SCREWS = [(652, 384), (773, 384), (652, 469), (773, 469)]
 WIRES = [692, 650, 776, 734]   # boxes 1, 2, 3, 4
 
 
-def _red(p, x):   # an uncut wire is red under its clip
-    r, g, b = Image.open(p.SHOT).convert("RGB").getpixel((x, 416))
-    return r > 120 and g < 90
+def _red(p, x):   # an uncut wire is red under its clip: a few red pixels near (x, 416)
+    img = Image.open(p.SHOT).convert("RGB")
+    return sum(1 for dx in range(-8, 9) for y in range(396, 436, 2) if (lambda c: c[0] > 120 and c[1] < 90 and c[2] < 90)(img.getpixel((x + dx, y)))) >= 3
 
 
 def defuse():
@@ -23,7 +23,7 @@ def defuse():
         for s in SCREWS: p.click(s); time.sleep(0.25)
         time.sleep(0.6); p.shot()
         if sum(_red(p, x) for x in WIRES) >= 3: break
-    else: raise SystemExit("bomb: the wires never showed; cut by hand NOW")
+    else: print("bomb: no red seen, cutting anyway", flush=True)   # 2026-11-02: giving up here was certain death
     for x in WIRES: p.click((x, 416)); time.sleep(0.5)
     time.sleep(2); p.drag((560, 500), p.ENTRANT); time.sleep(2)
     print("bomb defused", flush=True)
