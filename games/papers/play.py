@@ -188,7 +188,7 @@ def entrant(day, base):
         if any("HIGHLIGHT" in w["t"].upper() for w in ws): click(INSPECT); time.sleep(1.0); shot(); ws = ocr()   # stuck in inspect mode: nothing moves
         time.sleep(6); return "waiting"
     if ezic.hooded(Image.open(SHOT)): return ezic.messenger(day, base)
-    if day == 15 and not bomb.DONE and any("DEATH" in w["t"].upper() for w in ocr() if w["x"] < 360): return bomb.defuse()   # the bomber shouts DEATH TO ARSTOTZKA
+    if day == 15 and not bomb.DONE and DECIDED >= 1: return bomb.defuse()   # entrant 2 is the bomber (his shout OCRs too late); resume after it with PAPERS_BOMB_DONE=1
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time, sometimes the passport last and slow
         t = time.time()
