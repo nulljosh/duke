@@ -3,7 +3,7 @@ The game window must be in front: Unity only takes the real cursor (cliclick), n
 Headless: launched with headless.dylib inserted, the game takes the same commands over a socket and plays behind his windows.
 Coordinates are window points, top-left of the content under the title bar included (same as the screenshot)."""
 import json, os, re, socket, subprocess, sys, time
-import ezic, inspect_mode, rules, scale, wanted
+import bomb, ezic, inspect_mode, rules, scale, wanted
 from rules import KEEP, verdict
 from pathlib import Path
 from PIL import Image, ImageChops, ImageStat
@@ -173,7 +173,7 @@ def entrant(day, base):
             missing_passport(); return "interrogated"
         if time.time() - t0 > 40:   # still in the booth: a missed horn, call again
             if ezic.hooded(shot()): return ezic.messenger(day, base)   # day 15: he brings nothing and waits for the coded papers
-            if any(re.search(r"VISA", w["t"].upper()) and w["x"] > 360 for w in ocr()): EMPTY = CLEAN; return decide(day, [], base)   # day 14: his papers were already on the desk, unstamped (a dark face reads as an empty booth to at_booth_face)
+            if any(re.search(r"VISA", w["t"].upper()) and w["x"] > 360 for w in ocr()): EMPTY = CLEAN; return decide(day, [], base)   # day 14: his papers were on the desk, unstamped
             return "nobody came"
         time.sleep(0.3)
     walk = time.time() - t0
@@ -188,6 +188,7 @@ def entrant(day, base):
         if any("HIGHLIGHT" in w["t"].upper() for w in ws): click(INSPECT); time.sleep(1.0); shot(); ws = ocr()   # stuck in inspect mode: nothing moves
         time.sleep(6); return "waiting"
     if ezic.hooded(Image.open(SHOT)): return ezic.messenger(day, base)
+    if day == 15 and (DECIDED == 1 or any("DEATH" in w["t"].upper() for w in ocr() if w["x"] < 360)): return bomb.defuse()   # the bomber is entrant 2
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time, sometimes the passport last and slow
         t = time.time()
