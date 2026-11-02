@@ -50,6 +50,9 @@ Every game gets one colour (`--g-*` in `tokens.css`) and a bold white line glyph
 
 Each game's own progress art (the Pokemon graph and iPhone wallpaper, the ONI wallpaper) takes that game's look on purpose: pixel font, its text box frame, scaled with no smoothing. The Pikmin 2 graph sits on the brand's ink with the game's red and gold.
 
+## The palette at work
+The landing wears the project's own colours the way the dotfiles landing wears Catppuccin: the nine game colours, lifted to hold on black (`--l-*`, `--strip` in `tokens.css`), run as a strip under the nav, a frame round the page, the Great Wave on the band, the headline's full stop (it walks the nine) and the squares on the band cells. Duke orange stays on buttons and the live numbers. No plain blue anywhere.
+
 ## Type
 Duke Sans: Inter 5.3 by Rasmus Andersson (SIL Open Font License 1.1, bumped from 5.2.5 on 2026-10-26), renamed, with its curly quotes redrawn as curling wave crests. Proportionally spaced, drawn in the spirit of San Francisco and Helvetica. Regular, Medium, Semibold and Bold live in `../fonts/` (ttf for the app, woff2 for the web, `OFL.txt` beside them). `../tools/gen_font.py` rebuilds them from the pinned Inter release, byte for byte.
 

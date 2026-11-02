@@ -1,6 +1,7 @@
-/* Duke landing, dressed after Nous Research like Hermes: a thin blue frame round the page, tiny caps labels, small square
-   buttons, and blue bands under film grain where the art sits as dot masks in scanlines: Hokusai's Great Wave (c. 1831)
-   behind the live demo, Duke Kahanamoku with his board (c. 1915) beside the band head, both public domain.
+/* Duke landing, dressed after the dotfiles landing: the project's own palette is the brand. Dotfiles wears Catppuccin; Duke wears
+   its nine game colours (--l-* in tokens.css) as a strip under the nav, a frame round the page, the art on the band and the full stop
+   after the headline. Tiny caps labels, small square buttons, a band under film grain where Hokusai's Great Wave (c. 1831) sits as a
+   dot mask in scanlines behind the live demo, and Duke Kahanamoku with his board (c. 1915) beside the band head, both public domain.
    Colour, type, space and radii come from tokens.css (brand/, copied in by deploy.sh). */
 :root {
   --display: var(--font);
@@ -31,6 +32,7 @@ h3 { font-size: 22px; line-height: 28px; font-weight: 600; letter-spacing: -.01e
 a:focus-visible, .btn:focus-visible, select:focus-visible { outline: 4px solid var(--ring); outline-offset: 0; }
 
 .nav { position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--sp-5); height: var(--control); padding: 0 max(20px, env(safe-area-inset-right)) 0 max(20px, env(safe-area-inset-left)); background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--line); }
+.nav::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: var(--strip); }
 .nav-brand { grid-column: 2; display: flex; align-items: center; gap: var(--sp-2); font-weight: 600; font-size: 17px; text-decoration: none; color: var(--text); }
 .nav-brand img { width: 24px; height: 24px; border-radius: var(--r-icon); }
 .nav-links { display: flex; gap: var(--sp-5); font-size: 13px; line-height: 16px; }
@@ -45,11 +47,11 @@ a:focus-visible, .btn:focus-visible, select:focus-visible { outline: 4px solid v
 
 /* The live demo sits straight on the band: no window, no device. */
 .stage { position: relative; overflow: hidden; margin: var(--sp-8) clamp(0px, 3vw, 44px) 0; background: var(--grain), var(--band); padding: clamp(32px, 7vw, 96px) var(--sp-5); }
-.stage-art { position: absolute; inset: 0; background: var(--band-art); opacity: .7;
+.stage-art { position: absolute; inset: 0; background: var(--strip); opacity: .75;
   -webkit-mask: var(--scan), url(art/great-wave.png) 70% 40% / cover no-repeat; -webkit-mask-composite: source-in;
   mask: var(--scan), url(art/great-wave.png) 70% 40% / cover no-repeat; mask-composite: intersect; }
 /* the frame round the whole page, the Nous way */
-body::after { content: ""; position: fixed; inset: 8px; border: 1px solid color-mix(in srgb, var(--band-art) 45%, transparent); pointer-events: none; z-index: 30; }
+body::after { content: ""; position: fixed; inset: 8px; border: 1px solid transparent; border-image: var(--strip) 1; opacity: .6; pointer-events: none; z-index: 30; }
 .app-demo { position: relative; max-width: 320px; margin: 0 auto; background: var(--demo-bg); color: var(--demo-text); border-radius: var(--r-card); padding: var(--sp-5) var(--sp-4); text-align: center; }
 .demo-hint { margin-top: var(--sp-3); font-size: 13px; line-height: 16px; color: var(--sub); text-align: center; }
 .app-demo h4 { font-size: .95rem; font-weight: 700; margin-bottom: .3rem; }
@@ -187,3 +189,12 @@ body::after { content: ""; position: fixed; inset: 8px; border: 1px solid color-
   .game h3 { font-size: 15px; line-height: 20px; }
   .game p { margin-top: 0; font-size: 13px; line-height: 16px; }
 }
+
+/* The palette at work: the headline's full stop walks the nine colours, each band cell wears one (the 3x3 of the icon). */
+h1 .dot { color: var(--l-factorio); animation: dot-walk 18s steps(1) infinite; }
+@keyframes dot-walk { 0% { color: var(--l-duolingo); } 11.1% { color: var(--l-factorio); } 22.2% { color: var(--l-gdt); } 33.3% { color: var(--l-fez); } 44.4% { color: var(--l-papers); } 55.5% { color: var(--l-oni); } 66.6% { color: var(--l-pokemon); } 77.7% { color: var(--l-mirage); } 88.8% { color: var(--l-pikmin); } }
+.cell .label::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: var(--sp-2); background: var(--c); }
+.cell:nth-child(1) { --c: var(--l-duolingo); } .cell:nth-child(2) { --c: var(--l-factorio); } .cell:nth-child(3) { --c: var(--l-gdt); }
+.cell:nth-child(4) { --c: var(--l-fez); } .cell:nth-child(5) { --c: var(--l-papers); } .cell:nth-child(6) { --c: var(--l-oni); }
+.game-tile { box-shadow: inset 2px 2px 0 rgba(255,255,255,.25), inset -2px -2px 0 rgba(0,0,0,.2); }   /* the icon's lit and shaded 8-bit edges */
+@media (prefers-reduced-motion: reduce) { h1 .dot { animation: none; } }

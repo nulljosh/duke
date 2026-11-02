@@ -33,6 +33,11 @@
   --g-mirage: #9a4a1f;
   --g-pikmin: #1f6e3a;       /* the Pikmin 2 graph green */
 
+  /* the nine, lifted to hold on black: the strip under the nav, the frame, the art on the band, the dot (the dotfiles landing does this with Catppuccin) */
+  --l-duolingo: #4cc15a; --l-factorio: #f08a3c; --l-gdt: #3d9be0; --l-fez: #e6bd1a; --l-papers: #e8564e;
+  --l-oni: #5cb88c; --l-pokemon: #5b82d6; --l-mirage: #d98550; --l-pikmin: #4fb06a;
+  --strip: linear-gradient(90deg, var(--l-duolingo) 0 11.11%, var(--l-factorio) 0 22.22%, var(--l-gdt) 0 33.33%, var(--l-fez) 0 44.44%, var(--l-papers) 0 55.55%, var(--l-oni) 0 66.66%, var(--l-pokemon) 0 77.77%, var(--l-mirage) 0 88.88%, var(--l-pikmin) 0);
+
   /* type */
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --size-display: 34px;       /* 41 line */
