@@ -171,7 +171,7 @@ def entrant(day, base):
     face = shot().crop(FACEBOX)
     same = FACE is not None and ImageStat.Stat(ImageChops.difference(face, FACE)).mean[0] < 8
     SAME, FACE = (SAME + 1 if same else 0), face   # the same face back at the booth: the last entrant never left
-    det = SAME >= 1 and next((w for w in ocr() if "DETAIN" in w["t"].upper() and w["y"] < 300), None)
+    det = next((w for w in ocr() if "DETAIN" in w["t"].upper() and w["y"] < 300), None)   # a denied entrant who will not leave (day 10), whether or not the face check caught it
     if det: click((det["x"], det["y"])); time.sleep(5); return "detained"   # day 10: denied, he refuses to leave; the guards take him
     if SAME >= 2: raise SystemExit("same entrant three times: stop and replay the day")
     spots = []
