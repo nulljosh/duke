@@ -61,6 +61,12 @@
     ctx.globalAlpha = 0.28; ctx.drawImage(rules(w, h, pitch, dpr * 0.75, colour, null), 0, 0);
     ctx.globalAlpha = 1; ctx.drawImage(rules(w, h, pitch, pitch * 0.32, colour, glyphs), 0, 0);
     ctx.drawImage(rules(w, h, pitch, pitch * 0.6, colour, shade), 0, 0);
+    // each glyph's column in its own colour: the mark in Duke orange, then every game in its card's colour
+    var cs = getComputedStyle(document.documentElement), cols = ['--accent'].concat([].slice.call(document.querySelectorAll('#games .game')).map(function (a) { return a.style.getPropertyValue('--game').replace(/var\((.*)\)/, '$1').replace('--g-', '--l-').trim(); }));
+    var gg = grid(w, h), gap = (w - gg.cell * gg.per) / gg.per;
+    ctx.globalCompositeOperation = 'source-atop';
+    cols.forEach(function (v, i) { var col = i % gg.per; ctx.fillStyle = cs.getPropertyValue(v).trim() || colour; ctx.fillRect(Math.floor(col * (gg.cell + gap)), 0, Math.ceil(gg.cell + gap) + 1, h); });
+    ctx.globalCompositeOperation = 'source-over';
     // fade out toward the legal line
     var g = ctx.createLinearGradient(0, h * 0.88, 0, h);
     g.addColorStop(0, '#000'); g.addColorStop(1, 'rgba(0,0,0,0)');

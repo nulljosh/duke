@@ -169,26 +169,22 @@ body::after { content: ""; position: fixed; inset: 8px; border: 1px solid transp
 .doc p { color: var(--sub); }
 .doc p + p { margin-top: var(--sp-3); }
 
-/* Games: one card per game, each on its own colour from tokens.css (--g-*), same tile shape as the icon. */
+/* Games: one card per game, in that game's own colour (--g-* in tokens.css), a real frame from Duke's run on top and the
+   game's glyph riding the seam, the same tile as the icon. The page around it stays ink; the games bring the colour. */
 .games { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); margin-top: var(--sp-7); }
-.game { background: var(--surface); border-radius: var(--r-card); padding: var(--sp-5); text-align: left; }
-.game-tile { width: 48px; height: 48px; border-radius: var(--r-icon); background: var(--game); display: grid; place-items: center; margin-bottom: var(--sp-4); }
-.game h3 { font-size: 17px; line-height: 24px; font-weight: 600; }
-.game p { margin-top: var(--sp-1); font-size: 15px; line-height: 20px; color: var(--sub); }
+.game { position: relative; background: var(--game); color: #fff; border-radius: var(--r-card); overflow: hidden; text-align: left; padding: 0 var(--sp-5) var(--sp-5); transition: transform var(--motion); }
+.game:hover { transform: translateY(-4px); }
+.game-shot { display: block; width: calc(100% + 2 * var(--sp-5)); margin: 0 calc(-1 * var(--sp-5)); aspect-ratio: 3 / 2; height: auto; object-fit: cover; image-rendering: pixelated; background: #0b0b0d; }
+.game-tile { width: 56px; height: 56px; border-radius: var(--r-icon); background: var(--game); display: grid; place-items: center; margin: -28px 0 var(--sp-3); position: relative; outline: 4px solid var(--game); box-shadow: inset 2px 2px 0 rgba(255,255,255,.25), inset -2px -2px 0 rgba(0,0,0,.2); }
+.game-tile svg { width: 40px; height: 40px; }
+.game h3 { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -.01em; }
+.game p { margin-top: var(--sp-1); font-size: 15px; line-height: 20px; color: rgba(255,255,255,.82); }
 .game-live { margin: var(--sp-6) auto 0; max-width: 720px; text-align: center; }
 .game-live img { width: 100%; height: auto; border-radius: var(--r-group); image-rendering: pixelated; display: block; }
 .game-live figcaption { margin-top: var(--sp-3); font-size: 13px; line-height: 16px; color: var(--sub); }
 @media (max-width: 900px) { .games { grid-template-columns: 1fr 1fr; } }
-/* Phone: the cards become an inset grouped list, a 40 point tile leading each row, hairlines inset past the tile. */
-@media (max-width: 600px) {
-  .games { grid-template-columns: 1fr; gap: 0; background: var(--surface); border-radius: var(--r-group); overflow: hidden; margin-top: var(--sp-6); }
-  .game { position: relative; display: grid; grid-template-columns: 40px 1fr; column-gap: var(--sp-3); align-items: start; padding: var(--sp-3) var(--sp-4); border-radius: 0; background: none; }
-  .game + .game::before { content: ""; position: absolute; top: 0; left: calc(var(--sp-4) + 40px + var(--sp-3)); right: 0; height: 1px; background: var(--line); }
-  .game-tile { width: 40px; height: 40px; margin: 0; grid-row: span 2; }
-  .game-tile svg { width: 32px; height: 32px; }
-  .game h3 { font-size: 15px; line-height: 20px; }
-  .game p { margin-top: 0; font-size: 13px; line-height: 16px; }
-}
+@media (max-width: 600px) { .games { grid-template-columns: 1fr; gap: var(--sp-3); } .game:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .game { transition: none; } .game:hover { transform: none; } }
 
 /* The palette at work: the headline's full stop walks the nine colours, each band cell wears one (the 3x3 of the icon). */
 h1 .dot { color: var(--l-factorio); animation: dot-walk 18s steps(1) infinite; }
@@ -196,5 +192,4 @@ h1 .dot { color: var(--l-factorio); animation: dot-walk 18s steps(1) infinite; }
 .cell .label::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: var(--sp-2); background: var(--c); }
 .cell:nth-child(1) { --c: var(--l-duolingo); } .cell:nth-child(2) { --c: var(--l-factorio); } .cell:nth-child(3) { --c: var(--l-gdt); }
 .cell:nth-child(4) { --c: var(--l-fez); } .cell:nth-child(5) { --c: var(--l-papers); } .cell:nth-child(6) { --c: var(--l-oni); }
-.game-tile { box-shadow: inset 2px 2px 0 rgba(255,255,255,.25), inset -2px -2px 0 rgba(0,0,0,.2); }   /* the icon's lit and shaded 8-bit edges */
 @media (prefers-reduced-motion: reduce) { h1 .dot { animation: none; } }

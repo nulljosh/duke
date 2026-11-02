@@ -36,6 +36,7 @@
     var xp = 0, solved = 0, live = false, lastLiveKey = null;
 
     function playChess(p, done) {
+      root.style.setProperty('--tint', 'var(--g-duolingo)');
       stage.innerHTML = '<div class="demo-board"></div>';
       var board = stage.firstChild, nodes = {};
       Object.keys(p.pieces).forEach(function (sq) {
@@ -48,11 +49,13 @@
       later(function () { nodes[p.from].style.left = tp.left; nodes[p.from].style.top = tp.top; later(function () { flash.classList.add('on'); done(); }, 650); }, 700);
     }
     function playMath(p, done) {
+      root.style.setProperty('--tint', 'var(--g-duolingo)');
       stage.innerHTML = '<div class="demo-math"><div class="problem"></div><div class="answer"></div></div>';
       stage.querySelector('.problem').textContent = p.problem; var a = stage.querySelector('.answer'); a.textContent = p.answer;
       later(function () { a.classList.add('on'); done(); }, 900);
     }
     function playLang(p, done) {
+      root.style.setProperty('--tint', 'var(--g-duolingo)');
       stage.innerHTML = '<div class="demo-lang"><div class="prompt"></div><div class="tiles"></div></div>';
       stage.querySelector('.prompt').textContent = p.prompt;
       var box = stage.querySelector('.tiles'), tiles = p.tokens.map(function (t) { var s = document.createElement('span'); s.className = 'tile'; s.textContent = t; box.appendChild(s); return s; });
@@ -63,6 +66,7 @@
     var SHOT = { 'Factorio': 'factorio', 'FEZ': 'fez', 'Papers, Please': 'papers', 'Pokemon Sapphire': 'pokemon', 'Pikmin 2': 'pikmin',
                  'Oxygen Not Included': 'oni', 'Game Dev Tycoon': 'gdt', 'Mirage': 'mirage' };
     function playGame(p, done) {
+      root.style.setProperty('--tint', 'var(' + p.color + ')');
       stage.innerHTML = '<div class="demo-game"><img class="demo-shot" alt="" decoding="async" src="shots/' + SHOT[p.game] + '.jpg"><div class="demo-game-move"></div></div>';
       var mv = stage.querySelector('.demo-game-move'); mv.textContent = p.move;
       later(function () { mv.classList.add('on'); }, 350); later(done, 1100);
