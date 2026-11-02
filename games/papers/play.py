@@ -3,7 +3,7 @@ The game window must be in front: Unity only takes the real cursor (cliclick), n
 Headless: launched with headless.dylib inserted, the game takes the same commands over a socket and plays behind his windows.
 Coordinates are window points, top-left of the content under the title bar included (same as the screenshot)."""
 import json, re, socket, subprocess, sys, time
-import rules
+import ezic, rules
 from rules import KEEP, verdict
 from pathlib import Path
 from PIL import Image, ImageChops, ImageStat
@@ -65,7 +65,8 @@ def click(p): cli(f"m:{at(*p)}", "w:120", f"c:{at(*p)}")
 def drag(a, b):
     """Unity samples the cursor once a frame: move in small timed steps and send the release twice."""
     mid = at((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
-    cli(f"m:{at(*a)}", f"dd:{at(*a)}", f"m:{mid}", f"m:{at(*b)}", f"du:{at(*b)}", f"du:{at(*b)}")   # cliclick spaces each event ~0.1 s, enough for Unity's frame sampling
+    cli(f"m:{at(*a)}", f"dd:{at(*a)}", f"m:{mid}", f"m:{at(*b)}", f"du:{at(*b)}", f"du:{at(*b)}")
+    print(f"{time.strftime('%H%M%S')} drag {sys._getframe(1).f_code.co_name}:{sys._getframe(1).f_lineno} {round(a[0])},{round(a[1])} -> {round(b[0])},{round(b[1])}", flush=True)   # cliclick spaces each event ~0.1 s, enough for Unity's frame sampling
 
 
 def shot():
@@ -107,8 +108,12 @@ def blob(img, base, box, skip=()):
     diff = ImageChops.difference(img.crop(box), base).point(lambda v: 255 if v > 40 else 0)
     if not diff.getbbox(): return None
     w, h = diff.size; cw, ch = w // 8, h // 6
+    band = lambda c: c.point(lambda v: 255 if 38 <= v <= 47 else 0)
+    r, g, b = Image.open(SHOT).convert("RGB").crop(box).split()
+    ours = ImageChops.multiply(ImageChops.multiply(band(r), band(g)), band(b))   # EZIC's decoder, cipher and notes are flat (42, 42, 42); no entrant paper is
     cells = [(ImageStat.Stat(diff.crop((x, y, x + cw, y + ch))).mean[0], box[0] + x + cw // 2, box[1] + y + ch // 2)
-             for x in range(0, w - cw + 1, cw) for y in range(0, h - ch + 1, ch)]
+             for x in range(0, w - cw + 1, cw) for y in range(0, h - ch + 1, ch)
+             if ImageStat.Stat(ours.crop((x, y, x + cw, y + ch))).mean[0] < 24]   # day 13: the decoder's top stuck out of the corner and went to the booth all day
     score, cx, cy = max([c for c in cells if c[1:] not in skip and not parked(*c[1:])] or [(0, 0, 0)])
     return (cx, cy) if score > 60 else None
 
@@ -135,7 +140,7 @@ def sweep(to, tries=6):
         drag(p, to); tried.append(p); time.sleep(0.3)   # a paper that won't go stays put: try the next busiest spot
 
 
-SPOTS = [(650, 470), (965, 470), (460, 600), (480, 400), (760, 600)]   # where each handed-over document goes (centre of the paper). y 470, not 380: a passport is ~400 tall and at 380 its ENTRY VISA hid under the booth window (day 14: 9 of 17 entrants lost)
+SPOTS = [(650, 470), (965, 470), (460, 600), (480, 400), (760, 600)]   # paper centres; at y 380 a ~400 px passport hid its visa under the booth (day 14)
 
 
 def at_booth(img):   # the counter strip is olive in the booth and black on the night screen
@@ -178,7 +183,7 @@ def entrant(day, base):
         ws = ocr()
         if any("HIGHLIGHT" in w["t"].upper() for w in ws): click(INSPECT); time.sleep(1.0); shot(); ws = ocr()   # stuck in inspect mode: nothing moves
         time.sleep(6); return "waiting"
-    if ImageStat.Stat(ImageChops.difference(Image.open(SHOT).convert("L").crop(EZIC_BOX), EZIC_FACE)).mean[0] < 12: return messenger(day, base)   # 67 day 8-11 frames: him 3 to 9, everyone else 16 up
+    if ezic.hooded(Image.open(SHOT)): return ezic.messenger(day, base)
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time, sometimes the passport last and slow
         t = time.time()
@@ -192,27 +197,6 @@ def entrant(day, base):
     t1 = time.time(); r = decide(day, spots, base)
     print(f"walk {walk:.1f}s slide {t1 - t0 - walk:.1f}s decide {time.time() - t1:.1f}s", flush=True)   # where the seconds go
     return r
-
-
-EZIC_BOX, EZIC_FACE = (110, 270, 290, 445), Image.open(HERE / "ezic-face.png").convert("L")   # the hooded messenger with the star on his face, cut from day 11
-
-
-def messenger(day, base):
-    """The hooded EZIC messenger brings no passport, only a folded note. Open it: READ QUICKLY, RETURN TO MESSENGER means
-    hand it back and he leaves (day 11 stood there until it was). Anything else he brings (decoder, cipher) is ours."""
-    if day == 20: raise SystemExit("day 20 messenger brings poison: never touch it, play him by hand")   # ponytail: until the poison is mapped
-    for _ in range(3):
-        left = doc_on_counter(shot(), base)
-        if not left: break
-        drag(left, DESK); time.sleep(0.8)
-        for dy in (-90, -60, -30, 0):   # the fold tab sits above where the note was grabbed (day 11: 90 px)
-            click((DESK[0], DESK[1] + dy)); time.sleep(1.0); shot(); ws = ocr()
-            r = next((w for w in ws if "MESSENGER" in w["t"].upper()), None)
-            if r: break
-        print("ezic note", [w["t"] for w in ws if w["x"] > 360 and w["y"] > 236], flush=True)
-        if r: drag((r["x"], r["y"] + 60), ENTRANT); time.sleep(4)
-        else: drag(DESK, PARK); time.sleep(0.6)
-    return "ezic messenger"
 
 
 def missing_passport():
@@ -289,11 +273,7 @@ def _check():
 
 if __name__ == "__main__":
     _check()
-    import atexit, collections   # where the day's seconds go: every sleep, by the line that slept (day 13: 22 to 50 s per entrant)
-    SLEPT, _sleep = collections.Counter(), time.sleep
-    def _counted(s): f = sys._getframe(1); SLEPT[f"{f.f_code.co_name}:{f.f_lineno}"] += s; _sleep(s)
-    time.sleep = _counted
-    atexit.register(lambda: print("slept", [(k, round(v)) for k, v in SLEPT.most_common(15)], flush=True))
+    import slept   # noqa: F401, totals every sleep by line
     day = int(sys.argv[1])
     base = Image.open(HERE / '.counter.png') if (HERE / '.counter.png').exists() else shot().crop(CBOX)   # the empty counter
     base.save(HERE / '.counter.png')
