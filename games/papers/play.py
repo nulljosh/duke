@@ -3,7 +3,7 @@ The game window must be in front: Unity only takes the real cursor (cliclick), n
 Headless: launched with headless.dylib inserted, the game takes the same commands over a socket and plays behind his windows.
 Coordinates are window points, top-left of the content under the title bar included (same as the screenshot)."""
 import json, re, socket, subprocess, sys, time
-import ezic, rules, scale, wanted
+import ezic, inspect_mode, rules, scale, wanted
 from rules import KEEP, verdict
 from pathlib import Path
 from PIL import Image, ImageChops, ImageStat
@@ -248,6 +248,7 @@ def decide(day, spots, base=None):
         else: missing_passport(); shot(); words = ocr(); v = "deny"   # none after the waits and the lift: interrogate for the visa slip. A deny with nothing stamped kept her at the booth (day 14)
     visa = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
     if visa: wanted.match(words)   # log only: 32x40 correlation could not tell criminals (0.44 to 0.64) from honest faces (to 0.65)
+    if v == "approve" and day >= 13 and inspect_mode.check(words): v = "deny"   # the game's own check: height, weight, description
     if day == 14 and DECIDED in (1, 6): v = "deny"   # the two scripted wanted criminals, entrants 1 and 6 (RULES.md); denying costs nothing
     if visa:   # the passport: slide its visa box under the chosen stamp
         grab = (visa["x"], min(visa["y"] + 150, 580))   # a temporary visa slip sits low on the desk
