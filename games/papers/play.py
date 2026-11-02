@@ -172,6 +172,7 @@ def entrant(day, base):
         if time.time() - t0 > 6 and any("NO DOCUMENTS" in w["t"].upper() for w in ocr()):   # Jorji on day 3: interrogate, he leaves
             missing_passport(); return "interrogated"
         if time.time() - t0 > 40:   # still in the booth: a missed horn, call again
+            if ezic.hooded(shot()): return ezic.messenger(day, base)   # day 15: he brings nothing and waits for the coded papers
             if any(re.search(r"VISA", w["t"].upper()) and w["x"] > 360 for w in ocr()): EMPTY = CLEAN; return decide(day, [], base)   # day 14: his papers were already on the desk, unstamped (a dark face reads as an empty booth to at_booth_face)
             return "nobody came"
         time.sleep(0.3)
