@@ -22,7 +22,7 @@ def ledger(words):
     """Optional rows: label, cost and the row's y, plus the night total."""
     rows = []
     for w in words:
-        t = w["t"].upper()
+        t = w["t"].upper().translate(str.maketrans("АВЕКМНОРСТХ", "ABEKMHOPCTX"))   # night 12: HEAT read as Cyrillic НЕAТ, its 10 went uncounted
         if 360 < w["x"] < 600 and w["y"] > 220 and re.search(r"GIFT|EZIC", t):   # days 11 and 12: burn EZIC's gift (keeping it is ending 4)
             amt = next((int(re.sub(r"\D", "", v["t"])) for v in words if v["x"] > 650 and abs(v["y"] - w["y"]) < 10 and re.search(r"\d", v["t"])), 0)
             rows.append({"t": t, "y": w["y"], "cost": -amt, "who": None})   # income: a negative cost

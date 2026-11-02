@@ -2,9 +2,9 @@
 <rect width="1280" height="900" fill="#141012"/>
 <text x="60" y="70" fill="#efe6d8" font-size="30" font-weight="700">Glory to Arstotzka, 31 days</text>
 <text x="60" y="102" fill="#8c8078" font-size="15">Duke's route through Papers, Please to ending 20: refuse every EZIC task, burn both gifts, hold the wall.</text>
-<text x="60" y="126" fill="#8c8078" font-size="15">11 of 31 days done. Day 12 is on the booth now.</text>
+<text x="60" y="126" fill="#8c8078" font-size="15">12 of 31 days done. Day 13 is on the booth now.</text>
 <polyline points="115,190 265,190 415,190 565,190 715,190 865,190 1015,190 1165,190 1235,190 1235,358 1165,358 1015,358 865,358 715,358 565,358 415,358 265,358 115,358 45,358 45,526 115,526 265,526 415,526 565,526 715,526 865,526 1015,526 1165,526 1235,526 1235,694 1165,694 1015,694 865,694 715,694 565,694 415,694 265,694" fill="none" stroke="#3a3134" stroke-width="6" stroke-linejoin="round"/>
-<polyline points="115,190 265,190 415,190 565,190 715,190 865,190 1015,190 1165,190 1235,190 1235,358 1165,358 1015,358 865,358 715,358" fill="none" stroke="#e8564e" stroke-width="6" stroke-linejoin="round"/>
+<polyline points="115,190 265,190 415,190 565,190 715,190 865,190 1015,190 1165,190 1235,190 1235,358 1165,358 1015,358 865,358 715,358 565,358" fill="none" stroke="#e8564e" stroke-width="6" stroke-linejoin="round"/>
 <circle cx="115" cy="190" r="20" fill="#e8564e" stroke="#e8564e" stroke-width="3"/>
 <text x="115" y="196" text-anchor="middle" fill="#141012" font-size="16" font-weight="700">1</text>
 <text x="115" y="234" text-anchor="middle" fill="#8c8078" font-size="12.5" font-weight="700">Arstotzkans only</text>
@@ -55,15 +55,15 @@
 <text x="865.0" y="318.5" text-anchor="middle" fill="#d9cdb4" font-size="10.5" font-weight="700">EZIC</text>
 <text x="865" y="402" text-anchor="middle" fill="#8c8078" font-size="12.5" font-weight="700">Forgeries start</text>
 <text x="865" y="419" text-anchor="middle" fill="#8c8078" font-size="12">deny Saratov, burn gift</text>
-<circle cx="715" cy="358" r="27" fill="none" stroke="#e8691a" stroke-width="2"/>
-<circle cx="715" cy="358" r="20" fill="#e8691a" stroke="#e8691a" stroke-width="3"/>
+<circle cx="715" cy="358" r="20" fill="#e8564e" stroke="#e8564e" stroke-width="3"/>
 <text x="715" y="364" text-anchor="middle" fill="#141012" font-size="16" font-weight="700">12</text>
 <rect x="685.0" y="306" width="60" height="17" rx="2" fill="none" stroke="#d9cdb4" stroke-width="1.2"/>
 <text x="715.0" y="318.5" text-anchor="middle" fill="#d9cdb4" font-size="10.5" font-weight="700">EZIC</text>
-<text x="715" y="402" text-anchor="middle" fill="#efe6d8" font-size="12.5" font-weight="700">Vonel gets nothing</text>
+<text x="715" y="402" text-anchor="middle" fill="#8c8078" font-size="12.5" font-weight="700">Vonel gets nothing</text>
 <text x="715" y="419" text-anchor="middle" fill="#8c8078" font-size="12">burn the 2,000</text>
-<circle cx="565" cy="358" r="20" fill="#141012" stroke="#3a3134" stroke-width="3"/>
-<text x="565" y="364" text-anchor="middle" fill="#efe6d8" font-size="16" font-weight="700">13</text>
+<circle cx="565" cy="358" r="27" fill="none" stroke="#e8691a" stroke-width="2"/>
+<circle cx="565" cy="358" r="20" fill="#e8691a" stroke="#e8691a" stroke-width="3"/>
+<text x="565" y="364" text-anchor="middle" fill="#141012" font-size="16" font-weight="700">13</text>
 <text x="565" y="402" text-anchor="middle" fill="#efe6d8" font-size="12.5" font-weight="700">ID supplement</text>
 <text x="565" y="419" text-anchor="middle" fill="#8c8078" font-size="12">Hasse's pennant</text>
 <circle cx="415" cy="358" r="20" fill="#141012" stroke="#d9cdb4" stroke-width="3"/>
