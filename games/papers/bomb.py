@@ -7,6 +7,7 @@ from PIL import Image
 CORNERS = [(635, 355), (794, 355), (635, 550), (794, 550)]
 SCREWS = [(652, 384), (773, 384), (652, 469), (773, 469)]
 WIRES = [692, 650, 776, 734]   # boxes 1, 2, 3, 4
+DONE = False   # once a day: every entrant after the bomber got the bomb routine when this keyed on entrant order
 
 
 def _red(p, x):   # an uncut wire is red under its clip: a few red pixels near (x, 416)
@@ -26,5 +27,6 @@ def defuse():
     else: print("bomb: no red seen, cutting anyway", flush=True)   # 2026-11-02: giving up here was certain death
     for x in WIRES: p.click((x, 416)); time.sleep(0.5)
     time.sleep(2); p.drag((560, 500), p.ENTRANT); time.sleep(2)
+    global DONE; DONE = True
     print("bomb defused", flush=True)
     return "bomb"
