@@ -175,5 +175,7 @@ if __name__ == "__main__":
     play.shot(); words = play.ocr(); rows, total = ledger(words)
     fam = status(Image.open(play.SHOT).convert("RGB"), rows)
     note = ", ".join(f"{k.lower()} {'very sick' if v['very'] else 'sick' if v['sick'] else 'ok'}" for k, v in fam.items())
-    with open(play.HERE / "progress.jsonl", "a") as f: f.write(json.dumps({"day": day, "entrants": n, "money": total, "family": note}) + "\n")
+    log = play.HERE / "progress.jsonl"   # one row per day: a replay replaces its day's row
+    rows = [l for l in log.read_text().splitlines() if l.strip() and json.loads(l)["day"] != day]
+    log.write_text("\n".join(rows + [json.dumps({"day": day, "entrants": n, "money": total, "family": note})]) + "\n")
     graph(); print("day", day, "entrants", n, "total before buying", total, note)
