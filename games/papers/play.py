@@ -247,7 +247,8 @@ def decide(day, spots, base=None):
         elif day == 3 or not spots or SAME >= 1: missing_passport(); shot(); words = ocr(); v = "deny"   # no passport twice from the same face: really none, interrogate
         else: v = "deny"   # papers but no passport found: hand everything back rather than interrogate over a lost one
     visa = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
-    if visa and wanted.match(words) > 0.75: v = "deny"   # a wanted face (day 14 on): denying costs nothing, admitting is a citation
+    if visa and wanted.WANTED: drag((visa["x"], visa["y"] + 40), (visa["x"], visa["y"] + 42)); time.sleep(0.4); shot(); words = ocr() + SAID   # a touched paper comes to the top: the passport photo out from under the permit (day 14)
+    if visa and wanted.match(words) > 0.65: v = "deny"   # a wanted face (day 14 on): denying costs nothing, admitting is a citation
     if visa:   # the passport: slide its visa box under the chosen stamp
         grab = (visa["x"], min(visa["y"] + 150, 580))   # a temporary visa slip sits low on the desk
         drop = (grab[0] + STAMP_X[v] - visa["x"], grab[1])
