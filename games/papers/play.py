@@ -177,24 +177,42 @@ def entrant(day, base):
         if SAME >= 6: raise SystemExit("same entrant seven times: stop and replay the day")
         ws = ocr()
         if any("HIGHLIGHT" in w["t"].upper() for w in ws): click(INSPECT); time.sleep(1.0); shot(); ws = ocr()   # stuck in inspect mode: nothing moves
-        ez = next((w for w in ws if "EZIC" in w["t"].upper() and parked(w["x"], w["y"])), None)
-        if ez and SAME in (2, 4): drag((ez["x"], ez["y"] - 40), ENTRANT); time.sleep(2)   # day 11: the hooded messenger waits for his note back; the day 10 decoder he leaves with us
         time.sleep(6); return "waiting"
+    if ImageStat.Stat(ImageChops.difference(Image.open(SHOT).convert("L").crop(EZIC_BOX), EZIC_FACE)).mean[0] < 12: return messenger(day, base)   # 67 day 8-11 frames: him 3 to 9, everyone else 16 up
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time, sometimes the passport last and slow
         t = time.time()
         while not (at_ := doc_on_counter(shot(), base)) and time.time() - t < 2.5: time.sleep(0.2)   # a slow passport is caught again in decide
         if not at_: break
         drag(at_, spot); spots.append(spot); time.sleep(0.3)
-    ws = ocr()
-    ez = next((w for w in ws if "EZIC" in w["t"].upper() and w["x"] > 360 and w["y"] > 236 and not parked(w["x"], w["y"])), None)
-    if day != 10 and ez and not any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in ws):   # the hooded messenger: no passport, just a note he wants back (day 11); the day 10 decoder is ours
-        print("ezic note", [w["t"] for w in ws if w["x"] > 360 and w["y"] > 236], flush=True)
-        drag((ez["x"], ez["y"]), ENTRANT); time.sleep(4); return "ezic note"
+    ws = ocr(); vonel = next((w for w in ws if "VONEL" in w["t"].upper() and w["x"] > 360), None)
+    if vonel:   # M. Vonel, MOI (days 12, 29): hand back his badge and nothing else; the cipher or Drex's paper to him is ending 3
+        drag((vonel["x"], vonel["y"] - 50), ENTRANT); time.sleep(6); return "vonel"
     global SAID; SAID = [w for w in ws if not (w["x"] > 360 and w["y"] > 236)]   # day 8 Cosmo Letski said a purpose his permit didn't
     t1 = time.time(); r = decide(day, spots, base)
     print(f"walk {walk:.1f}s slide {t1 - t0 - walk:.1f}s decide {time.time() - t1:.1f}s", flush=True)   # where the seconds go
     return r
+
+
+EZIC_BOX, EZIC_FACE = (110, 270, 290, 445), Image.open(HERE / "ezic-face.png").convert("L")   # the hooded messenger with the star on his face, cut from day 11
+
+
+def messenger(day, base):
+    """The hooded EZIC messenger brings no passport, only a folded note. Open it: READ QUICKLY, RETURN TO MESSENGER means
+    hand it back and he leaves (day 11 stood there until it was). Anything else he brings (decoder, cipher) is ours."""
+    if day == 20: raise SystemExit("day 20 messenger brings poison: never touch it, play him by hand")   # ponytail: until the poison is mapped
+    for _ in range(3):
+        left = doc_on_counter(shot(), base)
+        if not left: break
+        drag(left, DESK); time.sleep(0.8)
+        for dy in (-90, -60, -30, 0):   # the fold tab sits above where the note was grabbed (day 11: 90 px)
+            click((DESK[0], DESK[1] + dy)); time.sleep(1.0); shot(); ws = ocr()
+            r = next((w for w in ws if "MESSENGER" in w["t"].upper()), None)
+            if r: break
+        print("ezic note", [w["t"] for w in ws if w["x"] > 360 and w["y"] > 236], flush=True)
+        if r: drag((r["x"], r["y"] + 60), ENTRANT); time.sleep(4)
+        else: drag(DESK, PARK); time.sleep(0.6)
+    return "ezic messenger"
 
 
 def missing_passport():
