@@ -116,7 +116,7 @@ def blob(img, base, box, skip=()):
 def keep_gifts():
     """Park the papers that are ours by their printed title, so the sweep hands back only what the entrant owns."""
     global PENALTIES
-    for _ in range(4):
+    for _ in range(8):
         shot(); ws = [w for w in ocr() if not parked(w["x"], w["y"]) and w["x"] > 360 and w["y"] > 236]
         w = next((w for w in ws if re.search(KEEP, w["t"].upper())), None)
         if not w: return

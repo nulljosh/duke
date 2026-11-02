@@ -6,6 +6,7 @@
 // Build: clang -dynamiclib -fobjc-arc -framework Cocoa -framework AudioToolbox -framework CoreAudio -o headless.dylib headless.m
 #import <Cocoa/Cocoa.h>
 #import <objc/runtime.h>
+#include <signal.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 
@@ -72,6 +73,7 @@ static NSWindowOcclusionState visible(id self, SEL _cmd) { return NSWindowOcclus
 static void swap(Class c, SEL s, IMP i) { Method m = class_getInstanceMethod(c, s); if (m) method_setImplementation(m, i); }
 
 __attribute__((constructor)) static void init(void) {
+    signal(SIGPIPE, SIG_IGN);   // a bot killed mid-reply took the game down with it twice (2026-11-02)
     swap(object_getClass(NSEvent.class), @selector(mouseLocation), (IMP)mouseLocation);
     swap(object_getClass(NSEvent.class), @selector(pressedMouseButtons), (IMP)pressedMouseButtons);
     swap(NSWindow.class, @selector(mouseLocationOutsideOfEventStream), (IMP)outside);
