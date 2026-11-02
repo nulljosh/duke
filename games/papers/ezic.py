@@ -15,6 +15,7 @@ def messenger(day, base):
     p = sys.modules.get("play") or sys.modules["__main__"]   # ponytail: play imports this module, so reach back lazily
     if day == 20: raise SystemExit("day 20 messenger brings poison: never touch it, play him by hand")   # ponytail: until the poison is mapped
     if day == 15:   # E7 wants both coded papers (Drex's paper and the decoder): hand over the grey ones, he slides a note back
+        for i in range(6): p.drag((1010, 610), (760 + 15 * i, 300 + 15 * i)); time.sleep(0.3)   # parked cards and citations cover them
         for _ in range(2):
             g = grey(p)
             if g: p.drag(g, p.ENTRANT); time.sleep(2)
