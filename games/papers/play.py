@@ -135,7 +135,7 @@ def sweep(to, tries=6):
         drag(p, to); tried.append(p); time.sleep(0.3)   # a paper that won't go stays put: try the next busiest spot
 
 
-SPOTS = [(650, 400), (965, 380), (460, 600), (480, 330), (760, 600)]   # where each handed-over document goes; day 10 workers bring three, day 13 on a fourth (ID supplement)
+SPOTS = [(650, 470), (965, 470), (460, 600), (480, 400), (760, 600)]   # where each handed-over document goes (centre of the paper). y 470, not 380: a passport is ~400 tall and at 380 its ENTRY VISA hid under the booth window (day 14: 9 of 17 entrants lost)
 
 
 def at_booth(img):   # the counter strip is olive in the booth and black on the night screen
@@ -236,7 +236,7 @@ def reveal(spots, words):
     """Three papers overlap on this desk. Lift each one, newest first, to the open middle of the desk until the passport
     shows; keep what was read before unless the passport now covers it."""
     for spot in reversed(spots):   # a permit is wider than a passport: lift it clear across the desk, not just nudge it (day 4 Emili Shinzinova)
-        drag(spot, (spot[0] + 330 if spot[0] < 735 else spot[0] - 330, 330)); time.sleep(0.5); shot(); now = ocr()
+        drag(spot, (spot[0] + 330 if spot[0] < 735 else spot[0] - 330, 470)); time.sleep(0.5); shot(); now = ocr()
         v = next((w for w in now if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
         if v: return now + [w for w in words if not (abs(w["x"] - v["x"]) < 125 and -150 < w["y"] - v["y"] < 210)]
     return None
@@ -247,16 +247,16 @@ def decide(day, spots, base=None):
     shot(); words = ocr() + SAID; v = verdict(words, day)
     if day >= 3 and not any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words):
         keep_gifts()   # day 8 Lillian Lao: a citation printed late lay over her passport
-        for y in (495, 530): drag((176, y), (965, 380)); time.sleep(0.4)   # day 4 Quinn Noxilova: a passport the counter check misses still comes with a blind grab
+        for y in (495, 530): drag((176, y), (965, 470)); time.sleep(0.4)   # day 4 Quinn Noxilova: a passport the counter check misses still comes with a blind grab
         shot(); words = ocr() + SAID; v = verdict(words, day)
-        if any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words) and len(spots) < 5: spots.append((965, 380)); return decide(day, spots, base)
+        if any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words) and len(spots) < 5: spots.append((965, 470)); return decide(day, spots, base)
         t, late = time.time(), None   # late, not missing: some entrants answer purpose and duration out loud before the passport comes over
         while base is not None and not (late := doc_on_counter(shot(), base)) and time.time() - t < 8: time.sleep(0.3)
         if late and len(spots) < 5:   # onto the open right of the desk: dropped at (700, 560) it slid under the permit (day 8 Timofey Sokolov)
-            spot = (965, 380); drag(late, spot); spots.append(spot); time.sleep(0.6); return decide(day, spots, base)
-        for y in (495, 530): drag((176, y), (965, 380)); time.sleep(0.4)   # and blind once more, after the wait
+            spot = (965, 470); drag(late, spot); spots.append(spot); time.sleep(0.6); return decide(day, spots, base)
+        for y in (495, 530): drag((176, y), (965, 470)); time.sleep(0.4)   # and blind once more, after the wait
         shot(); words = ocr() + SAID; v = verdict(words, day)
-        if any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words) and len(spots) < 5: spots.append((965, 380)); return decide(day, spots, base)
+        if any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words) and len(spots) < 5: spots.append((965, 470)); return decide(day, spots, base)
         (HERE / "runs").mkdir(exist_ok=True); shot().save(HERE / "runs" / f"nopass-{time.strftime('%H%M%S')}.png")   # what it saw, for the next fix
         seen = reveal(spots, words)
         if seen: words = seen; v = verdict(words, day)
@@ -289,6 +289,11 @@ def _check():
 
 if __name__ == "__main__":
     _check()
+    import atexit, collections   # where the day's seconds go: every sleep, by the line that slept (day 13: 22 to 50 s per entrant)
+    SLEPT, _sleep = collections.Counter(), time.sleep
+    def _counted(s): f = sys._getframe(1); SLEPT[f"{f.f_code.co_name}:{f.f_lineno}"] += s; _sleep(s)
+    time.sleep = _counted
+    atexit.register(lambda: print("slept", [(k, round(v)) for k, v in SLEPT.most_common(15)], flush=True))
     day = int(sys.argv[1])
     base = Image.open(HERE / '.counter.png') if (HERE / '.counter.png').exists() else shot().crop(CBOX)   # the empty counter
     base.save(HERE / '.counter.png')
