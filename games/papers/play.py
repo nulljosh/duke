@@ -3,7 +3,7 @@ The game window must be in front: Unity only takes the real cursor (cliclick), n
 Headless: launched with headless.dylib inserted, the game takes the same commands over a socket and plays behind his windows.
 Coordinates are window points, top-left of the content under the title bar included (same as the screenshot)."""
 import json, re, socket, subprocess, sys, time
-import ezic, rules, wanted
+import ezic, rules, scale, wanted
 from rules import KEEP, verdict
 from pathlib import Path
 from PIL import Image, ImageChops, ImageStat
@@ -193,7 +193,7 @@ def entrant(day, base):
     ws = ocr(); vonel = next((w for w in ws if "VONEL" in w["t"].upper() and w["x"] > 360), None)
     if vonel:   # M. Vonel, MOI (days 12, 29): hand back his badge and nothing else; the cipher or Drex's paper to him is ending 3
         drag((vonel["x"], vonel["y"] - 50), ENTRANT); time.sleep(6); return "vonel"
-    global SAID; SAID = [w for w in ws if not (w["x"] > 360 and w["y"] > 236)]   # day 8 Cosmo Letski said a purpose his permit didn't
+    global SAID; SAID = [w for w in ws if not (w["x"] > 360 and w["y"] > 236)] + scale.read(SHOT)   # day 8 Cosmo Letski said a purpose his permit didn't
     t1 = time.time(); r = decide(day, spots, base)
     print(f"walk {walk:.1f}s slide {t1 - t0 - walk:.1f}s decide {time.time() - t1:.1f}s", flush=True)   # where the seconds go
     return r
@@ -247,7 +247,7 @@ def decide(day, spots, base=None):
         elif day == 3 or not spots or SAME >= 1: missing_passport(); shot(); words = ocr(); v = "deny"   # no passport twice from the same face: really none, interrogate
         else: v = "deny"   # papers but no passport found: hand everything back rather than interrogate over a lost one
     visa = next((w for w in words if re.search(r"VISA|STAMP ?HE", w["t"].upper())), None)
-    if visa and wanted.match(words) > 0.7: v = "deny"   # a wanted face (day 14 on): denying costs nothing, admitting is a citation
+    if visa and wanted.match(words) > 0.75: v = "deny"   # a wanted face (day 14 on): denying costs nothing, admitting is a citation
     if visa:   # the passport: slide its visa box under the chosen stamp
         grab = (visa["x"], min(visa["y"] + 150, 580))   # a temporary visa slip sits low on the desk
         drop = (grab[0] + STAMP_X[v] - visa["x"], grab[1])

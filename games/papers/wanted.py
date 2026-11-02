@@ -43,10 +43,12 @@ def match(words):
     p = sys.modules.get("play") or sys.modules["__main__"]
     img, best, at = Image.open(p.SHOT).convert("L"), 0, None
     want = [_norm(w) for w in WANTED]
-    for n in (w for w in words if w.get("w") and w["x"] > 360 and w["y"] > 236 and re.search(r"[A-Z0-9]{4,5}[-_][A-Z0-9]{4,5}", w["t"])):
+    permit = [w for w in words if "PASSPO" in w["t"].upper()]   # a permit prints the number too, under "bearing passport number"
+    for n in (w for w in words if w.get("w") and w["x"] > 360 and w["y"] > 236 and re.search(r"[A-Z0-9]{4,5}[-_][A-Z0-9]{4,5}", w["t"])
+              and not any(0 < w["y"] - q["y"] < 45 and abs(w["x"] - q["x"]) < 120 for q in permit)):
         left = n["x"] - n["w"] / 2
-        for dx in range(-10, 11, 5):
-            for dy in range(-125, -94, 5):
+        for dx in range(-10, 41, 5):   # day 14: the photo sat up to 40 px right of the number's left edge
+            for dy in range(-130, -84, 5):
                 box = (round(left + dx), round(n["y"] + dy), round(left + dx + 80), round(n["y"] + dy + 105))
                 x = _norm(img.crop(box))
                 sc = max(sum(a * b for a, b in zip(x, y)) / len(x) for y in want)
