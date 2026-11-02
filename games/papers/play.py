@@ -235,7 +235,7 @@ def decide(day, spots, base=None):
         shot(); words = ocr() + SAID; v = verdict(words, day)
         if any(re.search(r"VISA|STAMP ?HE", w["t"].upper()) for w in words) and len(spots) < 5: spots.append((965, 470)); return decide(day, spots, base)
         t, late = time.time(), None   # late, not missing: some entrants answer purpose and duration out loud before the passport comes over
-        while base is not None and not (late := doc_on_counter(shot(), base)) and time.time() - t < 8: time.sleep(0.3)
+        while base is not None and not (late := doc_on_counter(shot(), base)) and time.time() - t < 20: time.sleep(0.3)
         if late and len(spots) < 5:   # onto the open right of the desk: dropped at (700, 560) it slid under the permit (day 8 Timofey Sokolov)
             spot = (965, 470); drag(late, spot); spots.append(spot); time.sleep(0.6); return decide(day, spots, base)
         for y in (495, 530): drag((176, y), (965, 470)); time.sleep(0.4)   # and blind once more, after the wait
@@ -275,8 +275,7 @@ if __name__ == "__main__":
     _check()
     import slept   # noqa: F401, totals every sleep by line
     day = int(sys.argv[1])
-    base = Image.open(HERE / '.counter.png') if (HERE / '.counter.png').exists() else shot().crop(CBOX)   # the empty counter
-    base.save(HERE / '.counter.png')
+    base = Image.open(HERE / "counter-empty.png").convert("L")   # the empty counter, fixed: one cached in a fade-in was black and every check saw papers (days 11 to 14)
     shot(); b = next((w for w in ocr() if re.search(r"BULLETIN|INSPECTOR", w["t"].upper())), {"x": 745, "y": 460})
     drag((b["x"], b["y"] + 100), (105, 612)); time.sleep(1)   # file the day's bulletin, wherever it lands, so it stays out of the OCR
     EMPTY = shot().crop(DBOX); BOOTH = shot().crop(FACEBOX) if not at_booth_face() else None
