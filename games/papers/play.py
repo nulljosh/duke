@@ -173,7 +173,9 @@ def entrant(day, base):
     SAME, FACE = (SAME + 1 if same else 0), face   # the same face back at the booth: the last entrant never left
     det = next((w for w in ocr() if "DETAIN" in w["t"].upper() and w["y"] < 300), None)   # a denied entrant who will not leave (day 10), whether or not the face check caught it
     if det: click((det["x"], det["y"])); time.sleep(5); return "detained"   # day 10: denied, he refuses to leave; the guards take him
-    if SAME >= 2: raise SystemExit("same entrant three times: stop and replay the day")
+    if SAME >= 2:   # Calensk and the other talkers stand there with nothing to process (day 11): give them time, never kill the day
+        if SAME >= 6: raise SystemExit("same entrant seven times: stop and replay the day")
+        time.sleep(6); return "waiting"
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time, sometimes the passport last and slow
         t = time.time()

@@ -9,6 +9,8 @@ Joshua's ask (2026-11-02): finish every game in games/README.md to 100%, one at 
 ## Papers, Please right now
 - Headless and muted: `games/papers/headless.dylib` (build line at the top of headless.m; it interposes AudioOutputUnitStart, AudioDeviceStart and AudioQueueStart). `games/fez/win` and `games/fez/ocr` are built binaries (gitignored): rebuild with `swiftc -O -o games/fez/win games/factorio/scripts/win.swift` and `swiftc -O -o games/fez/ocr games/fez/ocr.swift` if a cleanup wipes them.
 - Run a day: `nohup python3 -u games/papers/day.py N --replay > /tmp/papers-dN.out &` (relaunches the game headless and opens day N from its morning save). Plain `day.py N` assumes the night screen of day N-1 is up.
+- 2026-11-02 02:20: day 10 done (salary 45, family alive, wife sick; bought her medicine and heat, no food). Day 11 running via `day.py 11 --resume` after a stall; the EZIC messenger (hood, star on his eye) was standing in the booth. Joshua calls him "this asshole": get him out fast. Calensk (guard) offers a detain bonus: ignore him (Joshua: "fuck him off").
+- Open for day 11 on: forged-seal check on permits and photo check on ID cards (both cost citations on day 11), a desk snapshot per entrant for training those checks. `same entrant` now waits up to 7 times instead of killing the day; DETAIN is clicked whenever it shows.
 - Day 10 fixes so far: CONTINUE retried on the day picker, five desk spots instead of three (workers bring a third paper, day 13 on a fourth), 2.5 s wait between slid papers. Day 10 was replaying at handoff.
 
 ## Earlier (Pikmin 2 loop, 2026-10-29)
