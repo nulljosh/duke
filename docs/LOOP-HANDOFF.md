@@ -1,15 +1,17 @@
-# Duke loop handoff (2026-10-29, late morning)
+# Duke loop handoff (2026-11-02, overnight)
 
-## What the loop is
-Pikmin 2 is the active loop. Duke plays it for real on Dolphin (headless, with a virtual GameCube pad), one in-game day per autonomous script, saving and backing up the game at each day's end. Sapphire is parked. The Duolingo runner keeps going on its own track and is never touched.
+## What the loop is now
+Joshua's ask (2026-11-02): finish every game in games/README.md to 100%, one at a time, overnight, headless and muted, a screenshot to him (SendUserFile) after each day or milestone, replies one line. Order: Papers, Please (days 10 to 31, ending 20), Game Dev Tycoon, FEZ max-out, Oxygen Not Included, Pokemon Sapphire (Groudon needs a Ruby trade, tell him), Pikmin 2. Restart prompt:
+```
+/loop Finish every game listed in Duke's games/README.md to 100%, one at a time, overnight: Papers, Please first ... Replies one line.
+```
 
-Rules for every tick:
-- No cheats and no finished saves. A savestate reload is only for undoing the bot's own misinput.
-- Read `games/pikmin/GUIDE.md` and `games/pikmin/PLAYBOOK.md` before any move that can't be undone.
-- Only one client talks to Dolphin at a time, so never run two scripts at once.
-- Never kill the Duolingo runner or the menu bar app.
-- Taper: Joshua wants the loop to stop around 85% weekly usage, after the game is saved and `/save` has run. Weekly usage was 80% at this handoff.
+## Papers, Please right now
+- Headless and muted: `games/papers/headless.dylib` (build line at the top of headless.m; it interposes AudioOutputUnitStart, AudioDeviceStart and AudioQueueStart). `games/fez/win` and `games/fez/ocr` are built binaries (gitignored): rebuild with `swiftc -O -o games/fez/win games/factorio/scripts/win.swift` and `swiftc -O -o games/fez/ocr games/fez/ocr.swift` if a cleanup wipes them.
+- Run a day: `nohup python3 -u games/papers/day.py N --replay > /tmp/papers-dN.out &` (relaunches the game headless and opens day N from its morning save). Plain `day.py N` assumes the night screen of day N-1 is up.
+- Day 10 fixes so far: CONTINUE retried on the day picker, five desk spots instead of three (workers bring a third paper, day 13 on a fourth), 2.5 s wait between slid papers. Day 10 was replaying at handoff.
 
+## Earlier (Pikmin 2 loop, 2026-10-29)
 ## Where things stand
 - Pikmin 2 (Joshua's GPVP01, Europe) runs in Dolphin from the isolated profile at `/Volumes/LaCie/dolphin-duke`. The ROM is at `/Volumes/LaCie/roms/pikmin2/`.
 - Day 4 is done. Emergence Cave is cleared: two Candypop Buds made ten purple Pikmin, which lifted the Spherical Atlas (weight 101) home. The Citrus Lump and Quenching Emblem are home too.

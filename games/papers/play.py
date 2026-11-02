@@ -135,7 +135,7 @@ def sweep(to, tries=6):
         drag(p, to); tried.append(p); time.sleep(0.3)   # a paper that won't go stays put: try the next busiest spot
 
 
-SPOTS = [(650, 400), (965, 380), (460, 600)]   # where each handed-over document goes on the desk
+SPOTS = [(650, 400), (965, 380), (460, 600), (480, 330), (760, 600)]   # where each handed-over document goes; day 10 workers bring three, day 13 on a fourth (ID supplement)
 
 
 def at_booth(img):   # the counter strip is olive in the booth and black on the night screen
@@ -177,7 +177,7 @@ def entrant(day, base):
     spots = []
     for spot in SPOTS:   # the entrant slides papers over one at a time, sometimes the passport last and slow
         t = time.time()
-        while not (at_ := doc_on_counter(shot(), base)) and time.time() - t < 1.5: time.sleep(0.2)   # a slow passport is caught again in decide
+        while not (at_ := doc_on_counter(shot(), base)) and time.time() - t < 2.5: time.sleep(0.2)   # a slow passport is caught again in decide
         if not at_: break
         drag(at_, spot); spots.append(spot); time.sleep(0.3)
     global SAID; SAID = [w for w in ocr() if not (w["x"] > 360 and w["y"] > 236)]   # day 8 Cosmo Letski said a purpose his permit didn't
