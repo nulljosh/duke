@@ -59,7 +59,7 @@ Duke Sans: Inter 5.3 by Rasmus Andersson (SIL Open Font License 1.1, bumped from
 Scale: 34/41 large title, 22/28 title, 17/24 body, 15/20 subhead, 13/16 footnote. Headlines tighten to -0.022em. The fallback is the system face: `-apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif`.
 
 ## Art
-Walter Crane, Neptune's Horses (1892, public domain), dithered into a halftone dot mask (`../web/art/neptune.png`) and tinted Duke orange on the ink band. Poseidon's horses are the waves Duke rides. The surf nods that stay are the name, this art and the wave-crest quotes in Duke Sans.
+No borrowed paintings: the art is Duke's own play. `../tools/dither_art.py` takes the frames in `../web/shots` (real frames from Duke's runs), Floyd-Steinberg dithers them to one bit at a 3 px dot and saves alpha masks in `../web/art`. The landing cuts them with scanlines and tints them: `games.png` is nine columns in the `--strip` order, so every game's frame wears its own colour (the closer); `stitch.png` is Stitch, the trainer from Duke's Sapphire run, at his native GBA pixels beside the Duolingo band copy.
 
 ## Space and shape
 - The 8 point grid: 4, 8, 12, 16, 24, 32, 48, 64, 96. Side margin 20. Reading column 680.

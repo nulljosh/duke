@@ -1,7 +1,7 @@
 /* Duke landing, dressed after the dotfiles landing: the project's own palette is the brand. Dotfiles wears Catppuccin; Duke wears
    its nine game colours (--l-* in tokens.css) as a strip under the nav, a frame round the page, the art on the band and the full stop
-   after the headline. Tiny caps labels, small square buttons, a band under film grain where Hokusai's Great Wave (c. 1831) sits as a
-   dot mask in scanlines behind the live demo, and Duke Kahanamoku with his board (c. 1915) beside the band head, both public domain.
+   after the headline. Tiny caps labels, small square buttons, film grain, and art cut from Duke's own runs (tools/dither_art.py): Bayer-dithered
+   frames under scanlines, Stitch beside the Duolingo band and all nine games in the closer.
    Colour, type, space and radii come from tokens.css (brand/, copied in by deploy.sh). */
 :root {
   --display: var(--font);
@@ -48,8 +48,8 @@ a:focus-visible, .btn:focus-visible, select:focus-visible { outline: 4px solid v
 /* The live demo sits straight on the band: no window, no device. */
 .stage { position: relative; overflow: hidden; margin: var(--sp-8) clamp(0px, 3vw, 44px) 0; background: var(--grain), var(--band); padding: clamp(32px, 7vw, 96px) var(--sp-5); }
 .stage-art { position: absolute; inset: 0; background: var(--strip); opacity: .75;
-  -webkit-mask: var(--scan), url(art/great-wave.png) 70% 40% / cover no-repeat; -webkit-mask-composite: source-in;
-  mask: var(--scan), url(art/great-wave.png) 70% 40% / cover no-repeat; mask-composite: intersect; }
+  -webkit-mask: var(--scan), url(art/games.png) center / cover no-repeat; -webkit-mask-composite: source-in;
+  mask: var(--scan), url(art/games.png) center / cover no-repeat; mask-composite: intersect; }
 /* the frame round the whole page, the Nous way */
 body::after { content: ""; position: fixed; inset: 8px; border: 1px solid transparent; border-image: var(--strip) 1; opacity: .6; pointer-events: none; z-index: 30; }
 .app-demo { position: relative; max-width: 320px; margin: 0 auto; background: var(--demo-bg); color: var(--demo-text); border-radius: var(--r-card); padding: var(--sp-5) var(--sp-4); text-align: center; }
@@ -93,8 +93,8 @@ body::after { content: ""; position: fixed; inset: 8px; border: 1px solid transp
 .band { --band-sub: rgba(255,255,255,.78); --band-line: rgba(255,255,255,.2); }
 .band-head { position: relative; padding: var(--sp-9) var(--sp-5) var(--sp-8); text-align: center; }
 .duke-art { position: absolute; right: 5%; bottom: 0; width: 26%; height: 96%; background: var(--band-sub); opacity: .9;
-  -webkit-mask: var(--scan), url(art/duke.png) center bottom / contain no-repeat; -webkit-mask-composite: source-in;
-  mask: var(--scan), url(art/duke.png) center bottom / contain no-repeat; mask-composite: intersect; }
+  -webkit-mask: var(--scan), url(art/stitch.png) center bottom / contain no-repeat; -webkit-mask-composite: source-in;
+  mask: var(--scan), url(art/stitch.png) center bottom / contain no-repeat; mask-composite: intersect; }
 @media (min-width: 1001px) {   /* the art gets its own column beside a left-set head */
   .band-head { text-align: left; padding-left: 6%; padding-right: 34%; }
   .band .band-head p:not(.label) { margin: var(--sp-5) 0 0; }
@@ -193,8 +193,9 @@ h1 .dot { color: var(--l-factorio); animation: dot-walk 18s steps(1) infinite; }
 .cell .label::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: var(--sp-2); background: #fff; }
 @media (prefers-reduced-motion: reduce) { h1 .dot { animation: none; } }
 
-/* The closer: Hokusai's wave in all nine game colours, under the last word before the footer. */
+/* The closer: nine frames from Duke's own runs, dithered to one bit and cut by scanlines, each in its own game's colour. */
 .closer { position: relative; overflow: hidden; isolation: isolate; margin: 0 clamp(0px, 3vw, 44px); background: var(--grain), #0b0b0d; color: #fff; padding: clamp(96px, 14vw, 200px) 0; }
-.closer .stage-art { z-index: -1; opacity: .55; }
+.closer .stage-art { z-index: -1; opacity: .34; }
+
 .closer .body { color: rgba(255,255,255,.78); }
 .sec + .sec.closer { border-top: 0; }
