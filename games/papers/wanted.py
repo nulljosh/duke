@@ -41,6 +41,7 @@ def match(words):
     above the passport number at the bottom left; search a little around it."""
     if not WANTED: return 0
     p = sys.modules.get("play") or sys.modules["__main__"]
+    (p.HERE / "runs" / "desk").mkdir(exist_ok=True); Image.open(p.SHOT).save(p.HERE / "runs" / "desk" / f"{time.strftime('%H%M%S')}.png")   # for tuning offline against the citations
     img, best, at = Image.open(p.SHOT).convert("L"), 0, None
     want = [_norm(w) for w in WANTED]
     permit = [w for w in words if "PASSPO" in w["t"].upper()]   # a permit prints the number too, under "bearing passport number"
