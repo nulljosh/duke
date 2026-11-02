@@ -14,6 +14,11 @@ def messenger(day, base):
     hand it back and he leaves (day 11 stood there until it was). Anything else he brings (decoder, cipher) is ours."""
     p = sys.modules.get("play") or sys.modules["__main__"]   # ponytail: play imports this module, so reach back lazily
     if day == 20: raise SystemExit("day 20 messenger brings poison: never touch it, play him by hand")   # ponytail: until the poison is mapped
+    if day == 15:   # E7 wants both coded papers (Drex's paper and the decoder): hand over the grey ones, he slides a note back
+        for _ in range(2):
+            g = grey(p)
+            if g: p.drag(g, p.ENTRANT); time.sleep(2)
+        time.sleep(3)
     for _ in range(3):
         left = p.doc_on_counter(p.shot(), base)
         if not left: break
@@ -26,3 +31,15 @@ def messenger(day, base):
         if r: p.drag((r["x"], r["y"] + 60), p.ENTRANT); time.sleep(4)
         else: p.drag(p.DESK, p.PARK); time.sleep(0.6)
     return "ezic messenger"
+
+
+def grey(p):
+    """Centre of the busiest patch of EZIC's flat (42, 42, 42) grey on the desk, or None."""
+    p.shot(); img = Image.open(p.SHOT).convert("RGB").crop(p.DBOX)
+    band = lambda c: c.point(lambda v: 255 if 38 <= v <= 47 else 0)
+    r, g, b = img.split(); m = ImageChops.multiply(ImageChops.multiply(band(r), band(g)), band(b))
+    w, h = m.size
+    cells = [(ImageStat.Stat(m.crop((x, y, x + 40, y + 40))).mean[0], p.DBOX[0] + x + 20, p.DBOX[1] + y + 20) for x in range(0, w - 39, 20) for y in range(0, h - 39, 20)]
+    score, x, y = max(cells)
+    return (x, y) if score > 100 else None
+

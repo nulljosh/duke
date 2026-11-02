@@ -2,7 +2,7 @@
 The game window must be in front: Unity only takes the real cursor (cliclick), not events posted to its pid.
 Headless: launched with headless.dylib inserted, the game takes the same commands over a socket and plays behind his windows.
 Coordinates are window points, top-left of the content under the title bar included (same as the screenshot)."""
-import json, re, socket, subprocess, sys, time
+import json, os, re, socket, subprocess, sys, time
 import ezic, inspect_mode, rules, scale, wanted
 from rules import KEEP, verdict
 from pathlib import Path
@@ -158,6 +158,7 @@ def night():   # the ledger is up: one stray click near SLEEP on a negative nigh
 def entrant(day, base):
     global EMPTY, SAME, FACE, DECIDED
     if not at_booth(shot()): return None
+    if day == 15 and DECIDED >= 1 and os.environ.get("PAPERS_BOMB"): raise SystemExit("day 15: the bomber is next, play him and the bomb by hand")   # set PAPERS_BOMB=1 on a day 15 replay; resume without it
     keep_gifts()   # the last citation goes to the corner
     for _ in range(3):   # a paper left on the counter by someone who has walked off (Calensk's envelope) is ours: park it
         img = shot(); left = doc_on_counter(img, base)
