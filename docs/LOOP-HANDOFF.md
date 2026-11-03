@@ -1,17 +1,20 @@
-# Duke loop handoff (2026-11-02, night)
+# Duke loop handoff (2026-11-03, paused)
 
 ## What the loop is
-The live loop is Pikmin 2, played headless on Duke and streamed with sound to twitch.tv/nulljosh1. Joshua's standing ask (2026-11-02): finish every game in games/README.md to 100%, one at a time, overnight, headless and muted. Send a screenshot to Joshua (SendUserFile) after each day or milestone. Replies are one line.
+The loop is Pikmin 2, played headless on Duke and streamed with sound to twitch.tv/nulljosh1. It is paused for now (see below). Joshua's standing ask (2026-11-02): finish every game in games/README.md to 100%, one at a time, overnight, headless and muted. Send a screenshot to Joshua (SendUserFile) after each day or milestone. Replies are one line.
 
 Queue after Pikmin: Papers, Please (days 15 to 31, ending 20), Game Dev Tycoon, FEZ max-out, Oxygen Not Included, Pokemon Sapphire (Groudon needs a Ruby trade, tell Joshua). Papers, Please is parked: day 15 waits on a reboot, because the Mac's built-in text reader (Vision OCR) broke machine-wide.
 
-## Pikmin 2 right now (2026-11-03 morning, active)
-- Card restored to `states/day6-end.gci` (Day 7 start: 10 purples, 14 Reds, 5 penned Blues). `states/day7-end.gci` and `day8-wiped.gci` are the bad timeline: a stray A on the cave pause menu escaped Hole of Beasts and left all 25 Pikmin behind. 5 of 201 treasures, 940 Poko.
-- One driver: `games/pikmin/day.sh` (morning, Louie punches the Burrow-nit, Chrysanthemum, enter Hole of Beasts, `cave.sh 4` = floors 1 to 4, stops before the Empress). Log `day.log` and `cave.log`. Never start a second driver.
+## Pikmin 2 (paused 2026-11-03 at Day 7 end)
+- Paused at the end of Day 7 with 29 Pikmin, 5 of 201 treasures and 940 Poko. Joshua said progress is too slow, so the loop waits until he comes back to it.
+- The Hole of Beasts cave run stalled today. Fixes committed in 71619a2: Louie no longer punches the Burrow-nit (fights use Pikmin now), the scripts detect which captain is actually being driven, and `go.py` fetches the squad before walking.
+- Next, in order: Hole of Beasts floors 1 to 4 with Pikmin-only fights. On floor 3, `geyser.py` throws Reds only.
+- The Burrow-nit near (-672,1392) must be fought with Pikmin thrown at its rear. Never punch it.
+- One driver only: `games/pikmin/day.sh` and `cave.sh`. Log `day.log` and `cave.log`. Never start a second driver.
 - `steps.py` guards: savestate checkpoints, death guard (PK_TOLERATE=1), freeze/circling guard (75 s on a 150-unit grid), a new floor counts as success, 0 Pikmin reads (loading) are ignored. `.stateop` lock: no memory reads during savestates (a read during a load deadlocked Dolphin on "Decompressing State").
-- Tactics learned: Louie punches Burrow-nits and Sheargrubs (`punch.py`, dismiss first); Candypop Buds are never fought; fire floors use `geyser.py` (test throw picks Red: hold A + D-pad right switches colour and it sticks); `floor.py` rounds up every Pikmin before the hole; `control()` alternates A and B so it can't pick "leave cave".
+- Tactics that still hold: Candypop Buds are never fought; `floor.py` rounds up every Pikmin before the hole; `control()` alternates A and B so it can't pick "leave cave". Test throws pick Red with hold A + D-pad right.
 - Charts: `graph.py` (bot-hour axis, garden theme), `forecast.py` (Monte Carlo + Black-Scholes), `treasures.py` (201 checklist from `treasures.json`, `collected.json`). `bench.py DAY "note" N` at each day end.
-- Twitch stream is live (`stream.sh`); `restart.sh` restarts Dolphin, daemons and stream.
+- `restart.sh` restarts Dolphin, daemons and stream when the loop comes back.
 
 ## Where things stand
 - **Papers, Please:** days 1 to 14 are done. Day 15 kept failing: the family died once after a broke night 15, then a debt ended a run, and the bomb went off more than once. Days 11 to 14 went through with the bomb-defuse, EZIC messenger and inspect-mode routines.
@@ -21,7 +24,7 @@ Queue after Pikmin: Papers, Please (days 15 to 31, ending 20), Game Dev Tycoon, 
 - **Oxygen Not Included** is parked at colony 7, cycle 24, with no water and the stage 2 pump placed but not built.
 
 ## Next, in order
-1. Pikmin 2 Day 6 (Awakening Wood, following `games/pikmin/PLAYBOOK.md` and `games/pikmin/GUIDE.md`). Save, back up the state, send Joshua a screenshot.
+1. Pikmin 2, when Joshua says go: Hole of Beasts floors 1 to 4 with Pikmin-only fights, following the notes above and `games/pikmin/PLAYBOOK.md` and `games/pikmin/GUIDE.md`. Save, back up the state, send Joshua a screenshot.
 2. Reboot the Mac. Check that `games/fez/ocr /tmp/now.png` returns JSON. Then run `python3 games/papers/day.py 15 --title` (detached with nohup, `PAPERS_BOMB_DONE=1` to resume after the bomb). If it keeps failing, replay day 14 and skip food on night 14 to bank 15.
 3. Papers, Please days 16 to 31, ending 20. Day 20's messenger brings poison, so `messenger()` stops there on purpose and it gets played by hand. Still open: wanted criminals (bulletin faces), forged seals, and photo vs face checks.
 4. Game Dev Tycoon, then FEZ max-out, then Oxygen Not Included (next is the Water Sieve), then Pokemon Sapphire (Brawly next).
