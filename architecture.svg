@@ -28,7 +28,7 @@
   <rect x="534" y="472" width="162" height="48" rx="20" fill="#b5302a"/><text x="615" y="492">Papers, Please</text><text x="615" y="508" font-size="10" fill="#fff" fill-opacity=".72">headless dylib, OCR</text>
   <rect x="24" y="528" width="162" height="48" rx="20" fill="#3d7a5c"/><text x="105" y="548">Oxygen Not Included</text><text x="105" y="564" font-size="10" fill="#fff" fill-opacity=".72">Duke Bridge :8741</text>
   <rect x="194" y="528" width="162" height="48" rx="20" fill="#203868"/><text x="275" y="548">Pokemon Sapphire</text><text x="275" y="564" font-size="10" fill="#fff" fill-opacity=".72">libmgba, RAM :8742</text>
-  <rect x="364" y="528" width="162" height="48" rx="20" fill="#1f6e3a"/><text x="445" y="548">Pikmin 2</text><text x="445" y="564" font-size="10" fill="#fff" fill-opacity=".72">Dolphin, gdb RAM</text>
+  <rect x="364" y="528" width="162" height="48" rx="20" fill="#1f6e3a"/><text x="445" y="548">Pikmin 2</text><text x="445" y="564" font-size="10" fill="#fff" fill-opacity=".72">Dolphin, RAM, savestates</text>
   <rect x="534" y="528" width="162" height="48" rx="20" fill="#9a4a1f"/><text x="615" y="548">Mirage</text><text x="615" y="564" font-size="10" fill="#fff" fill-opacity=".72">state lines</text>
 </g>
 <text x="164" y="210" font-size="11" fill="#6e6e73" text-anchor="middle">keeps alive</text>

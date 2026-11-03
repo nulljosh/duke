@@ -87,3 +87,16 @@ The target is under 10 hours of wall clock. That's a goal, not a measurement yet
 Emergence Cave gives the Spherical Atlas, which opens Awakening Wood, where Blue Pikmin are. Yellows are in
 Perplexing Pool. The debt is 10,000 Poko; cave money only counts once you leave by a geyser. The finish line is all
 201 treasures.
+
+## Awakening Wood (Day 5, 2026-11-02)
+
+Three squads of ten purples died in 25 minutes before these rules went in. Each line is a cause found the hard way.
+
+- Waypoint flags come from the decomp (`routeMgr.h`): 1 closed (a standing gate), 2 water, 4 bridge. `waypoints()` cuts closed nodes out of the graph. The carry route to the Geographic Projection ran straight through the poison gate at (-504, 1639).
+- Enemy ids are `EnemyTypeID` from `enemyInfo.h`. `HARMLESS` holds the posies, Honeywisps, eggs, female Sheargrubs and plants. Id 21 is a gas pipe (poison), id 84 a Creeping Chrysanthemum. `threats()` ignores corpses (hp 0).
+- The five Blues at (-40, -100) are penned behind the electric gate at (450, 1905). `regroup()` only whistles Pikmin within 350 and never walks: the old `gather()` marched the purples into that gate to fetch them.
+- `nav()` walks the carry graph, refuses a waypoint with a live threat near it, regroups between points, and stops on the first Pikmin death.
+- Savestates: L3 saves slot 1 and R3 loads it (`Hotkeys.ini`, `dsu.py`). `steps.py 'cmd' 'cmd' ...` saves before the plan and after every step that loses nothing, and loads the last checkpoint when a step fails or a Pikmin dies. Nothing else saves a state, so a loss can never become the checkpoint.
+- Fights: `fight.py ID X Z [--burst]` tracks the enemy as it moves. Ten purples thrown at once (`--burst`) killed the Red Bulborb (750 hp) in one volley with no losses. Volleys of five got nine eaten.
+- Day start: `start.py` clears the ship's talk and takes the purples out of the hull (menu from (512, 2662)). `restart.sh` reloads the day-end save from scratch and restarts the stream.
+- Reachable from the landing with purples only: the Sunseed Berry (`ichigo`, on a ledge; throw the squad up) and the pot bulb (`bane_yellow`, stuck so far). Behind gates: the Geographic Projection (`g_futa_hiruzen`, poison gate, needs Whites), the can (`kan`) and the donut. The shuttlecock (`badminton`) route crosses water and gas pipes past a Burrowing Snagret.

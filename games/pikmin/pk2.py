@@ -398,6 +398,11 @@ def waypoints():
         for j in w[4]:
             if j in wps:
                 wps[j][4].add(i)
+    for i in [i for i, w in wps.items() if w[3] & 1]:   # flag 1: closed, a standing gate (2026-11-02: the route ran
+        for j in wps[i][4]:                              # through the poison gate at (-504, 1639), two squads died)
+            if j in wps:
+                wps[j][4].discard(i)
+        wps[i][4].clear()
     return wps
 
 
@@ -405,7 +410,7 @@ def route(wps, a, b):
     """A* over the waypoints from the one nearest a to the one nearest b; a list of (x, z) ending at b."""
     import heapq
     import math
-    near = lambda p: min(wps, key=lambda i: math.hypot(wps[i][0] - p[0], wps[i][1] - p[1]))
+    near = lambda p: min((i for i in wps if not wps[i][3] & 1), key=lambda i: math.hypot(wps[i][0] - p[0], wps[i][1] - p[1]))
     s, g = near(a), near(b)
     dist = lambda i, j: math.hypot(wps[i][0] - wps[j][0], wps[i][1] - wps[j][1])
     best, prev, todo = {s: 0}, {}, [(dist(s, g), s)]
@@ -467,20 +472,6 @@ def pikis():
     return out
 
 
-def gather(pad):
-    """Walk to the Pikmin that are not in the squad and whistle them in."""
-    import math
-    for _ in range(4):
-        if squad(ACTIVE) >= alive():
-            return True
-        me = pos()
-        far = max(pikis(), key=lambda p: math.hypot(p[0] - me[0], p[1] - me[1]))
-        if math.hypot(far[0] - me[0], far[1] - me[1]) > 120:
-            travel(pad, *far, near=80)
-        whistle_at(pad, *far, ms=1500)        # plain B whistles at the cursor, which can sit far from the strays
-    return squad(ACTIVE) >= alive()
-
-
 def sprouts():
     """Planted Pikmin x, z: ItemPikihead::mgr (0x805167F0) MonoObjectMgr at +0x4C (+0x24 max, +0x28 array,
     +0x2C mOpenIds), item position +0x19C, stride by vtable repeat. Found by scan 2026-10-29, not in the headers."""
@@ -513,3 +504,6 @@ NOPLUCK = set()
 
 
 from pk2items import *  # noqa: E402,F401  pellets() and items(): memory reads split out for size
+
+
+from pk2nav import *  # noqa: E402,F401  threats(), regroup(), nav(), savestates: split out for size

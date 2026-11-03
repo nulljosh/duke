@@ -14,7 +14,7 @@ The runner serves its state on port 8737 and takes `POST /switch`, `/pause` and 
 
 ## Games
 
-Each game under `games/` has a Python driver and a bridge into the game: Factorio runs on an FLE server, Game Dev Tycoon and Oxygen Not Included load a Duke mod (ONI's serves 127.0.0.1:8741), FEZ is read from its save file and played with keys, Papers, Please runs under a headless dylib and is read by OCR, and Mirage prints state lines. Everything runs headless, plays for real, and logs a progress row per day or cycle for the graphs. Each folder's README has its details.
+Each game under `games/` has a Python driver and a bridge into the game: Factorio runs on an FLE server, Game Dev Tycoon and Oxygen Not Included load a Duke mod (ONI's serves 127.0.0.1:8741), FEZ is read from its save file and played with keys, Papers, Please runs under a headless dylib and is read by OCR, Pikmin 2 runs in Dolphin (RAM through its GDB stub, a virtual DSU pad, Dolphin savestates on L3 and R3 so every risky step can be undone), and Mirage prints state lines. Everything runs headless, plays for real, and logs a progress row per day or cycle for the graphs. Each folder's README has its details.
 
 ## Files
 

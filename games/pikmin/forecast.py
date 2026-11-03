@@ -47,7 +47,8 @@ def simulate(done, pace, rng):
 
 def main(out):
     data = rows()
-    hours = (data[-1]["t"] - data[0]["t"]) / 3600
+    gaps = [b["t"] - a["t"] for a, b in zip(data, data[1:])]
+    hours = sum(g for g in gaps if g < 7200) / 3600  # bot time only: a gap over 2 h is the bot parked, not playing
     done = data[-1]["treasures"]
     pace = hours * 60 / max(done, 1)                    # observed minutes per treasure, setup included
     rng = random.Random(7)

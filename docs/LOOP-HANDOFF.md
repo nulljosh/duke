@@ -7,6 +7,14 @@ Order: Papers, Please (days 15 to 31, ending 20), Game Dev Tycoon, FEZ max-out, 
 
 The loop is stopped. Papers, Please day 15 is waiting on a reboot, because the Mac's built-in text reader (Vision OCR) broke machine-wide.
 
+## Pikmin 2 right now (2026-11-02 night, active)
+- Day 5 in Awakening Wood, not saved to the card yet (the card holds Day 5's morning). 5 of 201 treasures, 940 Poko: the Sunseed Berry came home after both Dwarf Bulborbs and the Red Bulborb were killed with no losses.
+- Streaming to twitch.tv/nulljosh1 with the game's sound: `stream.sh` tails Dolphin's audio dump (Dolphin.ini [DSP] DumpAudio + DumpAudioSilent, nothing on the speakers). `restart.sh` reloads the save and restarts the stream.
+- Always run plans through `steps.py` (savestate checkpoints, automatic rollback on any loss). Rules learned tonight are in `games/pikmin/GUIDE.md`, "Awakening Wood".
+- Next: the pot bulb (stuck in its pot), then Hole of Beasts, then end the day with `dayend.py` only when nothing was lost. The Projection needs Whites (White Flower Garden), and the Blue Onion needs Yellows from Perplexing Pool.
+- Emulation runs at 1x, not the configured 3x, while the Mac is busy (Unreal tests), so the forecast is optimistic.
+
+## Earlier (Pikmin 2 loop, 2026-10-29)
 ## Where things stand
 - **Papers, Please:** days 1 to 14 are done. Day 15 kept failing: the family died once after a broke night 15, then a debt ended a run, and the bomb went off more than once. Days 11 to 14 went through with the bomb-defuse, EZIC messenger and inspect-mode routines.
 - **OCR is down machine-wide.** Vision accurate mode crashes with `e5rtError ... 13`, and `play.ocr` now exits fast on it. Restarting aned and ANECompilerService and moving the e5rt bundle cache aside did not help. Swap was 10.7 of 12 GB, so a reboot is the fix.
