@@ -9,6 +9,16 @@ X, Z = float(sys.argv[1]), float(sys.argv[2])
 NEAR = float(sys.argv[3]) if sys.argv[3:] else 60
 FIGHT = {1, 2, 3, 4, 5, 13, 15, 26, 27, 84}   # Bulborbs, Burrow-nit, Water Dumple, Wogpole, Creeping Chrysanthemum
 pad = pk2.Pad()
+# never set off (or fight) with an empty squad: walk to the biggest idle bunch first and whistle them in
+idle = [p for p in pk2.pikis() if p[0] or p[1]]
+if pk2.squad(0) < len(idle) // 2 and idle:
+    from collections import Counter
+    cx, cz = Counter((round(p[0], -2), round(p[1], -2)) for p in idle).most_common(1)[0][0]
+    print("squad", pk2.squad(0), "fetching the bunch at", cx, cz, flush=True)
+    pk2.nav(pad, cx, cz, near=80, guard=False)
+    import pk2nav
+    pk2nav.regroup(pad, r=600)
+    print("squad now", pk2.squad(0), flush=True)
 for _ in range(8):
     r = pk2.nav(pad, X, Z, near=NEAR)
     if r is True:

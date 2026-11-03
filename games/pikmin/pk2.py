@@ -133,7 +133,12 @@ def moved(pad, x=0, y=1, secs=0.6):
     pad.cmd("release all")
     time.sleep(0.4)
     b = [navi(i)[:2] for i in (0, 1)]
-    return any(abs(q[0] - p[0]) + abs(q[1] - p[1]) > 20 for p, q in zip(a, b))
+    go = [abs(q[0] - p[0]) + abs(q[1] - p[1]) > 20 for p, q in zip(a, b)]
+    if go.count(True) == 1:
+        global ACTIVE
+        ACTIVE = go.index(True)
+        open(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".active"), "w").write(str(ACTIVE))
+    return any(go)
 
 
 def frozen(pad):
@@ -243,7 +248,10 @@ def cursor(navi=None):
     return f32s(u32(u32(u32(0x80516660) + 0x28) + 0x320 * navi + 0x28C) + 0x0C, 3)
 
 
-ACTIVE = 0                                     # the captain the stick drives: 0 Olimar, 1 Louie (Y swaps)
+try:                                           # the captain the stick drives: 0 Olimar, 1 Louie (Y swaps).
+    ACTIVE = int(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".active")).read())
+except (OSError, ValueError):                  # moved() writes it, so a failed Y swap can't leave every script
+    ACTIVE = 0                                 # steering one captain while reading the other (2026-11-03)
 
 
 def navi(i=None):
