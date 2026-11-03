@@ -172,7 +172,7 @@ Romanized word-bank tiles must use their `*-challenge-tap-token` label, not inne
 
 ## The loop
 
-The live `/loop` (QA of the Duke landing and menu bar app, Jony Ive pass, repeat to A+) is handed off in `docs/LOOP-HANDOFF.md`. Read it before resuming, and keep its restart prompt current.
+The live `/loop` (Pikmin 2 to the end, streamed to twitch.tv/nulljosh1 with sound) is handed off in `docs/LOOP-HANDOFF.md`. Read it before resuming, and keep its restart prompt current.
 
 ## Games (merged 2026-10-25)
 
