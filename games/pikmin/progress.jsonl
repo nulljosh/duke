@@ -13,5 +13,7 @@
 {"t": 1793297874, "day": 4, "pikmin": 13, "treasures": 3, "poko": 770, "pct": 3, "note": "Spherical Atlas home: 10 purples from Candypop Buds lifted it"}
 {"t": 1793298379, "day": 5, "pikmin": 13, "treasures": 4, "poko": 770, "pct": 3, "note": "Day 4 saved: Atlas, Citrus Lump and Quenching Emblem home, 770 Poko"}
 {"t": 1793687230, "day": 5, "pikmin": 15, "treasures": 5, "poko": 940, "pct": 2, "note": "Day 5: Dwarf and Red Bulborbs down, Sunseed Berry home (savestate rollbacks after three wipes)"}
-{"t": 1793687994, "day": 5, "pikmin": 0, "treasures": 5, "poko": 940, "pct": 2, "note": "Day 5 saved: Sunseed Berry home, both Dwarf Bulborbs and the Red Bulborb down, no Pikmin lost after the savestate rollbacks"}
-{"t": 1793689209, "day": 6, "pikmin": 0, "treasures": 5, "poko": 940, "pct": 2, "note": "Day 6 saved: map drawn from RAM, the stone gate at (-503, 1639) won't break with purples; nothing lost"}
+{"t": 1793687994, "day": 5, "pikmin": 15, "treasures": 5, "poko": 940, "pct": 2, "note": "Day 5 saved: Sunseed Berry home, both Dwarf Bulborbs and the Red Bulborb down, no Pikmin lost after the savestate rollbacks"}
+{"t": 1793689209, "day": 6, "pikmin": 15, "treasures": 5, "poko": 940, "pct": 2, "note": "Day 6 saved: map drawn from RAM, the stone gate at (-503, 1639) won't break with purples; nothing lost"}
+{"t": 1793714035, "day": 6, "pikmin": 24, "treasures": 5, "poko": 940, "pct": 2, "note": "Day 6 redone: 9 Reds plucked, black gate to Hole of Beasts broken, all 24 Pikmin kept"}
+{"t": 1793718960, "day": 7, "pikmin": 5, "treasures": 5, "poko": 940, "pct": 2, "note": "Day 7: Burrow-nit and Chrysanthemum down, Hole of Beasts to sublevel 3; cave run lost on a menu slip, no Pikmin lost"}

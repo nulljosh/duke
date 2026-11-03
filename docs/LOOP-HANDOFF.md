@@ -5,13 +5,13 @@ The live loop is Pikmin 2, played headless on Duke and streamed with sound to tw
 
 Queue after Pikmin: Papers, Please (days 15 to 31, ending 20), Game Dev Tycoon, FEZ max-out, Oxygen Not Included, Pokemon Sapphire (Groudon needs a Ruby trade, tell Joshua). Papers, Please is parked: day 15 waits on a reboot, because the Mac's built-in text reader (Vision OCR) broke machine-wide.
 
-## Pikmin 2 right now (2026-11-02 night, active)
-- Day 5 is saved to the card and backed up to `games/pikmin/states/day5-end.gci`. 5 of 201 treasures, 940 Poko. The Sunseed Berry is home after both Dwarf Bulborbs and the Red Bulborb went down, with no Pikmin lost after the savestate rollbacks.
-- Forecast: about 146 more bot hours to finish.
-- Streaming to twitch.tv/nulljosh1 with the game's sound: `stream.sh` tails Dolphin's audio dump (Dolphin.ini [DSP] DumpAudio + DumpAudioSilent, nothing on the speakers). `restart.sh` reloads the save and restarts the stream.
-- Always run plans through `steps.py` (savestate checkpoints, automatic rollback on any loss). Rules learned on Day 5 are in `games/pikmin/GUIDE.md`, "Awakening Wood".
-- Next is Day 6. The pot bulb is still stuck in its pot, then Hole of Beasts. End each day with `dayend.py` only when nothing was lost. The Projection needs Whites (White Flower Garden), and the Blue Onion needs Yellows from Perplexing Pool.
-- Emulation runs at 1x, not the configured 3x, while the Mac is busy (Unreal tests), so the forecast is optimistic.
+## Pikmin 2 right now (2026-11-03 morning, active)
+- Card restored to `states/day6-end.gci` (Day 7 start: 10 purples, 14 Reds, 5 penned Blues). `states/day7-end.gci` and `day8-wiped.gci` are the bad timeline: a stray A on the cave pause menu escaped Hole of Beasts and left all 25 Pikmin behind. 5 of 201 treasures, 940 Poko.
+- One driver: `games/pikmin/day.sh` (morning, Louie punches the Burrow-nit, Chrysanthemum, enter Hole of Beasts, `cave.sh 4` = floors 1 to 4, stops before the Empress). Log `day.log` and `cave.log`. Never start a second driver.
+- `steps.py` guards: savestate checkpoints, death guard (PK_TOLERATE=1), freeze/circling guard (75 s on a 150-unit grid), a new floor counts as success, 0 Pikmin reads (loading) are ignored. `.stateop` lock: no memory reads during savestates (a read during a load deadlocked Dolphin on "Decompressing State").
+- Tactics learned: Louie punches Burrow-nits and Sheargrubs (`punch.py`, dismiss first); Candypop Buds are never fought; fire floors use `geyser.py` (test throw picks Red: hold A + D-pad right switches colour and it sticks); `floor.py` rounds up every Pikmin before the hole; `control()` alternates A and B so it can't pick "leave cave".
+- Charts: `graph.py` (bot-hour axis, garden theme), `forecast.py` (Monte Carlo + Black-Scholes), `treasures.py` (201 checklist from `treasures.json`, `collected.json`). `bench.py DAY "note" N` at each day end.
+- Twitch stream is live (`stream.sh`); `restart.sh` restarts Dolphin, daemons and stream.
 
 ## Where things stand
 - **Papers, Please:** days 1 to 14 are done. Day 15 kept failing: the family died once after a broke night 15, then a debt ended a run, and the bomb went off more than once. Days 11 to 14 went through with the bomb-defuse, EZIC messenger and inspect-mode routines.

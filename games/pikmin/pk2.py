@@ -69,7 +69,8 @@ def shot(name):
             shutil.move(new.pop(), path)
             return path
         time.sleep(0.25)
-    raise TimeoutError("no Dolphin screenshot")
+    return ""                                  # no screenshot (loading screen): never fatal, it rolled back a
+                                               # finished floor on 2026-11-03
 
 
 class Memory:
@@ -155,8 +156,8 @@ def control(pad, tries=60):
                 return i
         except ValueError:                    # captains are unloaded during a floor or area change
             pass
-        pad.press("A", after=1.2)
-    raise TimeoutError("no control")
+        pad.press("B" if i % 2 else "A", after=1.2)   # B backs out of a menu: A alone once picked "leave the
+    raise TimeoutError("no control")             # cave" from the pause menu and ended Day 7 (2026-11-03)
 
 
 _gdb = None
@@ -165,6 +166,9 @@ _gdb = None
 def read(addr, n):
     """Bytes at a game address, through gdbd.py (Dolphin's GDB stub)."""
     global _gdb
+    flag = os.path.join(HERE, ".stateop")       # a savestate in flight: Dolphin deadlocked on "Decompressing State"
+    while os.path.exists(flag) and time.time() - os.path.getmtime(flag) < 30:   # when a GDB read hit a load
+        time.sleep(0.2)                        # (2026-11-03), so every reader waits it out
     if _gdb is None:
         _gdb = socket.create_connection(("127.0.0.1", 26762)).makefile("rw")
     for _ in range(3):                         # a pointer read mid-frame can catch a freed object: E00, retry
@@ -257,6 +261,13 @@ def pos():
 def _wrap(a):
     import math
     return (a + math.pi) % (2 * math.pi) - math.pi
+
+
+def camera(pad):
+    """L snaps the camera behind the captain, so the stream sees where he is headed (Joshua, 2026-11-03: "use the
+    camera more"). Behind him means the camera yaw is his facing, so Walker's yaw is reset to it, no drift."""
+    pad.press("L", 80, after=0.5)
+    Walker.yaw = navi()[2]
 
 
 class Walker:
@@ -458,15 +469,16 @@ def detour(pad, x, z, near=40, tries=10):
     return goto(pad, x, z, near=near)
 
 
-def pikis():
-    """Live Pikmin x, z: pikiMgr MonoObjectMgr (+0x24 max, +0x28 array 0x2C8 each, +0x2C mOpenIds), FakePiki +0x20C."""
+def pikis(kind=None):
+    """Live Pikmin x, z: pikiMgr MonoObjectMgr (+0x24 max, +0x28 array 0x2C8 each, +0x2C mOpenIds), FakePiki +0x20C.
+    kind filters by Piki::mPikiKind (+0x2B8): 0 Blue, 1 Red, 2 Yellow, 3 Purple, 4 White, 5 Bulbmin."""
     import struct
     m = u32(0x80516674)
     mx, arr, opn = struct.unpack(">3I", read(m + 0x24, 12))
     free = read(opn, mx)
     out = []
     for i in range(mx):
-        if free[i] == 0:
+        if free[i] == 0 and (kind is None or read(arr + i * 0x2C8 + 0x2B8, 1)[0] == kind):
             x, _, z = struct.unpack(">3f", read(arr + i * 0x2C8 + 0x20C, 12))
             out.append((x, z))
     return out

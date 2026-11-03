@@ -12,7 +12,8 @@ pd = pk2.u32(0x80516810)
 poko = pk2.u32(pd + 0xE8)
 rows = [json.loads(l) for l in open("progress.jsonl")]
 tr = int(sys.argv[3]) if len(sys.argv) > 3 else rows[-1]["treasures"]
-row = dict(t=int(time.time()), day=day, pikmin=pk2.alive(), treasures=tr, poko=poko, pct=round(100 * tr / 201), note=note)
+alive = pk2.alive() or rows[-1]["pikmin"]   # the results screen reads 0: keep the last field count
+row = dict(t=int(time.time()), day=day, pikmin=alive, treasures=tr, poko=poko, pct=round(100 * tr / 201), note=note)
 open("progress.jsonl", "a").write(json.dumps(row) + "\n")
 for cmd in (["python3", "graph.py"], ["python3", "forecast.py"]):
     out = subprocess.run(cmd, capture_output=True, text=True).stdout.strip().splitlines()

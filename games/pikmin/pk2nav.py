@@ -1,11 +1,14 @@
 """Safe movement and undo for the Pikmin 2 bot: threat checks, regroup, guarded route walking, Dolphin savestates.
 Split out of pk2.py for size; pk2 re-exports everything here."""
 import pk2
+import os as _os
+TOL = int(_os.environ.get("PK_TOLERATE", "0"))   # losses allowed before a LOSS stop (steps.py)
 from pk2 import travel, whistle_at, alive, detour, enemies, goto, pikis, pos, route, squad, waypoints  # noqa: F401
 
 
-HARMLESS = {0, 12, 16, 37, 46, 47, 48, 49, 50, 80, 87, 90, 91}   # EnemyTypeID (decomp enemyInfo.h): Pellet Posy, female
-# Sheargrub, Honeywisp, Egg and the plants. Not harmless: 21 gas pipe (poison), 84 Creeping Chrysanthemum.
+HARMLESS = {0, 4, 5, 6, 7, 8, 12, 16, 37, 46, 47, 48, 49, 50, 65, 80, 81, 82, 87, 90, 91}   # 4-8, 82 Candypop Buds:
+# throwing at one turns the Pikmin into seeds (2026-11-03: five Reds 'died' into a Violet bud on HoB 2)   # EnemyTypeID (decomp enemyInfo.h): Pellet Posy,
+# female Sheargrub, Honeywisp, Egg, Ravenous Whiskerpillar (eats fruit only) and the plants. Not harmless: 21 gas pipe (poison), 84 Creeping Chrysanthemum.
 
 
 def threats(x, z, r=260):
@@ -22,9 +25,12 @@ def regroup(pad, tries=3, r=350):
     for _ in range(tries):
         me = pos()
         loose = [p for p in pikis() if math.hypot(p[0] - me[0], p[1] - me[1]) < r]
-        if squad(pk2.ACTIVE) >= len(loose) - 1:
+        before = squad(pk2.ACTIVE)
+        if before >= len(loose) - 1:
             return True
         pad.press("B", 1800, after=1.5)
+        if squad(pk2.ACTIVE) <= before:        # nobody came (busy, behind a wall): stop whistling at nothing
+            return False                       # (2026-11-03: B spammed in a corner at Pikmin that weren't coming)
     return False
 
 
@@ -44,7 +50,7 @@ def nav(pad, x, z, near=60, guard=True, gap=250):
     k = min(range(len(pts)), key=lambda i: math.hypot(pts[i][0] - me[0], pts[i][1] - me[1]))
     for px, pz in pts[k:]:
         print("wp", round(px), round(pz), "squad", squad(pk2.ACTIVE), "alive", alive(), flush=True)
-        if alive() < a0:                       # any death: stop dead, whistle, let the caller back off
+        if alive() < a0 - TOL:                       # any death: stop dead, whistle, let the caller back off
             print("LOSS", a0 - alive(), "at", [round(v) for v in pos()], flush=True)
             pad.press("B", 1800, after=0.5)
             return {"id": -1, "x": pos()[0], "z": pos()[1], "hp": 0}
@@ -54,25 +60,40 @@ def nav(pad, x, z, near=60, guard=True, gap=250):
                 print("threat", t[0]["id"], round(t[0]["x"]), round(t[0]["z"]), "hp", round(t[0]["hp"]), flush=True)
                 regroup(pad)
                 return t[0]
+        pk2.camera(pad)                        # face the camera down each leg for the stream
         if not goto(pad, px, pz, near=50):
             detour(pad, px, pz, near=60, tries=4)
         if 0 < squad(pk2.ACTIVE) < alive() - 2:   # squad 0 is a solo scout (probe.py): don't pull anyone in
             regroup(pad)
     ok = goto(pad, x, z, near=near) or detour(pad, x, z, near=near, tries=4)
-    if alive() < a0:                           # the last leg past the final waypoint is unguarded: check it too
+    if alive() < a0 - TOL:                           # the last leg past the final waypoint is unguarded: check it too
         print("LOSS", a0 - alive(), "at", [round(v) for v in pos()], flush=True)
         return {"id": -1, "x": pos()[0], "z": pos()[1], "hp": 0}
     return ok
 
 
+def _stateop(pad, key, secs):
+    """Press a savestate hotkey with every memory reader held off (pk2.read waits on .stateop): a GDB read during a
+    state load deadlocked Dolphin on "Decompressing State" (2026-11-03)."""
+    import os
+    import time
+    flag = os.path.join(pk2.HERE, ".stateop")
+    open(flag, "w").close()
+    try:
+        pad.press(key, 150, after=secs)
+    finally:
+        os.remove(flag)
+    time.sleep(0.5)
+
+
 def savestate(pad):
     """Dolphin savestate slot 1 (L3 on the DSU pad, Hotkeys.ini). Take one before anything risky."""
-    pad.press("L3", 150, after=1.5)
+    _stateop(pad, "L3", 6)
 
 
 def loadstate(pad):
     """Undo back to the last savestate (R3): the cheap reload after a loss, no Dolphin restart."""
-    pad.press("R3", 150, after=3)
+    _stateop(pad, "R3", 10)
 
 
 def gather(pad):
