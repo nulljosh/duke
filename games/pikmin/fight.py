@@ -46,4 +46,4 @@ for volley in range(12):
 time.sleep(2)
 pk2.regroup(pad)
 print("squad", pk2.squad(0), "alive", pk2.alive(), "lost", a0 - pk2.alive(), pk2.shot("fight"), flush=True)
-sys.exit(3 if pk2.alive() < a0 else 0)
+sys.exit(3 if pk2.alive() < a0 else 4 if target() else 0)   # 4: it survived every volley

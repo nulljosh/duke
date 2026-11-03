@@ -8,6 +8,9 @@
 cd "$(dirname "$0")"
 KEY=$(cat /Volumes/LaCie/dolphin-duke/twitch.key)
 DUMP=/Volumes/LaCie/dolphin-duke/Dump/Audio
+for i in $(seq 30); do                        # wait for this boot's dump pair (newer than 60 s), not the last boot's
+  [ -n "$(find "$DUMP" -name '*dtkdump.wav' -newermt '-60 seconds' 2>/dev/null)" ] && break; sleep 1; done
+ls -t "$DUMP"/*.wav | tail -n +3 | while read -r f; do rm -f "$f"; done   # ~1 GB/h each: keep only the live pair
 DSP=$(ls -t "$DUMP"/*dspdump.wav | head -1)
 DTK=$(ls -t "$DUMP"/*dtkdump.wav | head -1)
 FIFO=$(mktemp -d)

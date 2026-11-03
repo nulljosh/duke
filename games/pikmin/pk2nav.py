@@ -56,9 +56,13 @@ def nav(pad, x, z, near=60, guard=True, gap=250):
                 return t[0]
         if not goto(pad, px, pz, near=50):
             detour(pad, px, pz, near=60, tries=4)
-        if squad(pk2.ACTIVE) < alive() - 2:
+        if 0 < squad(pk2.ACTIVE) < alive() - 2:   # squad 0 is a solo scout (probe.py): don't pull anyone in
             regroup(pad)
-    return goto(pad, x, z, near=near) or detour(pad, x, z, near=near, tries=4)
+    ok = goto(pad, x, z, near=near) or detour(pad, x, z, near=near, tries=4)
+    if alive() < a0:                           # the last leg past the final waypoint is unguarded: check it too
+        print("LOSS", a0 - alive(), "at", [round(v) for v in pos()], flush=True)
+        return {"id": -1, "x": pos()[0], "z": pos()[1], "hp": 0}
+    return ok
 
 
 def savestate(pad):
@@ -72,14 +76,6 @@ def loadstate(pad):
 
 
 def gather(pad):
-    """Unsafe: it walks, and once walked the purples into an electric gate. Prefer regroup(). Walk to the Pikmin that are not in the squad and whistle them in."""
-    import math
-    for _ in range(4):
-        if squad(pk2.ACTIVE) >= alive():
-            return True
-        me = pos()
-        far = max(pikis(), key=lambda p: math.hypot(p[0] - me[0], p[1] - me[1]))
-        if math.hypot(far[0] - me[0], far[1] - me[1]) > 120:
-            travel(pad, *far, near=80)
-        whistle_at(pad, *far, ms=1500)        # plain B whistles at the cursor, which can sit far from the strays
-    return squad(pk2.ACTIVE) >= alive()
+    """Kept for the old callers (dayend.py and the day 1 to 4 scripts): now just regroup() over a wider circle.
+    It used to walk toward the farthest Pikmin and once marched the purples into the electric gate."""
+    return regroup(pad, r=600)

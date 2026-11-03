@@ -31,19 +31,31 @@ if arrived is False and math.hypot(pk2.pos()[0] - p["x"], pk2.pos()[1] - p["z"])
 if arrived is not True:
     print("abort", "threat" if isinstance(arrived, dict) else "stuck", flush=True)
     sys.exit(2)
+lifted = False
 for tries in range(6):
     pk2.swarm(pad, p["x"], p["z"], secs=3)
     time.sleep(3)
     q = next((q for q in pk2.pellets("treasure") if q["i"] == idx), None)
     if not q or math.hypot(q["x"] - p["x"], q["z"] - p["z"]) > 40:
+        lifted = True
         break
     pk2.goto(pad, p["x"], p["z"], near=70)
-print("lifted" if tries < 5 else "stuck", round(time.time() - t0), "s", flush=True)
-if tries >= 5:
+if not lifted:                                 # walled in (the pot bulb sits inside a flower pot): throw them in
+    print("walled: throwing the squad in", flush=True)
+    pk2.throw_at(pad, p["x"], p["z"], n=pk2.squad(0))
+    time.sleep(10)
+    q = next((q for q in pk2.pellets("treasure") if q["i"] == idx), None)
+    if not q or math.hypot(q["x"] - p["x"], q["z"] - p["z"]) > 40:
+        lifted = True
+print("lifted" if lifted else "stuck", round(time.time() - t0), "s", flush=True)
+if not lifted:
     pk2.regroup(pad)
     sys.exit(1)
-last = None
-while True:                                    # walk behind it so the stragglers rejoin when it lands
+last, a0, t1 = None, pk2.alive(), time.time()
+while True:
+    if pk2.alive() < a0 or time.time() - t1 > 360:   # carriers eaten or the carry wedged: let steps.py roll back
+        print("carry failed", "LOSS" if pk2.alive() < a0 else "timeout", flush=True)
+        sys.exit(3)                                    # walk behind it so the stragglers rejoin when it lands
     q = next((q for q in pk2.pellets("treasure") if q["i"] == idx), None)
     if not q:
         break
