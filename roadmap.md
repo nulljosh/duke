@@ -193,4 +193,4 @@ Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geom
 ## Ingested 2026-10-30
 
 ## Ingested 2026-11-14
-- [ ] (Note "Duke") README doesn't need the screenshot, or if it does, refresh it. Landing page needs a GitHub link.
+- [x] (Note "Duke") README doesn't need the screenshot, or if it does, refresh it. Landing page needs a GitHub link.
