@@ -194,3 +194,8 @@ Later or never: reflex platformers (Super Meat Boy, Cuphead, Hotline Miami, Geom
 
 ## Ingested 2026-11-14
 - [x] (Note "Duke") README doesn't need the screenshot, or if it does, refresh it. Landing page needs a GitHub link.
+
+## Ingested 2026-11-18
+- [ ] Refresh icon. Simplify, fewer tiles.
+- [ ] Has it been working? Duolingo seems to be racking up XP. Are we ingesting Duolingo info/data? What does Duke do aside from playing the game?
+- [ ] Next game: 'that game that's like among something something, monsters, eight-bit'. We never played through it; Joshua wants to actually watch us play it. (Question: which game is this?)
