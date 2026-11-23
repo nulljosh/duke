@@ -1,6 +1,6 @@
-// Hero wall: Duke's own app card, mounted many times behind the hero. Each card replays real solved exercises
+// Hero: one full-bleed Duke app screen behind the hero, mounted once. It replays real solved exercises
 // (mate-in-1 and forks, algebra, word order) and one move from every other game it plays, cycling like the runner.
-// The first card goes live when the runner is up (/api/live), the rest keep replaying. No screenshot anywhere.
+// It goes live when the runner is up (/api/live), otherwise it keeps replaying. No screenshot anywhere. One surface, never a card wall.
 (function () {
   var glyph = { K:'\u2654', Q:'\u2655', R:'\u2656', B:'\u2657', N:'\u2658', P:'\u2659', k:'\u265a', q:'\u265b', r:'\u265c', b:'\u265d', n:'\u265e', p:'\u265f' };
   var puzzles = [
@@ -137,21 +137,7 @@
   var of = function (t) { return puzzles.filter(function (p) { return p.type === t; }); };
   var games = of('game'), lanes = [of('chess'), of('math').concat(of('lang'))];
   for (var g = 0; g < games.length; g += 2) lanes.push(games.slice(g, g + 2));
-  var n = Math.min(lanes.length, innerWidth <= 560 ? 4 : 6);
+  var n = 1;
   for (var i = 0; i < n; i++) { var c = document.createElement('div'); wall.appendChild(c); (function (c, i) { later(function () { mount(c, lanes[i], i === 0); }, i * 180); })(c, i); }
 })();
 
-// Hero parallax: the wall drifts at 0.45, the copy lifts at 0.2 and fades. Off under reduced motion.
-(function () {
-  var bg = document.querySelector('.hero-bg'), copy = document.querySelector('.hero-copy');
-  if (!bg || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var t = 0;
-  addEventListener('scroll', function () {
-    if (t) return;
-    t = requestAnimationFrame(function () {
-      t = 0; var y = scrollY, h = innerHeight; if (y > h * 1.2) return;
-      bg.style.setProperty('--py', (y * .45) + 'px');
-      copy.style.transform = 'translate3d(0,' + (y * .2) + 'px,0)'; copy.style.opacity = Math.max(0, 1 - y / (h * .7));
-    });
-  }, { passive: true });
-})();

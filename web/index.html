@@ -18,8 +18,8 @@
 <meta property="og:url" content="https://duke.jaybulb.com/">
 <meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="landing.css">
-<link rel="stylesheet" href="hero.css?v=5">
+<link rel="stylesheet" href="landing.css?v=2">
+<link rel="stylesheet" href="hero.css?v=7">
 <script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
@@ -31,94 +31,51 @@
   </nav>
   <a class="nav-brand" href="#top"><img src="icon.svg" alt="" width="28" height="28">Duke</a>
   <nav class="nav-links nav-end" aria-label="More">
-    <a href="#clients">Apps</a>
-    <a href="https://github.com/nulljosh/duke">GitHub</a>
+        <a href="https://github.com/nulljosh/duke">GitHub</a>
   </nav>
 </header>
 
 <main id="top">
 <section class="hero">
-  <div class="hero-bg" aria-hidden="true" inert><div class="dwall" id="dwall"></div></div>
-  <div class="wrap center hero-copy">
-    <p class="label">An autopilot for games</p>
+  <div class="sky" id="dsky" aria-hidden="true" inert></div>
+  <div class="hero-copy">
+    <img class="hero-mark" src="icon.svg" alt="" width="64" height="64">
     <h1>Plays while you sleep<span class="dot">.</span></h1>
-    <p class="lead">Games and software on autopilot: Duolingo, Factorio, Game Dev Tycoon, FEZ, Papers, Please, Oxygen Not Included, Pokemon Sapphire and Pikmin 2.</p>
+    <p class="lead">An autopilot for games. It reads each game&rsquo;s own state and plays for real.</p>
     <div class="cta">
-      <a class="btn btn-solid" href="#how">See how it works</a>
-      <a class="btn btn-ghost" href="#games">The games</a>
+      <a class="btn btn-solid" href="#games">See what it plays</a>
+      <a class="btn btn-ghost" href="https://github.com/nulljosh/duke">Source</a>
     </div>
   </div>
-
+  <div class="ground" aria-hidden="true"><div id="dwall"></div></div>
 </section>
 
 <section class="sec" id="games">
-  <div class="wrap center reveal">
-    <h2>Every game it plays</h2>
-    <p class="body">Each game gets its own bridge: a mod, the save file, the game's own code read before any move. It plays for real. No cheats, no finished saves.</p>
-  </div>
-  <div class="wrap">
-    <div class="games">
-      <article class="game reveal" style="--game: var(--g-duolingo)"><img class="game-shot" src="shots/duolingo.jpg" alt="Duolingo chess puzzle mid-solve" width="720" height="480" loading="lazy" decoding="async"><div class="game-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M12 14h24v16H22l-8 6v-6h-2z"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M18 22l4 4 8-8"/></svg></div><h3>Duolingo</h3><p>Every course, chess and math, around the clock. The streak never breaks.</p></article>
-      <article class="game reveal" style="--game: var(--g-factorio)"><img class="game-shot" src="shots/factorio.jpg" alt="Factorio base Duke built" width="720" height="480" loading="lazy" decoding="async"><div class="game-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="7" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M24 9v5M24 34v5M9 24h5M34 24h5M13.4 13.4l3.5 3.5M31.1 31.1l3.5 3.5M13.4 34.6l3.5-3.5M31.1 16.9l3.5-3.5"/></svg></div><h3>Factorio</h3><p>Beaten. A rocket launched from a base it built itself, through the game's own API.</p></article>
-      <article class="game reveal" style="--game: var(--g-gdt)"><img class="game-shot" src="shots/gdt.jpg" alt="Game Dev Tycoon studio" width="720" height="480" loading="lazy" decoding="async"><div class="game-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M12 12h20l4 4v20H12z"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M18 12v8h12v-8M18 36v-9h12v9"/></svg></div><h3>Game Dev Tycoon</h3><p>Running a studio in its own save slot, through a bridge mod.</p></article>
-      <article class="game reveal" style="--game: var(--g-fez)"><img class="game-shot" src="shots/fez.jpg" alt="FEZ, Gomez on a rotating tower" width="720" height="480" loading="lazy" decoding="async"><div class="game-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M24 9l13 7.5v15L24 39l-13-7.5v-15z"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M11 16.5L24 24l13-7.5M24 24v15"/></svg></div><h3>FEZ</h3><p>Beaten: all 32 cubes and the Star Gate ending.</p></article>
-      <article class="game reveal" style="--game: var(--g-papers)"><img class="game-shot" src="shots/papers.jpg" alt="Papers, Please inspection booth" width="720" height="480" loading="lazy" decoding="async"><div class="game-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M19 10h10v10h-10z"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M14 24h20v6H14zM12 36h24"/></svg></div><h3>Papers, Please</h3><p>Days 1 to 9 approved, reading every document on the desk.</p></article>
-      <article class="game reveal" style="--game: var(--g-oni)"><img class="game-shot" src="shots/oni.jpg" alt="Oxygen Not Included colony" width="720" height="480" loading="lazy" decoding="async"><div class="game-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="13" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="19" cy="20" r="3" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="28" cy="29" r="4" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Oxygen Not Included</h3><p>Colony 7, every rule read from the game's own code.</p></article>
-      <article class="game reveal" style="--game: var(--g-pokemon)"><img class="game-shot" src="shots/pokemon.jpg" alt="Pokemon Sapphire, Stitch in Granite Cave" width="720" height="480" loading="lazy" decoding="async"><div class="game-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="13" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M11 24h8M29 24h8"/><circle cx="24" cy="24" r="4.5" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Pokemon Sapphire</h3><p>Playing now as Stitch with Treecko. Live progress below.</p></article>
-      <article class="game reveal" style="--game: var(--g-mirage)"><img class="game-shot" src="shots/mirage.jpg" alt="Mirage, the desert platformer" width="720" height="480" loading="lazy" decoding="async"><div class="game-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M10 32h28M16 32a8 8 0 0 1 16 0M24 12v4M13 17l3 3M35 17l-3 3"/></svg></div><h3>Mirage</h3><p>Our own desert platformer inside Joshua Tree, played from its state lines.</p></article>
-      <article class="game reveal" style="--game: var(--g-pikmin)"><img class="game-shot" src="shots/pikmin.jpg" alt="Pikmin 2, Olimar with his Pikmin" width="720" height="480" loading="lazy" decoding="async"><div class="game-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="29" r="8" fill="none" stroke="#fff" stroke-width="4"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M24 21V11M24 11c3-4 9-4 11 0-4 2-8 2-11 0z"/></svg></div><h3>Pikmin 2</h3><p>Playing now in Dolphin, reading RAM against the decomp. Live progress below.</p></article>
-    </div>
-    <figure class="game-live reveal">
-      <img src="pokemon.png" alt="Pokemon Sapphire progress: level by play time, badges, Pokedex and money, drawn like the game's text boxes" width="960" height="642" loading="lazy">
-      <figcaption>Pokemon Sapphire, updated as it plays.</figcaption>
-    </figure>
-    <figure class="game-live reveal">
-      <img src="pikmin.png" alt="Pikmin 2 progress: Pikmin count and treasures over the run, with the day and Poko" width="960" height="540" loading="lazy">
-      <figcaption>Pikmin 2, updated as it plays.</figcaption>
-    </figure>
-  </div>
+  <figure class="shot reveal">
+    <img src="pokemon.png" alt="Pokemon Sapphire progress: level by play time, badges, Pokedex and money, drawn like the game's text boxes" width="960" height="642" loading="lazy">
+    <figcaption>Pokemon Sapphire, drawn as it plays.</figcaption>
+  </figure>
+  <ul class="games reveal">
+      <li style="--game: var(--g-duolingo)"><span class="g-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M12 14h24v16H22l-8 6v-6h-2z"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M18 22l4 4 8-8"/></svg></span><b>Duolingo</b><span>Every course, chess and math, around the clock. The streak never breaks.</span></li>
+      <li style="--game: var(--g-factorio)"><span class="g-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="7" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M24 9v5M24 34v5M9 24h5M34 24h5M13.4 13.4l3.5 3.5M31.1 31.1l3.5 3.5M13.4 34.6l3.5-3.5M31.1 16.9l3.5-3.5"/></svg></span><b>Factorio</b><span>Beaten. A rocket launched from a base it built itself, through the game's own API.</span></li>
+      <li style="--game: var(--g-gdt)"><span class="g-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M12 12h20l4 4v20H12z"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M18 12v8h12v-8M18 36v-9h12v9"/></svg></span><b>Game Dev Tycoon</b><span>Running a studio in its own save slot, through a bridge mod.</span></li>
+      <li style="--game: var(--g-fez)"><span class="g-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M24 9l13 7.5v15L24 39l-13-7.5v-15z"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M11 16.5L24 24l13-7.5M24 24v15"/></svg></span><b>FEZ</b><span>Beaten: all 32 cubes and the Star Gate ending.</span></li>
+      <li style="--game: var(--g-papers)"><span class="g-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M19 10h10v10h-10z"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M14 24h20v6H14zM12 36h24"/></svg></span><b>Papers, Please</b><span>Days 1 to 9 approved, reading every document on the desk.</span></li>
+      <li style="--game: var(--g-oni)"><span class="g-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="13" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="19" cy="20" r="3" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="28" cy="29" r="4" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Oxygen Not Included</b><span>Colony 7, every rule read from the game's own code.</span></li>
+      <li style="--game: var(--g-pokemon)"><span class="g-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="13" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M11 24h8M29 24h8"/><circle cx="24" cy="24" r="4.5" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Pokemon Sapphire</b><span>Playing now as Stitch with Treecko. Graph above.</span></li>
+      <li style="--game: var(--g-mirage)"><span class="g-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M10 32h28M16 32a8 8 0 0 1 16 0M24 12v4M13 17l3 3M35 17l-3 3"/></svg></span><b>Mirage</b><span>Our own desert platformer inside Joshua Tree, played from its state lines.</span></li>
+      <li style="--game: var(--g-pikmin)"><span class="g-tile"><svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="29" r="8" fill="none" stroke="#fff" stroke-width="4"/><path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M24 21V11M24 11c3-4 9-4 11 0-4 2-8 2-11 0z"/></svg></span><b>Pikmin 2</b><span>Playing now in Dolphin, reading RAM against the decomp.</span></li>
+  </ul>
 </section>
 
-<section class="band" id="how">
-  <div class="band-head reveal">
-    <div class="duke-art" aria-hidden="true"></div>
-    <p class="label">Duolingo</p>
-    <h2>It reads the answer key</h2>
-    <p>Duolingo draws every exercise from a React component, and that component still holds the answer. Duke walks the component tree from the visible widget up to the challenge, reads the right answer and clicks it. A shape it has never seen gets logged and skipped, never guessed.</p>
-  </div>
-  <div class="cells">
-    <article class="cell reveal"><p class="label">Driver</p><h3>A real browser</h3><p>One Node runner drives Chromium, signed in as you. Drags and chess moves use a real mouse, because Duolingo ignores synthetic ones.</p></article>
-    <article class="cell reveal"><p class="label" data-i18n="Chess">Chess</p><h3>Puzzles hand over the moves</h3><p>A puzzle carries its solution. Bot matches are played by Stockfish, with a bundled engine as the fallback.</p></article>
-    <article class="cell reveal"><p class="label">Math</p><h3>Solvers for every unit</h3><p>Expressions go through math.js. A short list of stubborn levels is still open.</p></article>
-    <article class="cell reveal"><p class="label" data-i18n="Languages">Languages</p><h3>Every course, unattended</h3><p>Choice, word bank, typed, cloze, pairs, translate and stories. It walks the whole tree on its own.</p></article>
-    <article class="cell reveal"><p class="label">Streak guard</p><h3>The streak survives</h3><p>If it is evening and no XP has landed, it finishes a language lesson, even through a pause.</p></article>
-    <article class="cell reveal"><p class="label">Pace</p><h3>The fastest track wins</h3><p>It measures XP per hour for every course and moves to the best earner when one finishes or stalls.</p></article>
-  </div>
-</section>
-
-
-
-<section class="sec" id="clients">
-  <div class="wrap center reveal">
-        <h2>Native everywhere</h2>
-    <p class="body">A small app polls the runner over the LAN or the tunnel. Chess is a real animated board. Language and math show the actual prompt and answer. Pause it or switch tracks from the menu, no terminal needed. Reads are open. Pausing and switching need a token.</p>
-    <div class="rows">
-      <div class="row"><b>macOS</b><span>SwiftUI. Live board, Track menu, pause. The menu bar shows live XP without opening a window.</span></div>
-      <div class="row"><b>iOS</b><span>The same screen over the LAN or the tunnel, with a home screen widget for XP and streak.</span></div>
-      <div class="row"><b>watchOS</b><span>A glance: XP, track, paused or stuck.</span></div>
-      <div class="row"><b>Android</b><span>Compose Multiplatform. Sideloadable APK from CI.</span></div>
-      <div class="row"><b>Windows, Linux</b><span>Compose Desktop, packaged as an .msi and a .deb.</span></div>
-      <div class="row"><b>Terminal</b><span>duke-tui prints the current state and exits. Check from anywhere over SSH.</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="sec closer">
-  <div class="stage-art" aria-hidden="true"></div>
-  <div class="wrap center reveal">
-        <h2>A study, not a product</h2>
-    <p class="body">It started as a way to keep a streak alive in a busy week and turned into a study of how much of a gamified app is the client grading itself. Automated play is against Duolingo's terms, and the XP still ranks you against real people. Read it, don't run it.</p>
-  </div>
+<section class="sec" id="how">
+  <ul class="says reveal">
+    <li><b>It reads the answer key.</b> Duolingo still holds the right answer in its own components. Duke reads it and clicks.</li>
+    <li><b>It plays for real.</b> A mod, the save file or the game&rsquo;s RAM, read before every move. No cheats.</li>
+    <li><b>It never guesses.</b> A shape it has not seen gets logged and skipped.</li>
+  </ul>
+  <p class="where">Watch it on Mac, iPhone, Watch, Android, Windows, Linux and the terminal. <a href="https://github.com/nulljosh/duke">Source &rarr;</a></p>
+  <p class="note">A study, not a product. Automated play breaks Duolingo&rsquo;s terms. Read it, don&rsquo;t run it.</p>
 </section>
 </main>
 
@@ -126,7 +83,7 @@
   <div class="foot-top">
     <div class="foot-brand"><img src="icon.svg" alt="" width="40" height="40"><b>Duke</b><p>Games and software on autopilot. Formerly Cruise.</p></div>
     <nav class="foot-cols" aria-label="Footer">
-      <div><p class="label">Duke</p><a href="#games">Games</a><a href="#how">How it works</a><a href="#clients">The apps</a><a href="#top">Back to top</a></div>
+      <div><p class="label">Duke</p><a href="#games">Games</a><a href="#how">How it works</a><a href="#top">Back to top</a></div>
       <div><p class="label">More</p><a href="mailto:trommatic@icloud.com?subject=Duke">Feedback</a><a href="https://github.com/nulljosh/duke">GitHub</a><a href="https://jaybulb.com">More apps</a><a href="privacy.html">Privacy</a></div>
       <div><p class="label"><label for="langPicker" data-i18n="Language">Language</label></p>
         <select id="langPicker" aria-label="Language">
@@ -150,7 +107,8 @@
     document.querySelectorAll(".reveal").forEach((el) => io ? io.observe(el) : el.classList.add("in"));
   });
 </script>
-<script src="demo.js?v=4"></script>
+<script src="demo.js?v=6"></script>
+<script src="hero.js?v=1" defer></script>
 <script src="i18n.js"></script>
 <script src="footer-band.js" defer></script>
 </body>
